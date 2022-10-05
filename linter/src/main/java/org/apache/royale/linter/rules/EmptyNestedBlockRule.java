@@ -34,6 +34,7 @@ import org.apache.royale.compiler.tree.as.ITypeNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Checks for empty blocks, as long as they aren't the bodies of classes,
@@ -77,7 +78,7 @@ public class EmptyNestedBlockRule extends LinterRule {
 		return true;
 	}
 
-	public static class EmptyNestedBlockLinterProblem extends CompilerProblem {
+	public static class EmptyNestedBlockLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Block must not be empty";
 
 		public EmptyNestedBlockLinterProblem(IBlockNode node)

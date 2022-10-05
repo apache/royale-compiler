@@ -35,6 +35,7 @@ import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 public class LocalVarShadowsFieldRule extends LinterRule {
 	@Override
@@ -72,7 +73,7 @@ public class LocalVarShadowsFieldRule extends LinterRule {
 		}
 	}
 
-	public static class LocalVarShadowsFieldLinterProblem extends CompilerProblem {
+	public static class LocalVarShadowsFieldLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Local variable '${varName}' has the same name as field in class '${className}'";
 
 		public LocalVarShadowsFieldLinterProblem(IVariableNode variableNode, IClassNode classNode)

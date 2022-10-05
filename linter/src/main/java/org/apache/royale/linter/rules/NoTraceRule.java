@@ -32,6 +32,7 @@ import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check for calls to the 'trace()' function.
@@ -57,7 +58,7 @@ public class NoTraceRule extends LinterRule {
 		problems.add(new NoTraceLinterProblem(functionCallNode));
 	}
 
-	public static class NoTraceLinterProblem extends CompilerProblem {
+	public static class NoTraceLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Must not call trace() function";
 
 		public NoTraceLinterProblem(IFunctionCallNode node)

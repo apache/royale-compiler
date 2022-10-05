@@ -27,6 +27,8 @@ import org.apache.royale.compiler.parsing.IASToken;
 import org.apache.royale.compiler.problems.CompilerProblem;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.TokenVisitor;
+import org.apache.royale.linter.problems.ILinterProblem;
+import org.apache.royale.linter.rules.NoWithRule.NoWithLinterProblem;
 
 /**
  * Checks for uses of 'with(x)'.
@@ -41,7 +43,7 @@ public class NoWithRule extends LinterRule {
 		return result;
 	}
 
-	public static class NoWithLinterProblem extends CompilerProblem {
+	public static class NoWithLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Must not use 'with' statement";
 
 		public NoWithLinterProblem(IASToken token)

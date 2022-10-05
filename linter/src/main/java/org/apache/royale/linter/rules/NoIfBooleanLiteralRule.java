@@ -33,6 +33,7 @@ import org.apache.royale.compiler.tree.as.ILiteralNode.LiteralType;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check that a boolean literal value is not used as an 'if' condition.
@@ -59,7 +60,7 @@ public class NoIfBooleanLiteralRule extends LinterRule {
 		problems.add(new NoIfBooleanLiteralLinterProblem(literalNode));
 	}
 
-	public static class NoIfBooleanLiteralLinterProblem extends CompilerProblem {
+	public static class NoIfBooleanLiteralLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Condition is always '${value}'";
 
 		public NoIfBooleanLiteralLinterProblem(ILiteralNode node)

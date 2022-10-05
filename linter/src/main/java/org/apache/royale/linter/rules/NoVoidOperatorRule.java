@@ -31,6 +31,7 @@ import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Checks for uses of 'void' operator. Using 'void' as return type is allowed.
@@ -53,7 +54,7 @@ public class NoVoidOperatorRule extends LinterRule {
 		problems.add(new NoVoidOperatorLinterProblem(unaryOperatorNode));
 	}
 
-	public static class NoVoidOperatorLinterProblem extends CompilerProblem {
+	public static class NoVoidOperatorLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Must not use 'void' operator";
 
 		public NoVoidOperatorLinterProblem(IUnaryOperatorNode node)

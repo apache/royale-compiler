@@ -34,6 +34,7 @@ import org.apache.royale.compiler.tree.as.IStatementNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Checks the number of nested blocks in a function.
@@ -95,7 +96,7 @@ public class MaxBlockDepthRule extends LinterRule {
 		return maxDepth;
 	}
 
-	public static class MaxBlockDepthLinterProblem extends CompilerProblem {
+	public static class MaxBlockDepthLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Function '${functionName}' has blocks nested ${depth} levels deep, but expected no deeper than ${maxDepth} levels";
 
 		public MaxBlockDepthLinterProblem(IFunctionNode node, int depth, int maxDepth)

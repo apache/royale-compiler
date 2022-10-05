@@ -32,6 +32,7 @@ import org.apache.royale.compiler.tree.as.IClassNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check that class names match a specific pattern.
@@ -63,7 +64,7 @@ public class ClassNameRule extends LinterRule {
 		problems.add(new ClassNameLinterProblem(classNode, thePattern));
 	}
 
-	public static class ClassNameLinterProblem extends CompilerProblem {
+	public static class ClassNameLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Class name does not match the pattern '${pattern}'";
 
 		public ClassNameLinterProblem(IClassNode node, Pattern pattern)

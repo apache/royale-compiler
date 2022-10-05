@@ -31,11 +31,12 @@ import org.apache.royale.compiler.tree.as.IFunctionCallNode;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.compiler.tree.as.IIdentifierNode;
 import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode;
-import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
+import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check that a constructor does not call `dispatchEvent` because it's likely
@@ -84,7 +85,7 @@ public class NoConstructorDispatchEventRule extends LinterRule {
 		}
 	}
 
-	public static class NoConstructorDispatchEventLinterProblem extends CompilerProblem {
+	public static class NoConstructorDispatchEventLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Constructor '${functionName}' must not call 'dispatchEvent'";
 
 		public NoConstructorDispatchEventLinterProblem(IFunctionNode functionNode, IExpressionNode dispatchEventNode) {

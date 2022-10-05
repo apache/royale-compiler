@@ -30,6 +30,7 @@ import org.apache.royale.compiler.tree.as.IImportNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check for import statements that import the entire package.
@@ -51,7 +52,7 @@ public class NoWildcardImportRule extends LinterRule {
 		problems.add(new NoWildcardImportLinterProblem(importNode));
 	}
 
-	public static class NoWildcardImportLinterProblem extends CompilerProblem {
+	public static class NoWildcardImportLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Must not use wildcard import";
 
 		public NoWildcardImportLinterProblem(IImportNode node)

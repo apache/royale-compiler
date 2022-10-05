@@ -32,6 +32,7 @@ import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.MXMLTagVisitor;
 import org.apache.royale.linter.MXMLTokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check that MXML id attribute values match a specific pattern.
@@ -66,7 +67,7 @@ public class MXMLIDRule extends LinterRule {
 		problems.add(new MXMLIDLinterProblem(idAttribute, thePattern));
 	}
 
-	public static class MXMLIDLinterProblem extends CompilerProblem {
+	public static class MXMLIDLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "MXML id '${idValue}' does not match the pattern '${pattern}'";
 
 		public MXMLIDLinterProblem(IMXMLTagAttributeData attribute, Pattern pattern)

@@ -39,6 +39,7 @@ import org.apache.royale.compiler.tree.as.IScopedNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check that an overridden function contains more than a call to super.
@@ -89,7 +90,7 @@ public class OverrideContainsOnlySuperCallRule extends LinterRule {
 		problems.add(new OverrideContainsOnlySuperCallLinterProblem(functionNode));
 	}
 
-	public static class OverrideContainsOnlySuperCallLinterProblem extends CompilerProblem {
+	public static class OverrideContainsOnlySuperCallLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Method override '${functionName}' must contain more than call to 'super.${functionName}'";
 
 		public OverrideContainsOnlySuperCallLinterProblem(IFunctionNode node)

@@ -32,6 +32,7 @@ import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check that constant names match a specific pattern.
@@ -66,7 +67,7 @@ public class ConstantNameRule extends LinterRule {
 		problems.add(new ConstantNameLinterProblem(variableNode, thePattern));
 	}
 
-	public static class ConstantNameLinterProblem extends CompilerProblem {
+	public static class ConstantNameLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Constant name does not match the pattern '${pattern}'";
 
 		public ConstantNameLinterProblem(IVariableNode node, Pattern pattern)

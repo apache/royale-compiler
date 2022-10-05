@@ -38,6 +38,7 @@ import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check that an array literal contains no empty slots (multiple repeating
@@ -97,7 +98,7 @@ public class ValidTypeofRule extends LinterRule {
 		problems.add(new ValidTypeofLinterProblem(stringLiteral));
 	}
 
-	public static class ValidTypeofLinterProblem extends CompilerProblem {
+	public static class ValidTypeofLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "String '${value}' is not a valid result for typeof operator";
 
 		public ValidTypeofLinterProblem(ILiteralNode node) {

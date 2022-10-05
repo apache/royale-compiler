@@ -32,6 +32,7 @@ import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check that function names match a specific pattern.
@@ -70,7 +71,7 @@ public class FunctionNameRule extends LinterRule {
 		problems.add(new FunctionNameLinterProblem(functionNode, thePattern));
 	}
 
-	public static class FunctionNameLinterProblem extends CompilerProblem {
+	public static class FunctionNameLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Function name '${functionName}' does not match the pattern '${pattern}'";
 
 		public FunctionNameLinterProblem(IFunctionNode node, Pattern pattern)

@@ -34,6 +34,7 @@ import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Checks for use of the 'this' keyword in closures.
@@ -75,7 +76,7 @@ public class NoThisInClosureRule extends LinterRule {
 		return null;
 	}
 
-	public static class NoThisInClosureLinterProblem extends CompilerProblem {
+	public static class NoThisInClosureLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Closure must not contain 'this' keyword";
 
 		public NoThisInClosureLinterProblem(IASToken token)

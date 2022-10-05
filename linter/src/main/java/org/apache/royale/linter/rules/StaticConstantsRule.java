@@ -34,6 +34,7 @@ import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Checks for constants that are declared on a class, but are not static.
@@ -63,7 +64,7 @@ public class StaticConstantsRule extends LinterRule {
 		problems.add(new StaticConstantsLinterProblem(variableNode));
 	}
 
-	public static class StaticConstantsLinterProblem extends CompilerProblem {
+	public static class StaticConstantsLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Constant must be static";
 
 		public StaticConstantsLinterProblem(IVariableNode node)

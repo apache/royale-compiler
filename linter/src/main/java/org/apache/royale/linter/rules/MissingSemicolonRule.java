@@ -30,6 +30,7 @@ import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.TokenQuery;
 import org.apache.royale.linter.TokenVisitor;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Checks for statements with missing semicolons.
@@ -51,7 +52,7 @@ public class MissingSemicolonRule extends LinterRule {
 		problems.add(new MissingSemicolonLinterProblem(semicolon));
 	}
 
-	public static class MissingSemicolonLinterProblem extends CompilerProblem {
+	public static class MissingSemicolonLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Semicolon is required";
 
 		public MissingSemicolonLinterProblem(IASToken token)

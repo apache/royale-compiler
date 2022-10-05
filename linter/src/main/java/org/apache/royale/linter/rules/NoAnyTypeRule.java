@@ -36,6 +36,7 @@ import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Checks for uses of the * type.
@@ -92,7 +93,7 @@ public class NoAnyTypeRule extends LinterRule {
 		return true;
 	}
 
-	public static class NoAnyTypeOnVariableLinterProblem extends CompilerProblem {
+	public static class NoAnyTypeOnVariableLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Must not use the * type for variable '${varName}'";
 
 		public NoAnyTypeOnVariableLinterProblem(IVariableNode node)
@@ -104,7 +105,7 @@ public class NoAnyTypeRule extends LinterRule {
 		public String varName;
 	}
 
-	public static class NoAnyTypeOnParameterLinterProblem extends CompilerProblem {
+	public static class NoAnyTypeOnParameterLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Must not use the * type for function parameter '${paramName}'";
 
 		public NoAnyTypeOnParameterLinterProblem(IParameterNode node)
@@ -116,7 +117,7 @@ public class NoAnyTypeRule extends LinterRule {
 		public String paramName;
 	}
 
-	public static class NoAnyTypeReturnLinterProblem extends CompilerProblem {
+	public static class NoAnyTypeReturnLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Must not use the * type for function return type";
 
 		public NoAnyTypeReturnLinterProblem(IFunctionNode node)

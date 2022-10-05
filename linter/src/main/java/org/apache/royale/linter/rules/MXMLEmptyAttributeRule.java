@@ -30,6 +30,7 @@ import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.MXMLTagVisitor;
 import org.apache.royale.linter.MXMLTokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check that MXML attribute values are not empty.
@@ -52,7 +53,7 @@ public class MXMLEmptyAttributeRule extends LinterRule {
 		}
 	}
 
-	public static class MXMLEmptyAttributeLinterProblem extends CompilerProblem {
+	public static class MXMLEmptyAttributeLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "MXML attribute '${attributeName}' value is empty";
 
 		public MXMLEmptyAttributeLinterProblem(IMXMLTagAttributeData attribute) {

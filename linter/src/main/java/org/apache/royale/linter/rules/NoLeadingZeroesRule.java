@@ -31,6 +31,7 @@ import org.apache.royale.compiler.tree.as.INumericLiteralNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Checks for use of numeric literals with leading zeroes, except when it starts
@@ -65,7 +66,7 @@ public class NoLeadingZeroesRule extends LinterRule {
 		problems.add(new NoLeadingZeroesLinterProblem(numberNode));
 	}
 
-	public static class NoLeadingZeroesLinterProblem extends CompilerProblem {
+	public static class NoLeadingZeroesLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Must remove leading zeros from numeric literal '${value}'";
 
 		public NoLeadingZeroesLinterProblem(INumericLiteralNode node)

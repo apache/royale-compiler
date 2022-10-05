@@ -31,6 +31,7 @@ import org.apache.royale.compiler.tree.as.ITerminalNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check for 'switch' statements that are missing a 'default' clause.
@@ -53,7 +54,7 @@ public class SwitchWithoutDefaultRule extends LinterRule {
 		problems.add(new SwitchWithoutDefaultLinterProblem(switchNode));
 	}
 
-	public static class SwitchWithoutDefaultLinterProblem extends CompilerProblem {
+	public static class SwitchWithoutDefaultLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Missing 'default' clause in 'switch' statement";
 
 		public SwitchWithoutDefaultLinterProblem(ISwitchNode node)

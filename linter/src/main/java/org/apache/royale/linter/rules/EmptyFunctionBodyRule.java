@@ -32,6 +32,7 @@ import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Checks for function bodies that are empty.
@@ -81,7 +82,7 @@ public class EmptyFunctionBodyRule extends LinterRule {
 		return true;
 	}
 
-	public static class EmptyFunctionBodyLinterProblem extends CompilerProblem {
+	public static class EmptyFunctionBodyLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Function body must not be empty";
 
 		public EmptyFunctionBodyLinterProblem(IBlockNode node)

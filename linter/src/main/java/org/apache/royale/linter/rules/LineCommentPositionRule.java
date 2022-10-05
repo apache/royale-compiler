@@ -31,6 +31,7 @@ import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.TokenQuery;
 import org.apache.royale.linter.TokenVisitor;
 import org.apache.royale.linter.config.LineCommentPosition;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Checks if line comments appear beside code on the same line, or on a
@@ -65,7 +66,7 @@ public class LineCommentPositionRule extends LinterRule {
 		}
 	}
 
-	public static class LineCommentPositionLinterProblem extends CompilerProblem {
+	public static class LineCommentPositionLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Comment must be ${position} code";
 
 		public LineCommentPositionLinterProblem(IASToken token, LineCommentPosition position)

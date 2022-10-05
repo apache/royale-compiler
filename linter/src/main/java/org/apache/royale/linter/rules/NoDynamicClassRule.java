@@ -31,6 +31,7 @@ import org.apache.royale.compiler.tree.as.IClassNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check that symbols in package or class scopes have a namespace.
@@ -52,7 +53,7 @@ public class NoDynamicClassRule extends LinterRule {
 		problems.add(new NoDynamicClassLinterProblem(classNode));
 	}
 
-	public static class NoDynamicClassLinterProblem extends CompilerProblem {
+	public static class NoDynamicClassLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Class '${className}' must not be dynamic";
 
 		public NoDynamicClassLinterProblem(IClassNode node)

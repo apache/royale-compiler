@@ -37,6 +37,7 @@ import org.apache.royale.linter.MXMLTokenQuery;
 import org.apache.royale.linter.MXMLTokenVisitor;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Checks for missing or empty ASDoc comments.
@@ -115,7 +116,7 @@ public class MissingASDocRule extends LinterRule {
 		problems.add(new EmptyASDocLinterProblem(comment));
 	}
 
-	public static class MissingASDocLinterProblem extends CompilerProblem {
+	public static class MissingASDocLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Public APIs must have ASDoc comments";
 
 		public MissingASDocLinterProblem(IDocumentableDefinitionNode node)
@@ -124,7 +125,7 @@ public class MissingASDocRule extends LinterRule {
 		}
 	}
 
-	public static class EmptyASDocLinterProblem extends CompilerProblem {
+	public static class EmptyASDocLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "ASDoc comments must not be empty";
 
 		public EmptyASDocLinterProblem(IASToken token)

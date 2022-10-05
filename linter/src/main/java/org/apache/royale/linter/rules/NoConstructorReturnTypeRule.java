@@ -31,6 +31,7 @@ import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check that a constructor does not specify a return type (not even `void`).
@@ -56,7 +57,7 @@ public class NoConstructorReturnTypeRule extends LinterRule {
 		problems.add(new NoConstructorReturnTypeLinterProblem(functionNode));
 	}
 
-	public static class NoConstructorReturnTypeLinterProblem extends CompilerProblem {
+	public static class NoConstructorReturnTypeLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Constructor '${functionName}' must not specify '${returnType}' return type";
 
 		public NoConstructorReturnTypeLinterProblem(IFunctionNode node)

@@ -36,6 +36,7 @@ import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check that calls to event dispatcher methods don't use string values for
@@ -90,13 +91,13 @@ public class NoStringEventNameRule extends LinterRule {
 		if (!LiteralType.STRING.equals(literalNode.getLiteralType())) {
 			return;
 		}
-		problems.add(new NoStringEventNameProblem(functionCallNode, functionName));
+		problems.add(new NoStringEventNameLinterProblem(functionCallNode, functionName));
 	}
 
-	public static class NoStringEventNameProblem extends CompilerProblem {
+	public static class NoStringEventNameLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Calls to '${functionName}' must use constant value instead of string literal for event name";
 
-		public NoStringEventNameProblem(IFunctionCallNode node, String functionName)
+		public NoStringEventNameLinterProblem(IFunctionCallNode node, String functionName)
 		{
 			super(node.getArgumentNodes()[0]);
 			this.functionName = functionName;

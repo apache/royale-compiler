@@ -34,6 +34,7 @@ import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check that the left side of in, is, and instanceof is not negated unsafely.
@@ -67,7 +68,7 @@ public class UnsafeNegationRule extends LinterRule {
 		problems.add(new UnsafeNegationLinterProblem(binaryOperatorNode));
 	}
 
-	public static class UnsafeNegationLinterProblem extends CompilerProblem {
+	public static class UnsafeNegationLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Must not use negation on left side of in, is, and instanceof operators. Did you mean to use parentheses?";
 
 		public UnsafeNegationLinterProblem(IASNode node) {

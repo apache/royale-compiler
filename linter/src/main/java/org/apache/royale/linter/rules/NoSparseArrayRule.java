@@ -33,6 +33,7 @@ import org.apache.royale.compiler.tree.as.ILiteralNode.LiteralType;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check that an array literal contains no empty slots (multiple repeating commas with no values).
@@ -64,7 +65,7 @@ public class NoSparseArrayRule extends LinterRule {
 		}
 	}
 
-	public static class NoSparseArrayLinterProblem extends CompilerProblem {
+	public static class NoSparseArrayLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Array literals must not be sparse";
 
 		public NoSparseArrayLinterProblem(ILiteralContainerNode node)

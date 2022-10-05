@@ -41,6 +41,7 @@ import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check that symbols in package or class scopes have a namespace.
@@ -145,7 +146,7 @@ public class MissingNamespaceRule extends LinterRule {
 		return ns != null;
 	}
 
-	public static class MissingNamespaceOnClassLinterProblem extends CompilerProblem {
+	public static class MissingNamespaceOnClassLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Missing namespace on class '${className}'";
 
 		public MissingNamespaceOnClassLinterProblem(IClassNode node)
@@ -157,7 +158,7 @@ public class MissingNamespaceRule extends LinterRule {
 		public String className;
 	}
 
-	public static class MissingNamespaceOnInterfaceLinterProblem extends CompilerProblem {
+	public static class MissingNamespaceOnInterfaceLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Missing namespace on interface '${interfaceName}'";
 
 		public MissingNamespaceOnInterfaceLinterProblem(IInterfaceNode node)
@@ -169,7 +170,7 @@ public class MissingNamespaceRule extends LinterRule {
 		public String interfaceName;
 	}
 
-	public static class MissingNamespaceOnPackageFunctionLinterProblem extends CompilerProblem {
+	public static class MissingNamespaceOnPackageFunctionLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Missing namespace on package function '${functionName}'";
 
 		public MissingNamespaceOnPackageFunctionLinterProblem(IFunctionNode node)
@@ -181,7 +182,7 @@ public class MissingNamespaceRule extends LinterRule {
 		public String functionName;
 	}
 
-	public static class MissingNamespaceOnMethodLinterProblem extends CompilerProblem {
+	public static class MissingNamespaceOnMethodLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Missing namespace on method '${functionName}'";
 
 		public MissingNamespaceOnMethodLinterProblem(IFunctionNode node)
@@ -193,7 +194,7 @@ public class MissingNamespaceRule extends LinterRule {
 		public String functionName;
 	}
 
-	public static class MissingNamespaceOnPackageVariableLinterProblem extends CompilerProblem {
+	public static class MissingNamespaceOnPackageVariableLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Missing namespace on package variable '${variableName}'";
 
 		public MissingNamespaceOnPackageVariableLinterProblem(IVariableNode node)
@@ -205,7 +206,7 @@ public class MissingNamespaceRule extends LinterRule {
 		public String variableName;
 	}
 
-	public static class MissingNamespaceOnFieldLinterProblem extends CompilerProblem {
+	public static class MissingNamespaceOnFieldLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Missing namespace on field '${variableName}'";
 
 		public MissingNamespaceOnFieldLinterProblem(IVariableNode node)

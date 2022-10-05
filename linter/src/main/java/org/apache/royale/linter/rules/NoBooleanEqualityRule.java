@@ -31,6 +31,7 @@ import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Checks for redundant equality comparisons with 'true' and 'false' boolean
@@ -64,7 +65,7 @@ public class NoBooleanEqualityRule extends LinterRule {
 		}
 	}
 
-	public static class NoBooleanEqualityLinterProblem extends CompilerProblem {
+	public static class NoBooleanEqualityLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Must simplify statement to remove redundant comparison with true or false";
 
 		public NoBooleanEqualityLinterProblem(IExpressionNode node)

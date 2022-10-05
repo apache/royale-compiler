@@ -33,6 +33,7 @@ import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check that variables are always declared at the top of a function.
@@ -75,7 +76,7 @@ public class VariablesOnTopRule extends LinterRule {
 		return afterNonVariable;
 	}
 
-	public static class VariablesOnTopLinterProblem extends CompilerProblem {
+	public static class VariablesOnTopLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Variable name '${varName}' must be declared at the top of this function";
 
 		public VariablesOnTopLinterProblem(IVariableNode node)

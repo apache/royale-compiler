@@ -39,6 +39,7 @@ import org.apache.royale.compiler.tree.as.IObjectLiteralValuePairNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check that each key in an object literal is unique.
@@ -90,7 +91,7 @@ public class NoDuplicateObjectKeysRule extends LinterRule {
 		}
 	}
 
-	public static class NoDuplicateObjectKeysLinterProblem extends CompilerProblem {
+	public static class NoDuplicateObjectKeysLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Object literal contains duplicate key '${keyName}'";
 
 		public NoDuplicateObjectKeysLinterProblem(IExpressionNode node, String keyName)

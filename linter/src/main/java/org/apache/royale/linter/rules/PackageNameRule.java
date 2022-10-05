@@ -32,6 +32,7 @@ import org.apache.royale.compiler.tree.as.IPackageNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check that package names match a specific pattern.
@@ -66,7 +67,7 @@ public class PackageNameRule extends LinterRule {
 		problems.add(new PackageNameLinterProblem(packageNode, thePattern));
 	}
 
-	public static class PackageNameLinterProblem extends CompilerProblem {
+	public static class PackageNameLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Package name '${packageName}' does not match the pattern '${pattern}'";
 
 		public PackageNameLinterProblem(IPackageNode node, Pattern pattern)

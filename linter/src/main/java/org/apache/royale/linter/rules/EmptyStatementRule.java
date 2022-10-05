@@ -30,6 +30,7 @@ import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.TokenQuery;
 import org.apache.royale.linter.TokenVisitor;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Checks for empty statements. An empty statement consists of only a semicolon
@@ -59,7 +60,7 @@ public class EmptyStatementRule extends LinterRule {
 		problems.add(new EmptyStatementLinterProblem(semicolon));
 	}
 
-	public static class EmptyStatementLinterProblem extends CompilerProblem {
+	public static class EmptyStatementLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Statement must not be empty";
 
 		public EmptyStatementLinterProblem(IASToken token)

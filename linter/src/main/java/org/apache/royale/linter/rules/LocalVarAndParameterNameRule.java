@@ -37,6 +37,7 @@ import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check that local variable and parameter names match a specific pattern.
@@ -95,7 +96,7 @@ public class LocalVarAndParameterNameRule extends LinterRule {
 		problems.add(new ParameterNameLinterProblem(paramNode, thePattern));
 	}
 
-	public static class LocalVarNameLinterProblem extends CompilerProblem {
+	public static class LocalVarNameLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Variable name '${varName}' does not match the pattern '${pattern}'";
 
 		public LocalVarNameLinterProblem(IVariableNode node, Pattern pattern)
@@ -109,7 +110,7 @@ public class LocalVarAndParameterNameRule extends LinterRule {
 		public String varName;
 	}
 
-	public static class ParameterNameLinterProblem extends CompilerProblem {
+	public static class ParameterNameLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Parameter name '${paramName}' does not match the pattern '${pattern}'";
 
 		public ParameterNameLinterProblem(IVariableNode node, Pattern pattern)

@@ -35,6 +35,7 @@ import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check that field names match a specific pattern.
@@ -77,7 +78,7 @@ public class FieldNameRule extends LinterRule {
 		problems.add(new FieldNameLinterProblem(variableNode, thePattern));
 	}
 
-	public static class FieldNameLinterProblem extends CompilerProblem {
+	public static class FieldNameLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Field name '${varName}' does not match the pattern '${pattern}'";
 
 		public FieldNameLinterProblem(IVariableNode node, Pattern pattern)

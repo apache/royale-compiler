@@ -32,6 +32,7 @@ import org.apache.royale.compiler.tree.as.IInterfaceNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check that interface names match a specific pattern.
@@ -63,7 +64,7 @@ public class InterfaceNameRule extends LinterRule {
 		problems.add(new InterfaceNameLinterProblem(interfaceNode, thePattern));
 	}
 
-	public static class InterfaceNameLinterProblem extends CompilerProblem {
+	public static class InterfaceNameLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Interface name does not match the pattern '${pattern}'";
 
 		public InterfaceNameLinterProblem(IInterfaceNode node, Pattern pattern)

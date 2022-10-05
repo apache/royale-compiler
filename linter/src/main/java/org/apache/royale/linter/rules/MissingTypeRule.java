@@ -34,6 +34,7 @@ import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Checks that a type has been declared for all variables, function parameters,
@@ -94,7 +95,7 @@ public class MissingTypeRule extends LinterRule {
 		return true;
 	}
 
-	public static class MissingVariableTypeLinterProblem extends CompilerProblem {
+	public static class MissingVariableTypeLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Missing type for variable '${varName}'";
 
 		public MissingVariableTypeLinterProblem(IVariableNode node)
@@ -106,7 +107,7 @@ public class MissingTypeRule extends LinterRule {
 		public String varName;
 	}
 
-	public static class MissingFunctionParameterTypeLinterProblem extends CompilerProblem {
+	public static class MissingFunctionParameterTypeLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Missing type for function parameter '${paramName}'";
 
 		public MissingFunctionParameterTypeLinterProblem(IParameterNode node)
@@ -118,7 +119,7 @@ public class MissingTypeRule extends LinterRule {
 		public String paramName;
 	}
 
-	public static class MissingFunctionReturnTypeLinterProblem extends CompilerProblem {
+	public static class MissingFunctionReturnTypeLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Missing function return type";
 
 		public MissingFunctionReturnTypeLinterProblem(IFunctionNode node)

@@ -28,6 +28,8 @@ import org.apache.royale.compiler.problems.CompilerProblem;
 import org.apache.royale.compiler.tree.as.IOperatorNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.TokenVisitor;
+import org.apache.royale.linter.problems.ILinterProblem;
+import org.apache.royale.linter.rules.StrictEqualityRule.StrictEqualityLinterProblem;
 
 /**
  * Checks for uses of the '==' and '!='' operators instead of the stricter '==='
@@ -46,7 +48,7 @@ public class StrictEqualityRule extends LinterRule {
 		return result;
 	}
 
-	public static class StrictEqualityLinterProblem extends CompilerProblem {
+	public static class StrictEqualityLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Must use ${requiredTokenText} instead of ${tokenText}";
 
 		public StrictEqualityLinterProblem(IASToken token)

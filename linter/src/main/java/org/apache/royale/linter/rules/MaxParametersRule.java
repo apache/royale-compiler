@@ -30,6 +30,7 @@ import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Checks the number of function parameters.
@@ -53,7 +54,7 @@ public class MaxParametersRule extends LinterRule {
 		problems.add(new MaxParametersLinterProblem(functionNode, maximum));
 	}
 
-	public static class MaxParametersLinterProblem extends CompilerProblem {
+	public static class MaxParametersLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Function '${functionName}' has ${params} parameters, but expected no more than ${maxParams} parameters";
 
 		public MaxParametersLinterProblem(IFunctionNode node, int maxParams)

@@ -35,6 +35,7 @@ import org.apache.royale.linter.MXMLTokenQuery;
 import org.apache.royale.linter.MXMLTokenVisitor;
 import org.apache.royale.linter.TokenQuery;
 import org.apache.royale.linter.TokenVisitor;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Checks for line or block comments that are empty.
@@ -95,7 +96,7 @@ public class EmptyCommentRule extends LinterRule {
 		problems.add(new EmptyCommentLinterProblem(comment));
 	}
 
-	public static class EmptyCommentLinterProblem extends CompilerProblem {
+	public static class EmptyCommentLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Comment must not be empty";
 
 		public EmptyCommentLinterProblem(IASToken token) {

@@ -35,6 +35,7 @@ import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode.LanguageIdenti
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.NodeVisitor;
 import org.apache.royale.linter.TokenQuery;
+import org.apache.royale.linter.problems.ILinterProblem;
 
 /**
  * Check that all constructors include a call to super().
@@ -79,7 +80,7 @@ public class MissingConstructorSuperRule extends LinterRule {
 		return false;
 	}
 
-	public static class MissingConstructorSuperLinterProblem extends CompilerProblem {
+	public static class MissingConstructorSuperLinterProblem extends CompilerProblem implements ILinterProblem {
 		public static final String DESCRIPTION = "Constructor '${functionName}' does not include 'super()' call";
 
 		public MissingConstructorSuperLinterProblem(IFunctionNode node)
