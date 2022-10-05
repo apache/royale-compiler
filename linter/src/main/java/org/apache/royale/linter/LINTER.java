@@ -20,9 +20,7 @@
 package org.apache.royale.linter;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -55,6 +53,8 @@ import org.apache.royale.utils.FilenameNormalization;
 public class LINTER {
 	private static final String DEFAULT_VAR = "files";
 	private static final String L10N_CONFIG_PREFIX = "org.apache.royale.compiler.internal.config.configuration";
+	private static final String FILE_EXTENSION_ACTIONSCRIPT = ".as";
+	private static final String FILE_EXTENSION_MXML = ".mxml";
 
 	static enum ExitCode {
 		SUCCESS(0), PRINT_HELP(1), FAILED_WITH_ERRORS(2), FAILED_WITH_EXCEPTIONS(3), FAILED_WITH_CONFIG_PROBLEMS(4);
@@ -104,7 +104,13 @@ public class LINTER {
 					String filePath = FilenameNormalization.normalize(inputFile.getAbsolutePath());
 					FileSpecification fileSpec = new FileSpecification(filePath);
 					String fileText = IOUtils.toString(fileSpec.createReader());
-					lintFileText(filePath, fileText, problemQuery.getProblems());
+					if (filePath.endsWith(FILE_EXTENSION_MXML)) {
+						ASLinter linter = new ASLinter(settings);
+						linter.lint(filePath, fileText, problemQuery.getProblems());
+					} else {
+						MXMLLinter linter = new MXMLLinter(settings);
+						linter.lint(filePath, fileText, problemQuery.getProblems());
+					}
 				}
 			} else if (problemQuery.hasFilteredProblems()) {
 				exitCode = ExitCode.FAILED_WITH_CONFIG_PROBLEMS;
@@ -243,45 +249,9 @@ public class LINTER {
 			}
 			if (file.isDirectory()) {
 				addDirectory(file);
-			} else if (fileName.endsWith(".as") || fileName.endsWith(".mxml")) {
+			} else if (fileName.endsWith(FILE_EXTENSION_ACTIONSCRIPT) || fileName.endsWith(FILE_EXTENSION_MXML)) {
 				inputFiles.add(file);
 			}
 		}
-	}
-
-	public void lintFile(File file, Collection<ICompilerProblem> problems) throws IOException {
-		String filePath = FilenameNormalization.normalize(file.getAbsolutePath());
-		FileSpecification fileSpec = new FileSpecification(filePath);
-		String fileText = IOUtils.toString(fileSpec.createReader());
-		lintFileText(filePath, fileText, problems);
-	}
-
-	public void lintFileText(String filePath, String text, Collection<ICompilerProblem> problems) {
-		filePath = FilenameNormalization.normalize(filePath);
-		if (filePath.endsWith(".mxml")) {
-			lintMXMLTextInternal(filePath, text, problems);
-		} else {
-			lintAS3TextInternal(filePath, text, problems);
-		}
-	}
-
-	public void lintActionScriptText(String text, Collection<ICompilerProblem> problems) {
-		String filePath = FilenameNormalization.normalize("stdin.as");
-		lintAS3TextInternal(filePath, text, problems);
-	}
-
-	public void lintMXMLText(String text, Collection<ICompilerProblem> problems) {
-		String filePath = FilenameNormalization.normalize("stdin.mxml");
-		lintMXMLTextInternal(filePath, text, problems);
-	}
-
-	private void lintAS3TextInternal(String filePath, String text, Collection<ICompilerProblem> problems) {
-		ASLinter linter = new ASLinter(settings);
-		linter.lint(filePath, text, problems);
-	}
-
-	private void lintMXMLTextInternal(String filePath, String text, Collection<ICompilerProblem> problems) {
-		MXMLLinter linter = new MXMLLinter(settings);
-		linter.lint(filePath, text, problems);
 	}
 }
