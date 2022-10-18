@@ -181,8 +181,11 @@ Running Integration Tests
     *5) This option is only required to run additional tests to verify that the compiler
         can output SWFs.
         
-        The Adobe Flash Player content debuggers can be found here:
-            https://www.adobe.com/support/flashplayer/debug_downloads.html
+        The Adobe Flash Player content debugger for Windows can be downloaded from:
+            https://fpdownload.macromedia.com/pub/flashplayer/updaters/32/flashplayer_32_sa_debug.exe
+
+        The Adobe Flash Player content debugger for Mac can be downloaded from:
+            https://fpdownload.macromedia.com/pub/flashplayer/updaters/32/flashplayer_32_sa_debug.dmg
 
         On Windows, set FLASHPLAYER_DEBUGGER to the absolute path including the
         filename of the FlashPlayerDebugger.exe. Note the filename of flash
