@@ -79,8 +79,8 @@ Building the Apache Royale Compiler with Ant
     Java SDK 1.8 or greater (*1)                           JAVA_HOME
         (for Java 1.8 see note at (*2))
 
-    Ant 1.7.1 or greater (*1)                              ANT_HOME
-        (for Java 1.7 see note at (*2))
+    Ant 1.8 or greater (*1)                                ANT_HOME
+        (for Java 1.8 see note at (*2))
 
     ==================================================================================
     
