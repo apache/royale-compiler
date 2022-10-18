@@ -28,7 +28,7 @@
           Licenses:
               antlr (3) - BSD
               commons-cli (1.2) - Apache 2.0
-              commons-io (2.0.1) - Apache 2.0
+              commons-io (2.11.0) - Apache 2.0
               guava (25.1) - Apache 2.0
               JBurg (1.10.2) - CPL 1.0
               lzma-sdk (9.2) - Public Domain
@@ -105,13 +105,13 @@
 
     <!--  commons-io -->
     <property name="commons-io.name" value="commons-io"/>
-    <property name="commons-io.version" value="2.4"/>
+    <property name="commons-io.version" value="2.11.0"/>
     <antcall target="download-dependency">
       <param name="name" value="${commons-io.name}"/>
       <param name="src.server" value="${maven.search.url}"/>
       <param name="src.folder" value="commons-io/commons-io/${commons-io.version}"/>
       <param name="src.filename" value="${commons-io.name}-${commons-io.version}.jar"/>
-      <param name="src.checksum" value="7f97854dc04c119d461fed14f5d8bb96"/>
+      <param name="src.checksum" value="3b4b7ccfaeceeac240b804839ee1a1ca"/>
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${commons-io.name}.jar"/>
     </antcall>
@@ -468,10 +468,13 @@
   </target>
 
   <target name="check-sum" if="md5" description="Verifies MD5 checksum, and fails if checksum doesn't match">
-    <checksum file="${destDir}/${destFile}" algorithm="MD5" verifyproperty="we.failed" property="${md5}"/>
-    <fail message="${message}">
+    <local name="checksum.result"/>
+    <checksum file="${destDir}/${destFile}" algorithm="MD5" property="checksum.result"/>
+    <fail message="${message} Expected: ${md5} Received: ${checksum.result}">
       <condition>
-        <equals arg1="${we.failed}" arg2="false"/>
+        <not>
+          <equals arg1="${md5}" arg2="${checksum.result}"/>
+        </not>
       </condition>
     </fail>
   </target>
