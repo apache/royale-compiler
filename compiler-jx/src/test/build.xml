@@ -91,6 +91,8 @@
                haltonerror="true" haltonfailure="true"
                failureproperty="tests.unit.failed">
 			<jvmarg value="-Dfile.encoding=UTF-8"/>   
+            <jvmarg value="-Duser.language=en"/>
+            <jvmarg value="-Duser.country=US"/>
             <classpath>
                 <pathelement location="${compiler}/target/test-classes"/>
                 <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
@@ -125,6 +127,8 @@
             haltonerror="true" haltonfailure="true"
             failureproperty="tests.unit.failed">
 			<jvmarg value="-Dfile.encoding=UTF-8"/>
+            <jvmarg value="-Duser.language=en"/>
+            <jvmarg value="-Duser.country=US"/>
             <classpath>
                 <pathelement location="${compiler}/target/test-classes"/>
                 <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
@@ -155,6 +159,8 @@
             printsummary="true" showoutput="true"
             haltonerror="true" haltonfailure="true"
             failureproperty="tests.unit.failed">
+            <jvmarg value="-Duser.language=en"/>
+            <jvmarg value="-Duser.country=US"/>
             <classpath>
                 <pathelement location="${compiler}/target/test-classes"/>
                 <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>
@@ -184,6 +190,8 @@
             printsummary="true" showoutput="true"
             haltonerror="true" haltonfailure="true"
             failureproperty="tests.unit.failed">
+            <jvmarg value="-Duser.language=en"/>
+            <jvmarg value="-Duser.country=US"/>
             <classpath>
                 <pathelement location="${compiler}/target/test-classes"/>
                 <pathelement location="${compiler}/../compiler-test-utils/target/classes"/>

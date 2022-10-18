@@ -305,6 +305,8 @@
             printsummary="true" showoutput="true"
             haltonerror="true" haltonfailure="true"
             failureproperty="tests.unit.failed">
+            <jvmarg value="-Duser.language=en"/>
+            <jvmarg value="-Duser.country=US"/>
             <classpath>
                 <pathelement location="${compiler}/target/test-classes"/>
                 <fileset dir="${compiler}/lib/external" includes="**/*.jar"/>
@@ -347,6 +349,8 @@
             printsummary="true" showoutput="true"
             haltonerror="true" haltonfailure="true"
             failureproperty="tests.unit.failed">
+            <jvmarg value="-Duser.language=en"/>
+            <jvmarg value="-Duser.country=US"/>
             <classpath>
                 <pathelement location="${compiler}/target/test-classes"/>
                 <fileset dir="${compiler}/lib" includes="**/*.jar"/>

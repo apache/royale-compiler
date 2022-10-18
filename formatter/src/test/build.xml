@@ -63,6 +63,8 @@
             printsummary="true" showoutput="true"
             haltonerror="true" haltonfailure="true"
             failureproperty="tests.unit.failed">
+            <jvmarg value="-Duser.language=en"/>
+            <jvmarg value="-Duser.country=US"/>
             <classpath>
                 <pathelement location="${formatter}/target/classes"/>
                 <pathelement location="${formatter}/target/test-classes"/>

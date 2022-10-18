@@ -134,6 +134,8 @@
             printsummary="true" showoutput="true"
             haltonerror="true" haltonfailure="true"
             failureproperty="tests.unit.failed">
+            <jvmarg value="-Duser.language=en"/>
+            <jvmarg value="-Duser.country=US"/>
             <classpath>
                 <pathelement location="${compiler.externc}/target/classes"/>
                 <pathelement location="${compiler.externc}/target/test-classes"/>
@@ -171,6 +173,8 @@
             printsummary="true" showoutput="true"
             haltonerror="true" haltonfailure="true"
             failureproperty="tests.unit.failed">
+            <jvmarg value="-Duser.language=en"/>
+            <jvmarg value="-Duser.country=US"/>
             <classpath>
                 <pathelement location="${compiler.externc}/target/classes"/>
                 <pathelement location="${compiler.externc}/target/test-classes"/>
