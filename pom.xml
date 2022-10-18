@@ -282,7 +282,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <!-- the @-sign implies late-evaluation of the property -->
-          <argLine>@{surefireArgLine}</argLine>
+          <argLine>@{surefireArgLine} -Duser.language=en -Duser.country=US</argLine>
           <systemPropertyVariables>
             <buildType>Maven</buildType>
             <flexVersion>${flex.version}</flexVersion>
@@ -316,7 +316,7 @@
         </executions>
         <configuration>
           <!-- the @-sign implies late-evaluation of the property -->
-          <argLine>@{failsafeArgLine}</argLine>
+          <argLine>@{failsafeArgLine} -Duser.language=en -Duser.country=US</argLine>
           <systemPropertyVariables>
             <buildType>Maven</buildType>
             <flexVersion>${flex.version}</flexVersion>
