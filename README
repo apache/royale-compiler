@@ -170,13 +170,10 @@ Running Integration Tests
         can output SWFs.
         
         The Adobe AIR integration kit for Windows can be downloaded from:
-           http://airdownload.adobe.com/air/win/download/4.0/AdobeAIRSDK.zip
+            https://airdownload.adobe.com/air/win/download/32.0/AdobeAIRSDK.zip
 
          The Adobe AIR integration kit for Mac can be downloaded from:
-            http://airdownload.adobe.com/air/mac/download/4.0/AdobeAIRSDK.tbz2
-
-          The Adobe AIR integration kit for Linux can be downloaded from:
-            http://airdownload.adobe.com/air/lin/download/2.6/AdobeAIRSDK.tbz2
+            https://airdownload.adobe.com/air/mac/download/32.0/AdobeAIRSDK.dmg
 
         Download the AIR SDK for your platform and unzip it. Set AIR_HOME to the
         absolute path of the AIR SDK directory.
@@ -185,7 +182,7 @@ Running Integration Tests
         can output SWFs.
         
         The Adobe Flash Player content debuggers can be found here:
-            http://www.adobe.com/support/flashplayer/downloads.html
+            https://www.adobe.com/support/flashplayer/debug_downloads.html
 
         On Windows, set FLASHPLAYER_DEBUGGER to the absolute path including the
         filename of the FlashPlayerDebugger.exe. Note the filename of flash
@@ -201,20 +198,14 @@ Running Integration Tests
     *6) This option is only required to run additional tests to verify that the compiler
         can output SWFs.
         
-        The Adobe Flash Player playerglobal.swc for 11.1 can be downloaded from:
-            http://download.macromedia.com/get/flashplayer/updaters/11/playerglobal11_1.swc
+        The Adobe Flash Player playerglobal.swc for 32.0 can be downloaded from:
+            https://fpdownload.macromedia.com/get/flashplayer/updaters/32/playerglobal32_0.swc
 
-        Use URL above to download playerglobal11_1.swc.
+        Use URL above to download playerglobal32_0.swc.
 
         Set PLAYERGLOBAL_HOME to the absolute path of the player directory (not
         including the version subdirectory). The target-player option controls
         which PLAYERGLOBAL_HOME subdirectory is used.
-
-        Other more recent versions of Adobe Flash Player playerglobal.swc can be
-        downloaded from:
-            http://download.macromedia.com/get/flashplayer/updaters/<version.major>/playerglobal<version.major>_<version.minor>.swc
-
-        (e.g. http://download.macromedia.com/get/flashplayer/updaters/11/playerglobal11_1.swc)
 
         Copy the target playerglobal.swc to the directory:
 
