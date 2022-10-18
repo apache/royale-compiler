@@ -19,7 +19,7 @@ Getting the latest sources via git
     Getting the source code is the recommended way to get the Apache Royale Compiler.  
     The compiler can also be installed by installing an Apache Royale SDK via NPM
     or by unpacking Apache Royale binary distributions available from link on our 
-    website at http://royale.apache.org/.
+    website at https://royale.apache.org/.
 
     You can always checkout the latest source via git using the following
     command:
@@ -246,7 +246,7 @@ Software Dependencies
     into an Apache Royale SDK and the lib folder in the repository working copy.
 
         antlr - https://repo1.maven.org/maven2/org/antlr/antlr-complete/3.5.2/antlr-3.5.2-complete.jar
-        args4j = http://search.maven.org/remotecontent?filepath=args4j/args4j/2.0.28/args4j-2.0.28.jar
+        args4j - https://repo1.maven.org/maven2/args4j/args4j/2.0.28/args4j-2.0.28.jar
         commons-cli - https://repo1.maven.org/maven2/commons-cli/commons-cli/1.2/commons-cli-1.2.jar
         commons-io - https://repo1.maven.org/maven2/commons-io/commons-io/2.11.0/commons-io-2.11.0.jar
         commons-lang - https://repo1.maven.org/maven2/commons-lang/commons-lang/2.6/commons-lang-2.6.jar
@@ -256,7 +256,7 @@ Software Dependencies
         jburg - https://repo1.maven.org/maven2/net/sourceforge/jburg/jburg/1.10.2/jburg-1.10.2.jar
         jflex - https://jflex.de/jflex-1.6.0.tar.gz
         lzma - http://www.java2s.com/Code/JarDownload/lzma/lzma-9.20.jar.zip
-        Google Closure Compiler - http://github.com/google/closure-compiler/archive/v20181210.zip
+        Google Closure Compiler - https://github.com/google/closure-compiler/archive/v20181210.zip
 
     The Google Closure Compiler includes files originally from Rhino under MPL 1.1.  For
     details see:
@@ -291,4 +291,4 @@ Using the Binary Distribution
 Thanks for using Apache Royale. Enjoy!
 
                                           The Apache Royale Project
-                                          <http://royale.apache.org>
+                                          <https://royale.apache.org>
