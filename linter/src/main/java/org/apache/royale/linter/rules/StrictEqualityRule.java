@@ -29,7 +29,6 @@ import org.apache.royale.compiler.tree.as.IOperatorNode;
 import org.apache.royale.linter.LinterRule;
 import org.apache.royale.linter.TokenVisitor;
 import org.apache.royale.linter.problems.ILinterProblem;
-import org.apache.royale.linter.rules.StrictEqualityRule.StrictEqualityLinterProblem;
 
 /**
  * Checks for uses of the '==' and '!='' operators instead of the stricter '==='
