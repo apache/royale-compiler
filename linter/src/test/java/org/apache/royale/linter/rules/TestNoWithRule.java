@@ -19,35 +19,29 @@
 
 package org.apache.royale.linter.rules;
 
-import java.util.HashMap;
-import java.util.Map;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import org.apache.royale.compiler.internal.parsing.as.ASTokenTypes;
-import org.apache.royale.compiler.parsing.IASToken;
-import org.apache.royale.compiler.problems.CompilerProblem;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.linter.ASLinter;
 import org.apache.royale.linter.LinterRule;
-import org.apache.royale.linter.TokenVisitor;
-import org.apache.royale.linter.problems.ILinterProblem;
+import org.apache.royale.linter.LinterSettings;
+import org.junit.Test;
 
-/**
- * Checks for uses of 'with(x)'.
- */
-public class NoWithRule extends LinterRule {
-	@Override
-	public Map<Integer, TokenVisitor> getTokenVisitors() {
-		Map<Integer, TokenVisitor> result = new HashMap<>();
-		result.put(ASTokenTypes.TOKEN_KEYWORD_WITH, (token, tokenQuery, problems) -> {
-			problems.add(new NoWithLinterProblem(token));
-		});
-		return result;
-	}
-
-	public static class NoWithLinterProblem extends CompilerProblem implements ILinterProblem {
-		public static final String DESCRIPTION = "Must not use 'with' statement";
-
-		public NoWithLinterProblem(IASToken token)
-		{
-			super(token);
-		}
+public class TestNoWithRule {
+	@Test
+	public void testWith() {
+		List<LinterRule> rules = new ArrayList<LinterRule>();
+		rules.add(new NoWithRule());
+		LinterSettings settings = new LinterSettings();
+		settings.rules = rules;
+		ASLinter linter = new ASLinter(settings);
+		List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
+		linter.lint("file.as", "with(a){}", problems);
+		assertEquals(1, problems.size());
+		assertTrue(problems.get(0) instanceof NoWithRule.NoWithLinterProblem);
 	}
 }
