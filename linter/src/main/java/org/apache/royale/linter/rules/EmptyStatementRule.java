@@ -48,14 +48,13 @@ public class EmptyStatementRule extends LinterRule {
 
 	private void checkSemicolon(IASToken semicolon, TokenQuery tokenQuery, Collection<ICompilerProblem> problems) {
 		IASToken prevToken = tokenQuery.getSignificantTokenBefore(semicolon);
-		if (prevToken == null) {
-			return;
-		}
-		if (prevToken.getType() != ASTokenTypes.TOKEN_SEMICOLON) {
-			return;
-		}
-		if (prevToken.isImplicit()) {
-			return;
+		if (prevToken != null) {
+			if (prevToken.getType() != ASTokenTypes.TOKEN_SEMICOLON && prevToken.getType() != ASTokenTypes.TOKEN_BLOCK_OPEN) {
+				return;
+			}
+			if (prevToken.isImplicit()) {
+				return;
+			}
 		}
 		problems.add(new EmptyStatementLinterProblem(semicolon));
 	}
