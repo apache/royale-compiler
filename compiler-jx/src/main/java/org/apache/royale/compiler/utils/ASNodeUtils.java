@@ -51,7 +51,6 @@ public class ASNodeUtils
         return retVal.toArray(new IConditionalNode[0]);
     }
 
-    // there seems to be a bug in the ISwitchNode.getDefaultNode(), need to file a bug
     public static final ITerminalNode getDefaultNode(ISwitchNode node)
     {
         IBlockNode block = (IBlockNode) node.getChild(1);

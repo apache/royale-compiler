@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import org.apache.royale.compiler.parsing.IASToken;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IBlockNode;
 import org.apache.royale.compiler.tree.as.IConditionalNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.ISwitchNode;
@@ -94,12 +95,20 @@ public class SwitchNode extends ConditionalNode implements ISwitchNode
     @Override
     public ITerminalNode getDefaultNode()
     {
-        int childCount = getChildCount();
+        IASNode possibleBlock = getChild(1);
+        if (!(possibleBlock instanceof IBlockNode))
+        {
+            return null;
+        }
+        IBlockNode blockNode = (IBlockNode) possibleBlock;
+        int childCount = blockNode.getChildCount();
         for (int i = childCount - 1; i >= 0; i--)
         {
-            IASNode child = getChild(i);
+            IASNode child = blockNode.getChild(i);
             if (child instanceof ITerminalNode)
+            {
                 return (ITerminalNode)child;
+            }
         }
         
         return null;
