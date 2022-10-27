@@ -41,7 +41,7 @@ import org.apache.royale.linter.problems.ILinterProblem;
  * Check that field names match a specific pattern.
  */
 public class FieldNameRule extends LinterRule {
-	public static final Pattern DEFAULT_NAME_PATTERN = Pattern.compile("^[_a-z][a-zA-Z0-9]*$");
+	public static final Pattern DEFAULT_NAME_PATTERN = Pattern.compile("^_?[a-z][a-zA-Z0-9]*$");
 
 	@Override
 	public Map<ASTNodeID, NodeVisitor> getNodeVisitors() {
