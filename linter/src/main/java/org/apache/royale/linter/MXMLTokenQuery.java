@@ -63,7 +63,7 @@ public class MXMLTokenQuery {
 			}
 			result = token;
 		}
-		return null;
+		return result;
 	}
 
 	/**
@@ -113,7 +113,7 @@ public class MXMLTokenQuery {
 				result = token;
 			}
 		}
-		return null;
+		return result;
 	}
 
 	/**
@@ -150,7 +150,7 @@ public class MXMLTokenQuery {
 				result = token;
 			}
 		}
-		return null;
+		return result;
 	}
 
 	/**

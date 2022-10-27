@@ -100,7 +100,7 @@ public class TokenQuery {
 			}
 			result = token;
 		}
-		return null;
+		return result;
 	}
 
 	/**
@@ -201,7 +201,7 @@ public class TokenQuery {
 				result = token;
 			}
 		}
-		return null;
+		return result;
 	}
 
 	/**
@@ -255,7 +255,7 @@ public class TokenQuery {
 				result = token;
 			}
 		}
-		return null;
+		return result;
 	}
 
 	/**
@@ -292,7 +292,7 @@ public class TokenQuery {
 				result = token;
 			}
 		}
-		return null;
+		return result;
 	}
 
 	/**
