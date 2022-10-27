@@ -74,7 +74,7 @@ public class MissingASDocRule extends LinterRule {
 		if (!definitionNode.hasNamespace("public")) {
 			return;
 		}
-		IASToken token = tokenQuery.getTokenBefore(definitionNode);
+		IASToken token = tokenQuery.getTokenBefore(definitionNode, false, true);
 		if (token.getType() == ASTokenTypes.TOKEN_ASDOC_COMMENT) {
 			String docComment = token.getText();
 			if (!isDocCommentEmpty(docComment)) {

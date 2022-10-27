@@ -50,17 +50,19 @@ public class LineCommentPositionRule extends LinterRule {
 	public LineCommentPosition position = LineCommentPosition.ABOVE;
 
 	private void checkSingleLineComment(IASToken comment, TokenQuery tokenQuery, Collection<ICompilerProblem> problems) {
-		IASToken prevToken = tokenQuery.getTokenBefore(comment);
+		IASToken prevToken = tokenQuery.getSignificantTokenBefore(comment);
 		if (prevToken == null) {
 			return;
 		}
 		if (LineCommentPosition.ABOVE.equals(position)) {
 			if (prevToken.getLine() == comment.getLine()) {
+				// is beside the comment
 				problems.add(new LineCommentPositionLinterProblem(comment, position));
 			}
 		}
 		else if (LineCommentPosition.BESIDE.equals(position)) {
 			if (prevToken.getLine() != comment.getLine()) {
+				// is not beside the comment
 				problems.add(new LineCommentPositionLinterProblem(comment, position));
 			}
 		}

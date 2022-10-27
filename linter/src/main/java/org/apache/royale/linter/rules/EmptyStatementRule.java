@@ -47,7 +47,7 @@ public class EmptyStatementRule extends LinterRule {
 	}
 
 	private void checkSemicolon(IASToken semicolon, TokenQuery tokenQuery, Collection<ICompilerProblem> problems) {
-		IASToken prevToken = tokenQuery.getTokenBefore(semicolon);
+		IASToken prevToken = tokenQuery.getSignificantTokenBefore(semicolon);
 		if (prevToken == null) {
 			return;
 		}

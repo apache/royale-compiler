@@ -71,8 +71,9 @@ public class MXMLLinter extends BaseLinter {
 			if (!settings.ignoreProblems && hasErrors(fileProblems)) {
 				return;
 			}
+
 			boolean skipLinting = false;
-			IMXMLToken[] allTokens = originalTokens.toArray(new IMXMLToken[0]);
+			IMXMLToken[] allTokens = insertFormattingTokens(originalTokens, text);
 			MXMLTokenQuery tokenQuery = new MXMLTokenQuery(allTokens);
 			for (LinterRule rule : settings.rules) {
 				Map<MXMLTokenKind, MXMLTokenVisitor> tokenHandlers = rule.getMXMLTokenVisitors();
@@ -178,5 +179,39 @@ public class MXMLLinter extends BaseLinter {
 			visitTag(current, tokenQuery, problems);
 			current = current.getNextSibling(true);
 		}
+	}
+
+	private IMXMLToken[] insertFormattingTokens(List<MXMLToken> originalTokens, String text) {
+		ArrayList<IMXMLToken> tokens = new ArrayList<IMXMLToken>();
+		IMXMLToken prevToken = null;
+		for (IMXMLToken token : originalTokens) {
+			if (prevToken != null) {
+				int start = prevToken.getEnd();
+				int end = token.getStart();
+				if (end > start) {
+					String tokenText = text.substring(start, end);
+					MXMLToken formattingToken = new MXMLToken(MXMLTokenQuery.TOKEN_TYPE_FORMATTING, start, end,
+							prevToken.getLine(), prevToken.getColumn() + end - start, tokenText);
+							formattingToken.setEndLine(token.getLine());
+							formattingToken.setEndLine(token.getColumn());
+					tokens.add(formattingToken);
+				}
+			}
+			tokens.add(token);
+			prevToken = token;
+		}
+		if (prevToken != null) {
+			int start = prevToken.getEnd();
+			int end = text.length();
+			if (end > start) {
+				String tokenText = text.substring(start, end);
+				MXMLToken formattingToken = new MXMLToken(MXMLTokenQuery.TOKEN_TYPE_FORMATTING, start, end,
+						prevToken.getLine(), prevToken.getColumn() + end - start, tokenText);
+					formattingToken.setEndLine(prevToken.getLine());
+					formattingToken.setEndLine(prevToken.getColumn());
+				tokens.add(formattingToken);
+			}
+		}
+		return tokens.toArray(new IMXMLToken[0]);
 	}
 }

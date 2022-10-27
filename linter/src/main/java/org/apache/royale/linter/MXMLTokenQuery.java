@@ -19,12 +19,12 @@
 
 package org.apache.royale.linter;
 
-import java.util.List;
-
 import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.parsing.IMXMLToken;
 
 public class MXMLTokenQuery {
+	public static final int TOKEN_TYPE_FORMATTING = 999999;
+
 	public MXMLTokenQuery(IMXMLToken[] tokens) {
 		allTokens = tokens;
 	}
@@ -42,23 +42,26 @@ public class MXMLTokenQuery {
 	 * Returns the token immediately before a source location.
 	 */
 	public IMXMLToken getTokenBefore(ISourceLocation sourceLocation) {
-		return getTokenBefore(sourceLocation, false);
+		return getTokenBefore(sourceLocation, false, false);
 	}
 
 	/**
 	 * Returns the token immediately before a source location, with the option
-	 * to skip comment tokens.
+	 * to skip comment and formatting tokens.
 	 */
-	public IMXMLToken getTokenBefore(ISourceLocation sourceLocation, boolean skipComments) {
+	public IMXMLToken getTokenBefore(ISourceLocation sourceLocation, boolean skipComments, boolean skipFormatting) {
 		IMXMLToken result = null;
-		for (IMXMLToken otherToken : allTokens) {
-			if (skipComments && isComment(otherToken)) {
+		for (IMXMLToken token : allTokens) {
+			if (skipComments && isComment(token)) {
 				continue;
 			}
-			if (otherToken.getStart() >= sourceLocation.getAbsoluteStart()) {
+			if (skipFormatting && isFormatting(token)) {
+				continue;
+			}
+			if (token.getStart() >= sourceLocation.getAbsoluteStart()) {
 				return result;
 			}
-			result = otherToken;
+			result = token;
 		}
 		return null;
 	}
@@ -67,19 +70,22 @@ public class MXMLTokenQuery {
 	 * Returns the token immediately after a source location.
 	 */
 	public IMXMLToken getTokenAfter(ISourceLocation sourceLocation) {
-		return getTokenAfter(sourceLocation, false);
+		return getTokenAfter(sourceLocation, false, false);
 	}
 
 	/**
 	 * Returns the token immediately after a source location, with the option to
 	 * skip comment tokens.
 	 */
-	public IMXMLToken getTokenAfter(ISourceLocation sourceLocation, boolean skipComments) {
+	public IMXMLToken getTokenAfter(ISourceLocation sourceLocation, boolean skipComments, boolean skipFormatting) {
 		for (IMXMLToken token : allTokens) {
-			if (skipComments && isComment(token)) {
-				continue;
-			}
 			if (token.getStart() >= sourceLocation.getAbsoluteEnd()) {
+				if (skipComments && isComment(token)) {
+					continue;
+				}
+				if (skipFormatting && isFormatting(token)) {
+					continue;
+				}
 				return token;
 			}
 		}
@@ -91,6 +97,89 @@ public class MXMLTokenQuery {
 	 */
 	public boolean isComment(IMXMLToken token) {
 		return token.getMXMLTokenKind() == IMXMLToken.MXMLTokenKind.COMMENT;
+	}
+
+	/**
+	 * Returns the first comment that appears before the start of a particular
+	 * source location.
+	 */
+	public IMXMLToken getCommentBefore(ISourceLocation before) {
+		IMXMLToken result = null;
+		for (IMXMLToken token : allTokens) {
+			if (token.getStart() >= before.getAbsoluteStart()) {
+				return result;
+			}
+			if (isComment(token)) {
+				result = token;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the first comment that appears after the end of a particular
+	 * source location.
+	 */
+	public IMXMLToken getCommentAfter(ISourceLocation after) {
+		for (IMXMLToken token : allTokens) {
+			if (token.getStart() >= after.getAbsoluteEnd() && isComment(token)) {
+				return token;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Checks if a token is formatting.
+	 */
+	public boolean isFormatting(IMXMLToken token) {
+		return token.getType() == TOKEN_TYPE_FORMATTING;
+	}
+
+	/**
+	 * Returns the first formatting token that appears before the start of a
+	 * particular source location.
+	 */
+	public IMXMLToken getFormattingBefore(ISourceLocation before) {
+		IMXMLToken result = null;
+		for (IMXMLToken token : allTokens) {
+			if (token.getStart() >= before.getAbsoluteStart()) {
+				return result;
+			}
+			if (isFormatting(token)) {
+				result = token;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the first formatting token that appears after the end of a
+	 * particular source location.
+	 */
+	public IMXMLToken getFormattingAfter(ISourceLocation after) {
+		for (IMXMLToken token : allTokens) {
+			if (token.getStart() >= after.getAbsoluteEnd() && isFormatting(token)) {
+				return token;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the first non-comment, non-formatting token that appears before
+	 * the start of a particular source location.
+	 */
+	public IMXMLToken getSignificantTokenBefore(ISourceLocation before) {
+		return getTokenBefore(before, true, true);
+	}
+
+	/**
+	 * Returns the first non-comment, non-formatting token that appears after
+	 * the end of a particular source location.
+	 */
+	public IMXMLToken getSignificantTokenAfter(ISourceLocation after) {
+		return getTokenAfter(after, true, true);
 	}
 	
 }

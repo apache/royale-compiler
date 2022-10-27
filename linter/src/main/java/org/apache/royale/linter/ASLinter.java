@@ -142,6 +142,8 @@ public class ASLinter extends BaseLinter {
 			// of the repaired tokens, so add them all at the end
 			repairedTokensList.addAll(comments);
 
+			repairedTokensList = insertWhitespaceTokens(repairedTokensList, text);
+
 			IASToken[] allTokens = repairedTokensList.toArray(new IASToken[0]);
 			TokenQuery tokenQuery = new TokenQuery(allTokens);
 			visitNode(node, tokenQuery, fileProblems);
@@ -179,7 +181,7 @@ public class ASLinter extends BaseLinter {
 
 	private void visitNode(IASNode node, TokenQuery tokenQuery, Collection<ICompilerProblem> problems) {
 		ASTNodeID nodeID = node.getNodeID();
-		IASToken prevComment = tokenQuery.getPreviousComment(node);
+		IASToken prevComment = tokenQuery.getCommentBefore(node);
 		boolean linterOn = true;
 		while (prevComment != null) {
 			String commentText = null;
@@ -190,7 +192,7 @@ public class ASLinter extends BaseLinter {
 				commentText = commentText.substring(2, commentText.length() - 2).trim();
 			} else {
 				// not the type of comment that we care about
-				prevComment = tokenQuery.getPreviousComment(prevComment);
+				prevComment = tokenQuery.getCommentBefore(prevComment);
 				continue;
 			}
 			if (LINTER_TAG_ON.equals(commentText)) {
@@ -201,7 +203,7 @@ public class ASLinter extends BaseLinter {
 				linterOn = false;
 				break;
 			}
-			prevComment = tokenQuery.getPreviousComment(prevComment);
+			prevComment = tokenQuery.getCommentBefore(prevComment);
 		}
 		if (linterOn) {
 			for (LinterRule rule : settings.rules) {
@@ -215,5 +217,49 @@ public class ASLinter extends BaseLinter {
 			IASNode child = node.getChild(i);
 			visitNode(child, tokenQuery, problems);
 		}
+	}
+
+	private List<IASToken> insertWhitespaceTokens(List<IASToken> originalTokens, String text) {
+		ArrayList<IASToken> tokens = new ArrayList<IASToken>();
+		IASToken prevToken = null;
+		for (IASToken token : originalTokens) {
+			if (prevToken != null) {
+
+				boolean skipSemicolon = token.getType() == ASTokenTypes.TOKEN_SEMICOLON && token.isImplicit()
+						&& prevToken != null && (prevToken.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
+								|| prevToken.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN);
+				if (skipSemicolon) {
+					continue;
+				}
+
+				int start = prevToken.getAbsoluteEnd();
+				int end = token.getAbsoluteStart();
+				if (end > start) {
+					String tokenText = text.substring(start, end);
+					ASToken whitespaceToken = new ASToken(TokenQuery.TOKEN_TYPE_WHITESPACE, start, end,
+							prevToken.getEndLine(),
+							prevToken.getEndColumn(), tokenText);
+					whitespaceToken.setEndLine(token.getLine());
+					whitespaceToken.setEndLine(token.getColumn());
+					tokens.add(whitespaceToken);
+				}
+			}
+			tokens.add(token);
+			prevToken = token;
+		}
+		if (prevToken != null) {
+			int start = prevToken.getAbsoluteEnd();
+			int end = text.length();
+			if (end > start) {
+				String tokenText = text.substring(start, end);
+				ASToken whitespaceToken = new ASToken(TokenQuery.TOKEN_TYPE_WHITESPACE, start, end,
+						prevToken.getEndLine(),
+						prevToken.getEndColumn(), tokenText);
+				whitespaceToken.setEndLine(prevToken.getLine());
+				whitespaceToken.setEndLine(prevToken.getColumn());
+				tokens.add(whitespaceToken);
+			}
+		}
+		return tokens;
 	}
 }
