@@ -108,7 +108,7 @@
     </target>
     
     <target name="main" depends="jar">
-        <!-- <antcall target="test"/> -->
+        <antcall target="test"/>
         <antcall target="jar-test"/>
     </target>
 
