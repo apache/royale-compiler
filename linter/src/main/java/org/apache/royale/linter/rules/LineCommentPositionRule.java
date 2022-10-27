@@ -51,18 +51,20 @@ public class LineCommentPositionRule extends LinterRule {
 
 	private void checkSingleLineComment(IASToken comment, TokenQuery tokenQuery, Collection<ICompilerProblem> problems) {
 		IASToken prevToken = tokenQuery.getSignificantTokenBefore(comment);
-		if (prevToken == null) {
-			return;
-		}
 		if (LineCommentPosition.ABOVE.equals(position)) {
+			if (prevToken == null) {
+				return;
+			}
 			if (prevToken.getLine() == comment.getLine()) {
-				// is beside the comment
+				// the comment is on the same line as a significant token
+				// (the comment should be on its own line)
 				problems.add(new LineCommentPositionLinterProblem(comment, position));
 			}
 		}
 		else if (LineCommentPosition.BESIDE.equals(position)) {
-			if (prevToken.getLine() != comment.getLine()) {
-				// is not beside the comment
+			if (prevToken == null || prevToken.getLine() != comment.getLine()) {
+				// the comment is not on the same line as a significant token
+				// it should not be on its own line
 				problems.add(new LineCommentPositionLinterProblem(comment, position));
 			}
 		}
