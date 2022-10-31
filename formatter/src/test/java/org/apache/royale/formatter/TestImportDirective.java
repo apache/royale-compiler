@@ -43,4 +43,24 @@ public class TestImportDirective extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testWildcard() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"import com.example.*;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"import com.example.*;",
+				// @formatter:on
+				result);
+	}
 }

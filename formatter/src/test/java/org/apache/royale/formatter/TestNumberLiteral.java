@@ -45,6 +45,26 @@ public class TestNumberLiteral extends BaseFormatterTests {
 	}
 
 	@Test
+	public void testNegativeFloat() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"-123.4;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"-123.4;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
 	public void testInt() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
@@ -65,7 +85,7 @@ public class TestNumberLiteral extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testNegative() {
+	public void testNegativeInt() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
 		settings.placeOpenBraceOnNewLine = false;
@@ -80,6 +100,86 @@ public class TestNumberLiteral extends BaseFormatterTests {
 		assertEquals(
 		// @formatter:off
 				"-123;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testHexadecimal() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"0xfe1c23;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"0xfe1c23;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testNegativeHexadecimal() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"-0xfe1c23;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"-0xfe1c23;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testExponential() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"1.234e5;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"1.234e5;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testNegativeExponential() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"1.234e-5;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"1.234e-5;",
 				// @formatter:on
 				result);
 	}

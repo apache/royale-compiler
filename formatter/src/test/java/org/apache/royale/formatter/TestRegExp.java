@@ -33,13 +33,13 @@ public class TestRegExp extends BaseFormatterTests {
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
-			"/\\d/g;",
+			"/\\d+[a-z0-9]{1,2}/g;",
 			// @formatter:on
 			problems
 		);
 		assertEquals(
 		// @formatter:off
-				"/\\d/g;",
+				"/\\d+[a-z0-9]{1,2}/g;",
 				// @formatter:on
 				result);
 	}
