@@ -104,7 +104,9 @@ public class MXMLLinter extends BaseLinter {
 			PrefixMap prefixMap = mxmlTokenizer.getPrefixMap();
 			MXMLData mxmlData = new MXMLData(originalTokens, prefixMap, new StringFileSpecification(filePath, text));
 			IMXMLTagData rootTag = mxmlData.getRootTag();
-			visitTag(rootTag, tokenQuery, fileProblems);
+			if (rootTag != null) {
+				visitTag(rootTag, tokenQuery, fileProblems);
+			}
 			IMXMLUnitData current = rootTag;
 			int offset = 1;
 			String className = Paths.get(filePath).getFileName().toString();
@@ -112,15 +114,20 @@ public class MXMLLinter extends BaseLinter {
 			if (extensionIndex != -1) {
 				className = className.substring(0, extensionIndex);
 			}
-			String componentName = mxmlData.getRootTag().getShortName();
+			String componentName = null;
+			if (rootTag != null) {
+				componentName = rootTag.getShortName();
+			}
 			StringBuilder builder = new StringBuilder();
 			builder.append("/* ");
 			builder.append(LINTER_TAG_OFF);
 			builder.append(" */");
 			builder.append("package{public class ");
 			builder.append(className);
-			builder.append(" extends ");
-			builder.append(componentName);
+			if (componentName != null) {
+				builder.append(" extends ");
+				builder.append(componentName);
+			}
 			builder.append("{");
 			while (current != null) {
 				if (current instanceof IMXMLTagData) {
@@ -192,8 +199,8 @@ public class MXMLLinter extends BaseLinter {
 					String tokenText = text.substring(start, end);
 					MXMLToken formattingToken = new MXMLToken(MXMLTokenQuery.TOKEN_TYPE_FORMATTING, start, end,
 							prevToken.getLine(), prevToken.getColumn() + end - start, tokenText);
-							formattingToken.setEndLine(token.getLine());
-							formattingToken.setEndLine(token.getColumn());
+					formattingToken.setEndLine(token.getLine());
+					formattingToken.setEndLine(token.getColumn());
 					tokens.add(formattingToken);
 				}
 			}
@@ -207,8 +214,8 @@ public class MXMLLinter extends BaseLinter {
 				String tokenText = text.substring(start, end);
 				MXMLToken formattingToken = new MXMLToken(MXMLTokenQuery.TOKEN_TYPE_FORMATTING, start, end,
 						prevToken.getLine(), prevToken.getColumn() + end - start, tokenText);
-					formattingToken.setEndLine(prevToken.getLine());
-					formattingToken.setEndLine(prevToken.getColumn());
+				formattingToken.setEndLine(prevToken.getLine());
+				formattingToken.setEndLine(prevToken.getColumn());
 				tokens.add(formattingToken);
 			}
 		}
