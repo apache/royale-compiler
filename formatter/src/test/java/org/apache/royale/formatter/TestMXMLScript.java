@@ -26,9 +26,10 @@ import org.junit.Test;
 public class TestMXMLScript extends BaseFormatterTests {
 	@Test
 	public void testEmptyScriptNoCdata() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaces = false;
-		String result = formatter.formatMXMLText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
 		// @formatter:off
 			"<s:Application>\n" +
 			"<fx:Script>\n" +
@@ -51,9 +52,10 @@ public class TestMXMLScript extends BaseFormatterTests {
 
 	@Test
 	public void testEmptyScriptWithCdata() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaces = false;
-		String result = formatter.formatMXMLText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
 		// @formatter:off
 			"<s:Application>\n" +
 			"<fx:Script>\n" +
@@ -78,9 +80,10 @@ public class TestMXMLScript extends BaseFormatterTests {
 
 	@Test
 	public void testScriptWithActionScript() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaces = false;
-		String result = formatter.formatMXMLText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
 		// @formatter:off
 			"<s:Application>\n" +
 			"<fx:Script>\n" +

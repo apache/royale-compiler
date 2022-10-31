@@ -27,11 +27,12 @@ import org.junit.Test;
 public class TestNewStatement extends BaseFormatterTests {
 	@Test
 	public void testWithClassNoParentheses() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"new Sprite;",
 			// @formatter:on
@@ -46,11 +47,12 @@ public class TestNewStatement extends BaseFormatterTests {
 
 	@Test
 	public void testWithClassConstructorCall() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"new Sprite();",
 			// @formatter:on
@@ -65,11 +67,12 @@ public class TestNewStatement extends BaseFormatterTests {
 
 	@Test
 	public void testWithVectorLiteral() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"new <Sprite>[];",
 			// @formatter:on
@@ -84,11 +87,12 @@ public class TestNewStatement extends BaseFormatterTests {
 
 	@Test
 	public void testWithVectorLiteralAnyType() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"new <*>[];",
 			// @formatter:on

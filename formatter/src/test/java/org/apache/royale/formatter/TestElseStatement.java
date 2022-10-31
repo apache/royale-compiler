@@ -26,11 +26,12 @@ import org.junit.Test;
 public class TestElseStatement extends BaseFormatterTests {
 	@Test
 	public void testPlaceOpenBraceOnNewLineWithEmptyBlock() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"if (condition) {\n" +
 			"\tstatement;\n" +
@@ -55,11 +56,12 @@ public class TestElseStatement extends BaseFormatterTests {
 
 	@Test
 	public void testDisablePlaceOpenBraceOnNewLineWithEmptyBlock() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = false;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"if (condition)\n" +
 			"{\n" +
@@ -84,11 +86,12 @@ public class TestElseStatement extends BaseFormatterTests {
 
 	@Test
 	public void testPlaceOpenBraceOnNewLineWithEmptyIfAndElseBlocks() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"if (condition) {\n" +
 			"}\n" +
@@ -111,11 +114,12 @@ public class TestElseStatement extends BaseFormatterTests {
 
 	@Test
 	public void testDisablePlaceOpenBraceOnNewLineWithEmptyIfAndElseBlocks() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = false;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"if (condition)\n" +
 			"{\n" +
@@ -138,11 +142,12 @@ public class TestElseStatement extends BaseFormatterTests {
 
 	@Test
 	public void testPlaceOpenBraceOnNewLineWithStatement() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"if (condition) {\n" +
 			"\tstatement;\n" +
@@ -169,11 +174,12 @@ public class TestElseStatement extends BaseFormatterTests {
 
 	@Test
 	public void testDisablePlaceOpenBraceOnNewLineWithStatement() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = false;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"if (condition)\n" +
 			"{\n" +
@@ -200,11 +206,12 @@ public class TestElseStatement extends BaseFormatterTests {
 
 	@Test
 	public void testBodyWithoutParentheses() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"if (condition) statement;\n" +
 			"else statement;",
@@ -223,11 +230,12 @@ public class TestElseStatement extends BaseFormatterTests {
 
 	@Test
 	public void testWithBodyIsSemicolonOnSameLine() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"if (true);\n" +
 			"else;",
@@ -245,11 +253,12 @@ public class TestElseStatement extends BaseFormatterTests {
 	// don't insert semicolon between else and block open
 	@Test
 	public void testWithCommentBetweenIfStatementAndBodyInsideFunction() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"function myFunction():void\n" +
 			"{\n" +
@@ -284,11 +293,12 @@ public class TestElseStatement extends BaseFormatterTests {
 
 	@Test
 	public void testNextIndentWithEmptyBlock() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"{\n" +
 			"\tif (condition)\n" +
@@ -319,11 +329,12 @@ public class TestElseStatement extends BaseFormatterTests {
 
 	@Test
 	public void testNextIndentWithBodyWithoutParentheses() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"{\n" +
 			"\tif (true)\n" +
@@ -350,11 +361,12 @@ public class TestElseStatement extends BaseFormatterTests {
 
 	@Test
 	public void testNextIndentWithBodyWithParentheses() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"{\n" +
 			"\tif (true)\n" +
@@ -389,11 +401,12 @@ public class TestElseStatement extends BaseFormatterTests {
 
 	@Test
 	public void testNextIntentWithBodyIsSemicolonOnSameLine() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"{\n" +
 			"\tif (true);\n" +
@@ -417,11 +430,12 @@ public class TestElseStatement extends BaseFormatterTests {
 
 	@Test
 	public void testCommentBeforeStartBody() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"if (true)\n" +
 			"{\n" +
@@ -450,11 +464,12 @@ public class TestElseStatement extends BaseFormatterTests {
 
 	@Test
 	public void testCommentBeforeEndBody() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"if (true)\n" +
 			"{\n" +
@@ -481,11 +496,12 @@ public class TestElseStatement extends BaseFormatterTests {
 
 	@Test
 	public void testNested() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"if (condition)\n" +
 			"{\n" +
@@ -542,11 +558,12 @@ public class TestElseStatement extends BaseFormatterTests {
 
 	@Test
 	public void testCollapseEmptyBlock() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = false;
-		formatter.collapseEmptyBlocks = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"if (condition1) {\n" +
 			"}\n" +

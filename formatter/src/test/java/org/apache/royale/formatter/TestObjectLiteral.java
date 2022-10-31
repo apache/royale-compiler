@@ -26,9 +26,12 @@ import org.junit.Test;
 public class TestObjectLiteral extends BaseFormatterTests {
 	@Test
 	public void testEmpty() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"var obj:Object = {};",
 			// @formatter:on
@@ -43,9 +46,12 @@ public class TestObjectLiteral extends BaseFormatterTests {
 
 	@Test
 	public void testOneFieldOnSingleLine() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"var obj:Object = {one: 123.4};",
 			// @formatter:on
@@ -60,9 +66,12 @@ public class TestObjectLiteral extends BaseFormatterTests {
 
 	@Test
 	public void testOneFieldOnMultipleLines() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"var obj:Object = {\n" +
 			"\tone: 123.4\n" +
@@ -83,9 +92,12 @@ public class TestObjectLiteral extends BaseFormatterTests {
 
 	@Test
 	public void testMultipleFields() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"var obj:Object = {one: 123.4, two: \"hello world\"};",
 			// @formatter:on
@@ -100,9 +112,12 @@ public class TestObjectLiteral extends BaseFormatterTests {
 
 	@Test
 	public void testMultipleFieldsOnMultipleLines1() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"var obj:Object = {\n" +
 			"\tone: 123.4,\n" +
@@ -125,9 +140,12 @@ public class TestObjectLiteral extends BaseFormatterTests {
 
 	@Test
 	public void testMultipleFieldsOnMultipleLines2() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"var obj:Object = {\n" +
 			"\tone: 123.4,\n" +
@@ -150,9 +168,12 @@ public class TestObjectLiteral extends BaseFormatterTests {
 
 	@Test
 	public void testStringField() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"var obj:Object = {\"string-field\": 123.4};",
 			// @formatter:on

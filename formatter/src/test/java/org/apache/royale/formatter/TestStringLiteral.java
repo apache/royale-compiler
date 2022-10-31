@@ -26,11 +26,12 @@ import org.junit.Test;
 public class TestStringLiteral extends BaseFormatterTests {
 	@Test
 	public void testEmptyString() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"\"\";",
 			// @formatter:on
@@ -45,11 +46,12 @@ public class TestStringLiteral extends BaseFormatterTests {
 
 	@Test
 	public void testWithNewLine() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"\"\\n\";",
 			// @formatter:on
@@ -64,11 +66,12 @@ public class TestStringLiteral extends BaseFormatterTests {
 
 	@Test
 	public void testDoubleQuoteWithEscapedDoubleQuote() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"\"\\\"\";",
 			// @formatter:on
@@ -83,11 +86,12 @@ public class TestStringLiteral extends BaseFormatterTests {
 
 	@Test
 	public void testDoubleQuoteWithUnescapedSingleQuote() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"\"'\";",
 			// @formatter:on
@@ -102,11 +106,12 @@ public class TestStringLiteral extends BaseFormatterTests {
 
 	@Test
 	public void testSingleQuoteWithEscapedSingleQuote() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"'\\'';",
 			// @formatter:on
@@ -121,11 +126,12 @@ public class TestStringLiteral extends BaseFormatterTests {
 
 	@Test
 	public void testSingleQuoteWithUnescapedDoubleQuote() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"'\"';",
 			// @formatter:on

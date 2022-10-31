@@ -26,9 +26,12 @@ import org.junit.Test;
 public class TestLogicalOperators extends BaseFormatterTests {
 	@Test
 	public void testLogicalNotOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"!a;",
 			// @formatter:on
@@ -43,9 +46,12 @@ public class TestLogicalOperators extends BaseFormatterTests {
 
 	@Test
 	public void testLogicalAndOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a&&b;",
 			// @formatter:on
@@ -60,9 +66,12 @@ public class TestLogicalOperators extends BaseFormatterTests {
 
 	@Test
 	public void testLogicalOrOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a||b;",
 			// @formatter:on
@@ -77,9 +86,12 @@ public class TestLogicalOperators extends BaseFormatterTests {
 
 	@Test
 	public void testLogicalAndCompoundAssignmentOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a&&=b;",
 			// @formatter:on
@@ -94,9 +106,12 @@ public class TestLogicalOperators extends BaseFormatterTests {
 
 	@Test
 	public void testLogicalOrCompoundAssignmentOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a||=b;",
 			// @formatter:on

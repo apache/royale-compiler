@@ -26,11 +26,12 @@ import org.junit.Test;
 public class TestDeleteOperator extends BaseFormatterTests {
 	@Test
 	public void testBefore() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"delete myVar;",
 			// @formatter:on

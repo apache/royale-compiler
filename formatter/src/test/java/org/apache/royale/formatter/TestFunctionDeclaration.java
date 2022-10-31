@@ -27,11 +27,12 @@ import org.junit.Test;
 public class TestFunctionDeclaration extends BaseFormatterTests {
 	@Test
 	public void testPlaceOpenBraceOnNewLineWithEmptyBlock() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"function myFunction() {\n" +
 			"}",
@@ -49,11 +50,12 @@ public class TestFunctionDeclaration extends BaseFormatterTests {
 
 	@Test
 	public void testDisablePlaceOpenBraceOnNewLineWithEmptyBlock() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = false;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"function myFunction()\n" +
 			"{\n" +
@@ -71,11 +73,12 @@ public class TestFunctionDeclaration extends BaseFormatterTests {
 
 	@Test
 	public void testPlaceOpenBraceOnNewLineWithStatement() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"function myFunction() {\n" +
 			"\tstatement;\n" +
@@ -95,11 +98,12 @@ public class TestFunctionDeclaration extends BaseFormatterTests {
 
 	@Test
 	public void testDisablePlaceOpenBraceOnNewLineWithStatement() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = false;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"function myFunction()\n" +
 			"{\n" +
@@ -119,11 +123,12 @@ public class TestFunctionDeclaration extends BaseFormatterTests {
 
 	@Test
 	public void testReturnType() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"function myFunction():void\n" +
 			"{\n" +
@@ -144,11 +149,12 @@ public class TestFunctionDeclaration extends BaseFormatterTests {
 
 	@Test
 	public void testParameter() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"function myFunction(p1:String)\n" +
 			"{\n" +
@@ -169,11 +175,12 @@ public class TestFunctionDeclaration extends BaseFormatterTests {
 
 	@Test
 	public void testParameters() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"function myFunction(p1:String, p2:Number)\n" +
 			"{\n" +
@@ -194,11 +201,12 @@ public class TestFunctionDeclaration extends BaseFormatterTests {
 
 	@Test
 	public void testNewLinesAmongParameters() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"function myFunction(p1:String,\n" +
 			"p2:Number):void\n" +
@@ -223,11 +231,12 @@ public class TestFunctionDeclaration extends BaseFormatterTests {
 
 	@Test
 	public void testParametersWithRest() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"function myFunction(p1:String, ...rest)\n" +
 			"{\n" +
@@ -248,11 +257,12 @@ public class TestFunctionDeclaration extends BaseFormatterTests {
 
 	@Test
 	public void testParametersRestOnly() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"function myFunction(...rest)\n" +
 			"{\n" +
@@ -273,11 +283,12 @@ public class TestFunctionDeclaration extends BaseFormatterTests {
 
 	@Test
 	public void testWrappedInParentheses() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"(function myFunction(...rest)\n" +
 			"{\n" +
@@ -298,11 +309,12 @@ public class TestFunctionDeclaration extends BaseFormatterTests {
 
 	@Test
 	public void testAsArgument() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"identifier(function myFunction(...rest)\n" +
 			"{\n" +
@@ -323,11 +335,12 @@ public class TestFunctionDeclaration extends BaseFormatterTests {
 
 	@Test
 	public void testCollapseEmptyBlock() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = false;
-		formatter.collapseEmptyBlocks = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"function myFunction() {\n" +
 			"}",
@@ -343,11 +356,12 @@ public class TestFunctionDeclaration extends BaseFormatterTests {
 
 	@Test
 	public void testNested() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"function myFunction(param:String):void\n" +
 			"{\n" +

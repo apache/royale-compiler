@@ -26,9 +26,12 @@ import org.junit.Test;
 public class TestComparisonOperators extends BaseFormatterTests {
 	@Test
 	public void testEqualityOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a==b;",
 			// @formatter:on
@@ -40,11 +43,15 @@ public class TestComparisonOperators extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
 	@Test
 	public void testInqualityOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a!=b;",
 			// @formatter:on
@@ -59,9 +66,12 @@ public class TestComparisonOperators extends BaseFormatterTests {
 
 	@Test
 	public void testStrictEqualityOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a===b;",
 			// @formatter:on
@@ -75,9 +85,12 @@ public class TestComparisonOperators extends BaseFormatterTests {
 	}
 	@Test
 	public void testStrictInqualityOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a!==b;",
 			// @formatter:on
@@ -92,9 +105,12 @@ public class TestComparisonOperators extends BaseFormatterTests {
 	
 	@Test
 	public void testGreaterThanOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a>b;",
 			// @formatter:on
@@ -109,9 +125,12 @@ public class TestComparisonOperators extends BaseFormatterTests {
 	
 	@Test
 	public void testLessThanOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a<b;",
 			// @formatter:on
@@ -126,9 +145,12 @@ public class TestComparisonOperators extends BaseFormatterTests {
 	
 	@Test
 	public void testGreaterThanOrEqualOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a>=b;",
 			// @formatter:on
@@ -143,9 +165,12 @@ public class TestComparisonOperators extends BaseFormatterTests {
 	
 	@Test
 	public void testLessThanOrEqualOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a<=b;",
 			// @formatter:on

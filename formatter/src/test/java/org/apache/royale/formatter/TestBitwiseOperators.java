@@ -26,9 +26,12 @@ import org.junit.Test;
 public class TestBitwiseOperators extends BaseFormatterTests {
 	@Test
 	public void testBitwiseNotOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"~a;",
 			// @formatter:on
@@ -43,9 +46,12 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 
 	@Test
 	public void testBitwiseAndOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a&b;",
 			// @formatter:on
@@ -60,9 +66,12 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 
 	@Test
 	public void testBitwiseOrOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a|b;",
 			// @formatter:on
@@ -77,9 +86,12 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 
 	@Test
 	public void testBitwiseXorOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a^b;",
 			// @formatter:on
@@ -94,9 +106,12 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 
 	@Test
 	public void testBitwiseLeftShiftOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a<<b;",
 			// @formatter:on
@@ -111,9 +126,12 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 
 	@Test
 	public void testBitwiseRightShiftOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a>>b;",
 			// @formatter:on
@@ -128,9 +146,12 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 
 	@Test
 	public void testBitwiseRightUnsignedShiftOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a>>>b;",
 			// @formatter:on
@@ -145,9 +166,12 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 
 	@Test
 	public void testBitwiseAndCompoundAssignmentOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a&=b;",
 			// @formatter:on
@@ -162,9 +186,12 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 
 	@Test
 	public void testBitwiseOrCompoundAssignmentOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a|=b;",
 			// @formatter:on
@@ -179,9 +206,12 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 
 	@Test
 	public void testBitwiseXorCompoundAssignmentOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a^=b;",
 			// @formatter:on
@@ -196,9 +226,12 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 
 	@Test
 	public void testBitwiseLeftShiftCompoundAssignmentOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a<<=b;",
 			// @formatter:on
@@ -213,9 +246,12 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 
 	@Test
 	public void testBitwiseRightShiftCompoundAssignmentOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a>>=b;",
 			// @formatter:on
@@ -230,9 +266,12 @@ public class TestBitwiseOperators extends BaseFormatterTests {
 
 	@Test
 	public void testBitwiseRightUnsignedShiftCompoundAssignmentOperator() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceBeforeAndAfterBinaryOperators = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a>>>=b;",
 			// @formatter:on

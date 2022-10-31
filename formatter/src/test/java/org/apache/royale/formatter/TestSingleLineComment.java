@@ -26,12 +26,13 @@ import org.junit.Test;
 public class TestSingleLineComment extends BaseFormatterTests {
 	@Test
 	public void testInsertSpaceAtStartOfLineComment() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		formatter.insertSpaceAtStartOfLineComment = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.insertSpaceAtStartOfLineComment = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"//this is a comment",
 			// @formatter:on
@@ -45,12 +46,13 @@ public class TestSingleLineComment extends BaseFormatterTests {
 	}
 	@Test
 	public void testDisableInsertSpaceAtStartOfLineComment() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		formatter.insertSpaceAtStartOfLineComment = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.insertSpaceAtStartOfLineComment = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"// this is a comment",
 			// @formatter:on
@@ -65,12 +67,13 @@ public class TestSingleLineComment extends BaseFormatterTests {
 
 	@Test
 	public void testAtEndOfStatement() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		formatter.insertSpaceAtStartOfLineComment = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.insertSpaceAtStartOfLineComment = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"statement; // this is a comment",
 			// @formatter:on
@@ -85,12 +88,13 @@ public class TestSingleLineComment extends BaseFormatterTests {
 
 	@Test
 	public void testOnLineBeforeStatement() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		formatter.insertSpaceAtStartOfLineComment = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.insertSpaceAtStartOfLineComment = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"// this is a comment\n" +
 			"statement;",
@@ -107,13 +111,14 @@ public class TestSingleLineComment extends BaseFormatterTests {
 
 	@Test
 	public void testWithExtraLineBeforeStatement() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		formatter.insertSpaceAtStartOfLineComment = true;
-		formatter.maxPreserveNewLines = 2;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.insertSpaceAtStartOfLineComment = true;
+		settings.maxPreserveNewLines = 2;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"// this is a comment\n" +
 			"\n" +
@@ -132,12 +137,13 @@ public class TestSingleLineComment extends BaseFormatterTests {
 
 	@Test
 	public void testOnLineAfterStatement() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		formatter.insertSpaceAtStartOfLineComment = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.insertSpaceAtStartOfLineComment = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"statement;\n" +
 			"// this is a comment",
@@ -154,12 +160,13 @@ public class TestSingleLineComment extends BaseFormatterTests {
 
 	@Test
 	public void testAtEndOfControlFlowStatement() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		formatter.insertSpaceAtStartOfLineComment = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.insertSpaceAtStartOfLineComment = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"if (statement) // this is a comment\n" +
 			"{\n" +
@@ -180,12 +187,13 @@ public class TestSingleLineComment extends BaseFormatterTests {
 
 	@Test
 	public void testAtEndOfBlock() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = false;
-		formatter.insertSpaceAtStartOfLineComment = true;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.insertSpaceAtStartOfLineComment = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"{\n" +
 			"\tstatement;\n" +

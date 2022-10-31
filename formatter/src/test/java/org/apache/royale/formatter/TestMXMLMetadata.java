@@ -26,9 +26,10 @@ import org.junit.Test;
 public class TestMXMLMetadata extends BaseFormatterTests {
 	@Test
 	public void testEmptyMetadataNoCdata() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaces = false;
-		String result = formatter.formatMXMLText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
 		// @formatter:off
 			"<s:Application>\n" +
 			"<fx:Metadata>\n" +
@@ -49,9 +50,10 @@ public class TestMXMLMetadata extends BaseFormatterTests {
 
 	@Test
 	public void testEmptyMetadataWithCdata() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaces = false;
-		String result = formatter.formatMXMLText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
 		// @formatter:off
 			"<s:Application>\n" +
 			"<fx:Metadata>\n" +
@@ -76,9 +78,10 @@ public class TestMXMLMetadata extends BaseFormatterTests {
 
 	@Test
 	public void testSingleMetadata() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaces = false;
-		String result = formatter.formatMXMLText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
 		// @formatter:off
 			"<s:Application>\n" +
 			"<fx:Metadata>\n" +
@@ -101,9 +104,10 @@ public class TestMXMLMetadata extends BaseFormatterTests {
 
 	@Test
 	public void testMultipleMetadata() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaces = false;
-		String result = formatter.formatMXMLText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
 		// @formatter:off
 			"<s:Application>\n" +
 			"<fx:Metadata>\n" +
@@ -128,9 +132,10 @@ public class TestMXMLMetadata extends BaseFormatterTests {
 
 	@Test
 	public void testMultipleMetadataWithAttributes() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaces = false;
-		String result = formatter.formatMXMLText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
 		// @formatter:off
 			"<s:Application>\n" +
 			"<fx:Metadata>\n" +

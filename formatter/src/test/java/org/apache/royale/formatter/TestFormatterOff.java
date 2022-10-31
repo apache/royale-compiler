@@ -26,13 +26,14 @@ import org.junit.Test;
 public class TestFormatterOff extends BaseFormatterTests {
 	@Test
 	public void testAS3FormatterOff() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = true;
-		formatter.tabSize = 2;
-		formatter.maxPreserveNewLines = 2;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = true;
+		settings.tabSize = 2;
+		settings.maxPreserveNewLines = 2;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"\t// @formatter:off\n" +
 			"for(var i:int=0;i<3;i++){\n" +
@@ -72,13 +73,14 @@ public class TestFormatterOff extends BaseFormatterTests {
 
 	@Test
 	public void testMXMLFormatterOff() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaceAfterKeywordsInControlFlowStatements = true;
-		formatter.placeOpenBraceOnNewLine = true;
-		formatter.insertSpaces = true;
-		formatter.tabSize = 2;
-		formatter.maxPreserveNewLines = 2;
-		String result = formatter.formatMXMLText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = true;
+		settings.tabSize = 2;
+		settings.maxPreserveNewLines = 2;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
 		// @formatter:off
 			"<mx:Application>\n" +
 			"\t<!-- @formatter:off -->\n" +

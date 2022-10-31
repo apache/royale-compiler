@@ -19,7 +19,6 @@
 
 package org.apache.royale.formatter;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;

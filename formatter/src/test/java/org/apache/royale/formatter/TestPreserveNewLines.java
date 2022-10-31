@@ -26,10 +26,11 @@ import org.junit.Test;
 public class TestPreserveNewLines extends BaseFormatterTests {
 	@Test
 	public void testNoMaxPreserveNewLines() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.maxPreserveNewLines = 0;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.maxPreserveNewLines = 0;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"/* this is a comment */\n" +
 			"\n" +
@@ -50,10 +51,11 @@ public class TestPreserveNewLines extends BaseFormatterTests {
 
 	@Test
 	public void testMaxPreserveNewLines() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.maxPreserveNewLines = 2;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.maxPreserveNewLines = 2;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"/* this is a comment */\n" +
 			"\n" +
@@ -73,10 +75,11 @@ public class TestPreserveNewLines extends BaseFormatterTests {
 
 	@Test
 	public void testNewLinesBeforeEndOfStatement() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.maxPreserveNewLines = 0;
-		formatter.insertSpaces = false;
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.maxPreserveNewLines = 0;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"1 + 2" +
 			"\n" +

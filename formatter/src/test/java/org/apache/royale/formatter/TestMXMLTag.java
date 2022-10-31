@@ -26,9 +26,10 @@ import org.junit.Test;
 public class TestMXMLTag extends BaseFormatterTests {
 	@Test
 	public void testSelfClosingTag() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaces = false;
-		String result = formatter.formatMXMLText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
 		// @formatter:off
 			"<s:Tag />",
 			// @formatter:on
@@ -43,9 +44,10 @@ public class TestMXMLTag extends BaseFormatterTests {
 
 	@Test
 	public void testTagWithEmptyText() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaces = false;
-		String result = formatter.formatMXMLText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
 		// @formatter:off
 			"<s:Tag></s:Tag>",
 			// @formatter:on
@@ -60,9 +62,10 @@ public class TestMXMLTag extends BaseFormatterTests {
 
 	@Test
 	public void testTagWithText() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaces = false;
-		String result = formatter.formatMXMLText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
 		// @formatter:off
 			"<s:Tag>Hello World</s:Tag>",
 			// @formatter:on
@@ -77,9 +80,10 @@ public class TestMXMLTag extends BaseFormatterTests {
 
 	@Test
 	public void testTagWithTextAndNewLines() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaces = false;
-		String result = formatter.formatMXMLText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
 		// @formatter:off
 			"<s:Tag>\n" +
 			"\tHello World\n" +
@@ -98,9 +102,10 @@ public class TestMXMLTag extends BaseFormatterTests {
 
 	@Test
 	public void testTagWithNewLineText() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaces = false;
-		String result = formatter.formatMXMLText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
 		// @formatter:off
 			"<s:Tag>\n" +
 			"</s:Tag>",
@@ -117,9 +122,10 @@ public class TestMXMLTag extends BaseFormatterTests {
 
 	@Test
 	public void testNewLinesBetweenTags() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaces = false;
-		String result = formatter.formatMXMLText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
 		// @formatter:off
 			"<s:Tag>\n" +
 			"\n" +
@@ -142,9 +148,10 @@ public class TestMXMLTag extends BaseFormatterTests {
 
 	@Test
 	public void testExcessWhitespaceBetweenTags() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaces = false;
-		String result = formatter.formatMXMLText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
 		// @formatter:off
 			"<s:Tag>\t\n" +
 			"\n\t" +
@@ -163,9 +170,10 @@ public class TestMXMLTag extends BaseFormatterTests {
 
 	@Test
 	public void testMixedTextAndTagChildren1() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaces = false;
-		String result = formatter.formatMXMLText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
 		// @formatter:off
 			"<s:Tag>text <s:Tag/></s:Tag>",
 			// @formatter:on
@@ -180,9 +188,10 @@ public class TestMXMLTag extends BaseFormatterTests {
 
 	@Test
 	public void testMixedTextAndTagChildren2() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaces = false;
-		String result = formatter.formatMXMLText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
 		// @formatter:off
 			"<s:Tag><s:Tag/> text</s:Tag>",
 			// @formatter:on
@@ -197,9 +206,10 @@ public class TestMXMLTag extends BaseFormatterTests {
 
 	@Test
 	public void testMixedTextAndTagChildren3() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaces = false;
-		String result = formatter.formatMXMLText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
 		// @formatter:off
 			"<s:Tag><s:Tag/> text <s:Tag/></s:Tag>",
 			// @formatter:on
@@ -214,11 +224,12 @@ public class TestMXMLTag extends BaseFormatterTests {
 
 	@Test
 	public void testMultipleAttributes() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaces = false;
-		formatter.mxmlInsertNewLineBetweenAttributes = false;
-		formatter.mxmlAlignAttributes = false;
-		String result = formatter.formatMXMLText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		settings.mxmlInsertNewLineBetweenAttributes = false;
+		settings.mxmlAlignAttributes = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
 		// @formatter:off
 			"<s:Tag one=\"1\"   two=\"2\"/>",
 			// @formatter:on
@@ -233,11 +244,12 @@ public class TestMXMLTag extends BaseFormatterTests {
 
 	@Test
 	public void testMultipleAttributesOnePerLine() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaces = false;
-		formatter.mxmlInsertNewLineBetweenAttributes = true;
-		formatter.mxmlAlignAttributes = false;
-		String result = formatter.formatMXMLText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		settings.mxmlInsertNewLineBetweenAttributes = true;
+		settings.mxmlAlignAttributes = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
 		// @formatter:off
 			"<s:Tag one=\"1\" two=\"2\"/>",
 			// @formatter:on
@@ -253,11 +265,12 @@ public class TestMXMLTag extends BaseFormatterTests {
 
 	@Test
 	public void testMXMLAlignAttributes() {
-		FORMATTER formatter = new FORMATTER();
-		formatter.insertSpaces = false;
-		formatter.mxmlInsertNewLineBetweenAttributes = true;
-		formatter.mxmlAlignAttributes = true;
-		String result = formatter.formatMXMLText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		settings.mxmlInsertNewLineBetweenAttributes = true;
+		settings.mxmlAlignAttributes = true;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
 		// @formatter:off
 			"<s:Tag one=\"1\" two=\"2\" three=\"3\"/>",
 			// @formatter:on

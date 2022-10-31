@@ -26,8 +26,11 @@ import org.junit.Test;
 public class TestMiscellaneousOperators extends BaseFormatterTests {
 	@Test
 	public void testAssignmentOperator() {
-		FORMATTER formatter = new FORMATTER();
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"a=b;",
 			// @formatter:on
@@ -42,8 +45,11 @@ public class TestMiscellaneousOperators extends BaseFormatterTests {
 
 	@Test
 	public void testNamespaceQualifierOperator() {
-		FORMATTER formatter = new FORMATTER();
-		String result = formatter.formatActionScriptText(
+		FormatterSettings settings = new FormatterSettings();
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
 		// @formatter:off
 			"ns::myVar;",
 			// @formatter:on
