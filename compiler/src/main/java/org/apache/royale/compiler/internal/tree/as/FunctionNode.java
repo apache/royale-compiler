@@ -480,11 +480,17 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
         String qualifiedName = null;
         if (isPackageLevelFunction())
         {
-            IImportTarget importTarget = ASImportTarget.buildImportFromPackageName(getWorkspace(), getPackageName());
-            qualifiedName = importTarget.getQualifiedName(getName());
+            IWorkspace workspace = getWorkspace();
+            if (workspace != null)
+            {
+                IImportTarget importTarget = ASImportTarget.buildImportFromPackageName(workspace, getPackageName());
+                qualifiedName = importTarget.getQualifiedName(getName());
+            }
         }
         if (qualifiedName == null)
+        {
             qualifiedName = getName();
+        }
         return qualifiedName;
     }
 
