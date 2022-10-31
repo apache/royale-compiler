@@ -852,7 +852,7 @@ public abstract class NodeBase extends SourceLocation implements IASNode
     {
         ASScope scope = getASScope();
         assert scope != null;
-        while (!(scope instanceof ASFileScope))
+        while (scope != null && !(scope instanceof ASFileScope))
         {
             scope = scope.getContainingScope();
             assert scope != null;
@@ -880,7 +880,12 @@ public abstract class NodeBase extends SourceLocation implements IASNode
      */
     public IWorkspace getWorkspace()
     {
-        return getFileScope().getWorkspace();
+        ASFileScope fileScope = getFileScope();
+        if (fileScope == null)
+        {
+            return null;
+        }
+        return fileScope.getWorkspace();
     }
 
     /**
