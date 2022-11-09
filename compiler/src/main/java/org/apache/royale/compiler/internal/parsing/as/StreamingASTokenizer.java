@@ -1198,6 +1198,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                 case TOKEN_E4X_BINDING_CLOSE:
                 case TOKEN_E4X_BINDING_OPEN:
                 case TOKEN_OPERATOR_DESCENDANT_ACCESS:
+                case TOKEN_OPERATOR_NULL_CONDITIONAL_ACCESS:
                 case TOKEN_NAMESPACE_ANNOTATION:
                 case TOKEN_NAMESPACE_NAME:
                 case TOKEN_BLOCK_OPEN:

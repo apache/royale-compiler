@@ -96,7 +96,7 @@ public class MemberAccessExpressionNode extends BinaryOperatorNodeBase implement
         {
             nodeID = ASTNodeID.Op_DescendantsID;
         }
-        else if (rightOperandNode != null && rightOperandNode.hasParenthesis())
+        else if (allowE4XFilter && rightOperandNode != null && rightOperandNode.hasParenthesis())
         {
             nodeID = ASTNodeID.E4XFilterID;
         }
@@ -263,6 +263,13 @@ public class MemberAccessExpressionNode extends BinaryOperatorNodeBase implement
     //
     // Other methods
     //
+
+    private boolean allowE4XFilter = true;
+
+    public void setAllowE4XFilter(boolean allow)
+    {
+        allowE4XFilter = allow;
+    }
 
     public boolean isSuper(ExpressionNodeBase node)
     {

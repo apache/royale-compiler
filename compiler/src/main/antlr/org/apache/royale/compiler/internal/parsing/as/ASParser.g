@@ -3095,6 +3095,7 @@ xmlAttributeName returns [ExpressionNodeBase result]
  *     foo::bar
  *     foo[bar]
  *     foo.<bar>
+ *     foo?.bar
  */  	
 propertyAccessExpression [ExpressionNodeBase l] returns [ExpressionNodeBase n]
 { 
@@ -3106,6 +3107,10 @@ propertyAccessExpression [ExpressionNodeBase l] returns [ExpressionNodeBase n]
         { n = new MemberAccessExpressionNode(l, op, r); }
     |   TOKEN_OPERATOR_DESCENDANT_ACCESS r=accessPart
         { n = new MemberAccessExpressionNode(l, op, r); }
+    |   TOKEN_OPERATOR_NULL_CONDITIONAL_ACCESS r=accessPart
+        {
+			n = transformNullConditional(l, op, r);
+		}
     |   TOKEN_OPERATOR_NS_QUALIFIER r=nsAccessPart
         { if (l instanceof NamespaceIdentifierNode)
           {

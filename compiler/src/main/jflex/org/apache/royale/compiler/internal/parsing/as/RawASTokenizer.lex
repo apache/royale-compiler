@@ -626,6 +626,11 @@ REGEX_CLASS="[" ({REGEX_ESCAPE}|[^\n\r\]\\])* "]"
 	return buildToken(TOKEN_OPERATOR_DESCENDANT_ACCESS, "..");
 }
 
+<YYINITIAL> "?."
+{
+	return buildToken(TOKEN_OPERATOR_NULL_CONDITIONAL_ACCESS, "?.");
+}
+
 <YYINITIAL> ","
 {
 	return buildToken(TOKEN_COMMA, ",");
