@@ -546,6 +546,11 @@ REGEX_CLASS="[" ({REGEX_ESCAPE}|[^\n\r\]\\])* "]"
 	return buildToken(TOKEN_OPERATOR_LOGICAL_AND, "&&");
 }	
 
+<YYINITIAL> "??"
+{
+    return buildToken(TOKEN_OPERATOR_NULLISH_COALESCING, "??");
+}   
+
 <YYINITIAL> "||"
 {
 	return buildToken(TOKEN_OPERATOR_LOGICAL_OR, "||");

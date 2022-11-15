@@ -373,6 +373,7 @@ public class ASToken extends TokenBase implements IASToken, ASTokenTypes
             case TOKEN_KEYWORD_INSTANCEOF:
             case TOKEN_OPERATOR_ATSIGN:
             case TOKEN_OPERATOR_DESCENDANT_ACCESS:
+            case TOKEN_OPERATOR_NULLISH_COALESCING:
                 return true;
             default:
                 return false;
@@ -763,6 +764,7 @@ public class ASToken extends TokenBase implements IASToken, ASTokenTypes
             case TOKEN_OPERATOR_BITWISE_OR:
             case TOKEN_OPERATOR_LOGICAL_AND:
             case TOKEN_OPERATOR_LOGICAL_OR:
+            case TOKEN_OPERATOR_NULLISH_COALESCING:
 
             case TOKEN_OPERATOR_PLUS:
             case TOKEN_OPERATOR_MINUS:
@@ -831,6 +833,7 @@ public class ASToken extends TokenBase implements IASToken, ASTokenTypes
             case TOKEN_OPERATOR_BITWISE_OR:
             case TOKEN_OPERATOR_LOGICAL_AND:
             case TOKEN_OPERATOR_LOGICAL_OR:
+            case TOKEN_OPERATOR_NULLISH_COALESCING:
             case TOKEN_OPERATOR_PLUS:
             case TOKEN_OPERATOR_MINUS:
             case TOKEN_OPERATOR_BITWISE_NOT:

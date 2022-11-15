@@ -1179,6 +1179,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                 case TOKEN_OPERATOR_LOGICAL_OR:
                 case TOKEN_OPERATOR_LOGICAL_AND_ASSIGNMENT:
                 case TOKEN_OPERATOR_LOGICAL_OR_ASSIGNMENT:
+                case TOKEN_OPERATOR_NULLISH_COALESCING:
                 case TOKEN_TYPED_COLLECTION_OPEN:
                 case TOKEN_TYPED_COLLECTION_CLOSE:
                 case TOKEN_OPERATOR_MEMBER_ACCESS:
@@ -1442,6 +1443,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                             case TOKEN_OPERATOR_MODULO:
                             case TOKEN_OPERATOR_BITWISE_AND:
                             case TOKEN_OPERATOR_BITWISE_OR:
+                            case TOKEN_OPERATOR_NULLISH_COALESCING:
                             case TOKEN_KEYWORD_AS:
                             case TOKEN_OPERATOR_BITWISE_XOR:
                             case TOKEN_OPERATOR_LOGICAL_AND:

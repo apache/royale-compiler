@@ -74,6 +74,7 @@ import org.apache.royale.compiler.internal.semantics.PostProcessStep;
 import org.apache.royale.compiler.internal.tree.as.ArrayLiteralNode;
 import org.apache.royale.compiler.internal.tree.as.BaseDefinitionNode;
 import org.apache.royale.compiler.internal.tree.as.BinaryOperatorNodeBase;
+import org.apache.royale.compiler.internal.tree.as.BinaryOperatorNotEqualNode;
 import org.apache.royale.compiler.internal.tree.as.BlockNode;
 import org.apache.royale.compiler.internal.tree.as.ClassNode;
 import org.apache.royale.compiler.internal.tree.as.ConfigConstNode;
@@ -96,6 +97,7 @@ import org.apache.royale.compiler.internal.tree.as.NamespaceNode;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.internal.tree.as.QualifiedNamespaceExpressionNode;
 import org.apache.royale.compiler.internal.tree.as.ScopedBlockNode;
+import org.apache.royale.compiler.internal.tree.as.TernaryOperatorNode;
 import org.apache.royale.compiler.internal.tree.as.UnaryOperatorNodeBase;
 import org.apache.royale.compiler.internal.tree.as.VariableNode;
 import org.apache.royale.compiler.internal.tree.as.metadata.MetaTagsNode;
@@ -130,6 +132,7 @@ import org.apache.royale.compiler.problems.SyntaxProblem;
 import org.apache.royale.compiler.problems.UnboundMetadataProblem;
 import org.apache.royale.compiler.problems.UnexpectedEOFProblem;
 import org.apache.royale.compiler.problems.UnexpectedTokenProblem;
+import org.apache.royale.compiler.problems.UnparenthesizedNullishCoalescingOperatorProblem;
 import org.apache.royale.compiler.problems.XMLOpenCloseTagNotMatchProblem;
 import org.apache.royale.compiler.projects.IASProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -2103,31 +2106,32 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
                     .put(TOKEN_OPERATOR_BITWISE_RIGHT_SHIFT_ASSIGNMENT, 2)
                     .put(TOKEN_OPERATOR_BITWISE_UNSIGNED_RIGHT_SHIFT_ASSIGNMENT, 2)
                     .put(TOKEN_OPERATOR_TERNARY, 3)
-                    .put(TOKEN_OPERATOR_LOGICAL_OR, 4)
-                    .put(TOKEN_OPERATOR_LOGICAL_AND, 5)
-                    .put(TOKEN_OPERATOR_BITWISE_OR, 6)
-                    .put(TOKEN_OPERATOR_BITWISE_XOR, 7)
-                    .put(TOKEN_OPERATOR_BITWISE_AND, 8)
-                    .put(TOKEN_OPERATOR_EQUAL, 9)
-                    .put(TOKEN_OPERATOR_NOT_EQUAL, 9)
-                    .put(TOKEN_OPERATOR_STRICT_EQUAL, 9)
-                    .put(TOKEN_OPERATOR_STRICT_NOT_EQUAL, 9)
-                    .put(TOKEN_OPERATOR_GREATER_THAN, 10)
-                    .put(TOKEN_OPERATOR_GREATER_THAN_EQUALS, 10)
-                    .put(TOKEN_OPERATOR_LESS_THAN, 10)
-                    .put(TOKEN_OPERATOR_LESS_THAN_EQUALS, 10)
-                    .put(TOKEN_KEYWORD_INSTANCEOF, 10)
-                    .put(TOKEN_KEYWORD_IS, 10)
-                    .put(TOKEN_KEYWORD_AS, 10)
-                    .put(TOKEN_KEYWORD_IN, 10)
-                    .put(TOKEN_OPERATOR_BITWISE_LEFT_SHIFT, 11)
-                    .put(TOKEN_OPERATOR_BITWISE_RIGHT_SHIFT, 11)
-                    .put(TOKEN_OPERATOR_BITWISE_UNSIGNED_RIGHT_SHIFT, 11)
-                    .put(TOKEN_OPERATOR_MINUS, 12)
-                    .put(TOKEN_OPERATOR_PLUS, 12)
-                    .put(TOKEN_OPERATOR_DIVISION, 13)
-                    .put(TOKEN_OPERATOR_MODULO, 13)
-                    .put(TOKEN_OPERATOR_STAR, 13)
+                    .put(TOKEN_OPERATOR_NULLISH_COALESCING, 4)
+                    .put(TOKEN_OPERATOR_LOGICAL_OR, 5)
+                    .put(TOKEN_OPERATOR_LOGICAL_AND, 6)
+                    .put(TOKEN_OPERATOR_BITWISE_OR, 7)
+                    .put(TOKEN_OPERATOR_BITWISE_XOR, 8)
+                    .put(TOKEN_OPERATOR_BITWISE_AND, 9)
+                    .put(TOKEN_OPERATOR_EQUAL, 10)
+                    .put(TOKEN_OPERATOR_NOT_EQUAL, 10)
+                    .put(TOKEN_OPERATOR_STRICT_EQUAL, 10)
+                    .put(TOKEN_OPERATOR_STRICT_NOT_EQUAL, 10)
+                    .put(TOKEN_OPERATOR_GREATER_THAN, 11)
+                    .put(TOKEN_OPERATOR_GREATER_THAN_EQUALS, 11)
+                    .put(TOKEN_OPERATOR_LESS_THAN, 11)
+                    .put(TOKEN_OPERATOR_LESS_THAN_EQUALS, 11)
+                    .put(TOKEN_KEYWORD_INSTANCEOF, 11)
+                    .put(TOKEN_KEYWORD_IS, 11)
+                    .put(TOKEN_KEYWORD_AS, 11)
+                    .put(TOKEN_KEYWORD_IN, 11)
+                    .put(TOKEN_OPERATOR_BITWISE_LEFT_SHIFT, 12)
+                    .put(TOKEN_OPERATOR_BITWISE_RIGHT_SHIFT, 12)
+                    .put(TOKEN_OPERATOR_BITWISE_UNSIGNED_RIGHT_SHIFT, 12)
+                    .put(TOKEN_OPERATOR_MINUS, 13)
+                    .put(TOKEN_OPERATOR_PLUS, 13)
+                    .put(TOKEN_OPERATOR_DIVISION, 14)
+                    .put(TOKEN_OPERATOR_MODULO, 14)
+                    .put(TOKEN_OPERATOR_STAR, 14)
                     .build();
 
     /**
@@ -2169,7 +2173,12 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
                 consume();
 
                 ExpressionNodeBase t = precedenceParseExpression(p1 + 1); // parse any sub expressions that are of higher precedence
-                result = (ExpressionNodeBase)BinaryOperatorNodeBase.create(op, result, t);
+                if (op.getType() == ASTokenTypes.TOKEN_OPERATOR_NULLISH_COALESCING) {
+                    result = transformNullishCoalescingExpression(result, op, t);
+                }
+                else {
+                    result = (ExpressionNodeBase)BinaryOperatorNodeBase.create(op, result, t);
+                }
                 op = LT(1);
                 p2 = precedence(op);
             }
@@ -3117,5 +3126,25 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
         }
 
         return new LiteralNode(token, LiteralType.STRING);
+    }
+
+    private final ExpressionNodeBase transformNullishCoalescingExpression(ExpressionNodeBase left, ASToken op, ExpressionNodeBase right)
+    {
+        if (left.getNodeID() == ASTNodeID.Op_LogicalAndID
+                || left.getNodeID() == ASTNodeID.Op_LogicalOrID
+                || right.getNodeID() == ASTNodeID.Op_LogicalAndID
+                || right.getNodeID() == ASTNodeID.Op_LogicalOrID) {
+            getSyntaxProblems().add(new UnparenthesizedNullishCoalescingOperatorProblem(op));
+        }
+
+        // (x != null) ? x : y;
+        ASToken notEqualToken = new ASToken(ASTokenTypes.TOKEN_OPERATOR_NOT_EQUAL, -1, -1, -1, -1, "!=");
+        ASToken nullToken = new ASToken(ASTokenTypes.TOKEN_KEYWORD_NULL, -1, -1, -1, -1, "null");
+        LiteralNode nullNode = new LiteralNode(nullToken, LiteralType.NULL);
+        BinaryOperatorNotEqualNode conditionalNode = new BinaryOperatorNotEqualNode(notEqualToken, left, nullNode);
+
+        ASToken ternaryOp = new ASToken(ASTokenTypes.TOKEN_OPERATOR_TERNARY, -1, -1, -1, -1, "?");
+        TernaryOperatorNode ternaryNode = new TernaryOperatorNode(ternaryOp, conditionalNode, left, right);
+        return ternaryNode;
     }
 }
