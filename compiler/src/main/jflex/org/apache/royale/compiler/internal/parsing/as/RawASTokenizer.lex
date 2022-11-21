@@ -47,7 +47,7 @@ import org.apache.royale.compiler.constants.IASKeywordConstants;
  */
 private enum StringKind
 {
-	CHAR, STRING
+	CHAR, STRING, RAW
 }
 
 private StringKind stringKind;
@@ -312,12 +312,19 @@ REGEX_CLASS="[" ({REGEX_ESCAPE}|[^\n\r\]\\])* "]"
 	yybegin(STRINGLITERAL);
 }
 
+<YYINITIAL> "@\""
+{
+	startAggregate();
+	stringKind = StringKind.RAW;
+	yybegin(STRINGLITERAL);
+}
+
 // String handling for both double and single quoted strings
 
 <STRINGLITERAL> "\""
 {
 	continueAggregate();
-	if (stringKind == StringKind.STRING)
+	if (stringKind == StringKind.STRING || stringKind == StringKind.RAW)
 	{
 		yybegin(YYINITIAL);
 		return buildAggregateToken(TOKEN_LITERAL_STRING);
@@ -336,7 +343,10 @@ REGEX_CLASS="[" ({REGEX_ESCAPE}|[^\n\r\]\\])* "]"
 
 <STRINGLITERAL> "\\"
 {
-	yybegin(ESCAPE_SEQUENCE);
+	if (stringKind != StringKind.RAW)
+	{
+		yybegin(ESCAPE_SEQUENCE);
+	}
 }
 
 <STRINGLITERAL> {LINE_TERMINATOR}+
