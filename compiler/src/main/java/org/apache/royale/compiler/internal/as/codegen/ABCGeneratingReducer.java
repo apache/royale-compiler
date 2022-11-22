@@ -4279,6 +4279,22 @@ public class ABCGeneratingReducer
         return result;
     }
 
+    public InstructionList reduce_nullCoalesceExpr(IASNode iNode, InstructionList l, InstructionList r)
+    {
+        InstructionList result = createInstructionList(iNode, l.size() + r.size() + 3);
+        Label tail = new Label();
+
+        result.addAll(l);
+        result.addInstruction(OP_dup);
+        result.addInstruction(OP_pushnull);
+        result.addInstruction(OP_equals);
+        result.addInstruction(OP_iffalse, tail);
+        result.addInstruction(OP_pop);
+        result.addAll(r);
+        result.labelNext(tail);
+        return result;
+    }
+
     public InstructionList reduce_memberAccessExpr(IASNode iNode, InstructionList stem, Binding member, int opcode)
     {
         currentScope.getMethodBodySemanticChecker().checkMemberAccess(iNode, member, opcode);

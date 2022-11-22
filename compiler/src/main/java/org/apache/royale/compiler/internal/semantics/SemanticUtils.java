@@ -3001,6 +3001,7 @@ public class SemanticUtils
                 case Op_LogicalNotID:
                 case ContainerID:
                 case ConditionalID:
+                case Op_NullCoalesceID:
                     current = parent;
                     parent  = current.getParent();
                     break;

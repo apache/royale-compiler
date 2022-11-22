@@ -179,6 +179,9 @@ public abstract class BinaryOperatorNodeBase extends OperatorNodeBase implements
             
             case TOKEN_KEYWORD_IS:
                 return new BinaryOperatorIsNode(operatorToken, leftOperand, rightOperand);
+
+            case TOKEN_OPERATOR_NULL_COALESCE:
+                return new BinaryOperatorNullCoalesceNode(operatorToken, leftOperand, rightOperand);
         }
         
         assert false : "Token '" + operatorToken.getText() + "' unexpected in BinaryOperatorNodeBase.create()";
@@ -379,7 +382,7 @@ public abstract class BinaryOperatorNodeBase extends OperatorNodeBase implements
 
     /**
      * Utility method called by {@link #resolveType(ICompilerProject)}
-     * in subclasses for the <code>&&</code> and <code>||</code> operators.
+     * in subclasses for the <code>&&</code>, <code>||</code>, and <code>??</code> operators.
      */
     protected ITypeDefinition resolveLogicalType(ICompilerProject project)
     {

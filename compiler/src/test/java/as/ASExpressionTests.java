@@ -46,6 +46,60 @@ public class ASExpressionTests extends ASFeatureTestsBase
     }
 
     @Test
+    public void ASExpressionTests_nullCoalesceFirst()
+    {
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+            "public static const foo:String = 'foo'",
+        };
+        String[] testCode = new String[]
+        {
+            "assertEqual('empty string', '' ?? 'notempty', '');",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        compileAndRun(source);
+    }
+
+    @Test
+    public void ASExpressionTests_nullCoalesceSecond()
+    {
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+            "public static const foo:String = 'foo'",
+        };
+        String[] testCode = new String[]
+        {
+            "assertEqual('empty string', null ?? 'notempty', 'notempty');",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        compileAndRun(source);
+    }
+
+    @Test
+    public void ASExpressionTests_nullCoalesceAllNull()
+    {
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+            "public static const foo:String = 'foo'",
+        };
+        String[] testCode = new String[]
+        {
+            "assertEqual('empty string', null ?? null, null);",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        compileAndRun(source);
+    }
+
+    @Test
     public void ASExpressionTests_nestedTernary()
     {
         String[] imports = new String[]

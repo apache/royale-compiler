@@ -712,6 +712,11 @@ REGEX_CLASS="[" ({REGEX_ESCAPE}|[^\n\r\]\\])* "]"
 	return buildToken(TOKEN_OPERATOR_BITWISE_OR_ASSIGNMENT, "|=");
 }
 
+<YYINITIAL> "??"
+{
+	return buildToken(TOKEN_OPERATOR_NULL_COALESCE, "??");
+}
+
 //
 // E4X
 //

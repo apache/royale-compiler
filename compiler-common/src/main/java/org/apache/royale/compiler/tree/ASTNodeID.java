@@ -180,6 +180,7 @@ public enum ASTNodeID
     Op_LogicalAndAssignID("&&="),
     Op_LogicalOrID("||"),
     Op_LogicalOrAssignID("||="),
+    Op_NullCoalesceID("??"),
     Op_AtID("at"),
     Op_FilterID(".("),
     Op_VoidID("void"),

@@ -775,6 +775,9 @@ TernaryExpressionID(expression test, expression when_true, expression when_false
 Pattern commaExpr
 Op_CommaID(expression payload_expr, void_expression exprs+);
 
+Pattern nullCoalesceExpr
+Op_NullCoalesceID(expression l, expression r);
+
 /*
  *  Names and references.
  */

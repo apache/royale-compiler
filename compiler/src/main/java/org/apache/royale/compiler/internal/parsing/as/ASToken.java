@@ -373,6 +373,7 @@ public class ASToken extends TokenBase implements IASToken, ASTokenTypes
             case TOKEN_KEYWORD_INSTANCEOF:
             case TOKEN_OPERATOR_ATSIGN:
             case TOKEN_OPERATOR_DESCENDANT_ACCESS:
+            case TOKEN_OPERATOR_NULL_COALESCE:
                 return true;
             default:
                 return false;

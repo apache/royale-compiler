@@ -568,6 +568,9 @@ JBurg.Reduction reducer.reduce_logicalAndExpr (__p, l, r);
 expression = Pattern logicalOrExpr : 5
 JBurg.Reduction reducer.reduce_logicalOrExpr (__p, l, r);
 
+expression = Pattern nullCoalesceExpr : 5
+JBurg.Reduction reducer.reduce_nullCoalesceExpr(__p, l, r);
+
 expression = Pattern logicalNotExpr : 1
 JBurg.Reduction reducer.reduce_logicalNotExpr (__p, expr);
 

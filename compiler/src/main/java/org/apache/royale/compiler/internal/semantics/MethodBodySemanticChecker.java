@@ -110,6 +110,7 @@ import org.apache.royale.compiler.internal.semantics.SemanticUtils.MultiDefiniti
 import org.apache.royale.compiler.internal.tree.as.BaseDefinitionNode;
 import org.apache.royale.compiler.internal.tree.as.BinaryOperatorLogicalAndNode;
 import org.apache.royale.compiler.internal.tree.as.BinaryOperatorLogicalOrNode;
+import org.apache.royale.compiler.internal.tree.as.BinaryOperatorNullCoalesceNode;
 import org.apache.royale.compiler.internal.tree.as.ClassNode;
 import org.apache.royale.compiler.internal.tree.as.ExpressionNodeBase;
 import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
@@ -362,7 +363,8 @@ public class MethodBodySemanticChecker
     {
         if (iNode instanceof BinaryOperatorLogicalOrNode ||
              iNode instanceof BinaryOperatorLogicalAndNode ||
-             iNode instanceof TernaryOperatorNode)
+             iNode instanceof TernaryOperatorNode ||
+             iNode instanceof BinaryOperatorNullCoalesceNode)
         {
             // For these logical nodes, just check both sides with a recursive call.
             // Note that we need to recurse, because this may be a tree of binary logical nodes
@@ -3319,4 +3321,3 @@ public class MethodBodySemanticChecker
         return false;
     }
 }
-

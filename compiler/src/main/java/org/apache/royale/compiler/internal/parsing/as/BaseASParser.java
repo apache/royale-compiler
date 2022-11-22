@@ -2105,6 +2105,7 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
                     .put(TOKEN_OPERATOR_TERNARY, 3)
                     .put(TOKEN_OPERATOR_LOGICAL_OR, 4)
                     .put(TOKEN_OPERATOR_LOGICAL_AND, 5)
+                    .put(TOKEN_OPERATOR_NULL_COALESCE, 6)
                     .put(TOKEN_OPERATOR_BITWISE_OR, 6)
                     .put(TOKEN_OPERATOR_BITWISE_XOR, 7)
                     .put(TOKEN_OPERATOR_BITWISE_AND, 8)
