@@ -374,6 +374,7 @@ public class ASToken extends TokenBase implements IASToken, ASTokenTypes
             case TOKEN_OPERATOR_ATSIGN:
             case TOKEN_OPERATOR_DESCENDANT_ACCESS:
             case TOKEN_OPERATOR_NULL_COALESCE:
+            case TOKEN_OPERATOR_NULL_OR_ACCESS:
                 return true;
             default:
                 return false;

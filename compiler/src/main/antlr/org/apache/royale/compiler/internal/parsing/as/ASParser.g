@@ -3104,6 +3104,8 @@ propertyAccessExpression [ExpressionNodeBase l] returns [ExpressionNodeBase n]
 }
     :   TOKEN_OPERATOR_MEMBER_ACCESS r=accessPart 
         { n = new MemberAccessExpressionNode(l, op, r); }
+	|	TOKEN_OPERATOR_NULL_OR_ACCESS r=accessPart
+		{ n = new MemberAccessExpressionNode(l, op, r); }
     |   TOKEN_OPERATOR_DESCENDANT_ACCESS r=accessPart
         { n = new MemberAccessExpressionNode(l, op, r); }
     |   TOKEN_OPERATOR_NS_QUALIFIER r=nsAccessPart

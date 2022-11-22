@@ -4310,6 +4310,28 @@ public class ABCGeneratingReducer
         return result;
     }
 
+    public InstructionList reduce_nullConditionalMemberAccessExpr(IASNode iNode, InstructionList stem, Binding member)
+    {
+        currentScope.getMethodBodySemanticChecker().checkMemberAccess(iNode, member, OP_getproperty);
+        InstructionList result = createInstructionList(iNode, stem.size() + 5);
+        Label tail = new Label();
+
+        result.addAll(stem);
+        result.addInstruction(OP_dup);
+        result.addInstruction(OP_pushnull);
+        result.addInstruction(OP_equals);
+        result.addInstruction(OP_iftrue, tail);
+
+        boolean inlined = generateInlineGetterAccess(member, result, true);
+
+        if (!inlined)
+            result.addInstruction(OP_getproperty, member.getName());
+
+        result.labelNext(tail);
+
+        return result;
+    }
+
     public InstructionList reduce_qualifiedMemberAccessExpr(IASNode iNode, InstructionList stem, Binding qualifier, Binding member, int opcode)
     {
         currentScope.getMethodBodySemanticChecker().checkMemberAccess(iNode, member, opcode);
@@ -4328,6 +4350,36 @@ public class ABCGeneratingReducer
             result.addInstruction(OP_coerce, namespaceType);
             result.addInstruction(opcode, member_name);
         }
+        return result;
+    }
+
+    public InstructionList reduce_qualifiedNullConditionalMemberAccessExpr(IASNode iNode, InstructionList stem, Binding qualifier, Binding member)
+    {
+        currentScope.getMethodBodySemanticChecker().checkMemberAccess(iNode, member, OP_getproperty);
+        InstructionList result = createInstructionList(iNode);
+        Name member_name = member.getName();
+        Label tail = new Label();
+
+        result.addAll(stem);
+        result.addInstruction(OP_dup);
+        result.addInstruction(OP_pushnull);
+        result.addInstruction(OP_equals);
+        result.addInstruction(OP_iftrue, tail);
+
+        if ( isNamespace(qualifier) )
+        {
+            result.addInstruction(OP_getproperty, member_name);
+        }
+        else
+        {
+            generateAccess(qualifier, result);
+            //  Verifier insists on this.
+            result.addInstruction(OP_coerce, namespaceType);
+            result.addInstruction(OP_getproperty, member_name);
+        }
+
+        result.labelNext(tail);
+
         return result;
     }
 

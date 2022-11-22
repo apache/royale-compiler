@@ -42,6 +42,7 @@ import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode.LanguageIdenti
  * <li><b>Member access</b> - {@code object.fieldName}</li>
  * <li><b>Query</b> - {@code object..descendantsName}</li>
  * <li><b>E4X filter</b> - {@code xmlObject.(expr)}</li>
+ * <li><b>Null-conditional member access</b> - {@code object?.fieldName}</li>
  * </ul>
  */
 public class MemberAccessExpressionNode extends BinaryOperatorNodeBase implements IMemberAccessExpressionNode
@@ -65,6 +66,8 @@ public class MemberAccessExpressionNode extends BinaryOperatorNodeBase implement
             	operator = OperatorType.MEMBER_ACCESS;
             else if (tokenType == ASTokenTypes.TOKEN_OPERATOR_DESCENDANT_ACCESS)
             	operator = OperatorType.DESCENDANT_ACCESS;
+            else if (tokenType == ASTokenTypes.TOKEN_OPERATOR_NULL_OR_ACCESS)
+                operator = OperatorType.NULL_CONDITIONAL_ACCESS;
             else
             	assert false : "Unexpected token '" + operatorToken.getText() + "' for MemberAccessExpressionNode";
         }
@@ -95,6 +98,10 @@ public class MemberAccessExpressionNode extends BinaryOperatorNodeBase implement
         if (getOperator() == OperatorType.DESCENDANT_ACCESS)
         {
             nodeID = ASTNodeID.Op_DescendantsID;
+        }
+        else if (getOperator() == OperatorType.NULL_CONDITIONAL_ACCESS)
+        {
+            nodeID = ASTNodeID.NullCheckMemberAccessExpressionID;
         }
         else if (rightOperandNode != null && rightOperandNode.hasParenthesis())
         {

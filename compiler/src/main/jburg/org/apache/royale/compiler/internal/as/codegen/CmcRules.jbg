@@ -774,8 +774,14 @@ JBurg.Reduction reducer.binaryOp(__p, expr, typename, OP_instanceof);
 expression = Pattern memberAccessExpr : 10
 JBurg.Reduction reducer.reduce_memberAccessExpr (__p, stem, member, OP_getproperty);
 
+expression = Pattern nullConditionalMemberAccessExpr : 10
+JBurg.Reduction reducer.reduce_nullConditionalMemberAccessExpr (__p, stem, member);
+
 expression = Pattern  qualifiedMemberAccessExpr : 10
 JBurg.Reduction reducer.reduce_qualifiedMemberAccessExpr(__p, stem, qualifier, member, OP_getproperty);
+
+expression = Pattern qualifiedNullConditionalMemberAccessExpr : 10
+JBurg.Reduction reducer.reduce_qualifiedNullConditionalMemberAccessExpr (__p, stem, qualifier, member);
 
 expression = Pattern  qualifiedDescendantsExpr : 10
 JBurg.Reduction reducer.reduce_qualifiedMemberAccessExpr(__p, stem, qualifier, member, OP_getdescendants);

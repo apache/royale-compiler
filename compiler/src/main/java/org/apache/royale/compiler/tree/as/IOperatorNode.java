@@ -321,6 +321,11 @@ public interface IOperatorNode extends IExpressionNode
         VOID("void"),
         
         /**
+         * The '<code>?.</code>' binary operator, as in <code>object?.property</code>
+         */
+        NULL_CONDITIONAL_ACCESS("?."),
+        
+        /**
          * The '<code>??</code>' binary operator, as in <code>object ?? object</code>
          */
         NULL_COALESCE("??");

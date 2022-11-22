@@ -831,6 +831,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                             case TOKEN_RESERVED_WORD_GET:
                             case TOKEN_RESERVED_WORD_SET:
                             case TOKEN_OPERATOR_MEMBER_ACCESS:
+                            case TOKEN_OPERATOR_NULL_OR_ACCESS:
                             {
                                 retVal.setType(TOKEN_IDENTIFIER);
                                 return retVal;
@@ -1022,6 +1023,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                             case TOKEN_RESERVED_WORD_GET:
                             case TOKEN_RESERVED_WORD_SET:
                             case TOKEN_OPERATOR_MEMBER_ACCESS:
+                            case TOKEN_OPERATOR_NULL_OR_ACCESS:
                                 retVal.setType(TOKEN_IDENTIFIER);
                         }
                     }
@@ -1070,6 +1072,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                             case TOKEN_RESERVED_WORD_GET:
                             case TOKEN_RESERVED_WORD_SET:
                             case TOKEN_OPERATOR_MEMBER_ACCESS:
+                            case TOKEN_OPERATOR_NULL_OR_ACCESS:
                                 retVal.setType(TOKEN_IDENTIFIER);
                         }
                     }
@@ -1183,6 +1186,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                 case TOKEN_TYPED_COLLECTION_OPEN:
                 case TOKEN_TYPED_COLLECTION_CLOSE:
                 case TOKEN_OPERATOR_MEMBER_ACCESS:
+                case TOKEN_OPERATOR_NULL_OR_ACCESS:
                 case TOKEN_RESERVED_WORD_NAMESPACE:
                 case TOKEN_RESERVED_WORD_GET:
                 case TOKEN_RESERVED_WORD_SET:
@@ -1299,6 +1303,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                             case TOKEN_RESERVED_WORD_GET:
                             case TOKEN_RESERVED_WORD_SET:
                             case TOKEN_OPERATOR_MEMBER_ACCESS:
+                            case TOKEN_OPERATOR_NULL_OR_ACCESS:
                                 retVal.setType(TOKEN_IDENTIFIER);
                         }
                     }
@@ -1812,9 +1817,9 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                     token.setType(TOKEN_NAMESPACE_NAME);
                     return;
             }
-            if (nextToken.getType() == TOKEN_OPERATOR_MEMBER_ACCESS)
+            if (nextToken.getType() == TOKEN_OPERATOR_MEMBER_ACCESS || nextToken.getType() == TOKEN_OPERATOR_NULL_OR_ACCESS)
             {
-                int nextValidPart = TOKEN_IDENTIFIER;
+                boolean nextValidIsAccessor = false;
                 final ArrayList<ASToken> toTransform = new ArrayList<ASToken>(3);
                 toTransform.add(token);
                 toTransform.add(nextToken);
@@ -1824,12 +1829,13 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                     nextToken = LT(++laDistance);
                     if (token.matchesLine(nextToken))
                     {
-                        if (nextToken.getType() == nextValidPart)
+                        boolean nextIsAccessor = nextToken.getType() == TOKEN_OPERATOR_MEMBER_ACCESS || nextToken.getType() == TOKEN_OPERATOR_NULL_OR_ACCESS;
+                        if (nextValidIsAccessor == nextIsAccessor)
                         {
-                            nextValidPart = (nextToken.getType() == TOKEN_IDENTIFIER) ? TOKEN_OPERATOR_MEMBER_ACCESS : TOKEN_IDENTIFIER;
+                            nextValidIsAccessor = !nextValidIsAccessor;
                             toTransform.add(nextToken);
                         }
-                        else if (nextValidPart != TOKEN_IDENTIFIER && nextToken.canFollowUserNamespace())
+                        else if (nextValidIsAccessor && nextToken.canFollowUserNamespace())
                         {
                             // Next token is in the follow set of a namespace,
                             // so all the buffered tokens need to be converted

@@ -628,9 +628,15 @@ ArrayIndexExpressionID(SuperID(void) stem, expression index);
 Pattern memberAccessExpr
 MemberAccessExpressionID(expression stem, name member);
 
+Pattern nullConditionalMemberAccessExpr
+NullCheckMemberAccessExpressionID(expression stem, name member);
+
 //  qualified member reference, e.g., foo.bar::baz
 Pattern qualifiedMemberAccessExpr
 MemberAccessExpressionID(expression stem, NamespaceAccessExpressionID(name qualifier, name member));
+
+Pattern qualifiedNullConditionalMemberAccessExpr
+NullCheckMemberAccessExpressionID(expression stem, NamespaceAccessExpressionID(name qualifier, name member));
 
 //  qualified member reference with runtime name, e.g. foo.ns1::[baz]
 Pattern qualifiedMemberRuntimeNameExpr

@@ -100,6 +100,42 @@ public class ASExpressionTests extends ASFeatureTestsBase
     }
 
     @Test
+    public void ASExpressionTests_nullAccessNonnull()
+    {
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+            "public const foo:String = 'foo'",
+        };
+        String[] testCode = new String[]
+        {
+            "assertEqual('empty string', this?.foo, '');",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        compileAndRun(source);
+    }
+
+    @Test
+    public void ASExpressionTests_nullAccessNull()
+    {
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+        };
+        String[] testCode = new String[]
+        {
+            "var thing:Array = null;",
+            "assertEqual('null length', thing?.length, null);",
+        };
+        String source = getAS(imports, declarations, testCode, new String[0]);
+        compileAndRun(source);
+    }
+
+    @Test
     public void ASExpressionTests_nestedTernary()
     {
         String[] imports = new String[]
