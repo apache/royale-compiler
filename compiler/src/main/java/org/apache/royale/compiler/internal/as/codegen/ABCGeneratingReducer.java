@@ -4287,8 +4287,7 @@ public class ABCGeneratingReducer
         result.addAll(l);
         result.addInstruction(OP_dup);
         result.addInstruction(OP_pushnull);
-        result.addInstruction(OP_equals);
-        result.addInstruction(OP_iffalse, tail);
+        result.addInstruction(OP_ifne, tail);
         result.addInstruction(OP_pop);
         result.addAll(r);
         result.labelNext(tail);
@@ -4319,8 +4318,7 @@ public class ABCGeneratingReducer
         result.addAll(stem);
         result.addInstruction(OP_dup);
         result.addInstruction(OP_pushnull);
-        result.addInstruction(OP_equals);
-        result.addInstruction(OP_iftrue, tail);
+        result.addInstruction(OP_ifeq, tail);
 
         boolean inlined = generateInlineGetterAccess(member, result, true);
 
@@ -4363,8 +4361,7 @@ public class ABCGeneratingReducer
         result.addAll(stem);
         result.addInstruction(OP_dup);
         result.addInstruction(OP_pushnull);
-        result.addInstruction(OP_equals);
-        result.addInstruction(OP_iftrue, tail);
+        result.addInstruction(OP_ifeq, tail);
 
         if ( isNamespace(qualifier) )
         {
