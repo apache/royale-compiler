@@ -347,6 +347,10 @@ REGEX_CLASS="[" ({REGEX_ESCAPE}|[^\n\r\]\\])* "]"
 	{
 		yybegin(ESCAPE_SEQUENCE);
 	}
+	else
+	{
+		continueAggregate();
+	}
 }
 
 <STRINGLITERAL> {LINE_TERMINATOR}+
