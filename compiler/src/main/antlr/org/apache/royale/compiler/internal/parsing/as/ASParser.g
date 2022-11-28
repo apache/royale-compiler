@@ -2498,7 +2498,7 @@ primaryExpression returns [ExpressionNodeBase n]
     |   token=numericLiteral
         { n = new NumericLiteralNode(token); }
     |   TOKEN_LITERAL_STRING
-        { n = new LiteralNode(token, LiteralType.STRING); }
+        { n = transformStringLiteral(token); }
     |   TOKEN_VOID_0
         { n = new LiteralNode(token, LiteralType.OBJECT); }
     |   TOKEN_LITERAL_REGEXP
