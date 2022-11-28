@@ -37,7 +37,6 @@ public class ASVerbatimStringTests extends ASFeatureTestsBase
 			"assertEqual('verbatim string', s2, 'verbatim\\\\tstring');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
-		System.err.println("*** " + source);
 
         compileAndRun(source);
     }
