@@ -81,4 +81,60 @@ public class ASNullishCoalescingOperatorTests extends ASFeatureTestsBase
 
         compileAndRun(source);
     }
+
+    @Test
+    public void testUnparenthesizedLogicalAndBefore()
+    {
+        String[] testCode = new String[]
+        {
+            "var bool:Boolean = true",
+            "var s:String = 'foo';",
+			"var result:Object = bool && s ?? 'bar';",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndExpectErrors(source, false, false, false, new String[0], "Cannot use '??' unparenthesized within '||' and '&&' expressions.\n");
+    }
+
+    @Test
+    public void testUnparenthesizedLogicalAndAfter()
+    {
+        String[] testCode = new String[]
+        {
+            "var bool:Boolean = true",
+            "var s:String = 'foo';",
+			"var result:Object = s ?? 'bar' && bool;",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndExpectErrors(source, false, false, false, new String[0], "Cannot use '??' unparenthesized within '||' and '&&' expressions.\n");
+    }
+
+    @Test
+    public void testUnparenthesizedLogicalOrBefore()
+    {
+        String[] testCode = new String[]
+        {
+            "var bool:Boolean = false",
+            "var s:String = 'foo';",
+			"var result:Object = bool || s ?? 'bar';",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndExpectErrors(source, false, false, false, new String[0], "Cannot use '??' unparenthesized within '||' and '&&' expressions.\n");
+    }
+
+    @Test
+    public void testUnparenthesizedLogicalOrAfter()
+    {
+        String[] testCode = new String[]
+        {
+            "var bool:Boolean = false",
+            "var s:String = 'foo';",
+			"var result:Object = s ?? 'bar' || bool;",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndExpectErrors(source, false, false, false, new String[0], "Cannot use '??' unparenthesized within '||' and '&&' expressions.\n");
+    }
 }
