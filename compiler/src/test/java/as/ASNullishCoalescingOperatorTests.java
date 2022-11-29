@@ -33,7 +33,7 @@ public class ASNullishCoalescingOperatorTests extends ASFeatureTestsBase
         {
             "var s:String = 'foo';",
 			"var result:Object = s ?? 'bar';",
-			"assertEqual('non-null nullish coalescing', result, 'foo');",
+			"assertEqual('nullish coalescing', result, 'foo');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -47,7 +47,82 @@ public class ASNullishCoalescingOperatorTests extends ASFeatureTestsBase
         {
             "var s:String = null;",
 			"var result:Object = s ?? 'bar';",
-			"assertEqual('non-null nullish coalescing', result, 'bar');",
+			"assertEqual('nullish coalescing', result, 'bar');",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+	// undefined is considered nullish
+	@Test
+    public void testUndefined()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:* = undefined;",
+			"var result:* = o ?? 'bar';",
+			"assertEqual('nullish coalescing', result, 'bar');",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+	// 0 is considered falsy, but not nullish
+	@Test
+    public void testZero()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Number = 0;",
+			"var result:* = o ?? 'bar';",
+			"assertEqual('nullish coalescing', result, 0);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+	// NaN is considered falsy, but not nullish
+	@Test
+    public void testNaN()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Number = NaN;",
+			"var result:String = (o ?? 'bar').toString();",
+			"assertEqual('nullish coalescing', result, 'NaN');",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+	// false is considered falsy, but not nullish
+	@Test
+    public void testFalse()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Boolean = false;",
+			"var result:* = o ?? 'bar';",
+			"assertEqual('nullish coalescing', result, false);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+	// empty string is considered falsy, but not nullish
+	@Test
+    public void testEmptyString()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:String = '';",
+			"var result:* = o ?? 'bar';",
+			"assertEqual('nullish coalescing', result, '');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -61,7 +136,7 @@ public class ASNullishCoalescingOperatorTests extends ASFeatureTestsBase
         {
             "var o:Object = {field: 'foo'};",
 			"var result:Object = o.field ?? 'bar';",
-			"assertEqual('non-null nullish coalescing', result, 'foo');",
+			"assertEqual('nullish coalescing', result, 'foo');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -75,7 +150,7 @@ public class ASNullishCoalescingOperatorTests extends ASFeatureTestsBase
         {
             "var o:Object = {field: null};",
 			"var result:Object = o.field ?? 'bar';",
-			"assertEqual('non-null nullish coalescing', result, 'bar');",
+			"assertEqual('nullish coalescing', result, 'bar');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 

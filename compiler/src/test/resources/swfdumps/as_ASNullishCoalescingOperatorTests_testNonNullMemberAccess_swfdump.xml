@@ -19,7 +19,7 @@
 -->
 <!-- Parsing swf file:/Users/joshtynjala/Development/apache/royale-compiler/compiler/target/junit-temp/%0.swf -->
 <swf xmlns="http://macromedia/2003/swfx" version="14" framerate="24.0" size="10000x7500" compressed="true" >
-  <!-- framecount=1 length=987 -->
+  <!-- framecount=1 length=975 -->
   <FileAttributes useDirectBlit="false" useGPU="false" hasMetadata="true" actionScript3="true" suppressCrossDomainCaching="false" swfRelativeUrls="false" useNetwork="true"/>
   <Metadata>
         <![CDATA[<?xml version="1.0" ?>
@@ -44,12 +44,12 @@ public class %0 extends Object
   public function %0():*
   {
     //  derivedName  %0  
-    //  method_info  3                                                     
-    //  max_stack    1                                                     
-    //  max_regs     1                                                     
-    //  scope_depth  0                                                     
-    //  max_scope    1                                                     
-    //  code_length  6                                                     
+    //  method_info  3                                                    
+    //  max_stack    1                                                    
+    //  max_regs     1                                                    
+    //  scope_depth  0                                                    
+    //  max_scope    1                                                    
+    //  code_length  6                                                    
     bb0
       succs=[]
       0      getlocal0            
@@ -70,35 +70,35 @@ public class %0 extends Object
     //  code_length  42           
     bb0
       succs=[bb1,bb2]
-      0       getlocal0                                                                                                                                                                                               
-      1       pushscope                                                                                                                                                                                               
-      2       pushstring   "field"                                                                                                                                                                                    
-      3       pushstring   "foo"                                                                                                                                                                                      
-      4       newobject                                                                                                                                                                                            1  
-      5       coerce       Object                                                                                                                                                                                     
-      6       setlocal2                                                                                                                                                                                               
-      7       getlocal2                                                                                                                                                                                               
+      0       getlocal0                                                                                                                                                                                             
+      1       pushscope                                                                                                                                                                                             
+      2       pushstring   "field"                                                                                                                                                                                  
+      3       pushstring   "foo"                                                                                                                                                                                    
+      4       newobject                                                                                                                                                                                          1  
+      5       coerce       Object                                                                                                                                                                                   
+      6       setlocal2                                                                                                                                                                                             
+      7       getlocal2                                                                                                                                                                                             
       8       getproperty  {private, %0, %0, Object, , , private, http://adobe.com/AS3/2006/builtin, }::field     
-      9       pushnull                                                                                                                                                                                                
-      10      ifeq         bb2                                                                                                                                                                                        
+      9       pushnull                                                                                                                                                                                              
+      10      ifeq         bb2                                                                                                                                                                                      
     bb1
       succs=[bb3]
-      11      getlocal2                                                                                                                                                                                              
+      11      getlocal2                                                                                                                                                                                            
       12      getproperty  {private, %0, %0, Object, , , private, http://adobe.com/AS3/2006/builtin, }::field    
-      13      jump         bb3                                                                                                                                                                                       
+      13      jump         bb3                                                                                                                                                                                     
     bb2
       succs=[bb3]
       14      pushstring  "bar"    
     bb3
       succs=[]
-      15      coerce          Object                           
-      16      setlocal3                                        
-      17      findpropstrict  assertEqual                      
-      18      pushstring      "non-null nullish coalescing"    
-      19      getlocal3                                        
-      20      pushstring      "foo"                            
-      21      callpropvoid                                     
-      22      returnvoid                                       
+      15      coerce          Object                  
+      16      setlocal3                               
+      17      findpropstrict  assertEqual             
+      18      pushstring      "nullish coalescing"    
+      19      getlocal3                               
+      20      pushstring      "foo"                   
+      21      callpropvoid                            
+      22      returnvoid                              
   }
 
   private function assertEqual(String,*,*):void
@@ -141,16 +141,16 @@ function script0$init():*
   //  code_length  14    
   bb0
     succs=[]
-    0      getlocal0                                                                
-    1      pushscope                                                                
-    2      getscopeobject                                                        0  
-    3      getlex          Object                                                   
-    4      dup                                                                      
-    5      pushscope                                                                
-    6      newclass                                                                 
-    7      popscope                                                                 
+    0      getlocal0                                                               
+    1      pushscope                                                               
+    2      getscopeobject                                                       0  
+    3      getlex          Object                                                  
+    4      dup                                                                     
+    5      pushscope                                                               
+    6      newclass                                                                
+    7      popscope                                                                
     8      initproperty    %0     
-    9      returnvoid                                                               
+    9      returnvoid                                                              
 }
 
   </DoABC>

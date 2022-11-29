@@ -19,7 +19,7 @@
 -->
 <!-- Parsing swf file:/Users/joshtynjala/Development/apache/royale-compiler/compiler/target/junit-temp/%0.swf -->
 <swf xmlns="http://macromedia/2003/swfx" version="14" framerate="24.0" size="10000x7500" compressed="true" >
-  <!-- framecount=1 length=845 -->
+  <!-- framecount=1 length=836 -->
   <FileAttributes useDirectBlit="false" useGPU="false" hasMetadata="true" actionScript3="true" suppressCrossDomainCaching="false" swfRelativeUrls="false" useNetwork="true"/>
   <Metadata>
         <![CDATA[<?xml version="1.0" ?>
@@ -87,14 +87,14 @@ public class %0 extends Object
       10      pushstring  "bar"    
     bb3
       succs=[]
-      11      coerce          Object                           
-      12      setlocal3                                        
-      13      findpropstrict  assertEqual                      
-      14      pushstring      "non-null nullish coalescing"    
-      15      getlocal3                                        
-      16      pushstring      "foo"                            
-      17      callpropvoid                                     
-      18      returnvoid                                       
+      11      coerce          Object                  
+      12      setlocal3                               
+      13      findpropstrict  assertEqual             
+      14      pushstring      "nullish coalescing"    
+      15      getlocal3                               
+      16      pushstring      "foo"                   
+      17      callpropvoid                            
+      18      returnvoid                              
   }
 
   private function assertEqual(String,*,*):void

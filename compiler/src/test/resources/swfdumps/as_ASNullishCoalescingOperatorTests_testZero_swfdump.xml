@@ -19,7 +19,7 @@
 -->
 <!-- Parsing swf file:/Users/joshtynjala/Development/apache/royale-compiler/compiler/target/junit-temp/%0.swf -->
 <swf xmlns="http://macromedia/2003/swfx" version="14" framerate="24.0" size="10000x7500" compressed="true" >
-  <!-- framecount=1 length=829 -->
+  <!-- framecount=1 length=837 -->
   <FileAttributes useDirectBlit="false" useGPU="false" hasMetadata="true" actionScript3="true" suppressCrossDomainCaching="false" swfRelativeUrls="false" useNetwork="true"/>
   <Metadata>
         <![CDATA[<?xml version="1.0" ?>
@@ -44,12 +44,12 @@ public class %0 extends Object
   public function %0():*
   {
     //  derivedName  %0  
-    //  method_info  3                                                   
-    //  max_stack    1                                                   
-    //  max_regs     1                                                   
-    //  scope_depth  0                                                   
-    //  max_scope    1                                                   
-    //  code_length  6                                                   
+    //  method_info  3                                                    
+    //  max_stack    1                                                    
+    //  max_regs     1                                                    
+    //  scope_depth  0                                                    
+    //  max_scope    1                                                    
+    //  code_length  6                                                    
     bb0
       succs=[]
       0      getlocal0            
@@ -67,34 +67,32 @@ public class %0 extends Object
     //  max_regs     4            
     //  scope_depth  0            
     //  max_scope    1            
-    //  code_length  32           
+    //  code_length  30           
     bb0
       succs=[bb1,bb2]
-      0      getlocal0         
-      1      pushscope         
-      2      pushnull          
-      3      coerce_s          
-      4      setlocal2         
-      5      getlocal2         
-      6      pushnull          
-      7      ifeq       bb2    
+      0      getlocal0          
+      1      pushscope          
+      2      pushdouble         
+      3      setlocal2          
+      4      getlocal2          
+      5      pushnull           
+      6      ifeq        bb2    
     bb1
       succs=[bb3]
-      8      getlocal2         
-      9      jump       bb3    
+      7      getlocal2         
+      8      jump       bb3    
     bb2
       succs=[bb3]
-      10      pushstring  "bar"    
+      9      pushstring  "bar"    
     bb3
       succs=[]
-      11      coerce          Object                  
-      12      setlocal3                               
-      13      findpropstrict  assertEqual             
-      14      pushstring      "nullish coalescing"    
-      15      getlocal3                               
-      16      pushstring      "bar"                   
-      17      callpropvoid                            
-      18      returnvoid                              
+      10      setlocal3                                
+      11      findpropstrict  assertEqual              
+      12      pushstring      "nullish coalescing"     
+      13      getlocal3                                
+      14      pushbyte                              0  
+      15      callpropvoid                             
+      16      returnvoid                               
   }
 
   private function assertEqual(String,*,*):void
@@ -137,16 +135,16 @@ function script0$init():*
   //  code_length  14    
   bb0
     succs=[]
-    0      getlocal0                                                              
-    1      pushscope                                                              
-    2      getscopeobject                                                      0  
-    3      getlex          Object                                                 
-    4      dup                                                                    
-    5      pushscope                                                              
-    6      newclass                                                               
-    7      popscope                                                               
+    0      getlocal0                                                               
+    1      pushscope                                                               
+    2      getscopeobject                                                       0  
+    3      getlex          Object                                                  
+    4      dup                                                                     
+    5      pushscope                                                               
+    6      newclass                                                                
+    7      popscope                                                                
     8      initproperty    %0     
-    9      returnvoid                                                             
+    9      returnvoid                                                              
 }
 
   </DoABC>
