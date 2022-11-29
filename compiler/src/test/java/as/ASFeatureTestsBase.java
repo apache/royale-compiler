@@ -64,6 +64,20 @@ public class ASFeatureTestsBase
 		if(playerGlobal == null || !playerGlobal.isFile() || !playerGlobal.exists()) {
 			hasFlashPlayerGlobal = false;
 		}
+
+		if (hasFlashPlayerExecutable && !hasFlashPlayerGlobal)
+		{
+			String message = "Fatal Error: If FLASHPLAYER_DEBUGGER is defined, playerglobal must be available";
+			System.err.println(message);
+			fail(message);
+		}
+
+		if (!hasFlashPlayerExecutable && hasFlashPlayerGlobal)
+		{
+			String message = "Fatal Error: If playerglobal is available, FLASHPLAYER_DEBUGGER is required";
+			System.err.println(message);
+			fail(message);
+		}
 	}
 
 	protected boolean hasFlashPlayerExecutable = true;
@@ -174,6 +188,7 @@ public class ASFeatureTestsBase
         String results = compile(tempASFile, source, withFramework, withRPC, withSpark, otherOptions, false);
         assertThat(results, is(errors));
     }
+
 	protected void compileAndRun(String source, boolean withFramework, boolean withRPC, boolean withSpark, String[] otherOptions)
 	{
 	    int exitCode = 0;

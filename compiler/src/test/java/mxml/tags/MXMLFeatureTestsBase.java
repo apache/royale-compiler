@@ -71,6 +71,20 @@ public class MXMLFeatureTestsBase
 		if(playerGlobal == null || !playerGlobal.isFile() || !playerGlobal.exists()) {
 			hasFlashPlayerGlobal = false;
 		}
+
+		if (hasFlashPlayerExecutable && !hasFlashPlayerGlobal)
+		{
+			String message = "Fatal Error: If FLASHPLAYER_DEBUGGER is defined, playerglobal must be available";
+			System.err.println(message);
+			fail(message);
+		}
+
+		if (!hasFlashPlayerExecutable && hasFlashPlayerGlobal)
+		{
+			String message = "Fatal Error: If playerglobal is available, FLASHPLAYER_DEBUGGER is required";
+			System.err.println(message);
+			fail(message);
+		}
 	}
 
 	protected boolean hasFlashPlayerExecutable = true;
