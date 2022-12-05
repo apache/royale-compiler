@@ -419,10 +419,10 @@ public class MXMLBindingDirectiveHelper
             else if (left instanceof IdentifierNode)
                 s = getSourceStringFromIdentifierNode((IdentifierNode)left);
             else
-                System.out.println("expected binding BinaryOperatorAsNode left node" + node.toString());
+                System.err.println("expected binding BinaryOperatorAsNode left node" + node.toString());
         }
         else
-            System.out.println("expected binding member access left node" + node.toString());
+            System.err.println("expected binding member access left node" + node.toString());
         s += ".";
         
         IExpressionNode right = node.getRightOperandNode();
@@ -439,7 +439,7 @@ public class MXMLBindingDirectiveHelper
         else if (right instanceof IdentifierNode)
             s += getSourceStringFromIdentifierNode((IdentifierNode)right);
         else
-            System.out.println("expected binding member access right node" + node.toString());
+            System.err.println("expected binding member access right node" + node.toString());
         
         return s;
     }

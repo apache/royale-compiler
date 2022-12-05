@@ -151,7 +151,7 @@ public class ASScopeCache
 	            String qname = result.getQualifiedName();
 	            ICompilationUnit to = ((ASProjectScope)project.getScope()).getCompilationUnitForDefinition(result);
 	            if (to == null && !(qname.contentEquals("void") || qname.contentEquals("*")))
-	            	System.out.println("No compilation unit for " + qname);	
+	            	System.err.println("No compilation unit for " + qname);	
 	            if (to != null)
 	            	project.addDependency(from, to, dt, qname);
         	}
