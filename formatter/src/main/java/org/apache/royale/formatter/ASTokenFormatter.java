@@ -385,6 +385,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					case ASTokenTypes.TOKEN_OPERATOR_BITWISE_XOR:
 					case ASTokenTypes.TOKEN_OPERATOR_LOGICAL_AND:
 					case ASTokenTypes.TOKEN_OPERATOR_LOGICAL_OR:
+					case ASTokenTypes.TOKEN_OPERATOR_NULLISH_COALESCING:
 					case ASTokenTypes.TOKEN_OPERATOR_PLUS_ASSIGNMENT:
 					case ASTokenTypes.TOKEN_OPERATOR_MINUS_ASSIGNMENT:
 					case ASTokenTypes.TOKEN_OPERATOR_MULTIPLICATION_ASSIGNMENT:
@@ -869,6 +870,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					case ASTokenTypes.TOKEN_OPERATOR_BITWISE_XOR:
 					case ASTokenTypes.TOKEN_OPERATOR_LOGICAL_AND:
 					case ASTokenTypes.TOKEN_OPERATOR_LOGICAL_OR:
+					case ASTokenTypes.TOKEN_OPERATOR_NULLISH_COALESCING:
 					case ASTokenTypes.TOKEN_OPERATOR_PLUS_ASSIGNMENT:
 					case ASTokenTypes.TOKEN_OPERATOR_MINUS_ASSIGNMENT:
 					case ASTokenTypes.TOKEN_OPERATOR_MULTIPLICATION_ASSIGNMENT:

@@ -123,4 +123,24 @@ public class TestLogicalOperators extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testNullishCoalescingOperator() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"a??b;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"a ?? b;",
+				// @formatter:on
+				result);
+	}
 }
