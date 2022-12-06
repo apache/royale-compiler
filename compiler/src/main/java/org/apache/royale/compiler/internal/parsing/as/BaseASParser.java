@@ -3112,21 +3112,16 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
         return parsingProjectConfigVariables;
     }
 
-    protected final LiteralNode transformStringLiteral(ASToken token)
+    protected final LiteralNode transformRawString(ASToken token)
     {
         String tokenText = token.getText();
-        if (tokenText.startsWith("@"))
-        {
-            // the only change needed is to remove the @ symbol
-            // the escape sequences are already handled for us
-            String newText = tokenText.substring(1);
-            ASToken newToken = new ASToken(ASTokenTypes.TOKEN_LITERAL_STRING, token.getStart(), token.getEnd(), token.getLine(), token.getColumn(), newText);
-            newToken.setEndLine(token.getEndLine());
-            newToken.setEndColumn(token.getEndColumn());
-            return new LiteralNode(newToken, LiteralType.STRING);
-        }
-
-        return new LiteralNode(token, LiteralType.STRING);
+        // the only change needed is to remove the @ symbol
+        // the escape sequences are already handled for us
+        String newText = tokenText.substring(1);
+        ASToken newToken = new ASToken(ASTokenTypes.TOKEN_VERBATIM_STRING, token.getStart(), token.getEnd(), token.getLine(), token.getColumn(), newText);
+        newToken.setEndLine(token.getEndLine());
+        newToken.setEndColumn(token.getEndColumn());
+        return new LiteralNode(newToken, LiteralType.STRING);
     }
 
     private final ExpressionNodeBase transformNullishCoalescingExpression(ExpressionNodeBase left, ASToken op, ExpressionNodeBase right)

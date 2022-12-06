@@ -2498,8 +2498,10 @@ primaryExpression returns [ExpressionNodeBase n]
         { n = LanguageIdentifierNode.buildThis(token); }
     |   token=numericLiteral
         { n = new NumericLiteralNode(token); }
+    |   TOKEN_VERBATIM_STRING
+        { n = transformRawString(token); }
     |   TOKEN_LITERAL_STRING
-        { n = transformStringLiteral(token); }
+        { n = new LiteralNode(token, LiteralType.STRING); }
     |   TOKEN_VOID_0
         { n = new LiteralNode(token, LiteralType.OBJECT); }
     |   TOKEN_LITERAL_REGEXP

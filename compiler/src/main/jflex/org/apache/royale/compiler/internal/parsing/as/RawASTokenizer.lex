@@ -324,10 +324,15 @@ REGEX_CLASS="[" ({REGEX_ESCAPE}|[^\n\r\]\\])* "]"
 <STRINGLITERAL> "\""
 {
 	continueAggregate();
-	if (stringKind == StringKind.STRING || stringKind == StringKind.RAW)
+	if (stringKind == StringKind.STRING)
 	{
 		yybegin(YYINITIAL);
 		return buildAggregateToken(TOKEN_LITERAL_STRING);
+	}
+	else if (stringKind == StringKind.RAW)
+	{
+		yybegin(YYINITIAL);
+		return buildAggregateToken(TOKEN_VERBATIM_STRING);
 	}
 }
 

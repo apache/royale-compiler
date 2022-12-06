@@ -433,6 +433,7 @@ public class ASToken extends TokenBase implements IASToken, ASTokenTypes
             case TOKEN_LITERAL_HEX_NUMBER:
             case TOKEN_LITERAL_REGEXP:
             case TOKEN_LITERAL_STRING:
+            case TOKEN_VERBATIM_STRING:
             case TOKEN_LITERAL_XMLLIST:
             case TOKEN_E4X_XMLLIST_CLOSE:
                 return true;
@@ -937,6 +938,8 @@ public class ASToken extends TokenBase implements IASToken, ASTokenTypes
                 return ASTokenKind.SCOPE_CLOSE;
             case TOKEN_BLOCK_OPEN:
                 return ASTokenKind.SCOPE_OPEN;
+            case TOKEN_VERBATIM_STRING:
+                return ASTokenKind.VERBATIM_STRING;
             case TOKEN_LITERAL_STRING:
                 return ASTokenKind.STRING_LITERAL;
             case TOKEN_LITERAL_NUMBER:
