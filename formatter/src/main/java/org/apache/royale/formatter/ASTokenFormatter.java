@@ -1234,7 +1234,6 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 
 	private String formatLiteralString(IASToken token) {
 		String string = token.getText();
-		System.err.println("*** " + string);
 		String charsToEscape = "\b\t\n\f\r\\";
 		String escapeChars = "btnfr\\";
 		int escapeIndex = -1;
