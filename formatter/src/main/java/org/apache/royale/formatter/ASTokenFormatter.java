@@ -1133,7 +1133,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					return formatMultiLineComment(token.getText());
 				}
 				case ASTokenTypes.TOKEN_LITERAL_STRING: {
-					return formatLiteralString(token.getText());
+					return formatLiteralString(token);
 				}
 				case ASTokenTypes.TOKEN_SEMICOLON: {
 					if (skipFormatting) {
@@ -1232,7 +1232,9 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 		return comment;
 	}
 
-	private String formatLiteralString(String string) {
+	private String formatLiteralString(IASToken token) {
+		String string = token.getText();
+		System.err.println("*** " + string);
 		String charsToEscape = "\b\t\n\f\r\\";
 		String escapeChars = "btnfr\\";
 		int escapeIndex = -1;

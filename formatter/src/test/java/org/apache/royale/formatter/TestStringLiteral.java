@@ -143,4 +143,24 @@ public class TestStringLiteral extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testVerbatimDoubleQuoteWithBackslash() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"@\"\\\";",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+		"@\"\\\";",
+				// @formatter:on
+				result);
+	}
 }
