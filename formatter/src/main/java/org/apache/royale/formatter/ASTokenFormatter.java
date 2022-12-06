@@ -770,7 +770,10 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 						break;
 					}
 					case ASTokenTypes.TOKEN_COLON: {
-						if (!inControlFlowStatement && !inVarOrConstDeclaration && !inFunctionDeclaration) {
+						if (ternaryStack > 0) {
+							ternaryStack--;
+							requiredSpace = true;
+						} else if (!inControlFlowStatement && !inVarOrConstDeclaration && !inFunctionDeclaration) {
 							if (inCaseOrDefaultClause) {
 								inCaseOrDefaultClause = false;
 								caseOrDefaultBlockOpenPending = true;
@@ -798,9 +801,6 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 										numRequiredNewLines = Math.max(numRequiredNewLines, 1);
 									}
 								}
-							} else if (ternaryStack > 0) {
-								ternaryStack--;
-								requiredSpace = true;
 							} else {
 								requiredSpace = true;
 							}

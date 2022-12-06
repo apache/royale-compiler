@@ -82,4 +82,25 @@ public class TestTernaryStatement extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testInsideConditional() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"if (condition ? statement : statement) {}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+			"if (condition ? statement : statement) {}",
+				// @formatter:on
+				result);
+	}
 }
