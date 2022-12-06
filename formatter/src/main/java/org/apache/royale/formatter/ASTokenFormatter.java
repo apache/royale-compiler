@@ -722,7 +722,8 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 						}
 						break;
 					}
-					case ASTokenTypes.TOKEN_KEYWORD_TRY: {
+					case ASTokenTypes.TOKEN_KEYWORD_TRY:
+					case ASTokenTypes.TOKEN_KEYWORD_FINALLY: {
 						blockStack.add(new BlockStackItem(token));
 						if (!skipWhitespaceBeforeSemicolon) {
 							requiredSpace = true;

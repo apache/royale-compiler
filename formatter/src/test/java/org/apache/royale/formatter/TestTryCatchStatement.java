@@ -244,4 +244,69 @@ public class TestTryCatchStatement extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+	@Test
+	public void testPlaceOpenBraceOnNewLineWithEmptyBlockWithFinally() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"try {\n" +
+			"}\n" +
+			"catch (e:Object) {\n" +
+			"}\n" +
+			"finally {\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"try\n" +
+				"{\n" +
+				"}\n" +
+				"catch (e:Object)\n" +
+				"{\n" +
+				"}\n" +
+				"finally\n" +
+				"{\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testDisablePlaceOpenBraceOnNewLineWithEmptyBlockWithFinally() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"try\n" +
+			"{\n" +
+			"}\n" +
+			"catch (e:Object)\n" +
+			"{\n" +
+			"}\n" +
+			"finally\n" +
+			"{\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"try {\n" +
+				"}\n" +
+				"catch (e:Object) {\n" +
+				"}\n" +
+				"finally {\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
 }
