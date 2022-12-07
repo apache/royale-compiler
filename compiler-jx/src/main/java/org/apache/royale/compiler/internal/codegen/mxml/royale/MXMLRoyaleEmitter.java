@@ -2478,13 +2478,9 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             RoyaleJSProject project = (RoyaleJSProject) getMXMLWalker().getProject();
             project.needLanguage = true;
             MXMLFunctionNode fnode = ((MXMLFunctionNode)node);
-            IFunctionDefinition fdef = fnode.getValue(project);
             IExpressionNode fexpNode = (IExpressionNode)fnode.getExpressionNode();
-            String fnName = fdef.getBaseName();
             IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
                     .getASEmitter();
-            if (fdef.isPrivate() && project.getAllowPrivateNameConflicts())
-            	fnName = ((JSRoyaleEmitter)asEmitter).formatPrivateName(fdef.getParent().getQualifiedName(), fdef.getBaseName());
             String fNodeString = ((JSRoyaleEmitter)asEmitter).stringifyNode(fexpNode);
     		currentPropertySpecifier.value = fNodeString; 
     		return;
