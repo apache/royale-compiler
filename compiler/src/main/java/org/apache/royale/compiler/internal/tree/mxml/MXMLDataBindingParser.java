@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.constants.IMXMLCoreConstants;
 import org.apache.royale.compiler.internal.mxml.MXMLDialect;
 import org.apache.royale.compiler.internal.parsing.ISourceFragment;
 import org.apache.royale.compiler.internal.parsing.SourceFragment;
@@ -154,7 +155,7 @@ class MXMLDataBindingParser
         {
             String physicalText = fragment.getPhysicalText();
             String text = fragment.getLogicalText();
-            if (physicalText.startsWith("<![CDATA[") && !text.startsWith("<![CDATA["))
+            if (physicalText.startsWith(IMXMLCoreConstants.cDataStart) && !text.startsWith(IMXMLCoreConstants.cDataStart))
             {
                 // CData cannot contain data binding
                 continue;
