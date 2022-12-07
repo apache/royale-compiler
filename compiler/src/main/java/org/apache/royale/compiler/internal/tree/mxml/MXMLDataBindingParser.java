@@ -152,8 +152,14 @@ class MXMLDataBindingParser
         // Iterate over each input fragment.
         for (ISourceFragment fragment : fragments)
         {
-            // Iterate over each character of logical text in the current fragment.
+            String physicalText = fragment.getPhysicalText();
             String text = fragment.getLogicalText();
+            if (physicalText.startsWith("<![CDATA[") && !text.startsWith("<![CDATA["))
+            {
+                // CData cannot contain data binding
+                continue;
+            }
+            // Iterate over each character of logical text in the current fragment.
             int n = text.length();
             for (int i = 0; i < n; i++)
             {
