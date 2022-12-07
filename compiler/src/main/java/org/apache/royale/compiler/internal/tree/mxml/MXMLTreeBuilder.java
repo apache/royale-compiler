@@ -38,6 +38,7 @@ import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.common.SourceLocation;
 import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IMXMLCoreConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
@@ -474,29 +475,71 @@ public class MXMLTreeBuilder
                                               EnumSet<TextParsingFlags> flags,
                                               Object defaultValue)
     {
-        String text = SourceFragmentsReader.concatLogicalText(fragments);
-        if (propertyNode != null && propertyNode.getName().equals("innerHTML"))
-        	text = SourceFragmentsReader.concatPhysicalText(fragments);
-
-        Object value = mxmlDialect.isWhitespace(text) ?
-                       defaultValue :
-                       parseValue(propertyNode, type, text, flags);
-
-        if (value == null)
+        Object value = null;
+        if (type.getQualifiedName().equals(IASLanguageConstants.String)
+                && flags.contains(TextParsingFlags.COLLAPSE_WHITE_SPACE))
         {
-            String typeName = type.getQualifiedName();
-            if (typeName.equals(IASLanguageConstants.String) ||
-                typeName.equals(IASLanguageConstants.Object) ||
-                typeName.equals(IASLanguageConstants.ANY_TYPE))
+            // special case for [CollapseWhiteSpace]
+            // CData should never be collapsed
+            StringBuilder valueSb = new StringBuilder();
+            StringBuilder currentSb = new StringBuilder();
+            EnumSet<TextParsingFlags> cdataFlags = flags.clone();
+            // don't collapse whitespace on CData!
+            cdataFlags.remove(TextParsingFlags.COLLAPSE_WHITE_SPACE);
+            for (ISourceFragment sourceFragment : fragments)
             {
-                value = "";
+                String physicalText = sourceFragment.getPhysicalText();
+                String logicalText = sourceFragment.getLogicalText();
+                if (physicalText.startsWith(IMXMLCoreConstants.cDataStart) && !logicalText.startsWith(IMXMLCoreConstants.cDataStart))
+                {
+                    // when encountering CData, parse any regular strings that
+                    // were already encountered
+                    valueSb.append(mxmlDialect.parseString(project, currentSb.toString(), flags));
+                    // start with a new builder after the CData
+                    currentSb = new StringBuilder();
+
+                    // parse the CData string separately, since it doesn't have
+                    // the flag to collapse whitespace
+                    valueSb.append(mxmlDialect.parseString(project, logicalText, cdataFlags));
+                }
+                else
+                {
+                    // not CData, so concat normally
+                    currentSb.append(logicalText);
+                }
             }
-            if (typeName.equals(IASLanguageConstants.Number) ||
-                typeName.equals(IASLanguageConstants._int) ||
-                typeName.equals(IASLanguageConstants.uint) ||
-                typeName.equals(IASLanguageConstants.Boolean))
+            // parse any regular strings that remain
+            valueSb.append(mxmlDialect.parseString(project, currentSb.toString(), flags));
+            value = valueSb.toString();
+        }
+        else
+        {
+            String text = SourceFragmentsReader.concatLogicalText(fragments);
+            if (propertyNode != null && propertyNode.getName().equals("innerHTML"))
             {
-                return null;
+                text = SourceFragmentsReader.concatPhysicalText(fragments);
+            }
+
+            value = mxmlDialect.isWhitespace(text) ?
+                        defaultValue :
+                        parseValue(propertyNode, type, text, flags);
+
+            if (value == null)
+            {
+                String typeName = type.getQualifiedName();
+                if (typeName.equals(IASLanguageConstants.String) ||
+                    typeName.equals(IASLanguageConstants.Object) ||
+                    typeName.equals(IASLanguageConstants.ANY_TYPE))
+                {
+                    value = "";
+                }
+                if (typeName.equals(IASLanguageConstants.Number) ||
+                    typeName.equals(IASLanguageConstants._int) ||
+                    typeName.equals(IASLanguageConstants.uint) ||
+                    typeName.equals(IASLanguageConstants.Boolean))
+                {
+                    return null;
+                }
             }
         }
         if (value == null)
