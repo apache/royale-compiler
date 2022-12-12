@@ -184,4 +184,19 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
 
         compileAndRun(source);
     }
+
+	@Test
+    public void testNullConditionalArrayAccess()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = {};",
+			"var result:* = o?.a?.[0];",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndExpectErrors(source, false, false, false, new String[0], "'[' is not allowed here\n");
+    }
+
+
 }
