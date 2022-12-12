@@ -716,6 +716,42 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         assertOut("a.setFullYear(10, 0, 0)");
     }
 
+    @Test
+    public void testDateGetDay()
+    {
+        IVariableNode node = getVariable("var a:Date = new Date(); var b:Number = a.day");
+        node = (IVariableNode)(node.getParent().getChild(1));
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ b = a.getDay()");
+    }
+
+    @Test
+    public void testDateGetDayMethod()
+    {
+        IVariableNode node = getVariable("var a:Date = new Date(); var b:Number = a.getDay()");
+        node = (IVariableNode)(node.getParent().getChild(1));
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ b = a.getDay()");
+    }
+
+    @Test
+    public void testDateGetTimezoneOffset()
+    {
+        IVariableNode node = getVariable("var a:Date = new Date(); var b:Number = a.timezoneOffset");
+        node = (IVariableNode)(node.getParent().getChild(1));
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ b = a.getTimezoneOffset()");
+    }
+
+    @Test
+    public void testDateGetTimezoneOffsetMethod()
+    {
+        IVariableNode node = getVariable("var a:Date = new Date(); var b:Number = a.getTimezoneOffset()");
+        node = (IVariableNode)(node.getParent().getChild(1));
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ b = a.getTimezoneOffset()");
+    }
+
     @Override
     @Test
     public void testVector()
