@@ -281,8 +281,13 @@ public class ArrayLikeUtil
             return false;
         }
         boolean isCandidate = false;
+        IDefinition dynType = null;
+        IExpressionNode rightNode = dynNode.getRightOperandNode();
+        if (rightNode != null)
+        {
+            dynType = rightNode.resolveType(project);
+        }
         //first check to see if the access is numeric... if it is not then we consider that it is not a candidate
-        IDefinition dynType = dynNode.getRightOperandNode().resolveType(project);
         if (project.getBuiltinType(IASLanguageConstants.BuiltinType.NUMBER).equals(dynType)
                 || project.getBuiltinType(IASLanguageConstants.BuiltinType.UINT).equals(dynType)
                 || project.getBuiltinType(IASLanguageConstants.BuiltinType.INT).equals(dynType)
