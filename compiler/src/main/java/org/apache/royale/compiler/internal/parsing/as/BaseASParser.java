@@ -3175,7 +3175,6 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
         {
             ASToken memberAccessOperator = new ASToken(ASTokenTypes.TOKEN_OPERATOR_MEMBER_ACCESS, op.getStart(), op.getEnd(), op.getLine(), op.getColumn(), ".");
             MemberAccessExpressionNode memberAccessNode = new MemberAccessExpressionNode(prevRightNode, memberAccessOperator, r);
-            memberAccessNode.setAllowE4XFilter(false);
 
             ASToken ternaryOperator = new ASToken(ASTokenTypes.TOKEN_OPERATOR_TERNARY, -1, -1, -1, -1, "?");
             ASToken innerResultNullToken = new ASToken(ASTokenTypes.TOKEN_KEYWORD_NULL, -1, -1, -1, -1, "null");
@@ -3207,7 +3206,6 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
 
         ASToken memberAccessOperator = new ASToken(ASTokenTypes.TOKEN_OPERATOR_MEMBER_ACCESS, op.getStart(), op.getEnd(), op.getLine(), op.getColumn(), ".");
         MemberAccessExpressionNode memberAccessNode = new MemberAccessExpressionNode(l, memberAccessOperator, r);
-        memberAccessNode.setAllowE4XFilter(false);
 
         ASToken ternaryOperator = new ASToken(ASTokenTypes.TOKEN_OPERATOR_TERNARY, -1, -1, -1, -1, "?");
         ASToken resultNullToken = new ASToken(ASTokenTypes.TOKEN_KEYWORD_NULL, -1, -1, -1, -1, "null");
