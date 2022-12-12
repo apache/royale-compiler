@@ -889,7 +889,9 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
     void specialCaseDate(IBinaryOperatorNode node, MemberAccessExpressionNode leftSide)
     {
         if (ASNodeUtils.hasParenOpen(node))
+		{
             write(ASEmitterTokens.PAREN_OPEN);
+		}
 
     	MemberAccessExpressionNode dateNode = (MemberAccessExpressionNode)leftSide;
         IIdentifierNode rightSide = (IIdentifierNode)dateNode.getRightOperandNode();
@@ -898,6 +900,11 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                 && !op.contains("==")
                 && !(op.startsWith("<") || op.startsWith(">") || op
                         .startsWith("!"));
+		boolean assignmentNeedsGetter = isAssignment && !(node.getParent() instanceof IBlockNode);
+		if (assignmentNeedsGetter)
+		{
+            write(ASEmitterTokens.PAREN_OPEN);
+		}
         getWalker().walk(dateNode.getLeftOperandNode());
         String rightName = rightSide.getName();
         if (isAssignment)
@@ -920,6 +927,17 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 	        }
 	        getWalker().walk(node.getRightOperandNode());
 	        write(ASEmitterTokens.PAREN_CLOSE);
+			if (assignmentNeedsGetter)
+			{
+				write(ASEmitterTokens.COMMA);
+	        	write(ASEmitterTokens.SPACE);
+				getWalker().walk(dateNode.getLeftOperandNode());
+				DatePropertiesGetters propGetter = DatePropertiesGetters.valueOf(rightName.toUpperCase());
+				write(ASEmitterTokens.MEMBER_ACCESS);
+				write(propGetter.getFunctionName());
+				write(ASEmitterTokens.PAREN_OPEN);
+				write(ASEmitterTokens.PAREN_CLOSE);
+			}
         }
         else
         {
@@ -933,8 +951,13 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
         	write(ASEmitterTokens.SPACE);
 	        getWalker().walk(node.getRightOperandNode());
         }
-
-        if (ASNodeUtils.hasParenOpen(node))
+		if (assignmentNeedsGetter)
+		{
             write(ASEmitterTokens.PAREN_CLOSE);
+		}
+        if (ASNodeUtils.hasParenOpen(node))
+		{
+            write(ASEmitterTokens.PAREN_CLOSE);
+		}
     }
 }

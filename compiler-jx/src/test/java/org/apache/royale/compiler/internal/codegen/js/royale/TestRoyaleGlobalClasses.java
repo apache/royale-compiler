@@ -317,6 +317,15 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     }
 
     @Test
+    public void testDateGetSeconds()
+    {
+        IVariableNode node = getVariable("var a:Date = new Date(); var b:Number = a.seconds");
+        node = (IVariableNode)(node.getParent().getChild(1));
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ b = a.getSeconds()");
+    }
+
+    @Test
     public void testDateSetSeconds()
     {
     	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.seconds = 10");
@@ -325,10 +334,87 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     }
 
     @Test
+    public void testDateGetAndSetSeconds()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); var b:Number = a.seconds = 10");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("(a.setSeconds(10), a.getSeconds())");
+    }
+
+    @Test
+    public void testDateIncreaseSeconds()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.seconds += 10");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setSeconds(a.getSeconds() + 10)");
+    }
+
+    @Test
+    public void testDateGetSecondsMethod()
+    {
+        IVariableNode node = getVariable("var a:Date = new Date(); var b:Number = a.getSeconds()");
+        node = (IVariableNode)(node.getParent().getChild(1));
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ b = a.getSeconds()");
+    }
+
+    @Test
+    public void testDateSetSecondsMethod()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.setSeconds(10, 0)");
+    	IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
+        asBlockWalker.visitFunctionCall(parentNode);
+        assertOut("a.setSeconds(10, 0)");
+    }
+
+    @Test
+    public void testDateGetDate()
+    {
+        IVariableNode node = getVariable("var a:Date = new Date(); var b:Number = a.date");
+        node = (IVariableNode)(node.getParent().getChild(1));
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ b = a.getDate()");
+    }
+
+    @Test
     public void testDateSetDate()
     {
     	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.date = 10");
         asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setDate(10)");
+    }
+
+    @Test
+    public void testDateGetAndSetDate()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); var b:Number = a.date = 10");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("(a.setDate(10), a.getDate())");
+    }
+
+    @Test
+    public void testDateIncreaseDate()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.date += 10");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setDate(a.getDate() + 10)");
+    }
+
+    @Test
+    public void testDateGetDateMethod()
+    {
+        IVariableNode node = getVariable("var a:Date = new Date(); var b:Number = a.getDate()");
+        node = (IVariableNode)(node.getParent().getChild(1));
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ b = a.getDate()");
+    }
+
+    @Test
+    public void testDateSetDateMethod()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.setDate(10)");
+    	IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
+        asBlockWalker.visitFunctionCall(parentNode);
         assertOut("a.setDate(10)");
     }
 
@@ -358,6 +444,24 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     }
 
     @Test
+    public void testDateGetTimeInMillisecondsMethod()
+    {
+        IVariableNode node = getVariable("var a:Date = new Date(); var b:Number = a.getTime()");
+        node = (IVariableNode)(node.getParent().getChild(1));
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ b = a.getTime()");
+    }
+
+    @Test
+    public void testDateSetTimeInMillisecondsMethod()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.setTime(10)");
+    	IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
+        asBlockWalker.visitFunctionCall(parentNode);
+        assertOut("a.setTime(10)");
+    }
+
+    @Test
     public void testDateGetMinutes()
     {
         IVariableNode node = getVariable("var a:Date = new Date(); var b:Number = a.minutes");
@@ -372,6 +476,14 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.minutes = 10");
         asBlockWalker.visitBinaryOperator(node);
         assertOut("a.setMinutes(10)");
+    }
+
+    @Test
+    public void testDateGetAndSetMinutes()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); var b:Number = a.minutes = 10");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("(a.setMinutes(10), a.getMinutes())");
     }
 
     @Test
@@ -398,6 +510,210 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
     	IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
         asBlockWalker.visitFunctionCall(parentNode);
         assertOut("a.setMinutes(10, 0, 0)");
+    }
+
+    @Test
+    public void testDateGetHours()
+    {
+        IVariableNode node = getVariable("var a:Date = new Date(); var b:Number = a.hours");
+        node = (IVariableNode)(node.getParent().getChild(1));
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ b = a.getHours()");
+    }
+
+    @Test
+    public void testDateSetHours()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.hours = 10");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setHours(10)");
+    }
+
+    @Test
+    public void testDateGetAndSetHours()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); var b:Number = a.hours = 10");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("(a.setHours(10), a.getHours())");
+    }
+
+    @Test
+    public void testDateIncreaseHours()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.hours += 10");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setHours(a.getHours() + 10)");
+    }
+
+    @Test
+    public void testDateGetHoursMethod()
+    {
+        IVariableNode node = getVariable("var a:Date = new Date(); var b:Number = a.getHours()");
+        node = (IVariableNode)(node.getParent().getChild(1));
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ b = a.getHours()");
+    }
+    
+    @Test
+    public void testDateSetHoursMethod()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.setHours(10, 0, 0, 0)");
+    	IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
+        asBlockWalker.visitFunctionCall(parentNode);
+        assertOut("a.setHours(10, 0, 0, 0)");
+    }
+
+    @Test
+    public void testDateGetMilliseconds()
+    {
+        IVariableNode node = getVariable("var a:Date = new Date(); var b:Number = a.milliseconds");
+        node = (IVariableNode)(node.getParent().getChild(1));
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ b = a.getMilliseconds()");
+    }
+
+    @Test
+    public void testDateSetMilliseconds()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.milliseconds = 10");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setMilliseconds(10)");
+    }
+
+    @Test
+    public void testDateGetAndSetMilliseconds()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); var b:Number = a.milliseconds = 10");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("(a.setMilliseconds(10), a.getMilliseconds())");
+    }
+
+    @Test
+    public void testDateIncreaseMilliseconds()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.milliseconds += 10");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setMilliseconds(a.getMilliseconds() + 10)");
+    }
+
+    @Test
+    public void testDateGetMillisecondsMethod()
+    {
+        IVariableNode node = getVariable("var a:Date = new Date(); var b:Number = a.getMilliseconds()");
+        node = (IVariableNode)(node.getParent().getChild(1));
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ b = a.getMilliseconds()");
+    }
+    
+    @Test
+    public void testDateSetMillisecondsMethod()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.setMilliseconds(10)");
+    	IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
+        asBlockWalker.visitFunctionCall(parentNode);
+        assertOut("a.setMilliseconds(10)");
+    }
+
+    @Test
+    public void testDateGetMonth()
+    {
+        IVariableNode node = getVariable("var a:Date = new Date(); var b:Number = a.month");
+        node = (IVariableNode)(node.getParent().getChild(1));
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ b = a.getMonth()");
+    }
+
+    @Test
+    public void testDateSetMonth()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.month = 10");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setMonth(10)");
+    }
+
+    @Test
+    public void testDateGetAndSetMonth()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); var b:Number = a.month = 10");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("(a.setMonth(10), a.getMonth())");
+    }
+
+    @Test
+    public void testDateIncreaseMonth()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.month += 10");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setMonth(a.getMonth() + 10)");
+    }
+
+    @Test
+    public void testDateGetMonthMethod()
+    {
+        IVariableNode node = getVariable("var a:Date = new Date(); var b:Number = a.getMonth()");
+        node = (IVariableNode)(node.getParent().getChild(1));
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ b = a.getMonth()");
+    }
+    
+    @Test
+    public void testDateSetMonthMethod()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.setMonth(10, 0)");
+    	IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
+        asBlockWalker.visitFunctionCall(parentNode);
+        assertOut("a.setMonth(10, 0)");
+    }
+
+    @Test
+    public void testDateGetFullYear()
+    {
+        IVariableNode node = getVariable("var a:Date = new Date(); var b:Number = a.fullYear");
+        node = (IVariableNode)(node.getParent().getChild(1));
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ b = a.getFullYear()");
+    }
+
+    @Test
+    public void testDateSetFullYear()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.fullYear = 10");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setFullYear(10)");
+    }
+
+    @Test
+    public void testDateGetAndSetFullYear()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); var b:Number = a.fullYear = 10");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("(a.setFullYear(10), a.getFullYear())");
+    }
+
+    @Test
+    public void testDateIncreaseFullYear()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.fullYear += 10");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a.setFullYear(a.getFullYear() + 10)");
+    }
+
+    @Test
+    public void testDateGetFullYearMethod()
+    {
+        IVariableNode node = getVariable("var a:Date = new Date(); var b:Number = a.getFullYear()");
+        node = (IVariableNode)(node.getParent().getChild(1));
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ b = a.getFullYear()");
+    }
+    
+    @Test
+    public void testDateSetFullYearMethod()
+    {
+    	IBinaryOperatorNode node = getBinaryNode("var a:Date = new Date(); a.setFullYear(10, 0, 0)");
+    	IFunctionCallNode parentNode = (IFunctionCallNode)(node.getParent());
+        asBlockWalker.visitFunctionCall(parentNode);
+        assertOut("a.setFullYear(10, 0, 0)");
     }
 
     @Override
