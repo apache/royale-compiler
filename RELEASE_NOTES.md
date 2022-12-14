@@ -16,7 +16,7 @@ Apache Royale Compiler 0.9.10
 - formatter: Can load configuration options with `-load-config+=path/to/file.xml`, similar to compiler.
 - formatter: If a file named _asformat-config.xml_ appears in the current working directory, automatically load it with `-load-config`. To disable this behavior, use `-skip-local-config-file=true`.
 - formatter: Fix issue where more than one new line might appear at the end of a file.
-- formatter: Fix intentation between opening and closing parentheses/brackets on separate lines.
+- formatter: Fix indentation between opening and closing parentheses/brackets on separate lines.
 - formatter: Fix detection of `Script` elements in MXML when line endings are CRLF.
 - formatter: Fix exception when file starts with UTF BOM character.
 - formatter: Fix issue where ternary operator inside `if` condition was formatted incorrectly.
