@@ -1,8 +1,7 @@
 For additional information on recent issues that have been closed, see [Github Issues List](https://github.com/apache/royale-compiler/issues?q=is%3Aissue+is%3Aclosed)
 
 Apache Royale Compiler 0.9.10
-
-=================
+=============================
 
 - **aslint** is a new command line code linter for ActionScript and MXML, with a programmatic API for use in editors and IDEs.
 - compiler: Added `--watch` compiler option that keeps compiler active and incrementally compiles when changes to _.as_ and _.mxml_ files are detected. You may exit with Ctrl+C.
@@ -26,8 +25,7 @@ Apache Royale Compiler 0.9.10
 - Building royale-compiler now requires JDK 8 or newer.
 
 Apache Royale Compiler 0.9.9
-
-=================
+============================
 
 - **asformat** is a new command line code formatter for ActionScript and MXML, with a programmatic API for use in editors and IDEs.
 - Added a boolean new compiler option `compiler.mxml.force-local-id` - (short commandline form `force-local-id`). This is a quick way to avoid propagating id attributes to browser DOM in JSRoyale. 
@@ -46,7 +44,7 @@ Apache Royale Compiler 0.9.9
 - Fixed parse exception when binding to XML.
 
 Apache Royale Compiler 0.9.8
-=================
+============================
 
 - Fixed issue where problems in .mxml files were sometimes duplicated.
 - Fixed issue where unrecognized characters in .mxml files were sometimes ignored, and now an error is reported.
@@ -65,7 +63,7 @@ Apache Royale Compiler 0.9.8
 - (JS) (Advanced) Added prevent-rename-public-static-methods, prevent-rename-public-instance-methods, prevent-rename-public-static-variables, prevent-rename-public-instance-variables, prevent-rename-public-static-accessors, and prevent-rename-public-instance-accessors compiler options to provide more granular control when prevent-rename-public-symbols is true (same for protected and internal namespaces too).
 
 Apache Royale Compiler 0.9.7
-=================
+============================
 
  - Definitions containing [JSModule] with a custom module name are no longer required to use strict camelCase naming scheme.
  - Added Flex emulation RPC WebService partial support
@@ -102,7 +100,7 @@ Apache Royale Compiler 0.9.7
  
 
 Apache Royale Compiler 0.9.6
-=================
+============================
 
  - Added -allow-abstract-classes compiler option to enable abstract keyword for classes and methods.
  - Added -allow-private-constructors compiler option to enable classes with private constructors.
@@ -117,12 +115,12 @@ Apache Royale Compiler 0.9.6
  - Fix automatic type coercion in generated JS so that it better matches SWF behavior.
 
 Apache Royale Compiler 0.9.4
-=================
+============================
  
  - @royaledebug comment on method will make the method go away in a js release build.
 
 Apache Royale Compiler 0.9.3
-=================
+============================
  
  - [CSS selectors can start with "::" and compiler adds "."](https://github.com/apache/royale-compiler/issues/40)
  - [CSS file must be minified in js-release](https://github.com/apache/royale-compiler/issues/39)
@@ -140,11 +138,11 @@ Apache Royale Compiler 0.9.3
 
 
 Apache Royale Compiler 0.9.2
-=================
+============================
 
 
 Apache Royale Compiler 0.9.1
-=================
+============================
 
 Fixed Issues:
 
@@ -156,7 +154,8 @@ https://github.com/apache/royale-compiler/wiki/Release-Notes-0.9.1
 
 
 Apache Royale Compiler 0.9.0
-=================
+============================
+
 Apache Royale Compiler 0.9.0 is the first release of a next-generation
 compiler for building Apache Royale applications.
 
