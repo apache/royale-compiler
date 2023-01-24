@@ -3294,6 +3294,7 @@ argumentList[ContainerNode args]
 { 
 	ExpressionNodeBase n = null; 
 	boolean foundFirstArg = false; 
+	Token afterComma = null;
 }
     :   (   n=assignmentExpression
     		{ foundFirstArg = true; if (args != null) args.addItem(n); }
@@ -3317,12 +3318,21 @@ argumentList[ContainerNode args]
     				if (n!= null && args != null) args.addItem(n);
     			}
     			if (args != null) args.endAfter(commaT);	
+				afterComma = LT(1);
     		}
     	
     		n=assignmentExpression
 			{ 
 				if(n == null) 
+				{
 				    n = handleMissingIdentifier(null); 
+					// special case: nothing between "," and ")"
+					// ensures that args ends at the correct offset
+					if(afterComma.getType() == TOKEN_PAREN_CLOSE)
+					{
+						args.endAfter(afterComma);
+					}
+				}
 			    
 			    if (args != null) 
                     args.addItem(n); 
