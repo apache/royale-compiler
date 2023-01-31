@@ -323,6 +323,7 @@
             <flashVersion>${flash.version}</flashVersion>
             <airVersion>${air.version}</airVersion>
             <mavenLocalRepoDir>${settings.localRepository}</mavenLocalRepoDir>
+            <optionWithSwfEnabled>${option.withSwf.enabled}</optionWithSwfEnabled>
             <FLASHPLAYER_DEBUGGER>${env.FLASHPLAYER_DEBUGGER}</FLASHPLAYER_DEBUGGER>
           </systemPropertyVariables>
         </configuration>
