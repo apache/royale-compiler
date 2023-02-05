@@ -120,12 +120,12 @@
     </target>
     
     <target name="download-artifacts-utils" if="utils">
-        <get src="http://apacheroyaleci2.westus2.cloudapp.azure.com:8080/job/Royale_Release_Step_002a_if_utils/lastSuccessfulBuild/artifact/*zip*/archive.zip" dest="${artifactfolder}/archive_utils.zip" />
+        <get src="http://apacheroyale.francecentral.cloudapp.azure.com:8080/job/Royale_Release_Step_002a_if_utils/lastSuccessfulBuild/artifact/*zip*/archive.zip" dest="${artifactfolder}/archive_utils.zip" />
     </target>
     
     <target name="download-artifacts" if="artifactfolder">
         <antcall target="download-artifacts-utils" />
-        <get src="http://apacheroyaleci2.westus2.cloudapp.azure.com:8080/job/Royale_Release_Step_003/lastSuccessfulBuild/artifact/*zip*/archive.zip" dest="${artifactfolder}/archive.zip" />
+        <get src="http://apacheroyale.francecentral.cloudapp.azure.com:8080/job/Royale_Release_Step_003/lastSuccessfulBuild/artifact/*zip*/archive.zip" dest="${artifactfolder}/archive.zip" />
     </target>
 
     <target name="unzip-artifacts-utils" if="utils">

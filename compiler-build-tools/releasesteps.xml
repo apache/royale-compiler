@@ -125,7 +125,7 @@
     </target>
     
     <target name="download-artifacts" if="artifactfolder">
-        <get src="http://apacheroyaleci2.westus2.cloudapp.azure.com:8080/job/Royale_Compiler_Build_Tools_Release_Step_002/lastSuccessfulBuild/artifact/*zip*/archive.zip" dest="${artifactfolder}/archive.zip" />
+        <get src="http://apacheroyale.francecentral.cloudapp.azure.com:8080/job/Royale_Compiler_Build_Tools_Release_Step_002/lastSuccessfulBuild/artifact/*zip*/archive.zip" dest="${artifactfolder}/archive.zip" />
     </target>
 
     <target name="unzip-artifacts" if="artifactfolder">
