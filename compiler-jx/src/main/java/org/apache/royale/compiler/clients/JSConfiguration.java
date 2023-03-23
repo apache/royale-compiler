@@ -355,6 +355,10 @@ public class JSConfiguration extends Configuration
     	return super.getOutput();
     }
 
+    public String getJsOutput() {
+        return jsoutput;
+    }
+
     @Config
     @Arguments("filename")
     public void setJsOutput(ConfigurationValue val, String output) throws ConfigurationException
