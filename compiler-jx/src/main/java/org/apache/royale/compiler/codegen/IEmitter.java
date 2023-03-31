@@ -99,10 +99,10 @@ public interface IEmitter
     void writeToken(String value);
 
     /**
-     * Takes the node argument and created a String representation if it using
+     * Takes the node argument and created a String representation if it is using
      * the buffer temporarily.
      * <p>
-     * Note; This method is still beta, it need more logic if an emitter is
+     * Note; This method is still beta, it will need more logic if an emitter is
      * actually using the buffer!
      * 
      * @param node The node walk and create a String for.
