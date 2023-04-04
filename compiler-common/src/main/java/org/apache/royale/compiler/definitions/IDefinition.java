@@ -101,6 +101,22 @@ public interface IDefinition
      * @return An <code>int</code> for the column number.
      */
     int getColumn();
+    
+    /**
+     * Gets the local line number of the end of the entire definition (not just
+     * the name). It is zero-based.
+     * 
+     * @return An <code>int</code> for the line number.
+     */
+    int getEndLine();
+
+    /**
+     * Gets the local column number of the end of the entire definition (not
+     * just the name). It is zero-based.
+     * 
+     * @return An <code>int</code> for the column number.
+     */
+    int getEndColumn();
 
     /**
      * Gets the absolute starting offset of the entire definition (not just the

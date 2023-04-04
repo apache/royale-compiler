@@ -414,6 +414,26 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
     }
 
     @Override
+    public int getEndLine()
+    {
+        final IDefinitionNode node = getNode();
+        if (node == null)
+            return UNKNOWN;
+
+        return node.getEndLine();
+    }
+
+    @Override
+    public int getEndColumn()
+    {
+        final IDefinitionNode node = getNode();
+        if (node == null)
+            return UNKNOWN;
+
+        return node.getEndColumn();
+    }
+
+    @Override
     public int getAbsoluteStart()
     {
         // Because the starting offset is what is used
