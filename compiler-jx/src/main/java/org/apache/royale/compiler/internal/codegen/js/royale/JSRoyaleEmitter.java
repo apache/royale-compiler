@@ -1097,7 +1097,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
             File file = new File(FilenameNormalization.normalize(source));
     		try {
     	        String newlineReplacement = "\\\\n";
-				String s = FileUtils.readFileToString(file);
+				String s = FileUtils.readFileToString(file, "UTF-8");
 	            s = s.replaceAll("\n", "__NEWLINE_PLACEHOLDER__");
 	            s = s.replaceAll("\r", "__CR_PLACEHOLDER__");
 	            s = s.replaceAll("\t", "__TAB_PLACEHOLDER__");
