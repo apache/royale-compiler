@@ -160,7 +160,7 @@ public class EmbedNode extends ExpressionNodeBase implements IEmbedNode, IEmbedR
         {
             File file = new File(FilenameNormalization.normalize(source));
     		try {
-				String string = FileUtils.readFileToString(file);
+				String string = FileUtils.readFileToString(file, "UTF-8");
 				return string;
 			} catch (IOException e) {
 	            problems.add(new EmbedUnableToReadSourceProblem(e, file.getPath()));
