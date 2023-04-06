@@ -346,6 +346,10 @@ public class EmbedData implements IEmbedData
             {
                 attributes.put(EmbedAttribute.SYMBOL, value);
             }
+            else if (EmbedAttribute.CHARSET.equals(key))
+            {
+                attributes.put(EmbedAttribute.CHARSET, value);
+            }
             else if (EmbedAttribute.ADV_ANTI_ALIASING.equals(key) ||
                     EmbedAttribute.EMBED_AS_CFF.equals(key) ||
                     EmbedAttribute.UNICODE_RANGE.equals(key) ||

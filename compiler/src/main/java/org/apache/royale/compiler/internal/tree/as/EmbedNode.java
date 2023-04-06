@@ -156,11 +156,16 @@ public class EmbedNode extends ExpressionNodeBase implements IEmbedNode, IEmbedR
         	return new String();
     	String source = (String) data.getAttribute(EmbedAttribute.SOURCE);
     	EmbedMIMEType mimeType = (EmbedMIMEType) data.getAttribute(EmbedAttribute.MIME_TYPE);
+        String charset = (String) data.getAttribute(EmbedAttribute.CHARSET);
+        if (charset == null)
+        {
+            charset = "UTF-8";
+        }
         if (mimeType != null && mimeType.toString().equals(EmbedMIMEType.TEXT.toString()) && source != null)
         {
             File file = new File(FilenameNormalization.normalize(source));
     		try {
-				String string = FileUtils.readFileToString(file, "UTF-8");
+				String string = FileUtils.readFileToString(file, charset);
 				return string;
 			} catch (IOException e) {
 	            problems.add(new EmbedUnableToReadSourceProblem(e, file.getPath()));

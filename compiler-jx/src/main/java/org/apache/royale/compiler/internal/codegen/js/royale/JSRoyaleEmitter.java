@@ -1092,12 +1092,17 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         }
     	String source = (String) data.getAttribute(EmbedAttribute.SOURCE);
     	EmbedMIMEType mimeType = (EmbedMIMEType) data.getAttribute(EmbedAttribute.MIME_TYPE);
+        String charset = (String) data.getAttribute(EmbedAttribute.CHARSET);
+        if (charset == null)
+        {
+            charset = "UTF-8";
+        }
         if (mimeType != null && mimeType.toString().equals(EmbedMIMEType.TEXT.toString()) && source != null)
         {
             File file = new File(FilenameNormalization.normalize(source));
     		try {
     	        String newlineReplacement = "\\\\n";
-				String s = FileUtils.readFileToString(file, "UTF-8");
+				String s = FileUtils.readFileToString(file, charset);
 	            s = s.replaceAll("\n", "__NEWLINE_PLACEHOLDER__");
 	            s = s.replaceAll("\r", "__CR_PLACEHOLDER__");
 	            s = s.replaceAll("\t", "__TAB_PLACEHOLDER__");
