@@ -503,6 +503,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
                 defaultInitializers = fjsProject.config.getJsDefaultInitializers();
             }
         }
+        Set<String> varNames = new HashSet<String>();
         Collection<IDefinition> localDefs = node.getScopedNode().getScope().getAllLocalDefinitions();
         for (IDefinition localDef : localDefs)
         {
@@ -521,6 +522,15 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
                     //these will be handled from the first variable in the chain
                     continue;
                 }
+                String varDefName = varDef.getQualifiedName();
+                if (varNames.contains(varDefName))
+                {
+                    // due to multi-threading, it's possible that the scope
+                    // sometimes has duplicates. that's probably a bug, but
+                    // this will help until it can be fixed.
+                    continue;
+                }
+                varNames.add(varDefName);
                 if (EmitterUtils.needsDefaultValue(varNode, defaultInitializers, getWalker().getProject()))
                 {
                     emitVarDeclaration(varNode);
