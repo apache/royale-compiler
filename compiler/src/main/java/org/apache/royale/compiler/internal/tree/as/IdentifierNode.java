@@ -380,7 +380,10 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
             if (qualifier == null)
             {
             	DependencyType dt = getDependencyType();
-                result = asScope.findProperty(project, name, dt, isTypeRef());
+                if (dt != null)
+                {
+                    result = asScope.findProperty(project, name, dt, isTypeRef());
+                }
                 if (result != null && name.equals("graphics") && (result.getParent() instanceof ITypeDefinition) && ((ITypeDefinition)(result.getParent())).isInstanceOf("mx.core.UIComponent", project))
                 	result = asScope.findProperty(project, "royalegraphics", getDependencyType(), isTypeRef());
                 // ASVariableTests_localVarSameNameAsPrivateMethod
