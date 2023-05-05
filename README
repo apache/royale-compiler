@@ -187,6 +187,9 @@ Running Integration Tests
         The Adobe Flash Player content debugger for Mac can be downloaded from:
             https://fpdownload.macromedia.com/pub/flashplayer/updaters/32/flashplayer_32_sa_debug.dmg
 
+        The Adobe Flash Player content debugger for Linux can be downloaded from:
+            https://fpdownload.macromedia.com/pub/flashplayer/updaters/32/flash_player_sa_linux_debug.x86_64.tar.gz
+
         On Windows, set FLASHPLAYER_DEBUGGER to the absolute path including the
         filename of the FlashPlayerDebugger.exe. Note the filename of flash
         player debugger maybe different.
