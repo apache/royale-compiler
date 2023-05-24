@@ -6413,4 +6413,22 @@ public class Configuration
         watch = b;
     }
 
+    //
+    // 'compiler.infer-types'
+    //
+
+    private boolean inferTypes = false;
+
+    public boolean getInferTypes()
+    {
+        return inferTypes;
+    }
+
+    @Config
+    @Mapping({ "compiler", "infer-types" })
+    public void setInferTypes(ConfigurationValue cv, boolean b)
+    {
+        inferTypes = b;
+    }
+
 }

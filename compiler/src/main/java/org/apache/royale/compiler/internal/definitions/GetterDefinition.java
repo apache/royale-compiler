@@ -22,9 +22,13 @@ package org.apache.royale.compiler.internal.definitions;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.definitions.IGetterDefinition;
 import org.apache.royale.compiler.definitions.ISetterDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.problems.IncompatibleOverrideProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.as.IGetterNode;
 
 public class GetterDefinition extends AccessorDefinition implements IGetterDefinition
 {
@@ -115,5 +119,27 @@ public class GetterDefinition extends AccessorDefinition implements IGetterDefin
         }
 
         return override;
+    }
+
+    @Override
+    public TypeDefinitionBase resolveType(ICompilerProject project)
+    {
+        if (project.getInferTypes() && getTypeReference() == null)
+        {
+            IGetterNode getterNode = (IGetterNode) getNode();
+            ITypeDefinition typeDef = SemanticUtils.resolveFunctionInferredReturnType(getterNode, project);
+            if (typeDef != null)
+            {
+                setTypeReference(ReferenceFactory.resolvedReference(typeDef));
+                return (TypeDefinitionBase) typeDef;
+            }
+        }
+        return super.resolveType(project);
+    }
+
+    @Override
+    public ITypeDefinition resolveReturnType(ICompilerProject project)
+    {
+        return resolveType(project);
     }
 }

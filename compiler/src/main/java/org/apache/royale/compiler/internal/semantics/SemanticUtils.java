@@ -22,6 +22,7 @@ package org.apache.royale.compiler.internal.semantics;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -29,12 +30,25 @@ import org.apache.royale.abc.ABCConstants;
 import org.apache.royale.abc.semantics.Name;
 import org.apache.royale.abc.semantics.Namespace;
 import org.apache.royale.abc.semantics.Nsset;
+import org.apache.royale.compiler.common.ASModifier;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
-import org.apache.royale.compiler.definitions.*;
+import org.apache.royale.compiler.definitions.IAccessorDefinition;
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IConstantDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.IGetterDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;
+import org.apache.royale.compiler.definitions.IInterfaceDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.IParameterDefinition;
+import org.apache.royale.compiler.definitions.IScopedDefinition;
+import org.apache.royale.compiler.definitions.ISetterDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.definitions.metadata.IDeprecationInfo;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
 import org.apache.royale.compiler.definitions.references.IReference;
@@ -103,8 +117,35 @@ import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.scopes.IDefinitionSet;
 import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.*;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
+import org.apache.royale.compiler.tree.as.IClassNode;
+import org.apache.royale.compiler.tree.as.ICommonClassNode;
+import org.apache.royale.compiler.tree.as.IContainerNode;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IFileNode;
+import org.apache.royale.compiler.tree.as.IFunctionCallNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.tree.as.IGetterNode;
+import org.apache.royale.compiler.tree.as.IIdentifierNode;
+import org.apache.royale.compiler.tree.as.IImportNode;
+import org.apache.royale.compiler.tree.as.IInterfaceNode;
+import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
+import org.apache.royale.compiler.tree.as.ILiteralNode;
+import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
+import org.apache.royale.compiler.tree.as.INumericLiteralNode;
+import org.apache.royale.compiler.tree.as.IParameterNode;
+import org.apache.royale.compiler.tree.as.IReturnNode;
+import org.apache.royale.compiler.tree.as.IScopedNode;
+import org.apache.royale.compiler.tree.as.ISetterNode;
+import org.apache.royale.compiler.tree.as.ITryNode;
+import org.apache.royale.compiler.tree.as.ITypeNode;
+import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLEventSpecifierNode;
 
 /**
@@ -2731,7 +2772,15 @@ public class SemanticUtils
                 ILanguageIdentifierNode identifier = (ILanguageIdentifierNode) paramType;
                 if (identifier.getKind().equals(LanguageIdentifierKind.ANY_TYPE))
                 {
-                    scope.addProblem(new ParameterHasNoTypeDeclarationProblem(paramNode, paramNode.getName(), node.getName()));
+                    ITypeDefinition inferredTypeDefinition = null;
+                    if (scope.getProject().getInferTypes())
+                    {
+                        inferredTypeDefinition = SemanticUtils.resolveVariableInferredType(paramNode, scope.getProject());
+                    }
+                    if (inferredTypeDefinition == null)
+                    {
+                        scope.addProblem(new ParameterHasNoTypeDeclarationProblem(paramNode, paramNode.getName(), node.getName()));
+                    }
                 }
             }
         }
@@ -2757,9 +2806,14 @@ public class SemanticUtils
             return;
         
         IExpressionNode returnType = node.getReturnTypeNode();
+        ITypeDefinition inferredReturnTypeDef = null;
+        if (scope.getProject().getInferTypes() && returnType == null && func != null)
+        {
+            inferredReturnTypeDef = SemanticUtils.resolveFunctionInferredReturnType(node, scope.getProject());
+        }
         
         // check for return type declaration
-        if (returnType == null)       
+        if (returnType == null && inferredReturnTypeDef == null)       
         {
             // if none found, derive best source location for problem report
             IASNode sourceLoc = node;
@@ -3250,5 +3304,363 @@ public class SemanticUtils
             }
         }
         return file_name;
+    }
+
+    public static ITypeDefinition resolveVariableInferredType(IVariableNode iNode, ICompilerProject project)
+    {
+        if (iNode instanceof IGetterNode)
+        {
+            IGetterNode getterNode = (IGetterNode) iNode;
+            return resolveFunctionInferredReturnType(getterNode, project);
+        }       
+        ISetterDefinition setterDef = null;
+        if (iNode instanceof ISetterNode)
+        {
+            ISetterNode setterNode = (ISetterNode) iNode;
+            setterDef = (ISetterDefinition) setterNode.getDefinition();
+        }       
+        else if (iNode instanceof IParameterNode)
+        {
+            // if we have a parameter, check if it belongs to a setter function
+            // we can use the setter to resolve the type
+            IParameterNode paramNode = (IParameterNode) iNode;
+            IASNode parentNode = paramNode.getParent();
+            if (parentNode != null)
+            {
+                IASNode gpNode = parentNode.getParent();
+                if (gpNode instanceof ISetterNode)
+                {
+                    ISetterNode setterNode = (ISetterNode) gpNode;
+                    setterDef = (ISetterDefinition) setterNode.getDefinition();
+                }
+            }
+        }
+        if (setterDef != null)
+        {
+            // setters won't have an assigned value to infer from, but we
+            // could either infer from the super setter (if the setter is an
+            // override), or from a corresponding getter
+            ISetterDefinition overriddenSetterDef = (ISetterDefinition) setterDef.resolveOverriddenFunction(project);
+            if (overriddenSetterDef != null)
+            {
+                ITypeDefinition resolvedType = overriddenSetterDef.resolveType(project);
+                if (resolvedType != null && getBuiltinType(BuiltinType.ANY_TYPE, project).equals(resolvedType))
+                {
+                    // see note below about the * type
+                    return null;
+                }
+                return resolvedType;
+            }
+            else
+            {
+                IGetterDefinition getterDef = setterDef.resolveGetter(project);
+                if (getterDef != null)
+                {
+                    ITypeDefinition resolvedType = getterDef.resolveReturnType(project);
+                    if (resolvedType != null && getBuiltinType(BuiltinType.ANY_TYPE, project).equals(resolvedType))
+                    {
+                        // see note below about the * type
+                        return null;
+                    }
+                    return resolvedType;
+                }
+            }
+        }
+        IExpressionNode assignedValueNode = iNode.getAssignedValueNode();
+        if (assignedValueNode == null)
+        {
+            // nothing to infer a type from
+            return null;
+        }
+        if (ASTNodeID.LiteralNullID.equals(assignedValueNode.getNodeID()))
+        {
+            // we can't infer a specific type from null
+            return null;
+        }
+        ITypeDefinition resolvedType = assignedValueNode.resolveType(project);
+        if (getBuiltinType(BuiltinType.ANY_TYPE, project).equals(resolvedType))
+        {
+            // users should still get a missing type warning for the * type.
+            // if they want to get rid of the warning, they should explicitly
+            // declare the * type.
+            // keeping the missing type warning for * encourages the use of more
+            // specific types, and ensures that * is used only when needed.
+            return null;
+        }
+        return resolvedType;
+    }
+
+    public static ITypeDefinition resolveFunctionInferredReturnType(IFunctionNode iNode, ICompilerProject project)
+    {
+        if (iNode.hasModifier(ASModifier.OVERRIDE))
+        {
+            // if this is an override, resolve the return type from the original
+            IFunctionDefinition funcDef = (IFunctionDefinition) iNode.getDefinition();
+            if (funcDef != null)
+            {
+                IFunctionDefinition overridenFuncDef = funcDef.resolveOverriddenFunction(project);
+                if (overridenFuncDef != null)
+                {
+                    return overridenFuncDef.resolveReturnType(project);
+                }
+            }
+        }
+        if (iNode instanceof IGetterNode)
+        {
+            // first, try to find an explicit parameter type from the setter
+            IGetterNode getterNode = (IGetterNode) iNode;
+            IGetterDefinition getterDef = (IGetterDefinition) getterNode.getDefinition();
+            if (getterDef != null)
+            {
+                ISetterDefinition setterDef = getterDef.resolveSetter(project);
+                if (setterDef != null)
+                {
+                    ISetterNode setterNode = (ISetterNode) setterDef.getNode();
+                    if (setterNode != null)
+                    {
+                        IParameterNode[] paramNodes = setterNode.getParameterNodes();
+                        if (paramNodes != null && paramNodes.length > 0)
+                        {
+                            IParameterNode firstSetterParamNode = paramNodes[0];
+                            IExpressionNode varTypeNode = firstSetterParamNode.getVariableTypeNode();
+                            if (varTypeNode != null)
+                            {
+                                boolean isImplicitAny = varTypeNode.getAbsoluteStart() == -1
+                                    && varTypeNode.getAbsoluteEnd() == -1
+                                    && varTypeNode instanceof ILanguageIdentifierNode
+                                    && ((ILanguageIdentifierNode) varTypeNode).getKind().equals(LanguageIdentifierKind.ANY_TYPE);
+                                if (!isImplicitAny)
+                                {
+                                    IDefinition typeDef = varTypeNode.resolve(project);
+                                    if (typeDef instanceof ITypeDefinition)
+                                    {
+                                        return (ITypeDefinition) typeDef;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (iNode instanceof ISetterNode)
+        {
+            return project.getBuiltinType(IASLanguageConstants.BuiltinType.VOID);
+        }
+        if (iNode.hasModifier(ASModifier.ABSTRACT))
+        {
+            // we can't infer the return type of an abstract method because it
+            // won't have a body
+            return null;
+        }
+        ITypeNode parentInterfaceNode = (IInterfaceNode) iNode.getAncestorOfType(IInterfaceNode.class);
+        if (parentInterfaceNode != null)
+        {
+            // we can't infer the return type of a method on an interface
+            // because it won't have a body
+            return null;
+        }
+        List<IReturnNode> returnNodes = new ArrayList<IReturnNode>();
+        findReturnNodes(iNode, returnNodes);
+        ITypeDefinition foundTypeDef = null;
+        boolean hasReturnValueNode = false;
+        for(IReturnNode returnNode : returnNodes)
+        {
+            IExpressionNode returnValueNode = returnNode.getReturnValueNode();
+            // nothing to infer a type from
+            if (returnValueNode == null || ASTNodeID.NilID.equals(returnValueNode.getNodeID()))
+            {
+                continue;
+            }
+            // we can't infer a specific type from null
+            if (ASTNodeID.LiteralNullID.equals(returnValueNode.getNodeID()))
+            {
+                hasReturnValueNode = true;
+                continue;
+            }
+            ITypeDefinition typeDef = returnNode.resolveType(project);
+            if (!hasReturnValueNode && foundTypeDef == null)
+            {
+                foundTypeDef = typeDef;
+            }
+            else
+            {
+                foundTypeDef = SemanticUtils.resolveCommonType(foundTypeDef, typeDef, project);
+            }
+            hasReturnValueNode = true;
+        }
+        if (foundTypeDef != null && !getBuiltinType(BuiltinType.ANY_TYPE, project).equals(foundTypeDef))
+        {
+            // users should still get a missing type warning for the * type.
+            // if they want to get rid of the warning, they should explicitly
+            // declare the * type.
+            // keeping the missing type warning for * encourages the use of more
+            // specific types, and ensures that * is used only when needed.
+            return foundTypeDef;
+        }
+        if (!hasReturnValueNode && !(iNode instanceof IGetterNode))
+        {
+            // there were either no return statements, or only ones without a value
+            return project.getBuiltinType(IASLanguageConstants.BuiltinType.VOID);
+        }
+        return null;
+    }
+
+    private static void findReturnNodes(IASNode node, List<IReturnNode> result)
+    {
+        for(int i = 0; i < node.getChildCount(); i++)
+        {
+            IASNode child = node.getChild(i);
+            if (child instanceof IReturnNode)
+            {
+                result.add((IReturnNode)child);
+                continue;
+            }
+            if(child.isTerminal())
+            {
+                continue;
+            }
+            findReturnNodes(child, result);
+        }
+    }
+
+    /**
+     * Resolves a common interface. Checks if A == B, if A extends B, or
+     * if B extends A. Does not check if both A and B extend a common interface
+     * C because A and B could have multiple common interfaces, and there is no
+     * clear way to choose one of those common interfaces over another.
+     */
+    public static IInterfaceDefinition resolveCommonType(IInterfaceDefinition interfaceA, IInterfaceDefinition interfaceB, ICompilerProject project)
+    {
+        if (interfaceA == null || interfaceB == null)
+        {
+            return null;
+        }
+        if (interfaceA.equals(interfaceB))
+        {
+            return interfaceA;
+        }
+        Iterator<IInterfaceDefinition> interfacesA = interfaceA.interfaceIterator(project, true);
+        while (interfacesA.hasNext())
+        {
+            IInterfaceDefinition a = interfacesA.next();
+            if (interfaceB.equals(a))
+            {
+                return interfaceB;
+            }
+        }
+        Iterator<IInterfaceDefinition> interfacesB = interfaceB.interfaceIterator(project, true);
+        while (interfacesB.hasNext())
+        {
+            IInterfaceDefinition b = interfacesB.next();
+            if (interfaceA.equals(b))
+            {
+                return interfaceA;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Checks if A implements B. Does not check if both A and B implement a
+     * common interface C because A and B could have multiple common interfaces,
+     * and there is no clear way to choose one of those common interfaces over
+     * another.
+     */
+    public static IInterfaceDefinition resolveCommonBaseInterface(IClassDefinition classA, IInterfaceDefinition interfaceB, ICompilerProject project)
+    {
+        if (classA == null || interfaceB == null)
+        {
+            return null;
+        }
+        Iterator<IInterfaceDefinition> interfacesA = classA.interfaceIterator(project);
+        while (interfacesA.hasNext())
+        {
+            IInterfaceDefinition a = interfacesA.next();
+            if (interfaceB.equals(a))
+            {
+                return interfaceB;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Checks if B implements A. Does not check if both A and B implement a
+     * common interface C because A and B could have multiple common interfaces,
+     * and there is no clear way to choose one of those common interfaces over
+     * another.
+     */
+    public static IInterfaceDefinition resolveCommonBaseInterface(IInterfaceDefinition interfaceA, IClassDefinition classB, ICompilerProject project)
+    {
+        return resolveCommonBaseInterface(classB, interfaceA, project);
+    }
+
+    /**
+     * Resolves a common class. Checks if A == B, if A extends B, or
+     * if B extends A. Does not check if both A and B implement a common
+     * interface C because A and B could implement multiple common interfaces,
+     * and there is no clear way to choose one of those common interfaces over
+     * another.
+     */
+    public static IClassDefinition resolveCommonType(IClassDefinition classA, IClassDefinition classB, ICompilerProject project)
+    {
+        if (classA == null || classB == null)
+        {
+            return null;
+        }
+        if (isNumericType(classA, project)
+                && isNumericType(classB, project)
+                && !classA.equals(classB)) {
+            return (IClassDefinition) getBuiltinType(BuiltinType.NUMBER, project);
+        }
+        Iterator<IClassDefinition> classesA = classA.classIterator(project, true);
+        while (classesA.hasNext())
+        {
+            IClassDefinition a = classesA.next();
+            Iterator<IClassDefinition> classesB = classB.classIterator(project, true);
+            while (classesB.hasNext())
+            {
+                IClassDefinition b = classesB.next();
+                if (a.equals(b))
+                {
+                    return a;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Resolves a common type. Depending on whether each type is a class or an
+     * interface, checks if A == B, if A extends B, if B extends A,
+     * if A implements B, or if B implements A. Does not check if both A and B
+     * implement a common interface C because A and B could implement multiple
+     * common interfaces, and there is no clear way to choose one of those
+     * common interfaces over another.
+     */
+    public static ITypeDefinition resolveCommonType(ITypeDefinition typeA, ITypeDefinition typeB, ICompilerProject project)
+    {
+        if (typeA == null || typeB == null)
+        {
+            return null;
+        }
+        if (typeA instanceof IClassDefinition && typeB instanceof IClassDefinition)
+        {
+            return resolveCommonType((IClassDefinition) typeA, (IClassDefinition) typeB, project);
+        }
+        if (typeA instanceof IInterfaceDefinition && typeB instanceof IInterfaceDefinition)
+        {
+            return resolveCommonType((IInterfaceDefinition) typeA, (IInterfaceDefinition) typeB, project);
+        }
+        if (typeA instanceof IClassDefinition && typeB instanceof IInterfaceDefinition)
+        {
+            return resolveCommonType((IClassDefinition) typeA, (IInterfaceDefinition) typeB, project);
+        }
+        if (typeA instanceof IInterfaceDefinition && typeB instanceof IClassDefinition)
+        {
+            return resolveCommonType((IClassDefinition) typeA, (IInterfaceDefinition) typeB, project);
+        }
+        return null;
     }
 }

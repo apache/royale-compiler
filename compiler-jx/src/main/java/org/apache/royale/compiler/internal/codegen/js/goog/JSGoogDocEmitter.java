@@ -200,13 +200,25 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
                 }
 
                 IExpressionNode enode = pnode.getNameExpressionNode();
-                emitParam(pnode, enode.resolveType(project).getPackageName());
+                emitParam(pnode, enode.resolveType(project).getPackageName(), project);
             }
 
             if (!node.isConstructor())
             {
                 // @return
                 String returnType = node.getReturnType();
+                if (project.getInferTypes() && (returnType == null || returnType.isEmpty()))
+                {
+                    ITypeDefinition resolvedTypeDef = SemanticUtils.resolveFunctionInferredReturnType(node, project);
+                    if (resolvedTypeDef != null)
+                    {
+                        returnType = resolvedTypeDef.getQualifiedName();
+                    }
+                    else
+                    {
+                        returnType = "*";
+                    }
+                }
                 if (returnType != ""
                         && returnType != ASEmitterTokens.VOID.getToken())
                 {
@@ -217,7 +229,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
                         hasDoc = true;
                     }
 
-                    emitReturn(node, node.getPackageName());
+                    emitReturn(node, node.getPackageName(), project);
                 }
 
                 // @override
@@ -302,7 +314,7 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     }
 
     @Override
-    public void emitParam(IParameterNode node, String packageName)
+    public void emitParam(IParameterNode node, String packageName, ICompilerProject project)
     {
         String postfix = (node.getDefaultValue() == null) ? ""
                 : ASEmitterTokens.EQUAL.getToken();
@@ -315,6 +327,14 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
         else
         {
             String typeName = node.getVariableType();
+            if (project.getInferTypes() && typeName.isEmpty())
+            {
+                ITypeDefinition resolvedTypeDef = SemanticUtils.resolveVariableInferredType(node, project);
+                if (resolvedTypeDef != null)
+                {
+                    typeName = resolvedTypeDef.getQualifiedName();
+                }
+            }
             if (packageName.length() > 0 && typeName.indexOf(packageName) > -1)
             {
                 String[] parts = typeName.split("\\.");
@@ -355,10 +375,22 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     }
 
     @Override
-    public void emitReturn(IFunctionNode node, String packageName)
+    public void emitReturn(IFunctionNode node, String packageName, ICompilerProject project)
     {
         String rtype = node.getReturnType();
-        if (rtype != null)
+        if (project.getInferTypes() && (rtype == null || rtype.isEmpty()))
+        {
+            ITypeDefinition resolvedTypeDef = SemanticUtils.resolveFunctionInferredReturnType(node, project);
+            if (resolvedTypeDef != null)
+            {
+                rtype = resolvedTypeDef.getQualifiedName();
+            }
+            else
+            {
+                rtype = "*";
+            }
+        }
+        if (rtype != null && rtype != ASEmitterTokens.VOID.getToken())
         {
             emitJSDocLine(ASEmitterTokens.RETURN,
                     convertASTypeToJS(rtype, packageName));
@@ -374,9 +406,18 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
     @Override
     public void emitType(IASNode node, String packageName, ICompilerProject project)
     {
-        String type = ((IVariableNode) node).getVariableType();
-        if (((IVariableNode) node).getVariableTypeNode() instanceof TypedExpressionNode) {
-            ITypeDefinition elemenTypeDef = ((TypedExpressionNode)(((IVariableNode) node).getVariableTypeNode())).getTypeNode().resolveType(project);
+        IVariableNode varNode = (IVariableNode) node;
+        String type = varNode.getVariableType();
+        if (project.getInferTypes() && type.isEmpty())
+        {
+            ITypeDefinition resolvedTypeDef = SemanticUtils.resolveVariableInferredType(varNode, project);
+            if (resolvedTypeDef != null)
+            {
+                type = resolvedTypeDef.getQualifiedName();
+            }
+        }
+        if (varNode.getVariableTypeNode() instanceof TypedExpressionNode) {
+            ITypeDefinition elemenTypeDef = ((TypedExpressionNode)(varNode.getVariableTypeNode())).getTypeNode().resolveType(project);
             if (elemenTypeDef != null) {
                 type = "Vector.<" +
                         convertASTypeToJS(elemenTypeDef.getQualifiedName(),"")
@@ -395,9 +436,17 @@ public class JSGoogDocEmitter extends JSDocEmitter implements IJSGoogDocEmitter
                 convertASTypeToJS(type, packageName));
     }
 
-    public void emitTypeShort(IASNode node, String packageName, ICompilerProject project)
+    public void emitTypeShort(IVariableNode node, String packageName, ICompilerProject project)
     {
-        String type = ((IVariableNode) node).getVariableType();
+        String type = node.getVariableType();
+        if (project.getInferTypes() && type.isEmpty())
+        {
+            ITypeDefinition resolvedTypeDef = SemanticUtils.resolveVariableInferredType(node, project);
+            if (resolvedTypeDef != null)
+            {
+                type = resolvedTypeDef.getQualifiedName();
+            }
+        }
         if (((IVariableNode) node).getVariableTypeNode() instanceof TypedExpressionNode) {
             ITypeDefinition elemenTypeDef = ((TypedExpressionNode)(((IVariableNode) node).getVariableTypeNode())).getTypeNode().resolveType(project);
             if (elemenTypeDef != null) {

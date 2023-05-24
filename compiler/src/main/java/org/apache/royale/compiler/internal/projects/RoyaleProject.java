@@ -2528,6 +2528,21 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     	strictIdentifierNames = enabled;
     }
 
+    private boolean inferTypes = false;
+
+    /**
+     * Indicates if type inference is enabled.
+     */
+	@Override
+	public boolean getInferTypes()
+    {
+		return inferTypes;
+	}
+    public void setInferTypes(boolean enabled)
+    {
+    	inferTypes = enabled;
+    }
+
 	@Override
 	public boolean isPlatformRule(ICSSRule rule) {
 		return true;

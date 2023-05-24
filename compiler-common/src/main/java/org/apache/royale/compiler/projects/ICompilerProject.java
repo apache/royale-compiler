@@ -286,5 +286,10 @@ public interface ICompilerProject
       * @return True if strict identifier naming is enforced.
       */
      boolean getStrictIdentifierNames();
+     
+     /**
+      * @return True if type inference is enabled.
+      */
+     boolean getInferTypes();
 
 }

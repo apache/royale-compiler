@@ -41,6 +41,7 @@ import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitterToken
 import org.apache.royale.compiler.internal.codegen.js.jx.BindableEmitter;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.problems.PublicVarWarningProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -304,7 +305,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
 	                if (tdef == null)
 	                    continue;
 	
-	                emitParam(pnode, project.getActualPackageName(tdef.getPackageName()));
+	                emitParam(pnode, project.getActualPackageName(tdef.getPackageName()), project);
 	            }
             }
             
@@ -314,6 +315,18 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
             	{
 	                // @return
 	                String returnType = node.getReturnType();
+                    if (project.getInferTypes() && (returnType == null || returnType.isEmpty()))
+                    {
+                        ITypeDefinition resolvedTypeDef = SemanticUtils.resolveFunctionInferredReturnType(node, project);
+                        if (resolvedTypeDef != null)
+                        {
+                            returnType = resolvedTypeDef.getQualifiedName();
+                        }
+                        else
+                        {
+                            returnType = "*";
+                        }
+                    }
 	                if (returnType != ""
 	                        && returnType != ASEmitterTokens.VOID.getToken())
 	                {
@@ -334,7 +347,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
 	                    String packageName = "";
 	                    packageName = tdef != null ? tdef.getPackageName() : "";
 	
-	                    emitReturn(node, project.getActualPackageName(packageName));
+	                    emitReturn(node, project.getActualPackageName(packageName), project);
 	                }
             	}
             	
@@ -500,7 +513,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
             ITypeDefinition tdef = ((IFunctionDefinition) node.getDefinition())
                     .resolveReturnType(project);
 
-            emitReturn((IFunctionNode) node, tdef.getPackageName());
+            emitReturn((IFunctionNode) node, tdef.getPackageName(), project);
         }
 
         IParameterNode[] parameters = ((IFunctionNode) node)
@@ -517,7 +530,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
             }
 
             IExpressionNode enode = pnode.getNameExpressionNode();
-            emitParam(pnode, enode.resolveType(project).getPackageName());
+            emitParam(pnode, enode.resolveType(project).getPackageName(), project);
         }
 
         if (hasDoc)

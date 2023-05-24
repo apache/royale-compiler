@@ -25,8 +25,10 @@ import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
 import org.apache.royale.compiler.internal.as.codegen.CodeGeneratorManager;
 import org.apache.royale.compiler.internal.as.codegen.ICodeGenerator;
 import org.apache.royale.compiler.internal.as.codegen.ICodeGenerator.IConstantValue;
@@ -224,6 +226,25 @@ public class VariableDefinition extends DefinitionBase implements IVariableDefin
             sb.append(':');
             sb.append(type);
         }
+    }
+
+    @Override
+    public TypeDefinitionBase resolveType(ICompilerProject project)
+    {
+        if (project.getInferTypes() && getTypeReference() == null)
+        {
+            IVariableNode varNode = (IVariableNode) getNode();
+            if (varNode != null)
+            {
+                ITypeDefinition typeDef = SemanticUtils.resolveVariableInferredType(varNode, project);
+                if (typeDef != null)
+                {
+                    setTypeReference(ReferenceFactory.resolvedReference(typeDef));
+                    return (TypeDefinitionBase) typeDef;
+                }
+            }
+        }
+        return super.resolveType(project);
     }
 
     public IExpressionNode getInitializer() {

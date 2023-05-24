@@ -89,6 +89,7 @@ import org.apache.royale.compiler.tree.as.IScopedNode;
 import org.apache.royale.compiler.tree.as.ITryNode;
 import org.apache.royale.compiler.tree.as.ITypedExpressionNode;
 import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.compiler.tree.as.IWhileLoopNode;
 import org.apache.royale.compiler.tree.as.IWithNode;
 import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode.LanguageIdentifierKind;
@@ -5542,9 +5543,30 @@ public class ABCGeneratingReducer
             final Nsset qualifiers = SemanticUtils.getOpenNamespaces(iNode, project);
             final Name name = new Name(CONSTANT_Multiname, qualifiers, null);
             result = new Binding(iNode, name, identifier.resolve(project));
+            return result;
         }
         else
         {
+            if (currentScope.getProject().getInferTypes()
+                    && identifier.isImplicit()
+                    && identifier.getName().equals(IASLanguageConstants.ANY_TYPE))
+            {
+                IASNode parentNode = identifier.getParent();
+                if (parentNode instanceof IVariableNode)
+                {
+                    IVariableNode varNode = (IVariableNode) parentNode;
+                    if (identifier.equals(varNode.getVariableTypeNode()))
+                    {
+                        ITypeDefinition typeDef = SemanticUtils.resolveVariableInferredType(varNode, currentScope.getProject());
+                        if (typeDef != null)
+                        {
+                            final Name name = new Name(new Namespace(CONSTANT_PackageNs, typeDef.getPackageName()), typeDef.getBaseName());
+                            result = new Binding(iNode, name, typeDef);
+                            return result;
+                        }
+                    }
+                }
+            }
             result = currentScope.resolveName(identifier);
             currentScope.getMethodBodySemanticChecker().checkSimpleName(iNode, result);
         }

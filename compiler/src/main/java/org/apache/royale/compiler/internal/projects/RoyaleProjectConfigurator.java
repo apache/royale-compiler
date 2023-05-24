@@ -273,6 +273,8 @@ public class RoyaleProjectConfigurator extends Configurator
             project.setAllowPrivateConstructors(configuration.getCompilerAllowPrivateConstructors());
 
             project.setStrictIdentifierNames(configuration.getCompilerStrictIdentifierNames());
+
+            project.setInferTypes(configuration.getInferTypes());
             
             project.setSwfDebugfileAlias(configuration.getSwfDebugfileAlias());
             if (configuration.getSwfDebugfileAlias() != null)

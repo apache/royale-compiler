@@ -19,6 +19,8 @@
 
 package org.apache.royale.compiler.internal.tree.as;
 
+import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.parsing.IASToken;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -62,8 +64,17 @@ public class ReturnNode extends BaseStatementExpressionNode implements IReturnNo
     //
     // ExpressionNodeBase overrides
     //
-    
-    // TODO Does this class need to override resolveType()?
+     
+    @Override
+    public ITypeDefinition resolveType(ICompilerProject project)
+    {
+        IExpressionNode returnValueNode = getReturnValueNode();
+        if (returnValueNode != null)
+        {
+            return returnValueNode.resolveType(project);
+        }
+        return null;
+    }
 
     @Override
     protected ReturnNode copy()

@@ -22,9 +22,13 @@ package org.apache.royale.compiler.internal.definitions;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.definitions.IGetterDefinition;
 import org.apache.royale.compiler.definitions.ISetterDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.problems.IncompatibleOverrideProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.as.ISetterNode;
 
 public class SetterDefinition extends AccessorDefinition implements ISetterDefinition
 {
@@ -113,6 +117,25 @@ public class SetterDefinition extends AccessorDefinition implements ISetterDefin
         }
 
         return override;
+    }
+
+    @Override
+    public TypeDefinitionBase resolveType(ICompilerProject project)
+    {
+        if (project.getInferTypes() && getTypeReference() == null)
+        {
+            ISetterNode setterNode = (ISetterNode) getNode();
+            if (setterNode != null)
+            {
+                ITypeDefinition typeDef = SemanticUtils.resolveVariableInferredType(setterNode, project);
+                if (typeDef != null)
+                {
+                    setTypeReference(ReferenceFactory.resolvedReference(typeDef));
+                    return (TypeDefinitionBase) typeDef;
+                }
+            }
+        }
+        return super.resolveType(project);
     }
 
 }

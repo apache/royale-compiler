@@ -22,9 +22,11 @@ package org.apache.royale.compiler.internal.definitions;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.royale.compiler.definitions.IParameterDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.references.IReference;
 import org.apache.royale.compiler.definitions.references.ReferenceFactory;
 import org.apache.royale.compiler.internal.scopes.CatchScope;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.tree.as.IParameterNode;
@@ -73,6 +75,25 @@ public class ParameterDefinition extends VariableDefinition implements IParamete
     {
         initValue = value;
         flags |= FLAG_DEFAULT;
+    }
+
+    @Override
+    public TypeDefinitionBase resolveType(ICompilerProject project)
+    {
+        if (project.getInferTypes() && getTypeReference() == null)
+        {
+            IParameterNode paramNode = (IParameterNode) getNode();
+            if (paramNode != null)
+            {
+                ITypeDefinition typeDef = SemanticUtils.resolveVariableInferredType(paramNode, project);
+                if (typeDef != null)
+                {
+                    setTypeReference(ReferenceFactory.resolvedReference(typeDef));
+                    return (TypeDefinitionBase) typeDef;
+                }
+            }
+        }
+        return super.resolveType(project);
     }
 
     @Override

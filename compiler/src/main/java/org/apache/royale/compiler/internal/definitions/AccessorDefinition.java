@@ -21,7 +21,6 @@ package org.apache.royale.compiler.internal.definitions;
 
 import java.util.Iterator;
 
-
 import org.apache.royale.compiler.definitions.IAccessorDefinition;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
@@ -30,16 +29,16 @@ import org.apache.royale.compiler.definitions.IGetterDefinition;
 import org.apache.royale.compiler.definitions.IInterfaceDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
+import org.apache.royale.compiler.definitions.IScopedDefinition;
 import org.apache.royale.compiler.definitions.ISetterDefinition;
+import org.apache.royale.compiler.definitions.references.INamespaceReference;
+import org.apache.royale.compiler.internal.as.codegen.BindableHelper;
+import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.problems.DuplicateFunctionDefinitionProblem;
 import org.apache.royale.compiler.problems.UnresolvedNamespaceProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IDefinitionSet;
 import org.apache.royale.compiler.tree.as.IVariableNode;
-import org.apache.royale.compiler.definitions.IScopedDefinition;
-import org.apache.royale.compiler.definitions.references.INamespaceReference;
-import org.apache.royale.compiler.internal.as.codegen.BindableHelper;
-import org.apache.royale.compiler.internal.scopes.ASScope;
 
 /**
  * {@code AccessorDefinition} is the abstract base class for definitions that

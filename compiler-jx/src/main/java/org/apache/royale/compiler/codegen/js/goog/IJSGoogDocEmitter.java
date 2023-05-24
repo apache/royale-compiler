@@ -122,7 +122,7 @@ public interface IJSGoogDocEmitter extends IJSDocEmitter
 
     void emitOverride(IFunctionNode node);
 
-    void emitParam(IParameterNode node, String packageName);
+    void emitParam(IParameterNode node, String packageName, ICompilerProject project);
 
     void emitPublic(IASNode node);
 
@@ -132,7 +132,7 @@ public interface IJSGoogDocEmitter extends IJSDocEmitter
 
     void emitInternal(IASNode node);
 
-    void emitReturn(IFunctionNode node, String packageName);
+    void emitReturn(IFunctionNode node, String packageName, ICompilerProject project);
 
     void emitThis(ITypeDefinition node, String packageName);
 

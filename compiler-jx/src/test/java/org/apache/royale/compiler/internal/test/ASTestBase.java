@@ -26,6 +26,7 @@ import org.apache.royale.compiler.internal.driver.as.ASBackend;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IAccessorNode;
 import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
+import org.apache.royale.compiler.tree.as.IClassNode;
 import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.IFileNode;
@@ -132,6 +133,12 @@ public class ASTestBase extends TestBase
             return node;
 
         return findFirstDescendantOfType(node, type);
+    }
+
+    protected IClassNode getClassNode(String code)
+    {
+        return (IClassNode) getNode(code, IClassNode.class,
+                WRAP_LEVEL_PACKAGE);
     }
 
     protected IInterfaceNode getInterfaceNode(String code)

@@ -35,8 +35,10 @@ import org.apache.royale.compiler.definitions.references.INamespaceReference;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.definitions.references.IReference;
+import org.apache.royale.compiler.definitions.references.ReferenceFactory;
 import org.apache.royale.compiler.internal.definitions.metadata.MetaTag;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.problems.ConflictingDefinitionProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;
@@ -192,6 +194,21 @@ public class FunctionDefinition extends ScopedDefinitionBase implements IFunctio
                 return (ITypeDefinition)typeDef;
             else
                 return null;
+        }
+
+        if (project.getInferTypes() && getReturnTypeReference() == null)
+        {
+            IFunctionNode funcNode = (IFunctionNode) getNode();
+            if (funcNode != null)
+            {
+                ITypeDefinition inferredReturnType = SemanticUtils.resolveFunctionInferredReturnType(funcNode, project);
+                if (inferredReturnType != null)
+                {
+                    setReturnTypeReference(ReferenceFactory.resolvedReference(inferredReturnType));
+                    DependencyType dt = DependencyType.SIGNATURE;
+                    return resolveType(returnTypeReference, project, dt);
+                }
+            }
         }
 
         // TODO We don't really need to make this a signature dependency

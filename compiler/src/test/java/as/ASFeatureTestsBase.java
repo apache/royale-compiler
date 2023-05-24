@@ -188,6 +188,13 @@ public class ASFeatureTestsBase
         String results = compile(tempASFile, source, withFramework, withRPC, withSpark, otherOptions, false);
         assertThat(results, is(errors));
     }
+	
+    protected void compileAndExpectNoErrors(String source, boolean withFramework, boolean withRPC, boolean withSpark, String[] otherOptions)
+    {
+        File tempASFile = generateTempFile(source);
+        String results = compile(tempASFile, source, withFramework, withRPC, withSpark, otherOptions, false);
+        assertThat(results, is(""));
+    }
 
 	protected void compileAndRun(String source, boolean withFramework, boolean withRPC, boolean withSpark, String[] otherOptions)
 	{

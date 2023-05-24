@@ -2623,6 +2623,14 @@ public class MethodBodySemanticChecker
         /////////////////////////////////////
         // Check for a type on the variable declaration
         String type = var.getTypeName();
+        if (project.getInferTypes() && type.isEmpty() && !var.hasExplicitType())
+        {
+            ITypeDefinition inferredType = SemanticUtils.resolveVariableInferredType(var, project);
+            if (inferredType != null)
+            {
+                type = inferredType.getQualifiedName();
+            }
+        }
        
         if (type.isEmpty())     // empty string means no declaration at all (not *)
         {
