@@ -53,7 +53,6 @@ import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
-import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.internal.as.codegen.InstructionListNode;
@@ -1251,8 +1250,13 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             	varData.add(data);
             	data.name = varNode.getName();
                 data.isStatic = varNode.hasModifier(ASModifier.STATIC);
-                String qualifiedTypeName =	varNode.getVariableTypeNode().resolveType(getMXMLWalker().getProject()).getQualifiedName();
-        	    data.type = (qualifiedTypeName);
+                String qualifiedTypeName = "*";
+                IExpressionNode variableTypeNode = varNode.getVariableTypeNode();
+                if (variableTypeNode != null)
+                {
+                    qualifiedTypeName = variableTypeNode.resolveType(getMXMLWalker().getProject()).getQualifiedName();
+                }
+        	    data.type = qualifiedTypeName;
         	    IMetaTagsNode metaData = varNode.getMetaTags();
         	    if (metaData != null)
         	    {
@@ -1337,7 +1341,11 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             	data.name = methodNode.getName();
                 String qualifiedTypeName =	methodNode.getReturnType();
                 if (!(qualifiedTypeName.equals("") || qualifiedTypeName.equals("void"))) {
-                    qualifiedTypeName = methodNode.getReturnTypeNode().resolveType(fjs).getQualifiedName();;
+                    IExpressionNode returnTypeNode = methodNode.getReturnTypeNode();
+                    if (returnTypeNode != null)
+                    {
+                        qualifiedTypeName = returnTypeNode.resolveType(fjs).getQualifiedName();;
+                    }
                 }
                 data.type = qualifiedTypeName;
         	    data.declaredBy = cdef.getQualifiedName();
@@ -1432,14 +1440,31 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                 data.isStatic = accessorNode.hasModifier(ASModifier.STATIC);
                 if (p.getter != null)
                 {
-                    data.type = p.getter.getReturnTypeNode().resolveType(fjs).getQualifiedName();
-                    if (p.setter !=null) {
+                    String returnType = "*";
+                    IExpressionNode returnTypeNode = p.getter.getReturnTypeNode();
+                    if (returnTypeNode != null)
+                    {
+                        returnType = returnTypeNode.resolveType(fjs).getQualifiedName();
+                    }
+                    data.type = returnType;
+                    if (p.setter != null)
+                    {
                         data.access = "readwrite";
-                    } else data.access = "readonly";
+                    }
+                    else
+                    {
+                        data.access = "readonly";
+                    }
                 }
                 else
                 {
-                    data.type = p.setter.getVariableTypeNode().resolveType(fjs).getQualifiedName();
+                    String returnType = "*";
+                    IExpressionNode variableTypeNode = p.setter.getVariableTypeNode();
+                    if (variableTypeNode != null)
+                    {
+                        returnType = variableTypeNode.resolveType(fjs).getQualifiedName();
+                    }
+                    data.type = returnType;
                     data.access = "writeonly";
                 }
 
@@ -2174,7 +2199,13 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                                     bindableVarInfo.metaTags = tags;
                             }
 
-                            bindableVarInfo.type = variableNode.getVariableTypeNode().resolveType(getMXMLWalker().getProject()).getQualifiedName();
+                            String bindableVarType = "*";
+                            IExpressionNode variableTypeNode = variableNode.getVariableTypeNode();
+                            if (variableTypeNode != null)
+                            {
+                                bindableVarType = variableTypeNode.resolveType(getMXMLWalker().getProject()).getQualifiedName();
+                            }
+                            bindableVarInfo.type = bindableVarType;
                             ((JSRoyaleEmitter) asEmitter).getModel().getBindableVars().put(variableNode.getName(), bindableVarInfo);
                         }
                     }
@@ -3658,7 +3689,13 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	                    	write("_"); // use backing variable
     	                    write(ASEmitterTokens.SPACE);
     	                    writeToken(ASEmitterTokens.EQUAL);
-                            fjs.emitAssignmentCoercion(vnode, varnode.getVariableTypeNode().resolve(getMXMLWalker().getProject()));
+                            IDefinition varTypeDef = null;
+                            IExpressionNode variableTypeNode = varnode.getVariableTypeNode();
+                            if (variableTypeNode != null)
+                            {
+                                varTypeDef = variableTypeNode.resolve(getMXMLWalker().getProject());
+                            }
+                            fjs.emitAssignmentCoercion(vnode, varTypeDef);
     	                    write(ASEmitterTokens.SEMICOLON);
 
     			        }
