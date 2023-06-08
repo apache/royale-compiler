@@ -87,6 +87,26 @@ public class TestGoogAccessorMembers extends TestAccessorMembers
 
     @Override
     @Test
+    public void testGetAccessor_withoutReturnType()
+    {
+        IGetterNode node = (IGetterNode) getAccessor("function get foo(){}");
+        asBlockWalker.visitGetter(node);
+        assertOut("Object.defineProperty(\n\tRoyaleTest_A.prototype, \n\t'foo', "
+                + "\n\t{get:function() {\n\t}, configurable:true}\n)");
+    }
+
+    @Override
+    @Test
+    public void testGetAccessor_withNamespace_withoutReturnType()
+    {
+        IGetterNode node = (IGetterNode) getAccessor("public function get foo(){}");
+        asBlockWalker.visitGetter(node);
+        assertOut("Object.defineProperty(\n\tRoyaleTest_A.prototype, \n\t'foo', "
+                + "\n\t{get:function() {\n\t}, configurable:true}\n)");
+    }
+
+    @Override
+    @Test
     public void testSetAccessor()
     {
         ISetterNode node = (ISetterNode) getAccessor("function set foo(value:int):void{}");
@@ -131,6 +151,16 @@ public class TestGoogAccessorMembers extends TestAccessorMembers
         ISetterNode node = (ISetterNode) getAccessor("public static function set foo(value:int):void{}");
         asBlockWalker.visitSetter(node);
         assertOut("Object.defineProperty(\n\tRoyaleTest_A, \n\t'foo', \n\t{set:function(value) {\n\t}, configurable:true}\n)");
+    }
+
+    @Override
+    @Test
+    public void testSetAccessor_withoutParameterType()
+    {
+        ISetterNode node = (ISetterNode) getAccessor("function set foo(value):void{}");
+        asBlockWalker.visitSetter(node);
+        assertOut("Object.defineProperty(\n\tRoyaleTest_A.prototype, \n\t'foo', \n\t{set:function(value)"
+                + " {\n\t}, configurable:true}\n)");
     }
 
     @Override

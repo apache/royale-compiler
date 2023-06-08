@@ -426,7 +426,11 @@ public class PackageFooterEmitter extends JSSubEmitter implements
 					data.customNS = altNS;
                 	if (!accessorData.contains(data)) accessorData.add(data);
             	    if (dnode.getNodeID() == ASTNodeID.GetterID) {
-						data.type = fnNode.getReturnTypeNode().resolveType(getProject()).getQualifiedName();
+						String qualifiedTypeName =	fnNode.getReturnType();
+						if (!(qualifiedTypeName.equals("") || qualifiedTypeName.equals("void"))) {
+								qualifiedTypeName = fnNode.getReturnTypeNode().resolveType(getProject()).getQualifiedName();
+						}
+						data.type = fjs.formatQualifiedName(qualifiedTypeName, true);
 						if (data.access == null) {
 							data.access = "readonly";
 						} else data.access = "readwrite";

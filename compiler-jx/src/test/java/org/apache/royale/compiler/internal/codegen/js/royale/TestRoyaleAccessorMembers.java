@@ -104,6 +104,32 @@ public class TestRoyaleAccessorMembers extends TestGoogAccessorMembers
           "RoyaleTest_A.get__foo = function() {\n  return -1;\n};\n\n\n" +
           "Object.defineProperties(RoyaleTest_A, /** @lends {RoyaleTest_A} */ {\n/**\n * @type {number}\n */\nfoo: {\nget: RoyaleTest_A.get__foo}}\n);");
     }
+    
+    @Override
+    @Test
+    public void testGetAccessor_withoutReturnType()
+    {
+        IClassNode node = (IClassNode) getNode("function get foo(){}",
+        		IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n" +
+        "/**\n * @nocollapse\n * @type {*}\n */\nRoyaleTest_A.prototype.foo;\n\n\n" + 
+				"RoyaleTest_A.prototype.get__foo = function() {\n};\n\n\n" +
+        		"Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n/**\n * @type {*}\n */\nfoo: {\nget: RoyaleTest_A.prototype.get__foo}}\n);");
+    }
+    
+    @Override
+    @Test
+    public void testGetAccessor_withNamespace_withoutReturnType()
+    {
+    	IClassNode node = (IClassNode) getNode("public function get foo(){return -1;}",
+        		IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n" +
+        "/**\n * @nocollapse\n * @export\n * @type {*}\n */\nRoyaleTest_A.prototype.foo;\n\n\n" + 
+				"RoyaleTest_A.prototype.get__foo = function() {\n  return -1;\n};\n\n\n" +
+        		"Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n/**\n * @type {*}\n */\nfoo: {\nget: RoyaleTest_A.prototype.get__foo}}\n);");
+    }
 
     @Override
     @Test
@@ -200,6 +226,19 @@ public class TestRoyaleAccessorMembers extends TestGoogAccessorMembers
         assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\n" +
         "B.prototype.set__foo = function(value) {\n  var /** @type {number} */ z = (function($value){B.superClass_.set__foo.apply(this, [$value]);return $value;}).apply(this, [value]);\n};\n\n\n" +
         		"Object.defineProperties(B.prototype, /** @lends {B.prototype} */ {\n/**\n * @type {number}\n */\nfoo: {\nget: A.prototype.get__foo,\nset: B.prototype.set__foo}}\n);");
+    }
+
+    @Override
+    @Test
+    public void testSetAccessor_withoutParameterType()
+    {
+    	IClassNode node = (IClassNode) getNode("function set foo(value):void{}",
+        		IClassNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n" +
+        "/**\n * @nocollapse\n * @type {*}\n */\nRoyaleTest_A.prototype.foo;\n\n\n" + 
+				"RoyaleTest_A.prototype.set__foo = function(value) {\n};\n\n\n" +
+        		"Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n/**\n * @type {*}\n */\nfoo: {\nset: RoyaleTest_A.prototype.set__foo}}\n);");
     }
     
     @Override

@@ -68,6 +68,22 @@ public class TestAccessorMembers extends ASTestBase
     }
 
     @Test
+    public void testGetAccessor_withoutReturnType()
+    {
+        IAccessorNode node = getAccessor("function get foo(){return -1;}");
+        asBlockWalker.visitFunction(node);
+        assertOut("function get foo() {\n\treturn -1;\n}");
+    }
+
+    @Test
+    public void testGetAccessor_withNamespace_withoutReturnType()
+    {
+        IAccessorNode node = getAccessor("public function get foo(){return -1;}");
+        asBlockWalker.visitFunction(node);
+        assertOut("public function get foo() {\n\treturn -1;\n}");
+    }
+
+    @Test
     public void testSetAccessor()
     {
         IAccessorNode node = getAccessor("function set foo(value:int):void{}");
@@ -97,5 +113,13 @@ public class TestAccessorMembers extends ASTestBase
         IAccessorNode node = getAccessor("public static function set foo(value:int):void{}");
         asBlockWalker.visitFunction(node);
         assertOut("public static function set foo(value:int):void {\n}");
+    }
+
+    @Test
+    public void testSetAccessor_withoutParameterType()
+    {
+        IAccessorNode node = getAccessor("function set foo(value):void{}");
+        asBlockWalker.visitFunction(node);
+        assertOut("function set foo(value:*):void {\n}");
     }
 }
