@@ -25,6 +25,7 @@ import antlr.Token;
 
 import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.parsing.IASToken;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.as.IASNode;
@@ -384,12 +385,18 @@ public abstract class BinaryOperatorNodeBase extends OperatorNodeBase implements
     protected ITypeDefinition resolveLogicalType(ICompilerProject project)
     {
         // The old compiler says the type of && or || is one of the operand types,
-        // but only checks if the types are equivalent.
-        // TODO: Could probably be smarter - calculate common base class and use that as the type?
+        // but only checks if the types are identical.
+        // this compiler is smarter and tries to find a common base type, if
+        // the types are not identical.
         ITypeDefinition leftType = getLeftOperandNode().resolveType(project);
         ITypeDefinition rightType = getRightOperandNode().resolveType(project);
         if (leftType != null && leftType.equals(rightType))
             return leftType;
+        ITypeDefinition commonType = SemanticUtils.resolveCommonType(leftType, rightType, project);
+        if (commonType != null)
+        {
+            return commonType;
+        }
         
         return project.getBuiltinType(BuiltinType.ANY_TYPE);
     }
