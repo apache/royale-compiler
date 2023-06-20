@@ -3567,7 +3567,7 @@ public class SemanticUtils
      * and there is no clear way to choose one of those common interfaces over
      * another.
      */
-    public static IInterfaceDefinition resolveCommonBaseInterface(IClassDefinition classA, IInterfaceDefinition interfaceB, ICompilerProject project)
+    public static IInterfaceDefinition resolveCommonType(IClassDefinition classA, IInterfaceDefinition interfaceB, ICompilerProject project)
     {
         if (classA == null || interfaceB == null)
         {
@@ -3591,9 +3591,9 @@ public class SemanticUtils
      * and there is no clear way to choose one of those common interfaces over
      * another.
      */
-    public static IInterfaceDefinition resolveCommonBaseInterface(IInterfaceDefinition interfaceA, IClassDefinition classB, ICompilerProject project)
+    public static IInterfaceDefinition resolveCommonType(IInterfaceDefinition interfaceA, IClassDefinition classB, ICompilerProject project)
     {
-        return resolveCommonBaseInterface(classB, interfaceA, project);
+        return resolveCommonType(classB, interfaceA, project);
     }
 
     /**
@@ -3659,7 +3659,7 @@ public class SemanticUtils
         }
         if (typeA instanceof IInterfaceDefinition && typeB instanceof IClassDefinition)
         {
-            return resolveCommonType((IClassDefinition) typeA, (IInterfaceDefinition) typeB, project);
+            return resolveCommonType((IClassDefinition) typeB, (IInterfaceDefinition) typeA, project);
         }
         return null;
     }
