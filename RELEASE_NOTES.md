@@ -1,5 +1,10 @@
 For additional information on recent issues that have been closed, see [Github Issues List](https://github.com/apache/royale-compiler/issues?q=is%3Aissue+is%3Aclosed)
 
+Apache Royale Compiler 0.9.11
+=============================
+
+- compiler: Added new `--infer-types` compiler option that allows the compiler to automatically detect an appropriate type for both variables and function signatures that omit declared types, based on either the initializer or return values.
+
 Apache Royale Compiler 0.9.10
 =============================
 
