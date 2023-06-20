@@ -21,6 +21,7 @@ package org.apache.royale.compiler.internal.tree.as;
 
 import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.parsing.IASToken;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -145,11 +146,15 @@ public class TernaryOperatorNode extends BinaryOperatorNodeBase implements ITern
         // The old compiler simply considered the type of (a ? b : c) to be *.
         // We'll do a bit better: if b and c have identical type
         // then we'll consider (a ? b : c) to be that type.
-        // We should probably determine the common base type of b and c,
-        // but if either or both types are interfaces rather than classes,
-        // it isn't obvious what this means.
+        // If the types are not identical, we'll try to find a common base type,
+        // and only then, fall back to the * type.
         ITypeDefinition leftType = getLeftOperandNode().resolveType(project);
         ITypeDefinition rightType = getRightOperandNode().resolveType(project);
+        ITypeDefinition commonType = SemanticUtils.resolveCommonType(leftType, rightType, project);
+        if (commonType != null)
+        {
+            return commonType;
+        }
         if (leftType == rightType)
             return leftType;
 
