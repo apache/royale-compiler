@@ -41,6 +41,9 @@ public class EmptyStatementRule extends LinterRule {
 	public Map<Integer, TokenVisitor> getTokenVisitors() {
 		Map<Integer, TokenVisitor> result = new HashMap<>();
 		result.put(ASTokenTypes.TOKEN_SEMICOLON, (token, tokenQuery, problems) -> {
+			if (token.isImplicit()) {
+				return;
+			}
 			checkSemicolon(token, tokenQuery, problems);
 		});
 		return result;
