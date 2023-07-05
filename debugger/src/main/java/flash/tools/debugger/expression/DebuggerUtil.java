@@ -66,6 +66,10 @@ public class DebuggerUtil
         scopedNode.setScope(new ASFileScope(workspace, "fake"));
         scopedNode.runPostProcess(EnumSet.of(PostProcessStep.CALCULATE_OFFSETS));
 
+        if (exprAST.getChildCount() == 0) {
+            return exprAST;
+        }
+
         // return the first (and only child).  This is essentially unwrapping the
         // FileNode that was wrapped around the expression being parsed
         return exprAST.getChild(0);
