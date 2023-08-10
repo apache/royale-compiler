@@ -552,9 +552,14 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
                         if (!firstInstanceProblemAdded) {
                             //if we have multiple children problem scenario, we only encounter that on the 2nd childTag
                             //so start with a MXMLMultipleInitializersProblem instance for the first tag
-                            ICompilerProblem problem = new MXMLMultipleInitializersProblem( tag.getFirstChild(false),getPropertyTypeName(builder));
-                            builder.addProblem(problem);
-                            firstInstanceProblemAdded=true;
+                            IMXMLTagData problemTag = tag.getFirstChild(true);
+                            // if we can't find the tag, we can't report a problem
+                            // because there will be an exception thrown if we do
+                            if (problemTag != null) {
+                                ICompilerProblem problem = new MXMLMultipleInitializersProblem(problemTag,getPropertyTypeName(builder));
+                                builder.addProblem(problem);
+                                firstInstanceProblemAdded=true;
+                            }
                         }
 
                         ICompilerProblem problem = new MXMLMultipleInitializersProblem(childTag,getPropertyTypeName(builder));
