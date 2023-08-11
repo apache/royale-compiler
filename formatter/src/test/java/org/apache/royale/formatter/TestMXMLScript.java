@@ -51,6 +51,31 @@ public class TestMXMLScript extends BaseFormatterTests {
 	}
 
 	@Test
+	public void testEmptyScriptNoCdataNoWhitespace() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
+		// @formatter:off
+			"<s:Application>\n" +
+			"<fx:Script></fx:Script>\n" +
+			"</s:Application>",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"<s:Application>\n" +
+				"\t<fx:Script>\n" +
+				"\t\t<![CDATA[\n" +
+				"\t\t]]>\n" +
+				"\t</fx:Script>\n" +
+				"</s:Application>",
+				// @formatter:on
+				result);
+	}
+
+	@Test
 	public void testEmptyScriptWithCdata() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaces = false;
@@ -62,6 +87,31 @@ public class TestMXMLScript extends BaseFormatterTests {
 			"<![CDATA[\n" +
 			"]]>\n" +
 			"</fx:Script>\n" +
+			"</s:Application>",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"<s:Application>\n" +
+				"\t<fx:Script>\n" +
+				"\t\t<![CDATA[\n" +
+				"\t\t]]>\n" +
+				"\t</fx:Script>\n" +
+				"</s:Application>",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testEmptyScriptWithCdataNoWhitespace() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
+		// @formatter:off
+			"<s:Application>\n" +
+			"<fx:Script><![CDATA[]]></fx:Script>\n" +
 			"</s:Application>",
 			// @formatter:on
 			problems

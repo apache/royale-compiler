@@ -38,6 +38,8 @@ import org.apache.royale.formatter.internal.BaseTokenFormatter;
 public class MXMLTokenFormatter extends BaseTokenFormatter {
 	private static final int TOKEN_TYPE_EXTRA = 999999;
 	private static final Pattern SCRIPT_START_PATTERN = Pattern.compile("<((?:mx|fx):(Script|Metadata))");
+	private static final Pattern TAG_START_WITH_OPTIONAL_CDATA_PATTERN = Pattern.compile("^<((?:mx|fx):(\\w+))>\\s*(<!\\[CDATA\\[)?");
+	private static final Pattern TAG_END_WITH_OPTIONAL_CDATA_PATTERN = Pattern.compile("(?:\\]\\]>)?\\s*<\\/(?:mx|fx):(?:\\w+)>$");
 	private static final String FORMATTER_TAG_OFF = "@formatter:off";
 	private static final String FORMATTER_TAG_ON = "@formatter:on";
 
@@ -338,22 +340,28 @@ public class MXMLTokenFormatter extends BaseTokenFormatter {
 			}
 		}
 		StringBuilder builder = new StringBuilder();
-		Pattern scriptPattern = Pattern.compile(
-				"^<((?:mx|fx):(\\w+))>\\s*(<!\\[CDATA\\[)?((?:.|(?:\\r?\\n))*?)(?:\\]\\]>)?\\s*<\\/(?:mx|fx):(?:\\w+)>$");
-		Matcher scriptMatcher = scriptPattern.matcher(text);
-		if (!scriptMatcher.matches()) {
+		Matcher scriptStartMatcher = TAG_START_WITH_OPTIONAL_CDATA_PATTERN.matcher(text);
+		if (!scriptStartMatcher.find() || scriptStartMatcher.end() > text.length()) {
 			return text;
 		}
+
+		int startEndSearch = scriptStartMatcher.end();
+		Matcher scriptEndMatcher = TAG_END_WITH_OPTIONAL_CDATA_PATTERN.matcher(text.substring(startEndSearch));
+		if (!scriptEndMatcher.find()) {
+			return text;
+		}
+
+		String scriptTagText = scriptStartMatcher.group(1);
+		String scriptTagName = scriptStartMatcher.group(2);
+		String cdataText = scriptStartMatcher.group(3);
+		String scriptText = text.substring(startEndSearch, startEndSearch + scriptEndMatcher.start());
+		boolean requireCdata = cdataText != null || "Script".equals(scriptTagName);
+
 		if (problems == null) {
 			// we need to know if there were problems because it means that we
 			// need to return the original, unformatted text
 			problems = new ArrayList<ICompilerProblem>();
 		}
-		String scriptTagText = scriptMatcher.group(1);
-		String scriptTagName = scriptMatcher.group(2);
-		String cdataText = scriptMatcher.group(3);
-		String scriptText = scriptMatcher.group(4);
-		boolean requireCdata = cdataText != null || "Script".equals(scriptTagName);
 		ASTokenFormatter asFormatter = new ASTokenFormatter(settings);
 		String formattedScriptText = asFormatter.format(filePath + "@Script[" + line + "]", scriptText, problems);
 		if (!settings.ignoreProblems && hasErrors(problems)) {

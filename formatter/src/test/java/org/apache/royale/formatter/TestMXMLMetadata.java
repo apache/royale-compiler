@@ -49,6 +49,29 @@ public class TestMXMLMetadata extends BaseFormatterTests {
 	}
 
 	@Test
+	public void testEmptyMetadataNoCdataNoWhitespace() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
+		// @formatter:off
+			"<s:Application>\n" +
+			"<fx:Metadata></fx:Metadata>\n" +
+			"</s:Application>",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"<s:Application>\n" +
+				"\t<fx:Metadata>\n" +
+				"\t</fx:Metadata>\n" +
+				"</s:Application>",
+				// @formatter:on
+				result);
+	}
+
+	@Test
 	public void testEmptyMetadataWithCdata() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaces = false;
@@ -60,6 +83,31 @@ public class TestMXMLMetadata extends BaseFormatterTests {
 			"<![CDATA[\n" +
 			"]]>\n" +
 			"</fx:Metadata>\n" +
+			"</s:Application>",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"<s:Application>\n" +
+				"\t<fx:Metadata>\n" +
+				"\t\t<![CDATA[\n" +
+				"\t\t]]>\n" +
+				"\t</fx:Metadata>\n" +
+				"</s:Application>",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testEmptyMetadataWithCdataNoWhitespace() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
+		// @formatter:off
+			"<s:Application>\n" +
+			"<fx:Metadata><![CDATA[]]></fx:Metadata>\n" +
 			"</s:Application>",
 			// @formatter:on
 			problems
