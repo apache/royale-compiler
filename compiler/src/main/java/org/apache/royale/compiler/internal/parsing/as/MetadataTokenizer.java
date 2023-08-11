@@ -243,6 +243,7 @@ public class MetadataTokenizer
                      (tokenString.charAt(0) == '\'')))
                 {
                     startOffset++;
+                    column++;
                     tokenString = tokenString.substring(1);
                 }
 
