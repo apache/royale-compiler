@@ -155,7 +155,13 @@ class MXMLEventSpecifierNode extends MXMLSpecifierNodeBase
         final IncludeHandler includeHandler =
                 IncludeHandler.createForASTBuilding(builder.getFileSpecificationGetter(), filePath, startOffsetLocal, startOffsetAbsolute);
         includeHandler.setProjectAndCompilationUnit(project, builder.getCompilationUnit());
-        final String scriptFragment = attribute.getRawValue();
+        String scriptFragment = attribute.getRawValue();
+        if (scriptFragment == null)
+        {
+            // an exception will be thrown if the string is null
+            // the missing value will result in a compile error elsewhere
+            scriptFragment = "";
+        }
         if (scriptFragment.isEmpty())
         {
             MXMLEmptyEventHandlerProblem problem = new MXMLEmptyEventHandlerProblem(attribute);
