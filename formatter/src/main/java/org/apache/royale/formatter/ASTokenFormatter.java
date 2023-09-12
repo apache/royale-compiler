@@ -310,7 +310,8 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 							BlockStackItem stackItem = blockStack.get(blockStack.size() - 1);
 							if (stackItem.blockDepth <= 1) {
 								boolean oneLineBlock = prevToken != null
-										&& prevToken.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN;
+										&& prevToken.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN
+										&& !(stackItem instanceof ObjectLiteralBlockStackItem);
 								if (!settings.collapseEmptyBlocks || !oneLineBlock) {
 									indent = decreaseIndent(indent);
 								}

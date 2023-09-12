@@ -185,4 +185,27 @@ public class TestObjectLiteral extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testEmptyWithCollapseEmptyBlocks() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"var obj1:Object = {};\n" +
+			"var obj2:Object = {};",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+			"var obj1:Object = {};\n" +
+			"var obj2:Object = {};",
+				// @formatter:on
+				result);
+	}
 }
