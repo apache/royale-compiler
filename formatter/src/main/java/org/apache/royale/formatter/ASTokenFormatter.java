@@ -959,7 +959,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 			}
 		}
 		if (blockStack.size() > 0) {
-			throw new Exception("Block stack size too large");
+			throw new Exception("Unexpected end of file. Blocks still considered open by formatter. This is a bug.");
 		}
 		return builder.toString();
 	}
