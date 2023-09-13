@@ -170,7 +170,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 
 		List<IASToken> tokens = insertExtraAS3Tokens(repairedTokensList, text);
 		try {
-			return parseTokens(tokens);
+			return parseTokens(tokens, text);
 		} catch (Exception e) {
 			if (problems != null) {
 				System.err.println(e);
@@ -181,7 +181,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 		}
 	}
 
-	private String parseTokens(List<IASToken> tokens) throws Exception {
+	private String parseTokens(List<IASToken> tokens, String fileText) throws Exception {
 		indent = 0;
 		inCaseOrDefaultClause = false;
 		inControlFlowStatement = false;
@@ -513,7 +513,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 			}
 
 			// include the token's own text
-			builder.append(getTokenText(token, indent, skipFormatting));
+			builder.append(getTokenText(token, indent, skipFormatting, fileText));
 
 			// characters that must appear after the token
 			if (token.getType() != ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
@@ -1109,7 +1109,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 		}
 	}
 
-	private String getTokenText(IASToken token, int indent, boolean skipFormatting) {
+	private String getTokenText(IASToken token, int indent, boolean skipFormatting, String fileText) {
 		if (token instanceof MetaDataPayloadToken) {
 			MetaDataPayloadToken metaPlayloadToken = (MetaDataPayloadToken) token;
 			return formatMetadataToken(metaPlayloadToken);
@@ -1134,7 +1134,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					return formatMultiLineComment(token.getText());
 				}
 				case ASTokenTypes.TOKEN_LITERAL_STRING: {
-					return formatLiteralString(token);
+					return formatLiteralString(token, fileText);
 				}
 				case ASTokenTypes.TOKEN_SEMICOLON: {
 					if (skipFormatting) {
@@ -1233,7 +1233,19 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 		return comment;
 	}
 
-	private String formatLiteralString(IASToken token) {
+	private String formatLiteralString(IASToken token, String fileText) {
+		int start = token.getAbsoluteStart();
+		int end = token.getAbsoluteEnd();
+		if (start != -1 && start < end && end < fileText.length()) {
+			// escape sequences are converted to real characters when the
+			// original source code is converted to to tokens
+			// the user won't be happy if their strings get changed
+			// (and, in some cases, it may become an invalid string),
+			// so grab the original string from the file
+			return fileText.substring(start, end);
+		}
+		// we should never get here, but this should handle most strings, if
+		// something unexpected happens
 		String string = token.getText();
 		String charsToEscape = "\b\t\n\f\r\\";
 		String escapeChars = "btnfr\\";
@@ -1395,7 +1407,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 		return numNewLinesInWhitespace;
 	}
 
-	private List<IASToken> insertExtraAS3Tokens(List<IASToken> originalTokens, String text) {
+	private List<IASToken> insertExtraAS3Tokens(List<IASToken> originalTokens, String fileText) {
 		ArrayList<IASToken> tokens = new ArrayList<IASToken>();
 		IASToken prevToken = null;
 		for (IASToken token : originalTokens) {
@@ -1411,7 +1423,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 				int start = prevToken.getAbsoluteEnd();
 				int end = token.getAbsoluteStart();
 				if (end > start) {
-					String tokenText = text.substring(start, end);
+					String tokenText = fileText.substring(start, end);
 					ASToken extraToken = new ASToken(TOKEN_TYPE_EXTRA, start, end, prevToken.getEndLine(),
 							prevToken.getEndColumn(), tokenText);
 					extraToken.setEndLine(token.getLine());
@@ -1424,9 +1436,9 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 		}
 		if (prevToken != null) {
 			int start = prevToken.getAbsoluteEnd();
-			int end = text.length();
+			int end = fileText.length();
 			if (end > start) {
-				String tokenText = text.substring(start, end);
+				String tokenText = fileText.substring(start, end);
 				ASToken extraToken = new ASToken(TOKEN_TYPE_EXTRA, start, end, prevToken.getEndLine(),
 						prevToken.getEndColumn(), tokenText);
 				extraToken.setEndLine(prevToken.getLine());

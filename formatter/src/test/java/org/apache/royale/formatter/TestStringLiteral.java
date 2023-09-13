@@ -45,7 +45,47 @@ public class TestStringLiteral extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testWithNewLine() {
+	public void testTabEscape() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"\"\\t\";",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"\"\\t\";",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testCarriageReturnEscape() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"\"\\r\";",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"\"\\r\";",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testNewLineEscape() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
@@ -60,6 +100,106 @@ public class TestStringLiteral extends BaseFormatterTests {
 		assertEquals(
 		// @formatter:off
 				"\"\\n\";",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testBackslashEscape() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"\"\\\\\";",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"\"\\\\\";",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testBackspaceEscape() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"\"\\b\";",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"\"\\b\";",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testFormFeedEscape() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"\"\\f\";",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"\"\\f\";",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testAsciiEscape() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"\"\\x21\";",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"\"\\x21\";",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testUnicodeEscape() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"\"\\u263a\";",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"\"\\u263a\";",
 				// @formatter:on
 				result);
 	}
