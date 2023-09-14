@@ -220,7 +220,50 @@ public class TestConfigConst extends BaseFormatterTests {
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
+			"COMPILE::JS\n" +
+			"{}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"COMPILE::JS {}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testCollapseEmptyBlock4() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
 			"COMPILE::JS {}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"COMPILE::JS {}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testCollapseEmptyBlock5() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"COMPILE::JS{}",
 			// @formatter:on
 			problems
 		);

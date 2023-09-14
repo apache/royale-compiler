@@ -25,7 +25,7 @@ import org.junit.Test;
 
 public class TestElseIfStatement extends BaseFormatterTests {
 	@Test
-	public void testPlaceOpenBraceOnNewLineWithEmptyBlock() {
+	public void testPlaceOpenBraceOnNewLineWithEmptyBlock1() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
@@ -55,7 +55,39 @@ public class TestElseIfStatement extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testDisablePlaceOpenBraceOnNewLineWithEmptyBlock() {
+	public void testPlaceOpenBraceOnNewLineWithEmptyBlock2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"if (condition1)\n" +
+			"{\n" +
+			"\tstatement;\n" +
+			"}\n" +
+			"else if (condition2)\n" + 
+			"{\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"if (condition1)\n" +
+				"{\n" +
+				"\tstatement;\n" +
+				"}\n" +
+				"else if (condition2)\n" +
+				"{\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testDisablePlaceOpenBraceOnNewLineWithEmptyBlock1() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = false;
@@ -85,7 +117,35 @@ public class TestElseIfStatement extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testPlaceOpenBraceOnNewLineWithEmptyIfAndElseIfBlocks() {
+	public void testDisablePlaceOpenBraceOnNewLineWithEmptyBlock2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"if (condition1) {\n" +
+			"\tstatement;\n" +
+			"}\n" +
+			"else if (condition2) {\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"if (condition1) {\n" +
+				"\tstatement;\n" +
+				"}\n" +
+				"else if (condition2) {\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testPlaceOpenBraceOnNewLineWithEmptyIfAndElseIfBlocks1() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
@@ -113,7 +173,37 @@ public class TestElseIfStatement extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testDisablePlaceOpenBraceOnNewLineWithEmptyIfAndElseIfBlocks() {
+	public void testPlaceOpenBraceOnNewLineWithEmptyIfAndElseIfBlocks2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"if (condition1)\n" +
+			"{\n" +
+			"}\n" +
+			"else if (condition2)\n" + 
+			"{\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"if (condition1)\n" +
+				"{\n" +
+				"}\n" +
+				"else if (condition2)\n" +
+				"{\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testDisablePlaceOpenBraceOnNewLineWithEmptyIfAndElseIfBlocks1() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = false;
@@ -126,6 +216,32 @@ public class TestElseIfStatement extends BaseFormatterTests {
 			"}\n" +
 			"else if (condition2)\n" +
 			"{\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"if (condition1) {\n" +
+				"}\n" +
+				"else if (condition2) {\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testDisablePlaceOpenBraceOnNewLineWithEmptyIfAndElseIfBlocks2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"if (condition1) {\n" +
+			"}\n" +
+			"else if (condition2) {\n" +
 			"}",
 			// @formatter:on
 			problems
@@ -209,7 +325,7 @@ public class TestElseIfStatement extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testPlaceOpenBraceOnNewLineWithStatement() {
+	public void testPlaceOpenBraceOnNewLineWithStatement1() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
@@ -241,7 +357,41 @@ public class TestElseIfStatement extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testDisablePlaceOpenBraceOnNewLineWithStatement() {
+	public void testPlaceOpenBraceOnNewLineWithStatement2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"if (condition1)\n" +
+			"{\n" +
+			"\tstatement;\n" +
+			"}\n" +
+			"else if (condition2)\n" + 
+			"{\n" +
+			"\tstatement;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"if (condition1)\n" +
+				"{\n" +
+				"\tstatement;\n" +
+				"}\n" +
+				"else if (condition2)\n" +
+				"{\n" +
+				"\tstatement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testDisablePlaceOpenBraceOnNewLineWithStatement1() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = false;
@@ -255,6 +405,36 @@ public class TestElseIfStatement extends BaseFormatterTests {
 			"}\n" +
 			"else if (condition2)\n" +
 			"{\n" +
+			"\tstatement;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"if (condition1) {\n" +
+				"\tstatement;\n" +
+				"}\n" +
+				"else if (condition2) {\n" +
+				"\tstatement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testDisablePlaceOpenBraceOnNewLineWithStatement2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"if (condition1) {\n" +
+			"\tstatement;\n" +
+			"}\n" +
+			"else if (condition2) {\n" +
 			"\tstatement;\n" +
 			"}",
 			// @formatter:on
@@ -517,7 +697,7 @@ public class TestElseIfStatement extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testCollapseEmptyBlock() {
+	public void testCollapseEmptyBlock1() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = false;
@@ -531,6 +711,111 @@ public class TestElseIfStatement extends BaseFormatterTests {
 			"}\n" +
 			"else {\n" +
 			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"if (condition1) {}\n" +
+				"else if (condition2) {}\n" +
+				"else {}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testCollapseEmptyBlock2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"if (condition1)\n" + 
+			"{\n" +
+			"}\n" +
+			"else if (condition2)\n" + 
+			"{\n" +
+			"}\n" +
+			"else\n" +
+			"{\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"if (condition1) {}\n" +
+				"else if (condition2) {}\n" +
+				"else {}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testCollapseEmptyBlock3() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"if (condition1)\n" + 
+			"{}\n" +
+			"else if (condition2)\n" + 
+			"{}\n" +
+			"else\n" +
+			"{}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"if (condition1) {}\n" +
+				"else if (condition2) {}\n" +
+				"else {}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testCollapseEmptyBlock4() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"if (condition1) {}\n" +
+			"else if (condition2) {}\n" +
+			"else {}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"if (condition1) {}\n" +
+				"else if (condition2) {}\n" +
+				"else {}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testCollapseEmptyBlock5() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"if (condition1){}\n" +
+			"else if (condition2){}\n" +
+			"else{}",
 			// @formatter:on
 			problems
 		);

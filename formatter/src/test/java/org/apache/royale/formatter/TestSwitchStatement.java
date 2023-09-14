@@ -25,7 +25,7 @@ import org.junit.Test;
 
 public class TestSwitchStatement extends BaseFormatterTests {
 	@Test
-	public void testPlaceOpenBraceOnNewLineWithEmptyBlock() {
+	public void testPlaceOpenBraceOnNewLineWithEmptyBlock1() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
@@ -48,7 +48,31 @@ public class TestSwitchStatement extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testDisablePlaceOpenBraceOnNewLineWithEmptyBlock() {
+	public void testPlaceOpenBraceOnNewLineWithEmptyBlock2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"switch (condition)\n" +
+			"{\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"switch (condition)\n" +
+				"{\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testDisablePlaceOpenBraceOnNewLineWithEmptyBlock1() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = false;
@@ -58,6 +82,28 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		// @formatter:off
 				"switch (condition)\n" +
 				"{\n" +
+				"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"switch (condition) {\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testDisablePlaceOpenBraceOnNewLineWithEmptyBlock2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+				"switch (condition) {\n" +
 				"}",
 			// @formatter:on
 			problems
@@ -968,6 +1014,115 @@ public class TestSwitchStatement extends BaseFormatterTests {
 				"{\n" +
 				"\tdefault: // what\n" +
 				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testCollapseEmptyBlock1() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"switch (condition) {\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"switch (condition) {}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testCollapseEmptyBlock2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"switch (condition)\n" +
+			"{\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"switch (condition) {}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testCollapseEmptyBlock3() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"switch (condition)\n" +
+			"{}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"switch (condition) {}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testCollapseEmptyBlock4() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"switch (condition) {}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"switch (condition) {}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testCollapseEmptyBlock5() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"switch (condition){}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"switch (condition) {}",
 				// @formatter:on
 				result);
 	}

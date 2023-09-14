@@ -24,7 +24,7 @@ import org.junit.Test;
 
 public class TestClassDeclaration extends BaseFormatterTests {
 	@Test
-	public void testPlaceOpenBraceOnNewLineWithEmptyBlock() {
+	public void testPlaceOpenBraceOnNewLineWithEmptyBlock1() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
@@ -47,7 +47,31 @@ public class TestClassDeclaration extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testDisablePlaceOpenBraceOnNewLineWithEmptyBlock() {
+	public void testPlaceOpenBraceOnNewLineWithEmptyBlock2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"class MyClass\n" + 
+			"{\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"class MyClass\n" +
+				"{\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testDisablePlaceOpenBraceOnNewLineWithEmptyBlock1() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = false;
@@ -70,7 +94,29 @@ public class TestClassDeclaration extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testPlaceOpenBraceOnNewLineWithStatement() {
+	public void testDisablePlaceOpenBraceOnNewLineWithEmptyBlock2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"class MyClass {\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"class MyClass {\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testPlaceOpenBraceOnNewLineWithStatement1() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
@@ -95,7 +141,33 @@ public class TestClassDeclaration extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testDisablePlaceOpenBraceOnNewLineWithStatement() {
+	public void testPlaceOpenBraceOnNewLineWithStatement2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"class MyClass\n" +
+			"{\n" +
+			"\tstatement;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"class MyClass\n" +
+				"{\n" +
+				"\tstatement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testDisablePlaceOpenBraceOnNewLineWithStatement1() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = false;
@@ -120,7 +192,31 @@ public class TestClassDeclaration extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testCollapseEmptyBlock() {
+	public void testDisablePlaceOpenBraceOnNewLineWithStatement2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"class MyClass {\n" +
+			"\tstatement;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"class MyClass {\n" +
+				"\tstatement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testCollapseEmptyBlock1() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = false;
@@ -130,6 +226,89 @@ public class TestClassDeclaration extends BaseFormatterTests {
 		// @formatter:off
 			"class MyClass {\n" +
 			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"class MyClass {}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testCollapseEmptyBlock2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"class MyClass\n" + 
+			"{\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"class MyClass {}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testCollapseEmptyBlock3() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"class MyClass\n" + 
+			"{}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"class MyClass {}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testCollapseEmptyBlock4() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"class MyClass {}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"class MyClass {}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testCollapseEmptyBlock5() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"class MyClass{}",
 			// @formatter:on
 			problems
 		);
