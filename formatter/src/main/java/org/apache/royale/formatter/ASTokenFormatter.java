@@ -40,6 +40,7 @@ import org.apache.royale.compiler.internal.parsing.as.StreamingASTokenizer;
 import org.apache.royale.compiler.internal.tree.as.FileNode;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.parsing.IASToken;
+import org.apache.royale.compiler.problems.CannotResolveConfigExpressionProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
 import org.apache.royale.formatter.config.Semicolons;
@@ -139,7 +140,14 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 		}
 
 		if (parser.getSyntaxProblems().size() > 0) {
-			problems.addAll(parser.getSyntaxProblems());
+			for (ICompilerProblem problem : parser.getSyntaxProblems()) {
+				if (problem instanceof CannotResolveConfigExpressionProblem) {
+					// it's okay if config constants aren't resolved
+					// we don't need to resolve anything
+					continue;
+				}
+				problems.add(problem);
+			}
 		}
 
 		if (!settings.ignoreProblems && hasErrors(problems)) {
@@ -620,6 +628,14 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 						indent = increaseIndent(indent);
 						if (inControlFlowStatement) {
 							controlFlowParenStack++;
+						}
+						break;
+					}
+					case ASTokenTypes.TOKEN_IDENTIFIER: {
+						if (prevToken != null && prevToken.getType() == ASTokenTypes.TOKEN_OPERATOR_NS_QUALIFIER && nextToken != null && nextToken.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN) {
+							// this is a config constant block
+							blockStack.add(new BlockStackItem(prevToken));
+							blockOpenPending = true;
 						}
 						break;
 					}
