@@ -593,4 +593,412 @@ public class TestConfigConst extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testConfigConditionOfClass() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"COMPILE::JS\n" +
+			"class MyClass {}\n" + 
+			"\n" +
+			"COMPILE::SWF\n" +
+			"class MyClass {}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"COMPILE::JS\n" +
+				"class MyClass {}\n" + 
+				"\n" +
+				"COMPILE::SWF\n" +
+				"class MyClass {}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testConfigConditionOfClassInPackageWithNamespace() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"package\n" + 
+			"{\n" +
+			"\tCOMPILE::JS\n" +
+			"\tpublic class MyClass {}\n" + 
+			"\n" +
+			"\tCOMPILE::SWF\n" +
+			"\tpublic class MyClass {}\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"package\n" + 
+				"{\n" +
+				"\tCOMPILE::JS\n" +
+				"\tpublic class MyClass {}\n" + 
+				"\n" +
+				"\tCOMPILE::SWF\n" +
+				"\tpublic class MyClass {}\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testConfigConditionOfClassInPackageWithoutNamespace() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"package\n" + 
+			"{\n" +
+			"\tCOMPILE::JS\n" +
+			"\tclass MyClass {}\n" + 
+			"\n" +
+			"\tCOMPILE::SWF\n" +
+			"\tclass MyClass {}\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"package\n" + 
+				"{\n" +
+				"\tCOMPILE::JS\n" +
+				"\tclass MyClass {}\n" + 
+				"\n" +
+				"\tCOMPILE::SWF\n" +
+				"\tclass MyClass {}\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testConfigConditionOfClassInPackageWithDynamicModifier() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"package\n" + 
+			"{\n" +
+			"\tCOMPILE::JS\n" +
+			"\tdynamic class MyClass {}\n" + 
+			"\n" +
+			"\tCOMPILE::SWF\n" +
+			"\tdynamic class MyClass {}\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"package\n" + 
+				"{\n" +
+				"\tCOMPILE::JS\n" +
+				"\tdynamic class MyClass {}\n" + 
+				"\n" +
+				"\tCOMPILE::SWF\n" +
+				"\tdynamic class MyClass {}\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testConfigConditionOfClassInPackageWithAbstractModifier() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"package\n" + 
+			"{\n" +
+			"\tCOMPILE::JS\n" +
+			"\tabstract class MyClass {}\n" + 
+			"\n" +
+			"\tCOMPILE::SWF\n" +
+			"\tabstract class MyClass {}\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"package\n" + 
+				"{\n" +
+				"\tCOMPILE::JS\n" +
+				"\tabstract class MyClass {}\n" + 
+				"\n" +
+				"\tCOMPILE::SWF\n" +
+				"\tabstract class MyClass {}\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testConfigConditionOfClassInPackageWithFinalModifier() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"package\n" + 
+			"{\n" +
+			"\tCOMPILE::JS\n" +
+			"\tfinal class MyClass {}\n" + 
+			"\n" +
+			"\tCOMPILE::SWF\n" +
+			"\tfinal class MyClass {}\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"package\n" + 
+				"{\n" +
+				"\tCOMPILE::JS\n" +
+				"\tfinal class MyClass {}\n" + 
+				"\n" +
+				"\tCOMPILE::SWF\n" +
+				"\tfinal class MyClass {}\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testConfigConditionOfInterface() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"COMPILE::JS\n" +
+			"interface MyInterface {}\n" + 
+			"\n" +
+			"COMPILE::SWF\n" +
+			"interface MyInterface {}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"COMPILE::JS\n" +
+				"interface MyInterface {}\n" + 
+				"\n" +
+				"COMPILE::SWF\n" +
+				"interface MyInterface {}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testConfigConditionOfInterfaceInPackageWithNamespace() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"package\n" + 
+			"{\n" +
+			"\tCOMPILE::JS\n" +
+			"\tpublic interface MyInterface {}\n" + 
+			"\n" +
+			"\tCOMPILE::SWF\n" +
+			"\tpublic interface MyInterface {}\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"package\n" + 
+				"{\n" +
+				"\tCOMPILE::JS\n" +
+				"\tpublic interface MyInterface {}\n" + 
+				"\n" +
+				"\tCOMPILE::SWF\n" +
+				"\tpublic interface MyInterface {}\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testConfigConditionOfInterfaceInPackageWithoutNamespace() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"package\n" + 
+			"{\n" +
+			"\tCOMPILE::JS\n" +
+			"\tinterface MyInterface {}\n" + 
+			"\n" +
+			"\tCOMPILE::SWF\n" +
+			"\tinterface MyInterface {}\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"package\n" + 
+				"{\n" +
+				"\tCOMPILE::JS\n" +
+				"\tinterface MyInterface {}\n" + 
+				"\n" +
+				"\tCOMPILE::SWF\n" +
+				"\tinterface MyInterface {}\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testConfigConditionOfMethodWithNamespace() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"class MyClass\n" +
+			"{\n" +
+			"\tCOMPILE::JS\n" +
+			"\tpublic function myMethod():void {}\n" +
+			"\n" +
+			"\tCOMPILE::SWF\n" +
+			"\tpublic function myMethod():void {}\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"class MyClass\n" +
+				"{\n" +
+				"\tCOMPILE::JS\n" +
+				"\tpublic function myMethod():void {}\n" +
+				"\n" +
+				"\tCOMPILE::SWF\n" +
+				"\tpublic function myMethod():void {}\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testConfigConditionOfMethodWithoutNamespace() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"class MyClass\n" +
+			"{\n" +
+			"\tCOMPILE::JS\n" +
+			"\tfunction myMethod():void {}\n" +
+			"\n" +
+			"\tCOMPILE::SWF\n" +
+			"\tfunction myMethod():void {}\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"class MyClass\n" +
+				"{\n" +
+				"\tCOMPILE::JS\n" +
+				"\tfunction myMethod():void {}\n" +
+				"\n" +
+				"\tCOMPILE::SWF\n" +
+				"\tfunction myMethod():void {}\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testConfigConditionOfMethodWithOverride() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.collapseEmptyBlocks = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"class MyClass extends OtherClass\n" +
+			"{\n" +
+			"\tCOMPILE::JS\n" +
+			"\toverride public function myMethod():void {}\n" +
+			"\n" +
+			"\tCOMPILE::SWF\n" +
+			"\toverride public function myMethod():void {}\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"class MyClass extends OtherClass\n" +
+				"{\n" +
+				"\tCOMPILE::JS\n" +
+				"\toverride public function myMethod():void {}\n" +
+				"\n" +
+				"\tCOMPILE::SWF\n" +
+				"\toverride public function myMethod():void {}\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
 }

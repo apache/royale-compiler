@@ -64,6 +64,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 	private boolean inPackageDeclaration;
 	private boolean inClassDeclaration;
 	private boolean inInterfaceDeclaration;
+	private boolean inConfigGateForDefinition;
 	private boolean blockOpenPending;
 	private boolean indentedStatement;
 	private boolean caseOrDefaultBlockOpenPending;
@@ -198,6 +199,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 		inPackageDeclaration = false;
 		inClassDeclaration = false;
 		inInterfaceDeclaration = false;
+		inConfigGateForDefinition = false;
 		blockOpenPending = false;
 		indentedStatement = false;
 		caseOrDefaultBlockOpenPending = false;
@@ -219,6 +221,20 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < tokens.size(); i++) {
 			token = tokens.get(i);
+			if (inConfigGateForDefinition && token.getType() == ASTokenTypes.TOKEN_SEMICOLON && token.isImplicit())
+			{
+				// skip the implicit semicolon if we just saw a namespace
+				// annotated config constant, like COMPILE:JS or COMPILE::SWF
+				// and the next token starts a definition, like a class.
+				// the implicit semicolon is only there because the ASParser
+				// can't resolve the constant's value without the user providing
+				// it manually.
+				inConfigGateForDefinition = false;
+				prevToken = token;
+				prevTokenOrExtra = token;
+				prevTokenNotComment = token;
+				continue;
+			}
 			if (token.getType() == TOKEN_TYPE_EXTRA) {
 				if (skipFormatting) {
 					builder.append(token.getText());
@@ -260,8 +276,8 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 				continue;
 			}
 			nextTokenOrExtra = ((i + 1) < tokens.size()) ? tokens.get(i + 1) : null;
-			nextToken = getNextTokenSkipExtra(tokens, i + 1);
-			nextTokenNotComment = getNextTokenSkipExtraAndComments(tokens, i + 1);
+			nextToken = getNextTokenByOffset(tokens, i, 1, true, false);
+			nextTokenNotComment = getNextTokenByOffset(tokens, i, 1, true, true);
 
 			boolean skipWhitespaceBeforeSemicolon = nextToken == null
 					|| nextToken.getType() == ASTokenTypes.TOKEN_SEMICOLON;
@@ -632,10 +648,45 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 						break;
 					}
 					case ASTokenTypes.TOKEN_IDENTIFIER: {
-						if (prevToken != null && prevToken.getType() == ASTokenTypes.TOKEN_OPERATOR_NS_QUALIFIER && nextToken != null && nextToken.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN) {
-							// this is a config constant block
-							blockStack.add(new BlockStackItem(prevToken));
-							blockOpenPending = true;
+						// look for a config constant, like COMPILE:JS or COMPILE::SWF
+						if (prevToken != null && prevToken.getType() == ASTokenTypes.TOKEN_OPERATOR_NS_QUALIFIER) {
+							boolean isConfigBlock = nextToken != null && nextToken.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN;
+							if (isConfigBlock) {
+								// this is a config constant block
+								blockStack.add(new BlockStackItem(prevToken));
+								blockOpenPending = true;
+							}
+							else if (nextToken != null && nextToken.getType() == ASTokenTypes.TOKEN_SEMICOLON && nextToken.isImplicit())
+							{
+								// if it's not before the start of a block, it
+								// might be before the start of a definition
+								IASToken prevPrevToken = getPrevTokenByOffset(tokens, i, 3, true, true);
+								if (prevPrevToken == null
+										|| prevPrevToken.getType() == ASTokenTypes.TOKEN_SEMICOLON
+										|| prevPrevToken.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN
+										|| prevPrevToken.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE) {
+									IASToken nextNextToken = getNextTokenByOffset(tokens, i, 2, true, true);
+									if (nextNextToken != null) {
+										if (nextNextToken.getType() == ASTokenTypes.TOKEN_NAMESPACE_ANNOTATION
+											|| nextNextToken.getType() == ASTokenTypes.TOKEN_KEYWORD_CLASS
+											|| nextNextToken.getType() == ASTokenTypes.TOKEN_KEYWORD_INTERFACE
+											|| nextNextToken.getType() == ASTokenTypes.TOKEN_KEYWORD_FUNCTION
+											|| nextNextToken.getType() == ASTokenTypes.TOKEN_KEYWORD_VAR
+											|| nextNextToken.getType() == ASTokenTypes.TOKEN_KEYWORD_CONST
+											|| nextNextToken.getType() == ASTokenTypes.TOKEN_MODIFIER_ABSTRACT
+											|| nextNextToken.getType() == ASTokenTypes.TOKEN_MODIFIER_DYNAMIC
+											|| nextNextToken.getType() == ASTokenTypes.TOKEN_MODIFIER_FINAL
+											|| nextNextToken.getType() == ASTokenTypes.TOKEN_MODIFIER_NATIVE
+											|| nextNextToken.getType() == ASTokenTypes.TOKEN_MODIFIER_OVERRIDE
+											|| nextNextToken.getType() == ASTokenTypes.TOKEN_MODIFIER_STATIC
+											|| nextNextToken.getType() == ASTokenTypes.TOKEN_MODIFIER_VIRTUAL) {
+												// this config constant is gating a definition
+												// like COMPILE::JS or COMPILE::SWF before a class
+												inConfigGateForDefinition = true;
+											}
+									}
+								}
+							}
 						}
 						break;
 					}
@@ -980,24 +1031,42 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 		return builder.toString();
 	}
 
-	private IASToken getNextTokenSkipExtra(List<IASToken> tokens, int startIndex) {
-		for (int i = startIndex; i < tokens.size(); i++) {
+	private IASToken getPrevTokenByOffset(List<IASToken> tokens, int startIndex, int offset, boolean skipExtra, boolean skipComments) {
+		int current = 0;
+		for (int i = startIndex; i >= 0; i--) {
 			IASToken token = tokens.get(i);
-			if (token.getType() != TOKEN_TYPE_EXTRA) {
+			if (skipExtra && token.getType() == TOKEN_TYPE_EXTRA) {
+				continue;
+			}
+			if (skipComments && (token.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
+					&& token.getType() == ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT
+					&& token.getType() == ASTokenTypes.TOKEN_ASDOC_COMMENT)) {
+				continue;
+			}
+			if (current == offset) {
 				return token;
 			}
+			current++;
 		}
 		return null;
 	}
 
-	private IASToken getNextTokenSkipExtraAndComments(List<IASToken> tokens, int startIndex) {
+	private IASToken getNextTokenByOffset(List<IASToken> tokens, int startIndex, int offset, boolean skipExtra, boolean skipComments) {
+		int current = 0;
 		for (int i = startIndex; i < tokens.size(); i++) {
 			IASToken token = tokens.get(i);
-			if (token.getType() != TOKEN_TYPE_EXTRA && token.getType() != ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
-					&& token.getType() != ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT
-					&& token.getType() != ASTokenTypes.TOKEN_ASDOC_COMMENT) {
+			if (skipExtra && token.getType() == TOKEN_TYPE_EXTRA) {
+				continue;
+			}
+			if (skipComments && (token.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
+					&& token.getType() == ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT
+					&& token.getType() == ASTokenTypes.TOKEN_ASDOC_COMMENT)) {
+				continue;
+			}
+			if (current == offset) {
 				return token;
 			}
+			current++;
 		}
 		return null;
 	}
@@ -1402,7 +1471,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 				stack.add(current);
 			} else if (current.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE) {
 				if (stack.size() == 0) {
-					return getNextTokenSkipExtraAndComments(tokens, i + 1);
+					return getNextTokenByOffset(tokens, i, 1, true, true);
 				}
 				stack.remove(stack.size() - 1);
 			}
