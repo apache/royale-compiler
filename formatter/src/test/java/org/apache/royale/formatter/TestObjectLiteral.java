@@ -187,7 +187,32 @@ public class TestObjectLiteral extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testEmptyWithCollapseEmptyBlocks() {
+	public void testMultipleEmptyObjectLiteralAssignments() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		settings.collapseEmptyBlocks = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"var obj1:Object = {};\n" +
+			"var obj2:Object = {};\n" +
+			"var obj3:Object = {};",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+			"var obj1:Object = {};\n" +
+			"var obj2:Object = {};\n" +
+			"var obj3:Object = {};",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testMultipleEmptyObjectLiteralAssignmentsWithCollapseEmptyBlocks() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
 		settings.placeOpenBraceOnNewLine = false;
@@ -197,14 +222,16 @@ public class TestObjectLiteral extends BaseFormatterTests {
 		String result = formatter.format("file.as",
 		// @formatter:off
 			"var obj1:Object = {};\n" +
-			"var obj2:Object = {};",
+			"var obj2:Object = {};\n" +
+			"var obj3:Object = {};",
 			// @formatter:on
 			problems
 		);
 		assertEquals(
 		// @formatter:off
 			"var obj1:Object = {};\n" +
-			"var obj2:Object = {};",
+			"var obj2:Object = {};\n" +
+			"var obj3:Object = {};",
 				// @formatter:on
 				result);
 	}

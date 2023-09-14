@@ -259,4 +259,28 @@ public class TestArrayLiteral extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testMultipleEmptyArrayLiteralAssignments() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"var arr1:Array = [];\n" +
+			"var arr2:Array = [];\n" +
+			"var arr3:Array = [];",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+			"var arr1:Array = [];\n" +
+			"var arr2:Array = [];\n" +
+			"var arr3:Array = [];",
+				// @formatter:on
+				result);
+	}
 }

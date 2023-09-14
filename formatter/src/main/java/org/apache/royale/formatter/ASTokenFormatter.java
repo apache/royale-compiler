@@ -314,18 +314,17 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 									&& (!settings.collapseEmptyBlocks || !oneLineBlock);
 							if (needsNewLine) {
 								numRequiredNewLines = Math.max(numRequiredNewLines, 1);
-							} else {
-								if (oneLineBlock && settings.collapseEmptyBlocks) {
-									numRequiredNewLines = 0;
-								}
-								requiredSpace = true;
+							} else if (oneLineBlock && settings.collapseEmptyBlocks) {
+								numRequiredNewLines = 0;
 							}
+							requiredSpace = true;
 						} else {
 							// probably an object literal
 							blockStack.add(new ObjectLiteralBlockStackItem(token));
 							// we will indent, but after appending the token
+
+							requiredSpace = prevTokenNotComment == null || prevTokenNotComment.getType() != ASTokenTypes.TOKEN_PAREN_OPEN;
 						}
-						requiredSpace = true;
 						break;
 					}
 					case ASTokenTypes.TOKEN_BLOCK_CLOSE: {
