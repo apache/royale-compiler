@@ -536,6 +536,174 @@ public class TestIfStatement extends BaseFormatterTests {
 	}
 
 	@Test
+	public void testNestedBodiesWithoutParenthesesWithSingleLineComment1() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"{\n" +
+			"\tif (condition1) // comment\n" +
+			"\t\tif (condition2)\n" +
+			"\t\t\tstatement;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"{\n" +
+				"\tif (condition1) // comment\n" +
+				"\t\tif (condition2)\n" +
+				"\t\t\tstatement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testNestedBodiesWithoutParenthesesWithSingleLineComment2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"{\n" +
+			"\tif (condition1)\n" +
+			"\t\tif (condition2) // comment\n" +
+			"\t\t\tstatement;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"{\n" +
+				"\tif (condition1)\n" +
+				"\t\tif (condition2) // comment\n" +
+				"\t\t\tstatement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testNestedBodiesWithoutParenthesesWithSingleLineComment3() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"{\n" +
+			"\tif (condition1) // comment\n" +
+			"\t\tif (condition2) // comment\n" +
+			"\t\t\tstatement;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"{\n" +
+				"\tif (condition1) // comment\n" +
+				"\t\tif (condition2) // comment\n" +
+				"\t\t\tstatement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testNestedBodiesWithoutParenthesesWithMultiLineComment1() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"{\n" +
+			"\tif (condition1) /* comment */\n" +
+			"\t\tif (condition2)\n" +
+			"\t\t\tstatement;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"{\n" +
+				"\tif (condition1) /* comment */\n" +
+				"\t\tif (condition2)\n" +
+				"\t\t\tstatement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testNestedBodiesWithoutParenthesesWithMultiLineComment2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"{\n" +
+			"\tif (condition1)\n" +
+			"\t\tif (condition2) /* comment */\n" +
+			"\t\t\tstatement;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"{\n" +
+				"\tif (condition1)\n" +
+				"\t\tif (condition2) /* comment */\n" +
+				"\t\t\tstatement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testNestedBodiesWithoutParenthesesWithMultiLineComment3() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"{\n" +
+			"\tif (condition1) /* comment */\n" +
+			"\t\tif (condition2) /* comment */\n" +
+			"\t\t\tstatement;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"{\n" +
+				"\tif (condition1) /* comment */\n" +
+				"\t\tif (condition2) /* comment */\n" +
+				"\t\t\tstatement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
 	public void testCollapseEmptyBlock1() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;

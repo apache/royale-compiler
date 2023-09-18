@@ -702,13 +702,18 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 									if (!skipWhitespaceBeforeSemicolon) {
 										numRequiredNewLines = Math.max(numRequiredNewLines, 1);
 									}
-								} else if (nextToken != null && nextToken.getType() != ASTokenTypes.TOKEN_BLOCK_OPEN
-										&& nextToken.getType() != ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
+								} else if (nextTokenNotComment != null && nextTokenNotComment.getType() != ASTokenTypes.TOKEN_BLOCK_OPEN
 										&& !skipWhitespaceBeforeSemicolon) {
 									indent = increaseIndent(indent);
 									BlockStackItem stackItem = blockStack.get(blockStack.size() - 1);
 									stackItem.braces = false;
-									numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+									// if a comment is on the same line
+									// don't add a line break yet
+									if (nextToken.getType() != ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
+											&& nextToken.getType() != ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT
+											&& nextToken.getType() != ASTokenTypes.HIDDEN_TOKEN_COMMENT) {
+										numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+									}
 								}
 							}
 						}
@@ -1000,6 +1005,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					case ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT: {
 						if (!skipWhitespaceBeforeSemicolon) {
 							if (nextTokenOrExtra != null && nextTokenOrExtra.getType() == TOKEN_TYPE_EXTRA) {
+								numRequiredNewLines = Math.max(0, countNewLinesInExtra(nextTokenOrExtra));
 								requiredSpace = true;
 							}
 						}
