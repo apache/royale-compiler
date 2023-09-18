@@ -1038,8 +1038,8 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 				continue;
 			}
 			if (skipComments && (token.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
-					&& token.getType() == ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT
-					&& token.getType() == ASTokenTypes.TOKEN_ASDOC_COMMENT)) {
+					|| token.getType() == ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT
+					|| token.getType() == ASTokenTypes.TOKEN_ASDOC_COMMENT)) {
 				continue;
 			}
 			if (current == offset) {
@@ -1058,8 +1058,8 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 				continue;
 			}
 			if (skipComments && (token.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
-					&& token.getType() == ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT
-					&& token.getType() == ASTokenTypes.TOKEN_ASDOC_COMMENT)) {
+					|| token.getType() == ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT
+					|| token.getType() == ASTokenTypes.TOKEN_ASDOC_COMMENT)) {
 				continue;
 			}
 			if (current == offset) {
