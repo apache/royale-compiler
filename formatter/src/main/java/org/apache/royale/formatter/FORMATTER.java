@@ -41,6 +41,7 @@ import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.filespecs.FileSpecification;
 import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.problems.CompilerProblemSeverity;
 import org.apache.royale.compiler.problems.ConfigurationProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
@@ -203,7 +204,6 @@ public class FORMATTER {
 	public int execute(String[] args) {
 		ExitCode exitCode = ExitCode.SUCCESS;
 		problemQuery = new ProblemQuery();
-		problemQuery.setShowWarnings(false);
 
 		try {
 			boolean continueFormatting = configure(args, problemQuery);
@@ -258,12 +258,21 @@ public class FORMATTER {
 			System.err.println(e.getMessage());
 			exitCode = ExitCode.FAILED_WITH_EXCEPTIONS;
 		} finally {
-			if (problemQuery.hasFilteredProblems()) {
+			final CompilerProblemCategorizer categorizer = new CompilerProblemCategorizer();
+			ArrayList<ICompilerProblem> filteredProblems = new ArrayList<ICompilerProblem>();
+			for (ICompilerProblem problem : problemQuery.getFilteredProblems()) {
+        		CompilerProblemSeverity severity = categorizer.getProblemSeverity(problem);
+				// filter out everything that isn't an error
+				if (!CompilerProblemSeverity.ERROR.equals(severity)) {
+					continue;
+				}
+				filteredProblems.add(problem);
+			}
+			if (filteredProblems.size() > 0) {
 				final Workspace workspace = new Workspace();
-				final CompilerProblemCategorizer categorizer = new CompilerProblemCategorizer();
 				final ProblemFormatter formatter = new WorkspaceProblemFormatter(workspace, categorizer);
 				final ProblemPrinter printer = new ProblemPrinter(formatter);
-				printer.printProblems(problemQuery.getFilteredProblems());
+				printer.printProblems(filteredProblems);
 			}
 		}
 		return exitCode.getCode();
