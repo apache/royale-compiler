@@ -1249,7 +1249,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					if (!skipSemicolon) {
 						return token.getText();
 					}
-					return null;
+					return "";
 				}
 				default: {
 					return token.getText();
