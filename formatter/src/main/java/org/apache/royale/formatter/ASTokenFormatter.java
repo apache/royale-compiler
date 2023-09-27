@@ -633,7 +633,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 								blockStack.remove(blockStack.size() - 1);
 							}
 							if (!(stackItem instanceof ObjectLiteralBlockStackItem)) {
-								if (nextTokenNotComment != null && nextTokenNotComment.getType() == ASTokenTypes.TOKEN_KEYWORD_ELSE && !settings.insertNewLineElse) {
+								if (nextToken != null && nextTokenNotComment != null && nextToken.getType() != ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT && nextTokenNotComment.getType() == ASTokenTypes.TOKEN_KEYWORD_ELSE && !settings.insertNewLineElse) {
 									elseNoNewLinePending = true;
 								}
 								else if (nextToken == null || (nextToken.getType() != ASTokenTypes.TOKEN_SEMICOLON

@@ -941,4 +941,65 @@ public class TestElseStatement extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testDisableInsertNewLineElseWithSingleLineCommentBefore() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		settings.insertNewLineElse = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"if (condition) {\n" +
+			"\tstatement;\n" +
+			"} // comment\n" + 
+			"else {\n" +
+			"\tstatement;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"if (condition) {\n" +
+				"\tstatement;\n" +
+				"} // comment\n" + 
+				"else {\n" +
+				"\tstatement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testDisableInsertNewLineElseWithMultiLineCommentBefore() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		settings.insertNewLineElse = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"if (condition) {\n" +
+			"\tstatement;\n" +
+			"} /* comment */\n" + 
+			"else {\n" +
+			"\tstatement;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"if (condition) {\n" +
+				"\tstatement;\n" +
+				"} /* comment */ else {\n" +
+				"\tstatement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
 }
