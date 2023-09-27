@@ -191,7 +191,7 @@ public class FORMATTER {
 	@Deprecated
 	public boolean mxmlInsertNewLineBetweenAttributes = false;
 
-	private FormatterSettings settings = new FormatterSettings();
+	private FormatterSettings settings = null;
 
 	private ProblemQuery problemQuery;
 	private List<File> inputFiles = new ArrayList<File>();
@@ -293,7 +293,9 @@ public class FORMATTER {
 	 */
 	@Deprecated
 	public String formatFileText(String filePath, String text, Collection<ICompilerProblem> problems) {
-		settings = getLegacyFormatterSettings();
+		if (settings == null) {
+			settings = getLegacyFormatterSettings();
+		}
 		filePath = FilenameNormalization.normalize(filePath);
 		String result = null;
 		if (filePath.endsWith(".mxml")) {
@@ -320,7 +322,9 @@ public class FORMATTER {
 	 */
 	@Deprecated
 	public String formatActionScriptText(String text, Collection<ICompilerProblem> problems) {
-		settings = getLegacyFormatterSettings();
+		if (settings == null) {
+			settings = getLegacyFormatterSettings();
+		}
 		String filePath = FilenameNormalization.normalize("stdin.as");
 		return formatASTokens(filePath, text, problems);
 	}
@@ -338,7 +342,9 @@ public class FORMATTER {
 	 */
 	@Deprecated
 	public String formatMXMLText(String text, Collection<ICompilerProblem> problems) {
-		settings = getLegacyFormatterSettings();
+		if (settings == null) {
+			settings = getLegacyFormatterSettings();
+		}
 		String filePath = FilenameNormalization.normalize("stdin.mxml");
 		return formatMXMLTokens(filePath, text, problems);
 	}
