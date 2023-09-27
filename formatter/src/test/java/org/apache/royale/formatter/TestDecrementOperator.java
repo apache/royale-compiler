@@ -63,4 +63,180 @@ public class TestDecrementOperator extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testAfterWithPrecedingComment() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"// comment\n" +
+			"i--;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"// comment\n" +
+				"i--;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testAfterWithFollowingComment() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"i--;\n" +
+			"// comment",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"i--;\n" +
+				"// comment",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testAfterInsideBlock() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"{\n" +
+			"\ti--;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"{\n" +
+				"\ti--;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testAfterInsideParentheses() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"(i--);",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"(i--);",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testBeforeWithPrecedingComment() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"// comment\n" +
+			"--i;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"// comment\n" +
+				"--i;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testBeforeWithFollowingComment() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"--i;\n" +
+			"// comment",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"--i;\n" +
+				"// comment",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testBeforeInsideBlock() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"{\n" +
+			"\t--i;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"{\n" +
+				"\t--i;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testBeforeInsideParentheses() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"(--i);",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"(--i);",
+				// @formatter:on
+				result);
+	}
 }

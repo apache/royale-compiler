@@ -223,4 +223,204 @@ public class TestArithmeticOperators extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testAdditionOperatorWithParentheses1() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"(a+b)+c;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"(a + b) + c;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testAdditionOperatorWithParentheses2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"a+(b+c);",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"a + (b + c);",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testSubtractionOperatorWithParentheses1() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"(a-b)-c;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"(a - b) - c;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testSubtractionOperatorWithParentheses2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"a-(b-c);",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"a - (b - c);",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testMultiplicationOperatorWithParentheses1() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"(a*b)*c;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"(a * b) * c;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testMultiplicationOperatorWithParentheses2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"a*(b*c);",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"a * (b * c);",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testDivisionOperatorWithParentheses1() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"(a/b)/c;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"(a / b) / c;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testDivisionOperatorWithParentheses2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"a/(b/c);",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"a / (b / c);",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testModuloOperatorWithParentheses1() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"(a%b)%c;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"(a % b) % c;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testModuloOperatorWithParentheses2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"a%(b%c);",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"a % (b % c);",
+				// @formatter:on
+				result);
+	}
 }

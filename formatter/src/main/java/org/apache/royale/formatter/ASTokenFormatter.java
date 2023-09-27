@@ -449,7 +449,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					}
 					case ASTokenTypes.TOKEN_OPERATOR_PLUS:
 					case ASTokenTypes.TOKEN_OPERATOR_MINUS: {
-						boolean isUnary = checkTokenBeforeUnaryOperator(prevTokenNotComment);
+						boolean isUnary = checkTokenBeforePossibleUnaryOperator(prevTokenNotComment);
 						if (!isUnary && settings.insertSpaceBeforeAndAfterBinaryOperators) {
 							requiredSpace = true;
 						}
@@ -709,6 +709,10 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 							if (controlFlowParenStack <= 0) {
 								endIndentedStatement();
 								inControlFlowStatement = false;
+								if (!blockStack.isEmpty()) {
+									BlockStackItem stackItem = blockStack.get(blockStack.size() - 1);
+									stackItem.controlFlowEnd = token.getEnd();
+								}
 								controlFlowParenStack = 0;
 								blockOpenPending = true;
 								if (nextToken != null && nextToken.getType() == ASTokenTypes.TOKEN_SEMICOLON) {
@@ -735,9 +739,9 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					}
 					case ASTokenTypes.TOKEN_OPERATOR_INCREMENT:
 					case ASTokenTypes.TOKEN_OPERATOR_DECREMENT: {
-						if (!inControlFlowStatement && prevToken != null
-								&& prevToken.getType() != ASTokenTypes.TOKEN_SEMICOLON && nextToken != null
-								&& nextToken.getType() != ASTokenTypes.TOKEN_SEMICOLON) {
+						if (!inControlFlowStatement
+								&& !checkTokenBeforePossibleUnaryOperator(prevTokenNotComment)
+								&& !checkTokenAfterPossibleUnaryOperator(nextTokenNotComment)) {
 							requiredSpace = true;
 						}
 						break;
@@ -986,7 +990,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					}
 					case ASTokenTypes.TOKEN_OPERATOR_PLUS:
 					case ASTokenTypes.TOKEN_OPERATOR_MINUS: {
-						boolean isUnary = checkTokenBeforeUnaryOperator(prevTokenNotComment);
+						boolean isUnary = checkTokenBeforePossibleUnaryOperator(prevTokenNotComment);
 						if (!isUnary && settings.insertSpaceBeforeAndAfterBinaryOperators
 								&& !skipWhitespaceBeforeSemicolon) {
 							requiredSpace = true;
@@ -1452,12 +1456,42 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 								&& nextToken.getType() == ASTokenTypes.TOKEN_TYPED_LITERAL_CLOSE));
 	}
 
-	private boolean checkTokenBeforeUnaryOperator(IASToken token) {
-		return (token instanceof ASToken) ? ((ASToken) token).isOperator()
-				|| token.getType() == ASTokenTypes.TOKEN_SQUARE_OPEN || token.getType() == ASTokenTypes.TOKEN_PAREN_OPEN
-				|| token.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN || token.getType() == ASTokenTypes.TOKEN_SEMICOLON
-				|| token.getType() == ASTokenTypes.TOKEN_KEYWORD_RETURN || token.getType() == ASTokenTypes.TOKEN_COMMA
-				|| token.getType() == ASTokenTypes.TOKEN_COLON : (token == null);
+	private boolean checkTokenBeforePossibleUnaryOperator(IASToken token) {
+		if (token instanceof ASToken) {
+			if (token.getType() == ASTokenTypes.TOKEN_PAREN_CLOSE && !blockStack.isEmpty()) {
+				BlockStackItem stackItem = blockStack.get(blockStack.size() - 1);
+				if (stackItem.controlFlowEnd == token.getEnd()) {
+					return true;
+				}
+			}
+			return ((ASToken) token).isOperator()
+				|| token.getType() == ASTokenTypes.TOKEN_SQUARE_OPEN
+				// square close may not indicate unary operator: arr[x] + 3
+				|| token.getType() == ASTokenTypes.TOKEN_PAREN_OPEN
+				// paren close may not indicate unary operator: (1 + 2) + 3
+				|| token.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN
+				// however, block close is more like semicolon than square/paren close
+				|| token.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE
+				|| token.getType() == ASTokenTypes.TOKEN_SEMICOLON
+				|| token.getType() == ASTokenTypes.TOKEN_KEYWORD_RETURN
+				|| token.getType() == ASTokenTypes.TOKEN_COMMA
+				|| token.getType() == ASTokenTypes.TOKEN_COLON;
+		}
+		return token == null;
+	}
+
+	private boolean checkTokenAfterPossibleUnaryOperator(IASToken token) {
+		if (token instanceof ASToken)  {
+			return ((ASToken) token).isOperator()
+				|| token.getType() == ASTokenTypes.TOKEN_SQUARE_CLOSE
+				// paren open may not indicate unary operator: 1 + (2 + 3)
+				|| token.getType() == ASTokenTypes.TOKEN_PAREN_CLOSE
+				|| token.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN
+				|| token.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE
+				|| token.getType() == ASTokenTypes.TOKEN_SEMICOLON
+				|| token.getType() == ASTokenTypes.TOKEN_COMMA;
+		}
+		return token == null;
 	}
 
 	private boolean isInForStatement(List<BlockStackItem> blockStack) {
@@ -1563,6 +1597,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 		public boolean braces = true;
 		public boolean indentedStatement = false;
 		public boolean controlFlow = false;
+		public int controlFlowEnd = -1;
 	}
 
 	private static class ObjectLiteralBlockStackItem extends BlockStackItem {
