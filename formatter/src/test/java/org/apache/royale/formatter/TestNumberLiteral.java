@@ -65,6 +65,26 @@ public class TestNumberLiteral extends BaseFormatterTests {
 	}
 
 	@Test
+	public void testPositiveFloat() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"+123.4;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"+123.4;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
 	public void testInt() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
@@ -100,6 +120,26 @@ public class TestNumberLiteral extends BaseFormatterTests {
 		assertEquals(
 		// @formatter:off
 				"-123;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testPositiveInt() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"+123;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"+123;",
 				// @formatter:on
 				result);
 	}
@@ -145,6 +185,26 @@ public class TestNumberLiteral extends BaseFormatterTests {
 	}
 
 	@Test
+	public void testPostiveHexadecimal() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"+0xfe1c23;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"+0xfe1c23;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
 	public void testExponential() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
@@ -180,6 +240,26 @@ public class TestNumberLiteral extends BaseFormatterTests {
 		assertEquals(
 		// @formatter:off
 				"1.234e-5;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testPositiveExponential() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"+1.234e-5;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"+1.234e-5;",
 				// @formatter:on
 				result);
 	}
