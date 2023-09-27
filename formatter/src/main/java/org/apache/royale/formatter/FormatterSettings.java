@@ -25,6 +25,7 @@ public class FormatterSettings {
 	public int tabSize = 4;
 	public boolean insertSpaces = false;
 	public boolean insertFinalNewLine = false;
+	public boolean insertNewLineElse = true;
 	public boolean placeOpenBraceOnNewLine = true;
 	public boolean insertSpaceAfterSemicolonInForStatements = true;
 	public boolean insertSpaceAfterKeywordsInControlFlowStatements = true;

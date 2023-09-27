@@ -853,4 +853,92 @@ public class TestElseStatement extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testDisableInsertNewLineElseWithStatement1() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		settings.insertNewLineElse = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"if (condition)\n" +
+			"{\n" +
+			"\tstatement;\n" +
+			"}\n" +
+			"else\n" +
+			"{\n" +
+			"\tstatement;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"if (condition) {\n" +
+				"\tstatement;\n" +
+				"} else {\n" +
+				"\tstatement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testDisableInsertNewLineElseWithStatement2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		settings.insertNewLineElse = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"if (condition) {\n" +
+			"\tstatement;\n" +
+			"} else {\n" +
+			"\tstatement;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"if (condition) {\n" +
+				"\tstatement;\n" +
+				"} else {\n" +
+				"\tstatement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testDisableInsertNewLineElseWithStatement3() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		settings.insertNewLineElse = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"if (condition)\n" +
+			"\tstatement;\n" +
+			"else\n" +
+			"\tstatement;\n",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"if (condition)\n" +
+				"\tstatement;\n" +
+				"else\n" +
+				"\tstatement;\n",
+				// @formatter:on
+				result);
+	}
 }

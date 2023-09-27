@@ -321,6 +321,24 @@ public class Configuration {
     }
 
     //
+    // 'insert-new-line-else' option
+    //
+
+    private boolean placeElseOnNewLine = true;
+
+    public boolean getPlaceElseOnNewLine()
+    {
+        return placeElseOnNewLine;
+    }
+
+    @Config
+    @Mapping("insert-new-line-else")
+    public void setPlaceElseOnNewLine(ConfigurationValue cv, boolean b)
+    {
+        this.placeElseOnNewLine = b;
+    }
+
+    //
     // 'insert-space-for-loop-semicolon' option
     //
 

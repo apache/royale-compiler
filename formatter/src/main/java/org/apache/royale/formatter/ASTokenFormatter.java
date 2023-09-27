@@ -66,6 +66,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 	private boolean inInterfaceDeclaration;
 	private boolean inConfigGateForDefinition;
 	private boolean blockOpenPending;
+	private boolean elseNoNewLinePending;
 	private boolean indentedStatement;
 	private boolean caseOrDefaultBlockOpenPending;
 	private boolean skipFormatting;
@@ -201,6 +202,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 		inInterfaceDeclaration = false;
 		inConfigGateForDefinition = false;
 		blockOpenPending = false;
+		elseNoNewLinePending = false;
 		indentedStatement = false;
 		caseOrDefaultBlockOpenPending = false;
 		skipFormatting = false;
@@ -246,7 +248,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 						appendNewLines(builder, numRequiredNewLines);
 						break;
 					}
-					if (!blockOpenPending) {
+					if (!blockOpenPending && !elseNoNewLinePending) {
 						int newLinesInExtra = countNewLinesInExtra(token);
 						if (prevToken != null && prevToken.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT) {
 							newLinesInExtra++;
@@ -389,6 +391,14 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					case ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT: {
 						// needs an extra space before the token
 						requiredSpace = true;
+						break;
+					}
+					case ASTokenTypes.TOKEN_KEYWORD_ELSE: {
+						if (elseNoNewLinePending) {
+							numRequiredNewLines = 0;
+							elseNoNewLinePending = false;
+							requiredSpace = true;
+						}
 						break;
 					}
 					case ASTokenTypes.TOKEN_OPERATOR_EQUAL:
@@ -622,13 +632,17 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 							if (stackItem.blockDepth <= 0) {
 								blockStack.remove(blockStack.size() - 1);
 							}
-							if (!(stackItem instanceof ObjectLiteralBlockStackItem)
-									&& (nextToken == null || (nextToken.getType() != ASTokenTypes.TOKEN_SEMICOLON
+							if (!(stackItem instanceof ObjectLiteralBlockStackItem)) {
+								if (nextTokenNotComment != null && nextTokenNotComment.getType() == ASTokenTypes.TOKEN_KEYWORD_ELSE && !settings.insertNewLineElse) {
+									elseNoNewLinePending = true;
+								}
+								else if (nextToken == null || (nextToken.getType() != ASTokenTypes.TOKEN_SEMICOLON
 											&& nextToken.getType() != ASTokenTypes.TOKEN_PAREN_CLOSE
 											&& nextToken.getType() != ASTokenTypes.TOKEN_COMMA
 											&& nextToken.getType() != ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
-											&& nextToken.getType() != ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT))) {
-								numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+											&& nextToken.getType() != ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT)) {
+									numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+								}
 							}
 						}
 						break;

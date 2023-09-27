@@ -29,6 +29,7 @@ public class FormatterUtils {
 		settings.insertSpaces = configuration.getInsertSpaces();
 		settings.insertFinalNewLine = configuration.getInsertFinalNewLine();
 		settings.placeOpenBraceOnNewLine = configuration.getPlaceOpenBraceOnNewLine();
+		settings.insertNewLineElse = configuration.getPlaceElseOnNewLine();
 		settings.insertSpaceAfterSemicolonInForStatements = configuration.getInsertSpaceAfterSemicolonInForStatements();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = configuration.getInsertSpaceAfterKeywordsInControlFlowStatements();
 		settings.insertSpaceAfterFunctionKeywordForAnonymousFunctions = configuration.getInsertSpaceAfterFunctionKeywordForAnonymousFunctions();
