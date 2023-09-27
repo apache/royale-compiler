@@ -218,7 +218,7 @@ public class TestFunctionDeclaration extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testReturnType() {
+	public void testPlaceOpenBraceOnNewLineWithReturnType() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
@@ -237,6 +237,32 @@ public class TestFunctionDeclaration extends BaseFormatterTests {
 		// @formatter:off
 				"function myFunction():void\n" +
 				"{\n" +
+				"\tstatement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+
+	@Test
+	public void testDisablePlaceOpenBraceOnNewLineWithReturnType() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"function myFunction():void\n" +
+			"{\n" +
+			"\tstatement;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"function myFunction():void {\n" +
 				"\tstatement;\n" +
 				"}",
 				// @formatter:on
