@@ -2513,6 +2513,21 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     	allowPrivateConstructors = allow;
     }
 
+    private boolean allowStrictFunctionTypes = false;
+    
+    /**
+     * Indicates if strict function types are allowed and enforced.
+     */
+    @Override
+    public boolean getAllowStrictFunctionTypes()
+    {
+    	return allowStrictFunctionTypes;
+    }
+    public void setAllowStrictFunctionTypes(boolean allow)
+    {
+    	allowStrictFunctionTypes = allow;
+    }
+
     private boolean strictIdentifierNames = false;
     
     /**

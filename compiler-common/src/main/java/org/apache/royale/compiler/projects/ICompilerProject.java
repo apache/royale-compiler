@@ -283,6 +283,11 @@ public interface ICompilerProject
      boolean getAllowPrivateConstructors();
      
      /**
+      * @return True if strict function types are allowed and enforced.
+      */
+     boolean getAllowStrictFunctionTypes();
+     
+     /**
       * @return True if strict identifier naming is enforced.
       */
      boolean getStrictIdentifierNames();

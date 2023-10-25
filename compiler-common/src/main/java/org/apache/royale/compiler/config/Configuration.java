@@ -6431,4 +6431,22 @@ public class Configuration
         inferTypes = b;
     }
 
+    //
+    // 'compiler.allow-strict-function-types'
+    //
+
+    private boolean allowStrictFunctionTypes = false;
+
+    public boolean getAllowStrictFunctionTypes()
+    {
+        return allowStrictFunctionTypes;
+    }
+
+    @Config
+    @Mapping({ "compiler", "allow-strict-function-types" })
+    public void setAllowStrictFunctionTypes(ConfigurationValue cv, boolean b)
+    {
+        allowStrictFunctionTypes = b;
+    }
+
 }

@@ -35,6 +35,7 @@ import static org.apache.royale.abc.ABCConstants.OP_returnvalue;
 import static org.apache.royale.abc.ABCConstants.OP_returnvoid;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -53,6 +54,7 @@ import org.apache.royale.compiler.common.ModifiersSet;
 import org.apache.royale.compiler.common.ASModifier;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.royale.compiler.definitions.IAccessorDefinition;
 import org.apache.royale.compiler.definitions.IClassDefinition;
@@ -62,13 +64,16 @@ import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.IGetterDefinition;
 import org.apache.royale.compiler.definitions.IInterfaceDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.IParameterDefinition;
 import org.apache.royale.compiler.definitions.ISetterDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
 import org.apache.royale.compiler.internal.as.codegen.*;
 import org.apache.royale.compiler.internal.definitions.AmbiguousDefinition;
 import org.apache.royale.compiler.internal.definitions.VariableDefinition;
+import org.apache.royale.compiler.internal.definitions.references.ResolvedReference;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.problems.*;
 import org.apache.royale.compiler.projects.ICompilerProject;
@@ -93,6 +98,7 @@ import org.apache.royale.compiler.tree.as.IScopedNode;
 import org.apache.royale.compiler.tree.as.ITypedExpressionNode;
 import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
+
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassTraitsDefinition;
@@ -238,17 +244,280 @@ public class MethodBodySemanticChecker
             addProblem(new AssignmentInConditionalProblem(SemanticUtils.getNthChild(iNode, 0)));
 
         //  Check the assignment's type logic and values.
-        ITypeDefinition leftType = null;
         if ( binding.getDefinition() != null )
         {
             IDefinition leftDef = binding.getDefinition();
-            leftType = binding.getDefinition().resolveType(project);
-            
             IASNode rightNode = SemanticUtils.getNthChild(iNode, 1);
-       
+
+            ITypeDefinition leftType = leftDef.resolveType(project);
+            if (project.getAllowStrictFunctionTypes() && project.getBuiltinType(BuiltinType.FUNCTION).equals(leftType))
+            {
+                IASNode leftNode = (IExpressionNode) SemanticUtils.getNthChild(iNode, 0);
+                checkFunctionTypeMeta(leftNode, rightNode);
+            }
+            
             checkImplicitConversion(rightNode, leftType, null);
             checkAssignmentValue(leftDef, rightNode);
         }
+    }
+
+    private void checkFunctionTypeMeta(IASNode leftNode, IASNode rightNode)
+    {
+        if (!(leftNode instanceof IExpressionNode) || !(rightNode instanceof IExpressionNode))
+        {
+            return;
+        }
+        IExpressionNode leftExpression = (IExpressionNode) leftNode;
+        IDefinition resolvedLeft = leftExpression.resolve(project);
+        IMetaTag expectedFunctionTypeMeta = resolvedLeft.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_FUNCTION_TYPE);
+        checkFunctionTypeMeta(expectedFunctionTypeMeta, leftExpression, rightNode);
+    }
+    
+
+    private void checkFunctionTypeMeta(IMetaTag expectedFunctionTypeMeta, IASNode expectedFunctionTypeSite, IASNode rightNode)
+    {
+        if (!(rightNode instanceof IExpressionNode))
+        {
+            return;
+        }
+
+        IExpressionNode rightExpression = (IExpressionNode) rightNode;
+        IDefinition resolvedRight = rightExpression.resolve(project);
+
+        if (expectedFunctionTypeMeta == null)
+        {
+            return;
+        }
+        boolean checkParams = true;
+
+        String expectedReturnTypeString = expectedFunctionTypeMeta.getAttributeValue(IMetaAttributeConstants.NAME_FUNCTION_TYPE_RETURNS);
+        ITypeDefinition expectedReturnType = parseFunctionTypeMetaReturns(expectedReturnTypeString, expectedFunctionTypeSite);
+
+        String expectedParamsString = expectedFunctionTypeMeta.getAttributeValue(IMetaAttributeConstants.NAME_FUNCTION_TYPE_PARAMS);
+        List<IParameterDefinition> expectedParams = parseFunctionTypeMetaParams(expectedParamsString, expectedFunctionTypeSite);
+
+        ITypeDefinition actualReturnType = null;
+        List<IParameterDefinition> actualParams = null;
+        if (resolvedRight instanceof IVariableDefinition)
+        {
+            IVariableDefinition rightVariable = (IVariableDefinition) resolvedRight;
+            IMetaTag actualFunctionType = rightVariable.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_FUNCTION_TYPE);
+            if (actualFunctionType == null)
+            {
+                String expectedFunctionSignature = buildFunctionSignatureString(expectedParams, expectedReturnType);
+                addProblem(new ImplicitCoercionToUnrelatedTypeProblem(rightExpression, "Function", expectedFunctionSignature));
+            }
+            else
+            {
+                String actualReturnTypeString = actualFunctionType.getAttributeValue(IMetaAttributeConstants.NAME_FUNCTION_TYPE_RETURNS);
+                actualReturnType = parseFunctionTypeMetaReturns(actualReturnTypeString, rightExpression);
+
+                String actualParamsString = actualFunctionType.getAttributeValue(IMetaAttributeConstants.NAME_FUNCTION_TYPE_PARAMS);
+                actualParams = parseFunctionTypeMetaParams(actualParamsString, rightExpression);
+            }
+        }
+        else if (resolvedRight instanceof IFunctionDefinition)
+        {
+            IFunctionDefinition rightFunction = (IFunctionDefinition) resolvedRight;
+            actualReturnType = rightFunction.resolveReturnType(project);
+            actualParams = Arrays.asList(rightFunction.getParameters());
+        }
+        if (expectedParams == null || actualParams == null)
+        {
+            checkParams = false;
+        }
+
+        if (checkParams)
+        {
+            boolean lastExpectedIsRest = expectedParams.size() > 0 && expectedParams.get(expectedParams.size() - 1).isRest();
+            boolean lastActualIsRest = actualParams.size() > 0 && actualParams.get(actualParams.size() - 1).isRest();
+            
+            boolean isInvalidSignature = false;
+            if (lastExpectedIsRest && !lastActualIsRest)
+            {
+                isInvalidSignature = true;
+            }
+            if (!isInvalidSignature && actualParams.size() > expectedParams.size())
+            {
+                for (int i = expectedParams.size(); i < actualParams.size(); i++)
+                {
+                    IParameterDefinition actualParam = actualParams.get(i);
+                    if (actualParam.isRest() || actualParam.hasDefaultValue())
+                    {
+                        // allow more actual parameters, as long
+                        // as they are optional
+                        continue;
+                    }
+                    isInvalidSignature = true;
+                    break;
+                }
+            }
+            if (!isInvalidSignature)
+            {
+                for (int i = 0; i < expectedParams.size(); i++)
+                {
+                    if (i >= actualParams.size())
+                    {
+                        if (!lastActualIsRest)
+                        {
+                            isInvalidSignature = true;
+                        }
+                        break;
+                    }
+                    IParameterDefinition expectedParam = expectedParams.get(i);
+                    IParameterDefinition actualParam = actualParams.get(i);
+                    if (actualParam.isRest())
+                    {
+                        break;
+                    }
+                    ITypeDefinition expectedParamType = expectedParam.resolveType(project);
+                    ITypeDefinition actualParamType = actualParam.resolveType(project);
+                    if (expectedParamType != null
+                        && actualParamType != null
+                        && !project.getBuiltinType(BuiltinType.ANY_TYPE).equals(actualParamType)
+                        && !expectedParamType.isInstanceOf(actualParamType, project))
+                    {
+                        isInvalidSignature = true;
+                        break;
+                    }
+                }
+            }
+            if (!isInvalidSignature)
+            {
+                // actual return type must be the same or a subclass
+                // but if expected is void, any return type is accepted because it will be ignored anyway
+                if (expectedReturnType != null
+                        && actualReturnType != null
+                        && !expectedReturnType.equals(project.getBuiltinType(BuiltinType.VOID))
+                        && !actualReturnType.isInstanceOf(expectedReturnType, project))
+                {
+                    isInvalidSignature = true;
+                }
+            }
+            if (isInvalidSignature)
+            {
+                String actualFunctionSignature = buildFunctionSignatureString(actualParams, actualReturnType);
+                String expectedFunctionSignature = buildFunctionSignatureString(expectedParams, expectedReturnType);
+                addProblem(new ImplicitCoercionToUnrelatedTypeProblem(rightExpression, actualFunctionSignature, expectedFunctionSignature));
+            }
+        }
+    }
+
+    private ITypeDefinition parseFunctionTypeMetaReturns(String returnsString, IASNode site)
+    {
+        if (returnsString == null)
+        {
+            return null;
+        }
+        String returnsStringTrimmed = returnsString.trim();
+        if (returnsStringTrimmed.length() == 0)
+        {
+            return null;
+        }
+        IDefinition resolvedReturnType = project.resolveQNameToDefinition(returnsStringTrimmed);
+        if (!(resolvedReturnType instanceof ITypeDefinition))
+        {
+            addProblem(new UnknownTypeProblem(site, returnsStringTrimmed));
+            return null;
+        }
+        return (ITypeDefinition) resolvedReturnType;
+    }
+
+    private List<IParameterDefinition> parseFunctionTypeMetaParams(String paramsString, IASNode site)
+    {
+        if (paramsString == null)
+        {
+            return null;
+        }
+        List<IParameterDefinition> parsedParams = new ArrayList<IParameterDefinition>();
+        if (paramsString.trim().length() == 0)
+        {
+            return parsedParams;
+        }
+        String[] splitParamsStrings = paramsString.split(",");
+        for (int i = 0; i < splitParamsStrings.length; i++)
+        {
+            String paramString = splitParamsStrings[i].trim();
+            boolean isRest = paramString.startsWith("...");
+            if (isRest)
+            {
+                paramString = paramString.substring(3);
+            }
+            boolean hasDefaultValue = paramString.endsWith("=");
+            if (hasDefaultValue)
+            {
+                paramString = paramString.substring(0, paramString.length() - 1);
+            }
+            ITypeDefinition resolvedParamType = null;
+            IDefinition resolvedParamDef = project.resolveQNameToDefinition(paramString);
+            if (resolvedParamDef instanceof ITypeDefinition)
+            {
+                resolvedParamType = (ITypeDefinition) resolvedParamDef;
+            }
+            if (resolvedParamType == null)
+            {
+                addProblem(new UnknownTypeProblem(site, paramString));
+                return null;
+            }
+            else
+            {
+                ParameterDefinition paramDef = new ParameterDefinition(i + "");
+                if (isRest)
+                {
+                    paramDef.setRest();
+                }
+                if (hasDefaultValue)
+                {
+                    paramDef.setDefaultValue(true);
+                }
+                paramDef.setTypeReference(new ResolvedReference(resolvedParamType));
+                parsedParams.add(paramDef);
+            }
+        }
+        return parsedParams;
+    }
+
+    private String buildFunctionSignatureString(List<IParameterDefinition> params, ITypeDefinition returnType)
+    {
+        StringBuilder functionBuilder = new StringBuilder();
+        functionBuilder.append(IASKeywordConstants.FUNCTION);
+        functionBuilder.append("(");
+        for (int i = 0; i < params.size(); i++)
+        {
+            if (i > 0)
+            {
+                functionBuilder.append(", ");
+            }
+            IParameterDefinition paramDef = params.get(i);
+            if (paramDef.isRest())
+            {
+                functionBuilder.append("...");
+                functionBuilder.append(paramDef.getBaseName());
+            }
+            else
+            {
+                ITypeDefinition paramTypeDef = paramDef.resolveType(project);
+                if (paramTypeDef == null)
+                {
+                    functionBuilder.append(paramDef.getTypeAsDisplayString());
+                }
+                else
+                {
+                    functionBuilder.append(paramTypeDef.getBaseName());
+                }
+                if (paramDef.hasDefaultValue())
+                {
+                    functionBuilder.append("=");
+                }
+            }
+        }
+        functionBuilder.append(")");
+        if (returnType != null)
+        {
+            functionBuilder.append(":");
+            functionBuilder.append(returnType.getBaseName());
+        }
+        return functionBuilder.toString();
     }
     
     /**
@@ -283,7 +552,19 @@ public class MethodBodySemanticChecker
     {
         //  Check the assignment's type logic.
         if ( binding.getDefinition() != null )
-            checkImplicitConversion(SemanticUtils.getNthChild(iNode, 2), binding.getDefinition().resolveType(project), null);
+        {
+            IDefinition leftDef = binding.getDefinition();
+            IASNode rightNode = SemanticUtils.getNthChild(iNode, 2);
+
+            ITypeDefinition leftType = leftDef.resolveType(project);
+            if (project.getAllowStrictFunctionTypes() && project.getBuiltinType(BuiltinType.FUNCTION).equals(leftType))
+            {
+                IASNode leftNode = SemanticUtils.getNthChild(iNode, 0);
+                checkFunctionTypeMeta(leftNode, rightNode);
+            }
+
+            checkImplicitConversion(rightNode, leftType, null);
+        }
     }
     
     /**
@@ -725,21 +1006,24 @@ public class MethodBodySemanticChecker
      */
     private void checkFormalsVsActuals(IASNode iNode, FunctionDefinition func, Vector<? extends Object> actuals)
     {
-
         //  If the call is through a function variable then we don't know much about it.
         //  If we get a setter function assume a getter is what was meant since calling a setter
         //  directly is not legal and resolving the name for a getter/setter could
         //  return either. Code generation does the right thing so changing this check
         //  to just return for setters as well.
         if ( func instanceof GetterDefinition || func instanceof SetterDefinition)
+        {
             return;
+        }
 
         //  Check the formal parameter definitions, and ensure we have
         //  a corresponding number of actual parameters.
         ParameterDefinition[] formals = func.getParameters();
 
         if ( formals == null )
+        {
             return;
+        }
         
         boolean last_is_rest   = formals.length > 0 && formals[formals.length - 1].isRest();
 
@@ -776,7 +1060,36 @@ public class MethodBodySemanticChecker
             for ( int i = 0; i < actuals_container.getChildCount() && i < formals.length; i++ )
             {
                 if ( !formals[i].isRest() )
-                    checkImplicitConversion( actuals_container.getChild(i), formals[i].resolveType(project), func );
+                {
+                    IASNode actualNode = actuals_container.getChild(i);
+                    ParameterDefinition formalParam = formals[i];
+                    ITypeDefinition formalParamType = formalParam.resolveType(project);
+                    if (project.getAllowStrictFunctionTypes() && project.getBuiltinType(BuiltinType.FUNCTION).equals(formalParamType))
+                    {
+                        // we can't add metadata directly to parameters, so we
+                        // need to find it on the function that contains the
+                        // parameter
+                        IMetaTag[] functionTypeTags = func.getMetaTagsByName(IMetaAttributeConstants.ATTRIBUTE_FUNCTION_TYPE);
+                        if (functionTypeTags != null)
+                        {
+                            IMetaTag foundMetaTag = null;
+                            for (IMetaTag functionTypeTag : functionTypeTags)
+                            {
+                                String paramName = functionTypeTag.getAttributeValue(IMetaAttributeConstants.NAME_FUNCTION_TYPE_PARAM_NAME);
+                                if (paramName != null && paramName.equals(formalParam.getBaseName()))
+                                {
+                                    foundMetaTag = functionTypeTag;
+                                    break;
+                                }
+                            }
+                            if (foundMetaTag != null)
+                            {
+                                checkFunctionTypeMeta(foundMetaTag, iNode, actualNode);
+                            }
+                        }
+                    }
+                    checkImplicitConversion( actualNode, formalParamType, func );
+                }
             }
         }
     }
