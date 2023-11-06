@@ -22,6 +22,7 @@ package org.apache.royale.compiler.internal.semantics;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -108,6 +109,7 @@ import org.apache.royale.compiler.problems.DeprecatedAPIWithMessageProblem;
 import org.apache.royale.compiler.problems.DeprecatedAPIWithReplacementProblem;
 import org.apache.royale.compiler.problems.DeprecatedAPIWithSinceAndReplacementProblem;
 import org.apache.royale.compiler.problems.DeprecatedAPIWithSinceProblem;
+import org.apache.royale.compiler.problems.DuplicateParameterNameProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.ParameterHasNoTypeDeclarationProblem;
 import org.apache.royale.compiler.problems.ReturnValueHasNoTypeDeclarationProblem;
@@ -2745,6 +2747,30 @@ public class SemanticUtils
                 type = "interface";
             String identifierName = type + " '" + definition.getBaseName() + "'";
             scope.addProblem( new ScopedToDefaultNamespaceProblem( node, identifierName, className));
+        }
+    }
+    
+    /**
+     * Checks that a given function's parameters have unique names, and logs a problem if not
+     * 
+     * @param scope is the scope where problems are to be logged
+     * @param node is the function node that is being checked (used for location reporting)
+     * @param func is the definition of the function to be checked.
+     */
+    public static void checkParametersHaveUniqueNames(LexicalScope scope, IFunctionNode node, IFunctionDefinition func)
+    {
+        Set<String> namesSet = new HashSet<String>();
+        for (IParameterNode paramNode : node.getParameterNodes())
+        {
+            String paramName = paramNode.getName();
+            if (namesSet.contains(paramName))
+            {
+                scope.addProblem(new DuplicateParameterNameProblem(paramNode, paramNode.getName(), node.getName()));
+            }
+            else
+            {
+                namesSet.add(paramName);
+            }
         }
     }
     

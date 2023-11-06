@@ -1340,6 +1340,7 @@ public class MethodBodySemanticChecker
     {
         SemanticUtils.checkReturnValueHasNoTypeDeclaration(this.currentScope, iNode, def);
         SemanticUtils.checkParametersHaveNoTypeDeclaration(this.currentScope, iNode, def);
+        SemanticUtils.checkParametersHaveUniqueNames(this.currentScope, iNode, def);
         
         if (SemanticUtils.isInFunction(iNode))
         {
