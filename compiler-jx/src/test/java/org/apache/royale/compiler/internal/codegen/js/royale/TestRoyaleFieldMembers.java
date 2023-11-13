@@ -20,7 +20,7 @@
 package org.apache.royale.compiler.internal.codegen.js.royale;
 
 import org.apache.royale.compiler.driver.IBackend;
-import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogFieldMembers;
+import org.apache.royale.compiler.internal.codegen.as.TestFieldMembers;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.tree.as.IClassNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
@@ -29,7 +29,7 @@ import org.junit.Test;
 /**
  * @author Erik de Bruin
  */
-public class TestRoyaleFieldMembers extends TestGoogFieldMembers
+public class TestRoyaleFieldMembers extends TestFieldMembers
 {
 
     @Override
@@ -373,6 +373,35 @@ public class TestRoyaleFieldMembers extends TestGoogFieldMembers
         asBlockWalker.visitVariable(node);
 
         assertOut("/**\n * @const\n * @type {number}\n */\nRoyaleTest_A.prototype.http_$$ns_apache_org$2017$custom$namespace__foo = 420");
+    }
+
+    // TODO (erikdebruin) not sure what to do with these when emitting JS...
+    
+    @Override
+    @Test
+    public void testNamespace()
+    {
+//        INamespaceNode node = getNamespace("namespace ns = \"http://whatever\";");
+//        asBlockWalker.visitNamespace(node);
+//        assertOut("namespace ns = \"http://whatever\"");
+    }
+
+    @Override
+    @Test
+    public void testNamespace_public()
+    {
+//        INamespaceNode node = getNamespace("public namespace ns = \"http://whatever\";");
+//        asBlockWalker.visitNamespace(node);
+//        assertOut("public namespace ns = \"http://whatever\"");
+    }
+
+    @Override
+    @Test
+    public void testNamespace_protected()
+    {
+//        INamespaceNode node = getNamespace("protected namespace ns = \"http://whatever\";");
+//        asBlockWalker.visitNamespace(node);
+//        assertOut("protected namespace ns = \"http://whatever\"");
     }
     
 }

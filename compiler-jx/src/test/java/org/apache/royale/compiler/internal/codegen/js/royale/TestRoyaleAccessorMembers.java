@@ -20,7 +20,7 @@
 package org.apache.royale.compiler.internal.codegen.js.royale;
 
 import org.apache.royale.compiler.driver.IBackend;
-import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogAccessorMembers;
+import org.apache.royale.compiler.internal.codegen.as.TestAccessorMembers;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.tree.as.IClassNode;
 import org.junit.Test;
@@ -28,7 +28,7 @@ import org.junit.Test;
 /**
  * @author Erik de Bruin
  */
-public class TestRoyaleAccessorMembers extends TestGoogAccessorMembers
+public class TestRoyaleAccessorMembers extends TestAccessorMembers
 {
     @Override
     @Test
@@ -43,7 +43,6 @@ public class TestRoyaleAccessorMembers extends TestGoogAccessorMembers
         		"Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n/**\n * @type {number}\n */\nfoo: {\nget: RoyaleTest_A.prototype.get__foo}}\n);");
     }
 
-    @Override
     @Test
     public void testGetAccessor_withBody()
     {
@@ -144,7 +143,6 @@ public class TestRoyaleAccessorMembers extends TestGoogAccessorMembers
         		"Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n/**\n * @type {number}\n */\nfoo: {\nset: RoyaleTest_A.prototype.set__foo}}\n);");
     }
 
-    @Override
     @Test
     public void testSetAccessor_withBody()
     {

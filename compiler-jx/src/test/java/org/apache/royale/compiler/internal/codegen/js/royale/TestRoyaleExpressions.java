@@ -22,8 +22,8 @@ package org.apache.royale.compiler.internal.codegen.js.royale;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
-import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogExpressions;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
+import org.apache.royale.compiler.internal.codegen.as.TestExpressions;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
@@ -37,7 +37,7 @@ import org.junit.Test;
 /**
  * @author Erik de Bruin
  */
-public class TestRoyaleExpressions extends TestGoogExpressions
+public class TestRoyaleExpressions extends TestExpressions
  {
     @Override
     public void setUp()
@@ -1667,11 +1667,37 @@ public class TestRoyaleExpressions extends TestGoogExpressions
 
     @Override
     @Test
+    public void testVisitBinaryOperator_Instancof()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a instanceof b");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("a instanceof b");
+    }
+
+    @Override
+    @Test
     public void testVisitBinaryOperator_Is()
     {
         IBinaryOperatorNode node = getBinaryNode("a is b");
         asBlockWalker.visitBinaryOperator(node);
         assertOut("org.apache.royale.utils.Language.is(a, b)");
+    }
+    @Test
+    public void testParentheses_1()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a = (a + b);",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {*} */ a = (a + b)");
+    }
+
+    @Test
+    public void testParentheses_2()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a = (a + b) - c;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {*} */ a = (a + b) - c");
     }
 
     @Override

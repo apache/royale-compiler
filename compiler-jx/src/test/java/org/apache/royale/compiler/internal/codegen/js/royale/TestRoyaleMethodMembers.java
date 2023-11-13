@@ -20,7 +20,7 @@
 package org.apache.royale.compiler.internal.codegen.js.royale;
 
 import org.apache.royale.compiler.driver.IBackend;
-import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogMethodMembers;
+import org.apache.royale.compiler.internal.codegen.as.TestMethodMembers;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.tree.as.IClassNode;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
@@ -29,8 +29,16 @@ import org.junit.Test;
 /**
  * @author Erik de Bruin
  */
-public class TestRoyaleMethodMembers extends TestGoogMethodMembers
+public class TestRoyaleMethodMembers extends TestMethodMembers
 {
+    @Override
+    @Test
+    public void testMethod()
+    {
+        IFunctionNode node = getMethod("function foo(){}");
+        asBlockWalker.visitFunction(node);
+        assertOut("RoyaleTest_A.prototype.foo = function() {\n}");
+    }
 
     @Override
     @Test
@@ -107,7 +115,6 @@ public class TestRoyaleMethodMembers extends TestGoogMethodMembers
     // Doc Specific Tests 
     //--------------------------------------------------------------------------
 
-    @Override
     @Test
     public void testConstructor_withThisInBody()
     {
@@ -124,7 +131,6 @@ public class TestRoyaleMethodMembers extends TestGoogMethodMembers
         assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n  this.foo();\n};\n\n\n/**\n * @private\n * @return {string}\n */\nRoyaleTest_A.prototype.foo = function() {\n  return '';\n};");
     }
 
-    @Override
     @Test
     public void testMethod_withThisInBody()
     {
@@ -141,7 +147,6 @@ public class TestRoyaleMethodMembers extends TestGoogMethodMembers
          assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n/**\n * @private\n * @type {string}\n */\nRoyaleTest_A.prototype.baz;\n\n\n/**\n * @private\n * @return {string}\n */\nRoyaleTest_A.prototype.foo = function() {\n  return this.baz;\n};");
     }
 
-    @Override
     @Test
     public void testMethod_withThisInBodyComplex()
     {

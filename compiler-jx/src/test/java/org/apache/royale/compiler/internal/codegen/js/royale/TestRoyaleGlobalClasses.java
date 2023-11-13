@@ -22,8 +22,8 @@ package org.apache.royale.compiler.internal.codegen.js.royale;
 import java.io.File;
 
 import org.apache.royale.compiler.driver.IBackend;
-import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogGlobalClasses;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
+import org.apache.royale.compiler.internal.codegen.as.TestGlobalClasses;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
@@ -41,7 +41,7 @@ import org.junit.Ignore;
 /**
  * @author Erik de Bruin
  */
-public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
+public class TestRoyaleGlobalClasses extends TestGlobalClasses
 {
     @Override
     public void setUp()
@@ -61,11 +61,29 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
 
     @Override
     @Test
+    public void testArgumentError()
+    {
+        IVariableNode node = getVariable("var a:ArgumentError = new ArgumentError();");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {ArgumentError} */ a = new ArgumentError()");
+    }
+
+    @Override
+    @Test
     public void testArguments()
     {
         IFunctionNode node = getMethod("function a():void {  trace(arguments);}");
         asBlockWalker.visitFunction(node);
         assertOut("RoyaleTest_A.prototype.a = function() {\n  org.apache.royale.utils.Language.trace(arguments);\n}");
+    }
+
+    @Override
+    @Test
+    public void testArray()
+    {
+        IVariableNode node = getVariable("var a:Array = new Array(1);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Array} */ a = new Array(1)");
     }
 
     @Test
@@ -314,6 +332,15 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         node = (IVariableNode)(node.getParent().getChild(1));
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {*} */ b = org.apache.royale.utils.Language.resolveUncertain(new a('test'))");
+    }
+
+    @Override
+    @Test
+    public void testDate()
+    {
+        IVariableNode node = getVariable("var a:Date = new Date();");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Date} */ a = new Date()");
     }
 
     @Test
@@ -754,6 +781,51 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
 
     @Override
     @Test
+    public void testDefinitionError()
+    {
+        IVariableNode node = getVariable("var a:DefinitionError = new DefinitionError();");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {DefinitionError} */ a = new DefinitionError()");
+    }
+
+    @Override
+    @Test
+    public void testError()
+    {
+        IVariableNode node = getVariable("var a:Error = new Error();");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Error} */ a = new Error()");
+    }
+
+    @Override
+    @Test
+    public void testEvalError()
+    {
+        IVariableNode node = getVariable("var a:EvalError = new EvalError();");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {EvalError} */ a = new EvalError()");
+    }
+
+    @Override
+    @Test
+    public void testFunction()
+    {
+        IVariableNode node = getVariable("var a:Function = new Function();");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Function} */ a = new Function()");
+    }
+
+    @Override
+    @Test
+    public void testJSON()
+    {
+        IVariableNode node = getVariable("var a:JSON = new JSON();");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {JSON} */ a = new JSON()");
+    }
+
+    @Override
+    @Test
     public void testVector()
     {
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(['Hello', 'World']);");
@@ -1175,6 +1247,15 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {number} */ a = Number(\"1\")");
     }
+
+    @Override
+    @Test
+    public void testObject()
+    {
+        IVariableNode node = getVariable("var a:Object = new Object();");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Object} */ a = new Object()");
+    }
     
     @Override
     @Test
@@ -1382,6 +1463,15 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IUnaryOperatorNode node = getUnaryNode("var a:XML = new XML(\"<top attr1='cat'><child attr2='dog'><grandchild attr3='fish'>text</grandchild></child></top>\");var b:Object = { xml: a};delete (b.xml as XML).child.grandchild;");
         asBlockWalker.visitUnaryOperator(node);
         assertOut("org.apache.royale.utils.Language.as(b.xml, XML).child('child').removeChild('grandchild')");
+    }
+
+    @Override
+    @Test
+    public void testXMLList()
+    {
+        IVariableNode node = getVariable("var a:XMLList = new XMLList('<!-- comment -->');");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {XMLList} */ a = new XMLList('<!-- comment -->')");
     }
 
     @Test
@@ -1760,6 +1850,15 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         asBlockWalker.visitForLoop(node);
         assertOut("var foreachiter0_target = XMLList.conversion(a);\nfor (var foreachiter0 in foreachiter0_target.elementNames()) \n{\nvar p = foreachiter0_target[foreachiter0];\n\n  var /** @type {number} */ i = (p.length()) >> 0;}\n");
     }
+
+    @Override
+    @Test
+    public void testNamespace()
+    {
+        IVariableNode node = getVariable("var a:Namespace = new Namespace(\"http://example.com\");");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Namespace} */ a = new Namespace(\"http://example.com\")");
+    }
     
     @Test
     public void testNamespaceNoArg()
@@ -1783,6 +1882,15 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IVariableNode node = getVariable("var a:Namespace = new Namespace('foo', 'bar');");
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {Namespace} */ a = new Namespace('foo', 'bar')");
+    }
+
+    @Override
+    @Test
+    public void testQName()
+    {
+        IVariableNode node = getVariable("var a:QName = new QName();");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {QName} */ a = new QName()");
     }
     
     @Test
@@ -1919,6 +2027,33 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         asBlockWalker.visitForLoop(node);
         assertOut("var foreachiter0_target = a;\nfor (var foreachiter0 in foreachiter0_target && foreachiter0_target.propertyNames()) \n{\nvar p = foreachiter0_target.getProperty(foreachiter0);\n\n  var /** @type {number} */ i = (p.length) >> 0;}\n");
     }
+
+    @Override
+    @Test
+    public void testRangeError()
+    {
+        IVariableNode node = getVariable("var a:RangeError = new RangeError();");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {RangeError} */ a = new RangeError()");
+    }
+
+    @Override
+    @Test
+    public void testReferenceError()
+    {
+        IVariableNode node = getVariable("var a:ReferenceError = new ReferenceError();");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {ReferenceError} */ a = new ReferenceError()");
+    }
+
+    @Override
+    @Test
+    public void testRegExp_Literal()
+    {
+        IVariableNode node = getVariable("var a:RegExp = /test-\\d/i;");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {RegExp} */ a = /test-\\d/i");
+    }
     
     @Test
     public void testRegExp_LiteralUnicode()
@@ -2022,6 +2157,51 @@ public class TestRoyaleGlobalClasses extends TestGoogGlobalClasses
         IVariableNode node = getVariable("var a:RegExp = /\\\\\\\\/g");
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {RegExp} */ a = /\\\\\\\\/g");
+    }
+
+    @Override
+    @Test
+    public void testSecurityError()
+    {
+        IVariableNode node = getVariable("var a:SecurityError = new SecurityError();");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {SecurityError} */ a = new SecurityError()");
+    }
+
+    @Override
+    @Test
+    public void testSyntaxError()
+    {
+        IVariableNode node = getVariable("var a:SyntaxError = new SyntaxError();");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {SyntaxError} */ a = new SyntaxError()");
+    }
+
+    @Override
+    @Test
+    public void testTypeError()
+    {
+        IVariableNode node = getVariable("var a:TypeError = new TypeError();");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {TypeError} */ a = new TypeError()");
+    }
+
+    @Override
+    @Test
+    public void testURIError()
+    {
+        IVariableNode node = getVariable("var a:URIError = new URIError();");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {URIError} */ a = new URIError()");
+    }
+
+    @Override
+    @Test
+    public void testVerifyError()
+    {
+        IVariableNode node = getVariable("var a:VerifyError = new VerifyError();");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {VerifyError} */ a = new VerifyError()");
     }
     
 

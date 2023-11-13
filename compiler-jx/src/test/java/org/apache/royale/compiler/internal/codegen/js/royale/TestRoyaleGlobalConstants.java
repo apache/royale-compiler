@@ -20,7 +20,7 @@
 package org.apache.royale.compiler.internal.codegen.js.royale;
 
 import org.apache.royale.compiler.driver.IBackend;
-import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogGlobalConstants;
+import org.apache.royale.compiler.internal.codegen.as.TestGlobalConstants;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.junit.Test;
@@ -28,7 +28,7 @@ import org.junit.Test;
 /**
  * @author Erik de Bruin
  */
-public class TestRoyaleGlobalConstants extends TestGoogGlobalConstants
+public class TestRoyaleGlobalConstants extends TestGlobalConstants
 {
 
     @Override

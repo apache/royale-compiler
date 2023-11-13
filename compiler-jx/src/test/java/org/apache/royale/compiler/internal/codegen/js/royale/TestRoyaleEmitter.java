@@ -21,11 +21,11 @@ package org.apache.royale.compiler.internal.codegen.js.royale;
 
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
-import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogEmitter;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.test.ASTestBase;
 import org.apache.royale.compiler.tree.as.IFileNode;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.junit.Test;
@@ -33,7 +33,7 @@ import org.junit.Test;
 /**
  * @author Erik de Bruin
  */
-public class TestRoyaleEmitter extends TestGoogEmitter
+public class TestRoyaleEmitter extends ASTestBase
 {
     @Override
     public void setUp()
@@ -44,7 +44,6 @@ public class TestRoyaleEmitter extends TestGoogEmitter
         super.setUp();
     }
 
-    @Override
     @Test
     public void testSimple()
     {
@@ -143,7 +142,6 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				"com.example.components.MyEventTarget.prototype.ROYALE_COMPILE_FLAGS = 9;\n");
     }
 
-    @Override
     @Test
     public void testSimpleInterface()
     {
@@ -193,7 +191,6 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				"com.example.components.TestInterface.prototype.ROYALE_COMPILE_FLAGS = 9;\n");
     }
 
-    @Override
     @Test
     public void testSimpleClass()
     {
@@ -308,9 +305,15 @@ public class TestRoyaleEmitter extends TestGoogEmitter
 				" */\n" +
 				"com.example.components.TestClass.prototype.ROYALE_COMPILE_FLAGS = 9;\n");
     }
-    
 
-    @Override
+    @Test
+    public void testSimpleMethod()
+    {
+        IFunctionNode node = getMethod("function method1():void{\n}");
+        asBlockWalker.visitFunction(node);
+        assertOut("RoyaleTest_A.prototype.method1 = function() {\n}");
+    }
+
     @Test
     public void testDefaultParameter()
     {
@@ -323,7 +326,6 @@ public class TestRoyaleEmitter extends TestGoogEmitter
                 + "  return p1 + p2 + p3 + p4;\n}");
     }
 
-    @Override
     @Test
     public void testDefaultParameter_Body()
     {
@@ -336,7 +338,6 @@ public class TestRoyaleEmitter extends TestGoogEmitter
                 + "  if (a)\n    foo();\n}");
     }
 
-    @Override
     @Test
     public void testDefaultParameter_NoBody()
     {
@@ -348,7 +349,6 @@ public class TestRoyaleEmitter extends TestGoogEmitter
                 + "  p4 = typeof p4 !== 'undefined' ? p4 : 4;\n}");
     }
 
-    @Override
     @Test
     public void testSimpleParameterReturnType()
     {
@@ -358,7 +358,6 @@ public class TestRoyaleEmitter extends TestGoogEmitter
                 + "foo.bar.RoyaleTest_A.prototype.method1 = function(bar) {\n}");
     }
 
-    @Override
     @Test
     public void testSimpleMultipleParameter()
     {
@@ -368,7 +367,6 @@ public class TestRoyaleEmitter extends TestGoogEmitter
                 + "foo.bar.RoyaleTest_A.prototype.method1 = function(bar, baz, goo) {\n}");
     }
 
-    @Override
     @Test
     public void testSimpleMultipleParameter_JSDoc()
     {

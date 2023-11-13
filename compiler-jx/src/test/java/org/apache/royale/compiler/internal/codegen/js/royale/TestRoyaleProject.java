@@ -21,6 +21,7 @@ package org.apache.royale.compiler.internal.codegen.js.royale;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,13 +29,18 @@ import java.util.Collection;
 import java.util.List;
 
 import junit.framework.Assert;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FileFileFilter;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
-import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogProject;
 import org.apache.royale.compiler.internal.config.TargetSettings;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.test.ASTestBase;
 import org.apache.royale.utils.FilenameNormalization;
 import org.apache.royale.utils.ITestAdapter;
 import org.apache.royale.utils.TestAdapterFactory;
@@ -47,7 +53,7 @@ import org.junit.Test;
  * 
  * @author Erik de Bruin
  */
-public class TestRoyaleProject extends TestGoogProject
+public class TestRoyaleProject extends ASTestBase
 {
     private static ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
 
@@ -63,12 +69,20 @@ public class TestRoyaleProject extends TestGoogProject
         project.config = new JSGoogConfiguration();
         super.setUp();
     }
-    
-    @Ignore
+
     @Test
     public void test_imports()
     {
-        // crude bypass to allow for successful inheritance
+        String testDirPath = projectDirPath + "/imports";
+
+        String fileName = "Case";
+
+        sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                projectDirPath + "/imports").getPath();
+
+        List<String> compiledFileNames = compileProject(fileName, testDirPath);
+
+        assertProjectOut(compiledFileNames, testDirPath);
     }
 
     @Test
@@ -351,6 +365,65 @@ public class TestRoyaleProject extends TestGoogProject
     {
         sourcePaths.add(new File(FilenameNormalization.normalize(sourcePath)));
         ((RoyaleJSProject)project).unitTestExterns = externs;
+    }
+
+    protected void assertProjectOut(List<String> compiledFileNames,
+            String testDirPath)
+    {
+    	if (compiledFileNames.size() == 0)
+    	{
+            fail("Expected compiled files");
+    	}
+        for (String compiledFileName : compiledFileNames)
+        {
+            String compiledFilePath = tempDir.getAbsolutePath()
+                    + File.separator + testDirPath + File.separator
+                    + compiledFileName + "_output" + "."
+                    + backend.getOutputExtension();
+            String compiledResult = readCodeFile(new File(compiledFilePath));
+
+            //System.out.println(compiledResult);
+
+            String expectedFilePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
+                    testDirPath +  "/" + compiledFileName + "_result" + "." + backend.getOutputExtension()).getPath();
+            String expectedResult = readCodeFile(new File(expectedFilePath));
+            /*if (!compiledResult.equals(expectedResult)) {
+                System.out.println("expected\n"+expectedResult);
+                System.out.println("got\n"+compiledResult);
+            }*/
+            assertThat(compiledResult, is(expectedResult));
+        }
+    }
+
+    protected void assertPublishedProjectOut(String projectFolderPath,
+            String projectName)
+    {
+    	String outputFolderName = tempDir + "/" + projectName + "/bin/js-debug";
+        IOFileFilter jsFilter = FileFilterUtils.and(FileFileFilter.FILE,
+                FileFilterUtils.suffixFileFilter("js"));
+        IOFileFilter htmlFilter = FileFilterUtils.and(FileFileFilter.FILE,
+                FileFilterUtils.suffixFileFilter("html"));
+        IOFileFilter resultsFilter = FileFilterUtils.or(jsFilter, htmlFilter);
+        File outputFolder = new File(outputFolderName);
+        File projectFolder = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(), projectFolderPath);
+        projectFolderPath = projectFolder.getAbsolutePath();
+        Collection<File> files = FileUtils.listFiles(projectFolder, resultsFilter, null);
+        for (File resultFile : files)
+        {
+            String compiledFilePath = resultFile.getAbsolutePath();
+            if (compiledFilePath.startsWith(projectFolderPath))
+            	compiledFilePath = compiledFilePath.substring(projectFolderPath.length());
+            compiledFilePath = compiledFilePath.replace("_result", "");
+            File compiledFile = new File(outputFolder, compiledFilePath);
+            String compiledResult = readCodeFile(compiledFile);
+
+            String expectedResult = readCodeFile(resultFile);
+            /*if (!compiledResult.equals(expectedResult)) {
+                System.out.println("expected\n"+expectedResult);
+                System.out.println("got\n"+compiledResult);
+            }*/
+            assertThat(compiledResult, is(expectedResult));
+        }
     }
 
     @Override

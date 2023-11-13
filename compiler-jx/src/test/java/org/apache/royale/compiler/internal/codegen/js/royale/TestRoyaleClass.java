@@ -20,18 +20,19 @@
 package org.apache.royale.compiler.internal.codegen.js.royale;
 
 import org.apache.royale.compiler.driver.IBackend;
-import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogClass;
+import org.apache.royale.compiler.internal.codegen.as.TestClass;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.FileNode;
 import org.apache.royale.compiler.tree.as.IClassNode;
+import org.apache.royale.compiler.tree.as.IFileNode;
 import org.junit.Test;
 
 /**
  * @author Erik de Bruin
  */
-public class TestRoyaleClass extends TestGoogClass
+public class TestRoyaleClass extends TestClass
 {
     @Override
     public void setUp()
@@ -42,7 +43,6 @@ public class TestRoyaleClass extends TestGoogClass
         super.setUp();
     }
     
-    @Override
     @Test
     public void testConstructor_super()
     {
@@ -112,7 +112,6 @@ public class TestRoyaleClass extends TestGoogClass
         assertOut("/**\n * @constructor\n * @extends {custom.TestImplementation}\n * @implements {custom.TestInterface}\n * @implements {custom.TestOtherInterface}\n */\norg.apache.royale.A = function() {\n  org.apache.royale.A.base(this, 'constructor');\n};\ngoog.inherits(org.apache.royale.A, custom.TestImplementation);");
     }
 
-    @Override
     @Test
     public void testExtendsConstructor_super()
     {
@@ -885,6 +884,17 @@ public class TestRoyaleClass extends TestGoogClass
         IClassNode node = getClassNode("public class A {public static const NAME:String = 'Dummy'; public function A(arg1:String = NAME) {_name = arg1;} private var _name:String;}");
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n * @param {string=} arg1\n */\norg.apache.royale.A = function(arg1) {\n  arg1 = typeof arg1 !== 'undefined' ? arg1 : org.apache.royale.A.NAME;\n  this._name = arg1;\n};\n\n\n/**\n * @nocollapse\n * @const\n * @type {string}\n */\norg.apache.royale.A.NAME = 'Dummy';\n\n\n/**\n * @private\n * @type {string}\n */\norg.apache.royale.A.prototype._name = null;");
+    }
+
+    @Override
+    protected IClassNode getClassNode(String code)
+    {
+        String source = "package org.apache.royale {import custom.TestInterface;import custom.TestImplementation;import custom.TestEvent;import custom.TestOtherInterface;"
+                + code + "}";
+        IFileNode node = compileAS(source);
+        IClassNode child = (IClassNode) findFirstDescendantOfType(node,
+                IClassNode.class);
+        return child;
     }
     
     protected IBackend createBackend()

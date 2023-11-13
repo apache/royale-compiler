@@ -20,7 +20,7 @@
 package org.apache.royale.compiler.internal.codegen.js.royale;
 
 import org.apache.royale.compiler.driver.IBackend;
-import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogInterface;
+import org.apache.royale.compiler.internal.codegen.as.TestInterface;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.tree.as.IInterfaceNode;
 import org.junit.Test;
@@ -32,7 +32,7 @@ import org.junit.Test;
  * @author Michael Schmalle
  * @author Erik de Bruin
  */
-public class TestRoyaleInterface extends TestGoogInterface
+public class TestRoyaleInterface extends TestInterface
 {
     @Override
     @Test

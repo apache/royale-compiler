@@ -20,8 +20,8 @@
 package org.apache.royale.compiler.internal.codegen.js.royale;
 
 import org.apache.royale.compiler.driver.IBackend;
-import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogGlobalFunctions;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
+import org.apache.royale.compiler.internal.codegen.as.TestGlobalFunctions;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
@@ -32,7 +32,7 @@ import org.junit.Test;
 /**
  * @author Erik de Bruin
  */
-public class TestRoyaleGlobalFunctions extends TestGoogGlobalFunctions
+public class TestRoyaleGlobalFunctions extends TestGlobalFunctions
 {
     @Override
     public void setUp()
@@ -100,6 +100,78 @@ public class TestRoyaleGlobalFunctions extends TestGoogGlobalFunctions
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {Array} */ a = Array(['Hello', 'World'])");
     }
+
+    @Override
+    @Test
+    public void testBoolean()
+    {
+        IVariableNode node = getVariable("var a:Boolean = Boolean(1);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {boolean} */ a = Boolean(1)");
+    }
+
+    @Override
+    @Test
+    public void testDecodeURI()
+    {
+        IVariableNode node = getVariable("var a:String = decodeURI('http://whatever.com');");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {string} */ a = decodeURI('http://whatever.com')");
+    }
+
+    @Override
+    @Test
+    public void testDecodeURIComponent()
+    {
+        IVariableNode node = getVariable("var a:String = decodeURIComponent('http://whatever.com');");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {string} */ a = decodeURIComponent('http://whatever.com')");
+    }
+
+    @Override
+    @Test
+    public void testEncodeURI()
+    {
+        IVariableNode node = getVariable("var a:String = encodeURI('http://whatever.com');");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {string} */ a = encodeURI('http://whatever.com')");
+    }
+
+    @Override
+    @Test
+    public void testEncodeURIComponent()
+    {
+        IVariableNode node = getVariable("var a:String = encodeURIComponent('http://whatever.com');");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {string} */ a = encodeURIComponent('http://whatever.com')");
+    }
+
+    @Override
+    @Test
+    public void testEscape()
+    {
+        IVariableNode node = getVariable("var a:String = escape('http://whatever.com');");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {string} */ a = escape('http://whatever.com')");
+    }
+
+    @Override
+    @Test
+    public void testIsFinite()
+    {
+        IVariableNode node = getVariable("var a:Boolean = isFinite(1000000.9);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {boolean} */ a = isFinite(1000000.9)");
+    }
+
+    @Override
+    @Test
+    public void testIsNaN()
+    {
+        IVariableNode node = getVariable("var a:Boolean = isNaN(NaN);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {boolean} */ a = isNaN(NaN)");
+    }
     
     @Override
     @Test
@@ -108,6 +180,15 @@ public class TestRoyaleGlobalFunctions extends TestGoogGlobalFunctions
         IVariableNode node = getVariable("var a:Object = Object(\"1\");");
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {Object} */ a = org.apache.royale.utils.Language.resolveUncertain(Object(\"1\"))");
+    }
+
+    @Override
+    @Test
+    public void testParseFloat()
+    {
+        IVariableNode node = getVariable("var a:Number = parseFloat(\"1.8\");");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = parseFloat(\"1.8\")");
     }
 
     @Test
@@ -145,6 +226,15 @@ public class TestRoyaleGlobalFunctions extends TestGoogGlobalFunctions
 
     @Override
     @Test
+    public void testString()
+    {
+        IVariableNode node = getVariable("var a:String = String(100);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {string} */ a = String(100)");
+    }
+
+    @Override
+    @Test
     public void testTrace()
     {
         IFunctionCallNode node = (IFunctionCallNode) getNode(
@@ -162,6 +252,7 @@ public class TestRoyaleGlobalFunctions extends TestGoogGlobalFunctions
         assertOut("var /** @type {number} */ a = org.apache.royale.utils.Language.uint(-100)");
     }
     
+    //isXMLName is in E4X, which is not supported by JavaScript
     @Override
     @Test
     public void testIsXMLName()
@@ -169,6 +260,24 @@ public class TestRoyaleGlobalFunctions extends TestGoogGlobalFunctions
         IVariableNode node = getVariable("var a:Boolean = isXMLName(\"?\");");
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {boolean} */ a = !!(isXMLName(\"?\"))");
+    }
+
+    @Override
+    @Test
+    public void testNumber()
+    {
+        IVariableNode node = getVariable("var a:Number = Number(\"1\");");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = Number(\"1\")");
+    }
+
+    @Override
+    @Test
+    public void testUnescape()
+    {
+        IVariableNode node = getVariable("var a:String = unescape('%25');");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {string} */ a = unescape('%25')");
     }
 
     @Override

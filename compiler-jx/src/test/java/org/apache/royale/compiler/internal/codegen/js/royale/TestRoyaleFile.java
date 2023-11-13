@@ -46,6 +46,56 @@ public class TestRoyaleFile extends RoyaleTestBase
     }
 
     @Test
+    public void testFile_plain()
+    {
+        IFileNode node = compileAS("input", true, "royale" + File.separator
+                + "files");
+        asBlockWalker.visitFile(node);
+        assertOut(getCodeFromFile("output", true, "royale" + File.separator
+                + "files"));
+    }
+
+    @Test
+    public void testFile_getset()
+    {
+        IFileNode node = compileAS("get-set", true, "royale" + File.separator
+                + "files");
+        asBlockWalker.visitFile(node);
+        assertOut(getCodeFromFile("get-set_result", true, "royale"
+                + File.separator + "files"));
+    }
+
+    @Test
+    public void testFile_callsuper()
+    {
+        IFileNode node = compileAS("call-super", true, "royale" + File.separator
+                + "files");
+        asBlockWalker.visitFile(node);
+        assertOut(getCodeFromFile("call-super_result", true, "royale"
+                + File.separator + "files"));
+    }
+
+    @Test
+    public void testFile_qualifynewobject()
+    {
+        IFileNode node = compileAS("qualify-new-object", true, "royale"
+                + File.separator + "files");
+        asBlockWalker.visitFile(node);
+        assertOut(getCodeFromFile("qualify-new-object_result", true, "royale"
+                + File.separator + "files"));
+    }
+
+    @Test
+    public void testFile_poc()
+    {
+        IFileNode node = compileAS("poc", true, "royale" + File.separator
+                + "files");
+        asBlockWalker.visitFile(node);
+        assertOut(getCodeFromFile("poc_result", true, "royale" + File.separator
+                + "files"));
+    }
+
+    @Test
     public void testLocalFunction()
     {
         String fileName = "LocalFunction";

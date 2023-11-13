@@ -11,14 +11,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Case
+ *
+ * @fileoverview
+ *
+ * @suppress {checkTypes|accessControls}
+ */
+
 goog.provide('Case');
 
 goog.require('comps.A');
+
+
 
 /**
  * @constructor
  */
 Case = function() {
-	var self = this;
-	var /** @type {comps.A} */ bar = new comps.A();
+  var /** @type {comps.A} */ bar = new comps.A();
 };
+
+
+/**
+ * Metadata
+ *
+ * @type {Object.<string, Array.<Object>>}
+ */
+Case.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'Case', qName: 'Case', kind: 'class' }] };
+
+
+
+/**
+ * Reflection
+ *
+ * @return {Object.<string, Function>}
+ */
+Case.prototype.ROYALE_REFLECTION_INFO = function () {
+  return {
+    methods: function () {
+      return {
+        'Case': { type: '', declaredBy: 'Case'}
+      };
+    }
+  };
+};
+/**
+ * @const
+ * @type {number}
+ */
+Case.prototype.ROYALE_COMPILE_FLAGS = 9;

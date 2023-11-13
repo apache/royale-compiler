@@ -20,7 +20,7 @@
 package org.apache.royale.compiler.internal.codegen.js.royale;
 
 import org.apache.royale.compiler.driver.IBackend;
-import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogStatements;
+import org.apache.royale.compiler.internal.codegen.as.TestStatements;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
@@ -37,13 +37,12 @@ import org.apache.royale.compiler.tree.as.ITryNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.apache.royale.compiler.tree.as.IWhileLoopNode;
 import org.apache.royale.compiler.tree.as.IWithNode;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * @author Erik de Bruin
  */
-public class TestRoyaleStatements extends TestGoogStatements
+public class TestRoyaleStatements extends TestStatements
 {
     @Override
     public void setUp()
@@ -79,6 +78,49 @@ public class TestRoyaleStatements extends TestGoogStatements
         		ILiteralNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitLiteral(node);
         assertOut("{myConst:RoyaleTest_A.myConst}");
+    }
+    //----------------------------------
+    // var declaration
+    //----------------------------------
+
+    @Override
+    @Test
+    public void testVarDeclaration()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {*} */ a");
+    }
+
+    @Override
+    @Test
+    public void testVarDeclaration_withTypeAssignedValue()
+    {
+        IVariableNode node = (IVariableNode) getNode("var a:int = 42;",
+                IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = 42");
+    }
+
+    @Override
+    @Test
+    public void testVarDeclaration_withTypeAssignedValueComplex()
+    {
+        IVariableNode node = (IVariableNode) getNode(
+                "class A { public function b():void { var a:Foo = new Foo(42, 'goo');}} class Foo {}", IVariableNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {Foo} */ a = new Foo(42, 'goo')");
+    }
+
+    @Override
+    @Test
+    public void testVarDeclaration_withList()
+    {
+        IVariableNode node = (IVariableNode) getNode(
+                "var a:int = 4, b:int = 11, c:int = 42;", IVariableNode.class);
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {number} */ a = 4, /** @type {number} */ b = 11, /** @type {number} */ c = 42");
     }
     
     @Test
@@ -339,7 +381,6 @@ public class TestRoyaleStatements extends TestGoogStatements
         assertOut("for (var /** @type {number} */ i = 0; i < len; i++)\n  break;");
     }
 
-    @Override
     @Test
     public void testVisitFor_1c()
     {
@@ -696,7 +737,15 @@ public class TestRoyaleStatements extends TestGoogStatements
         assertOut("");
     }
 
-    @Override
+    @Test
+    public void testVisitIf_NoBody()
+    {
+        IIfNode node = (IIfNode) getNode(
+                "if (a) ;", IIfNode.class);
+        asBlockWalker.visitIf(node);
+        assertOut("if (a) {}\n");
+    }
+    
     @Test
     public void testVisitElseIf_NoBody()
     {

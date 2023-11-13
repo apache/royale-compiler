@@ -22,7 +22,7 @@ package org.apache.royale.compiler.internal.codegen.js.royale;
 import java.util.ArrayList;
 
 import org.apache.royale.compiler.driver.IBackend;
-import org.apache.royale.compiler.internal.codegen.js.goog.TestGoogPackage;
+import org.apache.royale.compiler.internal.codegen.as.TestPackage;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
@@ -32,7 +32,7 @@ import org.junit.Test;
 /**
  * @author Erik de Bruin
  */
-public class TestRoyalePackage extends TestGoogPackage
+public class TestRoyalePackage extends TestPackage
 {
     @Override
     public void setUp()
@@ -49,6 +49,32 @@ public class TestRoyalePackage extends TestGoogPackage
     	config.setCompilerKeepCodeWithMetadata(null, values2);
     	((RoyaleJSProject)project).config = config;
         super.setUp();
+    }
+
+	@Override
+    @Test
+    public void testPackage_Simple()
+    {
+        IFileNode node = compileAS("package{}");
+        asBlockWalker.visitFile(node);
+        assertOut("");
+    }
+
+    @Test
+    public void testPackage_SimpleName()
+    {
+        IFileNode node = compileAS("package foo {}");
+        asBlockWalker.visitFile(node);
+        assertOut("");
+    }
+
+    @Override
+    @Test
+    public void testPackage_Name()
+    {
+        IFileNode node = compileAS("package foo.bar.baz {}");
+        asBlockWalker.visitFile(node);
+        assertOut("");
     }
     
     @Override
@@ -215,7 +241,6 @@ public class TestRoyalePackage extends TestGoogPackage
 		);
     }
 
-    @Override
     @Test
     public void testPackageQualified_ClassBodyMethodContents()
     {
