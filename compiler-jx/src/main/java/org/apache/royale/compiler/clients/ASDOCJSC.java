@@ -39,7 +39,6 @@ import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
 import org.apache.royale.compiler.internal.driver.as.ASBackend;
-import org.apache.royale.compiler.internal.driver.js.amd.AMDBackend;
 import org.apache.royale.compiler.internal.driver.js.goog.ASDocConfiguration;
 import org.apache.royale.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleASDocBackend;
@@ -132,9 +131,6 @@ public class ASDOCJSC extends MXMLJSCRoyale
 
                 switch (jsOutputType)
                 {
-                case AMD:
-                    backend = new AMDBackend();
-                    break;
 
                 case JSC:
                     backend = new MXMLJSCJSSWCBackend();

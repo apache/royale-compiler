@@ -91,7 +91,6 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
      */
     public enum JSOutputType
     {
-        AMD("amd"),
         ROYALE("royale"),
         GOOG("goog"),
         ROYALE_DUAL("royale_dual"),
