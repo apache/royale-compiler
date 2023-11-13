@@ -48,7 +48,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
     public void setUp()
     {
         super.setUp();
-    	((RoyaleJSProject)project).config = new JSGoogConfiguration();
+    	project.config = new JSGoogConfiguration();
     }
 
     @Test

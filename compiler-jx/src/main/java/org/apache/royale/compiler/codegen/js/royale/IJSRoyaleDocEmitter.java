@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.royale.compiler.codegen.js.goog;
+package org.apache.royale.compiler.codegen.js.royale;
 
 import org.apache.royale.compiler.codegen.js.IJSDocEmitter;
 import org.apache.royale.compiler.definitions.IClassDefinition;
@@ -32,7 +32,7 @@ import org.apache.royale.compiler.tree.as.IParameterNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 
 /**
- * The {@link IJSGoogDocEmitter} interface allows the abstraction of JavaScript
+ * The {@link IJSRoyaleDocEmitter} interface allows the abstraction of JavaScript
  * document comments to be emitted per tag.
  * <p>
  * The purpose of the API is to clamp emitted output to JavaScript doc tags. The
@@ -47,7 +47,7 @@ import org.apache.royale.compiler.tree.as.IVariableNode;
  * 
  * @author Michael Schmalle
  */
-public interface IJSGoogDocEmitter extends IJSDocEmitter
+public interface IJSRoyaleDocEmitter extends IJSDocEmitter
 {
 
     void emitInterfaceDoc(IInterfaceNode node, ICompilerProject project);

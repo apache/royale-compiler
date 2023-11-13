@@ -16,17 +16,17 @@
  *  limitations under the License.
  *
  */
-package org.apache.royale.compiler.internal.codegen.js.goog;
+package org.apache.royale.compiler.internal.codegen.js.royale;
 
 import org.apache.royale.compiler.codegen.IEmitterTokens;
 
-public enum JSGoogDocEmitterTokens implements IEmitterTokens
+public enum JSRoyaleDocEmitterTokens implements IEmitterTokens
 {
-    PARAM("param"), STAR("*"), TYPE("type"), EXPOSE("expose"), EXPORT("export"), NOCOLLAPSE("nocollapse"), PACKAGE("package");
+    PARAM("param"), TYPE("type"), EXPOSE("expose"), EXPORT("export"), NOCOLLAPSE("nocollapse"), PACKAGE("package");
 
     private String token;
 
-    private JSGoogDocEmitterTokens(String value)
+    private JSRoyaleDocEmitterTokens(String value)
     {
         token = value;
     }

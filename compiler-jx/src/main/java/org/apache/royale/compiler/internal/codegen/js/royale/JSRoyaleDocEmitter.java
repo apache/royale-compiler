@@ -19,11 +19,15 @@
 
 package org.apache.royale.compiler.internal.codegen.js.royale;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.apache.royale.compiler.asdoc.royale.ASDocComment;
+import org.apache.royale.compiler.codegen.IASGlobalFunctionConstants;
+import org.apache.royale.compiler.codegen.IEmitterTokens;
 import org.apache.royale.compiler.codegen.as.IASEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.codegen.js.royale.IJSRoyaleDocEmitter;
 import org.apache.royale.compiler.common.ASModifier;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
@@ -34,23 +38,26 @@ import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.references.IReference;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.JSDocEmitter;
+import org.apache.royale.compiler.internal.codegen.js.JSDocEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel;
-import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
-import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.JSSharedData;
 import org.apache.royale.compiler.internal.codegen.js.jx.BindableEmitter;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
+import org.apache.royale.compiler.internal.tree.as.TypedExpressionNode;
 import org.apache.royale.compiler.problems.PublicVarWarningProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLDocumentNode;
 import org.apache.royale.compiler.utils.ASNodeUtils;
 
-public class JSRoyaleDocEmitter extends JSGoogDocEmitter
+public class JSRoyaleDocEmitter extends JSDocEmitter implements IJSRoyaleDocEmitter
 {
     private List<String> classIgnoreList;
     private List<String> ignoreList;
@@ -86,7 +93,6 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         return emitExports;
     }
 
-    @Override
     protected String convertASTypeToJS(String name, String pname)
     {
         if (ignoreList != null)
@@ -109,10 +115,10 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         	RoyaleJSProject fjp = (RoyaleJSProject)((IASEmitter)emitter).getWalker().getProject();
         	String vectorClassName = fjp.config == null ? null : fjp.config.getJsVectorEmulationClass();
         	if (vectorClassName != null) return vectorClassName;
-        	return super.convertASTypeToJS(name, pname);
+        	return convertASTypeToJSType(name, pname);
         }
         
-        name = super.convertASTypeToJS(name, pname);
+        name = convertASTypeToJSType(name, pname);
         if (name.equals(IASLanguageConstants.Boolean.toLowerCase())
                 || name.equals(IASLanguageConstants.String.toLowerCase())
                 || name.equals(IASLanguageConstants.Number.toLowerCase()))
@@ -120,13 +126,93 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
 
         return formatQualifiedName(name);
     }
+    
+    public static String convertASTypeToJSType(String name, String pname)
+    {
+        String result = "";
+
+        if (name.equals(""))
+            result = ASEmitterTokens.ANY_TYPE.getToken();
+        else if (name.equals(IASLanguageConstants.Class))
+            result = IASLanguageConstants.Object;
+        else if (name.equals(IASLanguageConstants.Boolean)
+                || name.equals(IASLanguageConstants.String)
+                || name.equals(IASLanguageConstants.Number))
+            result = name.toLowerCase();
+        else if (name.equals(IASLanguageConstants._int)
+                || name.equals(IASLanguageConstants.uint))
+            result = IASLanguageConstants.Number.toLowerCase();
+
+        boolean isBuiltinFunction = name.matches("Vector\\.<.*>");
+        if (isBuiltinFunction)
+        {
+        	// is a vector so convert the element type
+        	String elementType = name.substring(8, name.length() - 1);
+        	elementType = convertASTypeToJSType(elementType, pname);
+        	name = "Array.<" + elementType + ">";
+        }
+        else {
+            IASGlobalFunctionConstants.BuiltinType[] builtinTypes = IASGlobalFunctionConstants.BuiltinType
+                    .values();
+            for (IASGlobalFunctionConstants.BuiltinType builtinType : builtinTypes)
+            {
+                if (name.equalsIgnoreCase(builtinType.getName()))
+                {
+                    isBuiltinFunction = true;
+                    break;
+                }
+            }
+        }
+
+        if (result == "")
+            result = (pname != "" && !isBuiltinFunction && name.indexOf(".") < 0) ? pname
+                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + name
+                    : name;
+
+        return result;
+    }
 
     private boolean usedNames = false;
     
-    @Override
     protected String formatQualifiedName(String name)
     {
     	return ((JSRoyaleEmitter)emitter).formatQualifiedName(name, !usedNames);
+    }
+
+    @Override
+    public void emitInterfaceDoc(IInterfaceNode node, ICompilerProject project)
+    {
+        begin();
+
+        emitJSDocLine(JSEmitterTokens.INTERFACE.getToken());
+
+        boolean hasQualifiedNames = true;
+        IExpressionNode[] inodes = node.getExtendedInterfaceNodes();
+        for (IExpressionNode inode : inodes)
+        {
+            IDefinition dnode = inode.resolve(project);
+            if (dnode != null)
+            {
+                emitJSDocLine(ASEmitterTokens.EXTENDS,
+                        formatQualifiedName(dnode.getQualifiedName()));
+            }
+            else
+            {
+                hasQualifiedNames = false;
+                break;
+            }
+        }
+
+        if (!hasQualifiedNames)
+        {
+            String[] inames = node.getExtendedInterfaces();
+            for (String iname : inames)
+            {
+                emitJSDocLine(ASEmitterTokens.EXTENDS, iname);
+            }
+        }
+
+        end();
     }
 
     @Override
@@ -537,7 +623,6 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
             end();
     }
 
-    @Override
     public void emitMethodAccess(IFunctionNode node)
     {
         String ns = node.getNamespace();
@@ -588,6 +673,191 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         }
     }
 
+    @Override
+    public void emitVarDoc(IVariableNode node, IDefinition def, ICompilerProject project)
+    {
+        String packageName = "";
+        if (def != null)
+            packageName = def.getPackageName();
+
+        if (!node.isConst())
+        {
+            IDefinition ndef = node.getDefinition();
+            if (emitter != null && emitter instanceof JSRoyaleEmitter)
+            {
+                ITypeDefinition type = ndef.resolveType(project);
+                if (type != null)
+                {
+                    packageName = ((ITypeDefinition) type).getPackageName();
+                }
+            }
+            emitTypeShort(node, project.getActualPackageName(packageName), project);
+        }
+        else
+        {
+            writeNewline();
+            begin();
+            emitConst(node);
+            emitType(node, project.getActualPackageName(packageName), project);
+            end();
+        }
+    }
+
+    @Override
+    public void emitConst(IVariableNode node)
+    {
+        emitJSDocLine(ASEmitterTokens.CONST);
+    }
+
+    @Override
+    public void emitExtends(IClassDefinition superDefinition, String packageName)
+    {
+        emitJSDocLine(ASEmitterTokens.EXTENDS,
+                formatQualifiedName(superDefinition.getQualifiedName()));
+    }
+
+    @Override
+    public void emitImplements(ITypeDefinition definition, String packageName)
+    {
+        emitJSDocLine(ASEmitterTokens.IMPLEMENTS,
+                formatQualifiedName(definition.getQualifiedName()));
+    }
+
+    @Override
+    public void emitOverride(IFunctionNode node)
+    {
+        emitJSDocLine(ASEmitterTokens.OVERRIDE);
+    }
+
+    @Override
+    public void emitParam(IParameterNode node, String packageName, ICompilerProject project)
+    {
+        String postfix = (node.getDefaultValue() == null) ? ""
+                : ASEmitterTokens.EQUAL.getToken();
+
+        String paramType = "";
+        if (node.isRest())
+        {
+            paramType = ASEmitterTokens.ELLIPSIS.getToken();
+        }
+        else
+        {
+            String typeName = node.getVariableType();
+            if (project.getInferTypes() && typeName.isEmpty())
+            {
+                ITypeDefinition resolvedTypeDef = SemanticUtils.resolveVariableInferredType(node, project);
+                if (resolvedTypeDef != null)
+                {
+                    typeName = resolvedTypeDef.getQualifiedName();
+                }
+            }
+            if (packageName.length() > 0 && typeName.indexOf(packageName) > -1)
+            {
+                String[] parts = typeName.split("\\.");
+                if (parts.length > 0)
+                {
+                    typeName = parts[parts.length - 1];
+                }
+            }
+            paramType = convertASTypeToJS(typeName, packageName);
+        }
+
+        emitJSDocLine(JSRoyaleDocEmitterTokens.PARAM, paramType + postfix,
+                node.getName());
+    }
+
+    @Override
+    public void emitReturn(IFunctionNode node, String packageName, ICompilerProject project)
+    {
+        String rtype = node.getReturnType();
+        if (project.getInferTypes() && (rtype == null || rtype.isEmpty()))
+        {
+            ITypeDefinition resolvedTypeDef = SemanticUtils.resolveFunctionInferredReturnType(node, project);
+            if (resolvedTypeDef != null)
+            {
+                rtype = resolvedTypeDef.getQualifiedName();
+            }
+            else
+            {
+                rtype = "*";
+            }
+        }
+        if (rtype != null && rtype != ASEmitterTokens.VOID.getToken())
+        {
+            emitJSDocLine(ASEmitterTokens.RETURN,
+                    convertASTypeToJS(rtype, packageName));
+        }
+    }
+
+    @Override
+    public void emitThis(ITypeDefinition type, String packageName)
+    {
+        emitJSDocLine(ASEmitterTokens.THIS.getToken(), type.getQualifiedName());
+    }
+
+    @Override
+    public void emitType(IASNode node, String packageName, ICompilerProject project)
+    {
+        IVariableNode varNode = (IVariableNode) node;
+        String type = varNode.getVariableType();
+        if (project.getInferTypes() && type.isEmpty())
+        {
+            ITypeDefinition resolvedTypeDef = SemanticUtils.resolveVariableInferredType(varNode, project);
+            if (resolvedTypeDef != null)
+            {
+                type = resolvedTypeDef.getQualifiedName();
+            }
+        }
+        if (varNode.getVariableTypeNode() instanceof TypedExpressionNode) {
+            ITypeDefinition elemenTypeDef = ((TypedExpressionNode)(varNode.getVariableTypeNode())).getTypeNode().resolveType(project);
+            if (elemenTypeDef != null) {
+                type = "Vector.<" +
+                        convertASTypeToJS(elemenTypeDef.getQualifiedName(),"")
+                        +">";
+                packageName = "";
+            }
+        }
+        emitJSDocLine(JSRoyaleDocEmitterTokens.TYPE.getToken(),
+                convertASTypeToJS(type, packageName));
+    }
+
+    @Override
+    public void emitType(String type, String packageName)
+    {
+        emitJSDocLine(JSRoyaleDocEmitterTokens.TYPE.getToken(),
+                convertASTypeToJS(type, packageName));
+    }
+
+    public void emitTypeShort(IVariableNode node, String packageName, ICompilerProject project)
+    {
+        String type = node.getVariableType();
+        if (project.getInferTypes() && type.isEmpty())
+        {
+            ITypeDefinition resolvedTypeDef = SemanticUtils.resolveVariableInferredType(node, project);
+            if (resolvedTypeDef != null)
+            {
+                type = resolvedTypeDef.getQualifiedName();
+            }
+        }
+        if (((IVariableNode) node).getVariableTypeNode() instanceof TypedExpressionNode) {
+            ITypeDefinition elemenTypeDef = ((TypedExpressionNode)(((IVariableNode) node).getVariableTypeNode())).getTypeNode().resolveType(project);
+            if (elemenTypeDef != null) {
+                type = "Vector.<" +
+                        convertASTypeToJS(elemenTypeDef.getQualifiedName(),"")
+                        +">";
+                packageName = "";
+            }
+        }
+        writeToken(JSDocEmitterTokens.JSDOC_OPEN);
+        write(ASEmitterTokens.ATSIGN);
+        writeToken(JSRoyaleDocEmitterTokens.TYPE);
+        writeBlockOpen();
+        write(convertASTypeToJS(type, packageName));
+        writeBlockClose();
+        write(ASEmitterTokens.SPACE);
+        writeToken(JSDocEmitterTokens.JSDOC_CLOSE);
+    }
+
     private JSSessionModel getModel() {
         if (emitter instanceof IJSEmitter) {
             return ((IJSEmitter) emitter).getModel();
@@ -609,7 +879,7 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
         //dynamically getting/setting a static field won't
         //work properly if it is collapsed in a release build,
         //even when it has been exported
-        emitJSDocLine(JSGoogDocEmitterTokens.NOCOLLAPSE);
+        emitJSDocLine(JSRoyaleDocEmitterTokens.NOCOLLAPSE);
     }
 
     @Override
@@ -715,28 +985,34 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
     }
 
     @Override
+    public void emitPrivate(IASNode node)
+    {
+        emitJSDocLine(ASEmitterTokens.PRIVATE);
+    }
+
+    @Override
     public void emitProtected(IASNode node)
     {
     	if (exportProtected)
-    		super.emitPublic(node);
+    		emitPublic(node);
     	else
-    		super.emitProtected(node);
+            emitJSDocLine(ASEmitterTokens.PROTECTED);
     }
 
     @Override
     public void emitInternal(IASNode node)
     {
     	if (exportInternal)
-    		super.emitPublic(node);
+    		emitPublic(node);
     	else
-    		super.emitInternal(node);
+            emitJSDocLine(JSRoyaleDocEmitterTokens.PACKAGE);
     }
     
     @Override
     public void emitPublic(IASNode node)
     {
     	if (emitExports)
-    		super.emitPublic(node);
+            emitJSDocLine(JSRoyaleDocEmitterTokens.EXPORT);
     }
     
     private boolean suppressedWarning(IVariableNode node, RoyaleJSProject fjp)
@@ -770,6 +1046,98 @@ public class JSRoyaleDocEmitter extends JSGoogDocEmitter
             	return true;
     	}
     	return false;
+    }
+
+    //--------------------------------------------------------------------------
+
+    public void emitPackageHeader(IPackageNode node)
+    {
+        begin();
+        write(ASEmitterTokens.SPACE);
+        writeToken(JSDocEmitterTokens.JSDOC_LINE_START);
+        write(getTimeStampString());
+        end();
+    }
+
+    //--------------------------------------------------------------------------
+
+    protected void emitJSDocLine(IEmitterTokens name)
+    {
+        emitJSDocLine(name.getToken(), "");
+    }
+
+    private void emitJSDocLine(String name)
+    {
+        emitJSDocLine(name, "");
+    }
+
+    protected void emitJSDocLine(IEmitterTokens name, String type)
+    {
+        emitJSDocLine(name.getToken(), type, "");
+    }
+
+    private void emitJSDocLine(String name, String type)
+    {
+        emitJSDocLine(name, type, "");
+    }
+
+    private void emitJSDocLine(IEmitterTokens name, String type, String param)
+    {
+        emitJSDocLine(name.getToken(), type, param);
+    }
+
+    private void emitJSDocLine(String name, String type, String param)
+    {
+        write(ASEmitterTokens.SPACE);
+        writeToken(JSDocEmitterTokens.JSDOC_LINE_START);
+        write(ASEmitterTokens.ATSIGN);
+        write(name);
+        if (type != "")
+        {
+            write(ASEmitterTokens.SPACE);
+            writeBlockOpen();
+            write(type);
+            writeBlockClose();
+        }
+        if (param != "")
+        {
+            write(ASEmitterTokens.SPACE);
+            write(param);
+        }
+        writeNewline();
+    }
+
+    protected IClassDefinition resolveClassDefinition(IFunctionNode node)
+    {
+        IScopedNode scope = node.getContainingScope();
+        if (scope instanceof IMXMLDocumentNode)
+            return ((IMXMLDocumentNode) scope).getClassDefinition();
+
+        IClassNode cnode = (IClassNode) node
+                .getAncestorOfType(IClassNode.class);
+
+        if (cnode == null)
+            return null;
+
+        return cnode.getDefinition();
+    }
+
+    public static String now() {
+        final String DATE_FORMAT_NOW = "yyyy-MM-dd HH:mm:ss";
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_NOW);
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return sdf.format(cal.getTime());
+    }
+
+    public static String getTimeStampString() {
+        if (JSSharedData.OUTPUT_TIMESTAMPS) {
+            return "CROSS-COMPILED BY " + JSSharedData.COMPILER_NAME + " ("
+                    + JSSharedData.COMPILER_VERSION + ") ON "
+                    + now() + "\n";
+        } else {
+            return "CROSS-COMPILED BY " + JSSharedData.COMPILER_NAME + "\n";
+        }
     }
 
 }

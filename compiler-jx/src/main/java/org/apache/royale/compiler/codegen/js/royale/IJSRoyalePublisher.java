@@ -17,17 +17,17 @@
  *
  */
 
-package org.apache.royale.compiler.codegen.js.goog;
+package org.apache.royale.compiler.codegen.js.royale;
 
 import java.util.Set;
 
 import org.apache.royale.compiler.codegen.js.IJSPublisher;
 
 /**
- * The {@link IJSGoogPublisher} interface allows the abstraction of project output
+ * The {@link IJSRoyalePublisher} interface allows the abstraction of project output
  * generation.
  */
-public interface IJSGoogPublisher extends IJSPublisher
+public interface IJSRoyalePublisher extends IJSPublisher
 {
 	void setClosurePropertyNamesToKeep(Set<String> propertyNames);
 	void setClosureSymbolNamesToExport(Set<String> symbolNames);

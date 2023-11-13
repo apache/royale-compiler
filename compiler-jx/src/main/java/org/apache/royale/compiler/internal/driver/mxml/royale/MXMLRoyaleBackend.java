@@ -30,8 +30,8 @@ import org.apache.royale.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.driver.IBackend;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
-import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.royale.compiler.internal.codegen.mxml.MXMLBlockWalker;
 import org.apache.royale.compiler.internal.codegen.mxml.MXMLWriter;
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleBlockWalker;
@@ -96,7 +96,7 @@ public class MXMLRoyaleBackend extends MXMLBackend
     @Override
     public IDocEmitter createDocEmitter(IASEmitter emitter)
     {
-        return new JSGoogDocEmitter((IJSEmitter) emitter);
+        return new JSRoyaleDocEmitter((IJSEmitter) emitter);
     }
 
     @Override

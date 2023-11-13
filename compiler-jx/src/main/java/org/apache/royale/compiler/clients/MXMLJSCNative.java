@@ -40,7 +40,7 @@ import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.clients.problems.ProblemQueryProvider;
 import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.royale.compiler.codegen.js.IJSWriter;
-import org.apache.royale.compiler.codegen.js.goog.IJSGoogPublisher;
+import org.apache.royale.compiler.codegen.js.royale.IJSRoyalePublisher;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.ConfigurationBuffer;
 import org.apache.royale.compiler.config.Configurator;
@@ -182,7 +182,7 @@ public class MXMLJSCNative implements JSCompilerEntryPoint, ProblemQueryProvider
     protected ITarget target;
     protected ITargetSettings targetSettings;
     protected IJSApplication jsTarget;
-    private IJSGoogPublisher jsPublisher;
+    private IJSRoyalePublisher jsPublisher;
     
     public MXMLJSCNative()
     {
@@ -397,7 +397,7 @@ public class MXMLJSCNative implements JSCompilerEntryPoint, ProblemQueryProvider
                 Set<String> closurePropNamesToKeep = new HashSet<String>();
                 //use a LinkedHashSet because the order of the exported names matters -JT
                 LinkedHashSet<String> closureSymbolNamesToExport = new LinkedHashSet<String>();
-                jsPublisher = (IJSGoogPublisher) project.getBackend().createPublisher(
+                jsPublisher = (IJSRoyalePublisher) project.getBackend().createPublisher(
                         project, errors, config);
 
                 File outputFolder = jsPublisher.getOutputFolder();

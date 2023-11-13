@@ -53,7 +53,7 @@ public class TestRoyaleExpressions extends TestExpressions
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	((RoyaleJSProject)project).config = config;
+    	project.config = config;
         super.setUp();
     }
 

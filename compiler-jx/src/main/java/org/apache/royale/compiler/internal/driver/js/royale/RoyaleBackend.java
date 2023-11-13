@@ -20,12 +20,21 @@
 package org.apache.royale.compiler.internal.driver.js.royale;
 
 import java.io.FilterWriter;
+import java.util.List;
 
+import org.apache.royale.compiler.codegen.IDocEmitter;
+import org.apache.royale.compiler.codegen.as.IASEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.config.Configurator;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
-import org.apache.royale.compiler.internal.driver.js.goog.GoogBackend;
+import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyalePublisher;
+import org.apache.royale.compiler.internal.driver.js.JSBackend;
+import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.targets.RoyaleJSTarget;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.internal.targets.JSTarget;
 import org.apache.royale.compiler.targets.ITargetProgressMonitor;
 import org.apache.royale.compiler.targets.ITargetSettings;
@@ -33,7 +42,7 @@ import org.apache.royale.compiler.targets.ITargetSettings;
 /**
  * @author Erik de Bruin
  */
-public class RoyaleBackend extends GoogBackend
+public class RoyaleBackend extends JSBackend
 {
 
     @Override
@@ -49,5 +58,25 @@ public class RoyaleBackend extends GoogBackend
                                  ITargetProgressMonitor monitor)
     {
         return new RoyaleJSTarget(project, settings, monitor);
+    }
+
+
+    @Override
+    public Configurator createConfigurator()
+    {
+        return new Configurator(JSGoogConfiguration.class);
+    }
+
+    @Override
+    public IDocEmitter createDocEmitter(IASEmitter emitter)
+    {
+        return new JSRoyaleDocEmitter((IJSEmitter) emitter);
+    }
+
+    @Override
+    public MXMLRoyalePublisher createPublisher(RoyaleJSProject project,
+            List<ICompilerProblem> errors, Configuration config)
+    {
+        return new MXMLRoyalePublisher(project, config);
     }
 }

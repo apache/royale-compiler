@@ -92,7 +92,6 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     public enum JSOutputType
     {
         ROYALE("royale"),
-        GOOG("goog"),
         ROYALE_DUAL("royale_dual"),
         ROYALE_DITA("royale_dita"),
         JSC("jsc"),
@@ -117,7 +116,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
                 if (text.equalsIgnoreCase(jsOutputType.text))
                     return jsOutputType;
             }
-            return GOOG;
+            return ROYALE;
         }
     }
 

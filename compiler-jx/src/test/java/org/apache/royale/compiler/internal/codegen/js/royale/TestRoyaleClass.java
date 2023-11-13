@@ -39,7 +39,7 @@ public class TestRoyaleClass extends TestClass
     {
         backend = createBackend();
         project = new RoyaleJSProject(workspace, backend);
-    	((RoyaleJSProject)project).config = new JSGoogConfiguration();
+    	project.config = new JSGoogConfiguration();
         super.setUp();
     }
     

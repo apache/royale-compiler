@@ -21,7 +21,7 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
-import org.apache.royale.compiler.codegen.js.goog.IJSGoogDocEmitter;
+import org.apache.royale.compiler.codegen.js.royale.IJSRoyaleDocEmitter;
 import org.apache.royale.compiler.common.ASModifier;
 import org.apache.royale.compiler.common.ModifiersSet;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
@@ -128,9 +128,9 @@ public class FieldEmitter extends JSSubEmitter implements
         }
 
         // TODO (mschmalle)
-        if (getEmitter().getDocEmitter() instanceof IJSGoogDocEmitter && !isComplexInitializedStatic)
+        if (getEmitter().getDocEmitter() instanceof IJSRoyaleDocEmitter && !isComplexInitializedStatic)
         {
-            ((IJSGoogDocEmitter) getEmitter().getDocEmitter()).emitFieldDoc(node, def, getProject());
+            ((IJSRoyaleDocEmitter) getEmitter().getDocEmitter()).emitFieldDoc(node, def, getProject());
         }
 
 
@@ -233,9 +233,9 @@ public class FieldEmitter extends JSSubEmitter implements
                 }
                 //Fix for references to the target : the following empty declaration is required for @lends to work in Object.defineProperties below
                 //otherwise references elsewhere in code to the target can be renamed (and therefore do not work)
-                if (getEmitter().getDocEmitter() instanceof IJSGoogDocEmitter)
+                if (getEmitter().getDocEmitter() instanceof IJSRoyaleDocEmitter)
                 {
-                    ((IJSGoogDocEmitter) getEmitter().getDocEmitter()).emitFieldDoc(node, def, getProject());
+                    ((IJSRoyaleDocEmitter) getEmitter().getDocEmitter()).emitFieldDoc(node, def, getProject());
                 }
                 write(className);
                 write(ASEmitterTokens.MEMBER_ACCESS);
@@ -253,9 +253,9 @@ public class FieldEmitter extends JSSubEmitter implements
                         + "} */ ");
                 writeNewline(ASEmitterTokens.BLOCK_OPEN);
                 // TODO (mschmalle)
-                if (getEmitter().getDocEmitter() instanceof IJSGoogDocEmitter)
+                if (getEmitter().getDocEmitter() instanceof IJSRoyaleDocEmitter)
                 {
-                    ((IJSGoogDocEmitter) getEmitter().getDocEmitter()).emitFieldDoc(node, def, getProject());
+                    ((IJSRoyaleDocEmitter) getEmitter().getDocEmitter()).emitFieldDoc(node, def, getProject());
                 }
 	            write(getFieldName(node, fjs));
                 writeToken(ASEmitterTokens.COLON);

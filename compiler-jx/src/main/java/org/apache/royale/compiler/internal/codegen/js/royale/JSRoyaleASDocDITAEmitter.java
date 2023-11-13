@@ -43,7 +43,6 @@ import org.apache.royale.compiler.definitions.IInterfaceDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.definitions.IParameterDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
-import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleASDocEmitter;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
@@ -75,7 +74,7 @@ import org.apache.royale.compiler.utils.NativeUtils;
  * @author Michael Schmalle
  * @author Erik de Bruin
  */
-public class JSRoyaleASDocDITAEmitter extends JSGoogEmitter implements IJSRoyaleEmitter, IJSRoyaleASDocEmitter
+public class JSRoyaleASDocDITAEmitter extends JSRoyaleEmitter implements IJSRoyaleASDocEmitter
 {
 
     @Override

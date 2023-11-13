@@ -26,16 +26,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.royale.compiler.asdoc.royale.ASDocComment;
+import org.apache.royale.compiler.codegen.IASGlobalFunctionConstants.BuiltinType;
+import org.apache.royale.compiler.codegen.js.royale.IJSRoyaleDocEmitter;
 import org.apache.royale.compiler.codegen.js.royale.IJSRoyaleEmitter;
-import org.apache.royale.compiler.codegen.js.goog.IJSGoogDocEmitter;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.constants.INamespaceConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.definitions.IParameterDefinition;
@@ -44,9 +48,12 @@ import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.definitions.references.INamespaceResolvedReference;
 import org.apache.royale.compiler.embedding.EmbedAttribute;
+import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.JSEmitter;
+import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
+import org.apache.royale.compiler.internal.codegen.js.JSSessionModel;
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel.ImplicitBindableImplementation;
-import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.jx.AccessorEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.AsIsEmitter;
@@ -75,6 +82,7 @@ import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleEmitter
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
+import org.apache.royale.compiler.internal.definitions.NamespaceDefinition.INamepaceDeclarationDirective;
 import org.apache.royale.compiler.internal.definitions.VariableDefinition;
 import org.apache.royale.compiler.internal.embedding.EmbedData;
 import org.apache.royale.compiler.internal.embedding.EmbedMIMEType;
@@ -86,7 +94,9 @@ import org.apache.royale.compiler.internal.scopes.PackageScope;
 import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.problems.EmbedUnableToReadSourceProblem;
 import org.apache.royale.compiler.problems.FilePrivateItemsWithMainVarWarningProblem;
+import org.apache.royale.compiler.problems.VariableUsedBeforeDeclarationProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.utils.ASNodeUtils;
@@ -101,8 +111,10 @@ import org.apache.royale.utils.FilenameNormalization;
  * @author Michael Schmalle
  * @author Erik de Bruin
  */
-public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
+public class JSRoyaleEmitter extends JSEmitter implements IJSRoyaleEmitter
 {
+    // TODO (mschmalle) Remove this (not used in JSRoyaleEmitter anymore)
+    public ICompilerProject project;
 
     private JSRoyaleDocEmitter docEmitter = null;
 
@@ -360,7 +372,7 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
 
     // TODO (mschmalle) Fix; this is not using the backend doc strategy for replacement
     @Override
-    public IJSGoogDocEmitter getDocEmitter()
+    public IJSRoyaleDocEmitter getDocEmitter()
     {
         if (docEmitter == null)
             docEmitter = new JSRoyaleDocEmitter(this);
@@ -446,8 +458,10 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     public void emitFunctionBlockHeader(IFunctionNode node)
     {
         setEmittingHoistedNodes(node, true);
-    	super.emitFunctionBlockHeader(node);
-    	if (node.isConstructor())
+    	
+        emitFunctionBlockHeader2(node);
+    	
+        if (node.isConstructor())
     	{
             IClassNode cnode = (IClassNode) node.getAncestorOfType(IClassNode.class);
             if (cnode.getDefinition().needsEventDispatcher(getWalker().getProject())) {
@@ -466,6 +480,163 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
             emitHoistedVariablesCodeBlock(node);
 
         setEmittingHoistedNodes(node, false);
+    }
+
+    protected void emitFunctionBlockHeader2(IFunctionNode node)
+    {
+        ASDocComment asDoc = (ASDocComment) node
+                .getASDocComment();
+        if (asDoc != null)
+        {
+            String asDocString = asDoc.commentNoEnd();
+            String debugToken = JSRoyaleEmitterTokens.DEBUG_COMMENT
+                    .getToken();
+            int emitIndex = asDocString.indexOf(debugToken);
+            if(emitIndex != -1)
+            {
+                IParameterNode[] pnodes = node.getParameterNodes();
+
+                IParameterNode rest = EmitterUtils.getRest(pnodes);
+                if (rest != null)
+                {
+                    final StringBuilder code = new StringBuilder();
+                    code.append(rest.getName());
+                    code.append(ASEmitterTokens.SPACE.getToken());
+                    code.append(ASEmitterTokens.EQUAL.getToken());
+                    code.append(ASEmitterTokens.SPACE.getToken());
+                    code.append(rest.getName());
+                    code.append(ASEmitterTokens.SEMICOLON.getToken());
+                    write(code.toString());
+                }
+                write(JSRoyaleEmitterTokens.DEBUG_RETURN);
+                writeNewline();
+            }
+        }
+        IDefinition def = node.getDefinition();
+        boolean isStatic = false;
+        if (def != null && def.isStatic())
+            isStatic = true;
+        boolean isLocal = false;
+        if (node.getFunctionClassification() == IFunctionDefinition.FunctionClassification.LOCAL)
+            isLocal = true;
+        boolean isPackage = false;
+        if (node.getFunctionClassification() == IFunctionDefinition.FunctionClassification.PACKAGE_MEMBER)
+        isPackage = true;
+        if (EmitterUtils.hasBody(node) && !isStatic && !isLocal && !isPackage)
+            emitSelfReference(node);
+
+        if (node.isConstructor()
+                && EmitterUtils.hasSuperClass(getWalker().getProject(), node)
+                && !EmitterUtils.hasSuperCall(node.getScopedNode()))
+            emitSuperCall(node, JSSessionModel.CONSTRUCTOR_FULL);
+
+        if (!getModel().isExterns)
+        	emitRestParameterCodeBlock(node);
+
+        if (!getModel().isExterns)
+        	emitDefaultParameterCodeBlock(node);
+    }
+
+    protected void emitRestParameterCodeBlock(IFunctionNode node)
+    {
+        IParameterNode[] pnodes = node.getParameterNodes();
+
+        IParameterNode rest = EmitterUtils.getRest(pnodes);
+        if (rest != null)
+        {
+            final StringBuilder code = new StringBuilder();
+
+            /* x = Array.prototype.slice.call(arguments, y);\n */
+            code.append(rest.getName());
+            code.append(ASEmitterTokens.SPACE.getToken());
+            code.append(ASEmitterTokens.EQUAL.getToken());
+            code.append(ASEmitterTokens.SPACE.getToken());
+            code.append(BuiltinType.ARRAY.getName());
+            code.append(ASEmitterTokens.MEMBER_ACCESS.getToken());
+            code.append(JSEmitterTokens.PROTOTYPE.getToken());
+            code.append(ASEmitterTokens.MEMBER_ACCESS.getToken());
+            code.append(JSEmitterTokens.SLICE.getToken());
+            code.append(ASEmitterTokens.MEMBER_ACCESS.getToken());
+            code.append(JSEmitterTokens.CALL.getToken());
+            code.append(ASEmitterTokens.PAREN_OPEN.getToken());
+            code.append(JSEmitterTokens.ARGUMENTS.getToken());
+            code.append(ASEmitterTokens.COMMA.getToken());
+            code.append(ASEmitterTokens.SPACE.getToken());
+            code.append(String.valueOf(pnodes.length - 1));
+            code.append(ASEmitterTokens.PAREN_CLOSE.getToken());
+            code.append(ASEmitterTokens.SEMICOLON.getToken());
+
+            write(code.toString());
+
+            writeNewline();
+        }
+    }
+
+    protected void emitDefaultParameterCodeBlock(IFunctionNode node)
+    {
+        IParameterNode[] pnodes = node.getParameterNodes();
+        if (pnodes.length == 0)
+            return;
+
+        Map<Integer, IParameterNode> defaults = EmitterUtils
+                .getDefaults(pnodes);
+
+        if (defaults != null)
+        {
+            final StringBuilder code = new StringBuilder();
+
+            if (!EmitterUtils.hasBody(node))
+            {
+                indentPush();
+                writeIndent();
+            }
+
+            List<IParameterNode> parameters = new ArrayList<IParameterNode>(
+                    defaults.values());
+
+            for (int i = 0, n = parameters.size(); i < n; i++)
+            {
+                IParameterNode pnode = parameters.get(i);
+
+                if (pnode != null)
+                {
+                    code.setLength(0);
+
+                    /* x = typeof y !== 'undefined' ? y : z;\n */
+                    code.append(pnode.getName());
+                    code.append(ASEmitterTokens.SPACE.getToken());
+                    code.append(ASEmitterTokens.EQUAL.getToken());
+                    code.append(ASEmitterTokens.SPACE.getToken());
+                    code.append(ASEmitterTokens.TYPEOF.getToken());
+                    code.append(ASEmitterTokens.SPACE.getToken());
+                    code.append(pnode.getName());
+                    code.append(ASEmitterTokens.SPACE.getToken());
+                    code.append(ASEmitterTokens.STRICT_NOT_EQUAL.getToken());
+                    code.append(ASEmitterTokens.SPACE.getToken());
+                    code.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+                    code.append(ASEmitterTokens.UNDEFINED.getToken());
+                    code.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+                    code.append(ASEmitterTokens.SPACE.getToken());
+                    code.append(ASEmitterTokens.TERNARY.getToken());
+                    code.append(ASEmitterTokens.SPACE.getToken());
+                    code.append(pnode.getName());
+                    code.append(ASEmitterTokens.SPACE.getToken());
+                    code.append(ASEmitterTokens.COLON.getToken());
+                    code.append(ASEmitterTokens.SPACE.getToken());
+                    
+                    IExpressionNode assignedValueNode = pnode.getAssignedValueNode();
+                    code.append(stringifyNode(assignedValueNode));
+                    code.append(ASEmitterTokens.SEMICOLON.getToken());
+
+                    write(code.toString());
+
+                    if (i == n - 1 && !EmitterUtils.hasBody(node))
+                        indentPop();
+
+                    writeNewline();
+                }
+            }
+        }
     }
 
     protected void emitHoistedFunctionsCodeBlock(IFunctionNode node)
@@ -872,6 +1043,56 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     }
 
     @Override
+    public void emitPackageContents(IPackageDefinition definition)
+    {
+        IASScope containedScope = definition.getContainedScope();
+        
+        ITypeDefinition type = EmitterUtils.findType(containedScope.getAllLocalDefinitions());
+        if (type != null)
+        {
+            ITypeNode tnode = EmitterUtils.findTypeNode(definition.getNode());
+            if (tnode != null)
+            {
+            	getModel().primaryDefinitionQName = formatQualifiedName(type.getQualifiedName());
+                getWalker().walk(tnode); // IClassNode | IInterfaceNode
+            }
+            return;
+        }
+        
+        IFunctionDefinition func = EmitterUtils.findFunction(containedScope.getAllLocalDefinitions());
+        if (func != null)
+        {
+            IFunctionNode fnode = EmitterUtils.findFunctionNode(definition.getNode());
+            if (fnode != null)
+            {
+                getWalker().walk(fnode);
+            }
+            return;
+        }
+
+        IVariableDefinition variable = EmitterUtils.findVariable(containedScope.getAllLocalDefinitions());
+        if (variable != null)
+        {
+            IVariableNode vnode = EmitterUtils.findVariableNode(definition.getNode());
+            if (vnode != null)
+            {
+                getWalker().walk(vnode);
+            }
+        }
+        
+    	INamepaceDeclarationDirective ns = EmitterUtils.findNamespace(containedScope
+                .getAllLocalDefinitions());
+        if(ns != null)
+        {
+        	INamespaceNode nsNode = EmitterUtils.findNamespaceNode(definition.getNode());
+        	if (nsNode != null)
+        	{
+        		getWalker().walk(nsNode);
+        	}
+        }
+    }
+
+    @Override
     public void emitPackageFooter(IPackageDefinition definition)
     {
         packageFooterEmitter.emit(definition);
@@ -905,7 +1126,6 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         varDeclarationEmitter.emit(node);
     }
 
-    @Override
     public void emitAccessors(IAccessorNode node)
     {
         accessorEmitter.emit(node);
@@ -954,7 +1174,6 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     // Expressions
     //--------------------------------------------------------------------------
 
-    @Override
     public void emitSuperCall(IASNode node, String type)
     {
         superCallEmitter.emit(node, type);
@@ -1061,6 +1280,18 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
     }
 
     @Override
+    public void emitAsOperator(IBinaryOperatorNode node)
+    {
+        emitBinaryOperator(node);
+    }
+
+    @Override
+    public void emitIsOperator(IBinaryOperatorNode node)
+    {
+        emitBinaryOperator(node);
+    }
+
+    @Override
     public void emitBinaryOperator(IBinaryOperatorNode node)
     {
         binaryOperatorEmitter.emit(node);
@@ -1135,6 +1366,46 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         }
     }
 
+    @Override
+    protected void emitAssignedValue(IExpressionNode node)
+    {
+        if (node == null)
+        {
+            return;
+        }
+        IDefinition definition = node.resolve(getWalker().getProject());
+        if (node.getNodeID() == ASTNodeID.IdentifierID && node.getParent().getNodeID() == ASTNodeID.VariableID)
+        {
+        	if (definition instanceof VariableDefinition && (!(definition.getParent() instanceof ClassDefinition)))
+        	{
+        		IFileSpecification defFile = ((VariableDefinition)definition).getFileSpecification();
+        		IFileSpecification varFile = node.getFileSpecification();
+        		if (defFile != null && varFile != null && varFile.equals(defFile))
+        		{
+        			if (node.getAbsoluteStart() < definition.getAbsoluteStart())
+        			{
+        				getProblems().add(new VariableUsedBeforeDeclarationProblem(node, definition.getBaseName()));
+        			}
+        		}
+        	}
+        }
+        if (node.getNodeID() == ASTNodeID.ClassReferenceID)
+        {
+            write(definition.getQualifiedName());
+        }
+        else
+        {
+            if (definition instanceof IFunctionDefinition &&
+            		node.getNodeID() == ASTNodeID.NamespaceAccessExpressionID)
+            {
+            	// can't do normal walk.  Need to generate closure
+            	// so walk just the right operand
+            	getWalker().walk(node.getChild(1));
+            }
+            else
+            	getWalker().walk(node);
+        }
+    }
 
     //--------------------------------------------------------------------------
     // Specific
@@ -1145,19 +1416,16 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         asIsEmitter.emitIsAs(node, left, right, id, coercion);
     }
 
-    @Override
     protected void emitSelfReference(IFunctionNode node)
     {
         selfReferenceEmitter.emit(node);
     }
 
-    @Override
     protected void emitObjectDefineProperty(IAccessorNode node)
     {
         objectDefinePropertyEmitter.emit(node);
     }
 
-    @Override
     public void emitDefinePropertyFunction(IAccessorNode node)
     {
         definePropertyFunctionEmitter.emit(node);
@@ -1173,7 +1441,6 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         return result;
     }
 
-    @Override
 	public void emitClosureStart()
     {
         if (getDocEmitter() instanceof JSRoyaleDocEmitter && ((JSRoyaleDocEmitter) getDocEmitter()).getSuppressClosure()) return;
@@ -1185,7 +1452,6 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         write(ASEmitterTokens.PAREN_OPEN);
     }
 
-    @Override
 	public void emitClosureEnd(IASNode node, IDefinition nodeDef)
     {
         if (getDocEmitter() instanceof JSRoyaleDocEmitter && ((JSRoyaleDocEmitter) getDocEmitter()).getSuppressClosure()) return;
@@ -1227,6 +1493,30 @@ public class JSRoyaleEmitter extends JSGoogEmitter implements IJSRoyaleEmitter
         }
     	write(ASEmitterTokens.SINGLE_QUOTE);
         write(ASEmitterTokens.PAREN_CLOSE);
+    }
+
+    @Override
+    public void emitContainer(IContainerNode node)
+    {
+    	// saw this in a for loop with multiple initializer statements: for (var i = 0, j = 0; ...
+        int len = node.getChildCount();
+        for (int i = 0; i < len; i++)
+        {
+            IASNode child = node.getChild(i);
+            if (i == 0)
+            	getWalker().walk(child);
+            else
+            {
+            	String s = stringifyNode(child);
+            	if (s.startsWith("var "))
+            	{
+            		s = s.substring(4);
+            		write(s);
+            	}
+            }
+            if (i < len - 1)
+            	write(", ");
+        }    	
     }
 
     @Override

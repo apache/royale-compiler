@@ -29,8 +29,8 @@ import org.apache.royale.compiler.codegen.js.IJSWriter;
 import org.apache.royale.compiler.codegen.mxml.IMXMLEmitter;
 import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.driver.IBackend;
-import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jsc.JSCJSEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.mxml.MXMLBlockWalker;
 import org.apache.royale.compiler.internal.codegen.mxml.MXMLWriter;
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleBlockWalker;
@@ -94,7 +94,7 @@ public class MXMLJSCJSSWCBackend extends MXMLBackend
     @Override
     public IDocEmitter createDocEmitter(IASEmitter emitter)
     {
-        return new JSGoogDocEmitter((IJSEmitter) emitter);
+        return new JSRoyaleDocEmitter((IJSEmitter) emitter);
     }
 
     @Override

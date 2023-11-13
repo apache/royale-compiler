@@ -26,7 +26,6 @@ import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSDocEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
-import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
@@ -98,7 +97,7 @@ public class InterfaceEmitter extends JSSubEmitter implements
                 	packageName = project.getActualPackageName(packageName);
                     if (typeNode instanceof TypedExpressionNode) {
                         propType = "Vector.<" +
-                                JSGoogDocEmitter.convertASTypeToJSType(
+                        JSRoyaleDocEmitter.convertASTypeToJSType(
                                         ((TypedExpressionNode)typeNode).getTypeNode().resolveType(project).getQualifiedName(),
                                         "")
                                 +">";

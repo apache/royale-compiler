@@ -47,7 +47,7 @@ public class TestRoyalePackage extends TestPackage
     	ArrayList<String> values2 = new ArrayList<String>();
     	values2.add("Before");
     	config.setCompilerKeepCodeWithMetadata(null, values2);
-    	((RoyaleJSProject)project).config = config;
+    	project.config = config;
         super.setUp();
     }
 

@@ -22,7 +22,7 @@ import org.apache.royale.compiler.codegen.IEmitterTokens;
 
 public enum JSDocEmitterTokens implements IEmitterTokens
 {
-    JSDOC_CLOSE("*/"), JSDOC_OPEN("/**");
+    JSDOC_CLOSE("*/"), JSDOC_OPEN("/**"), JSDOC_LINE_START("*");
 
     private String token;
 

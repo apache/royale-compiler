@@ -501,8 +501,8 @@ public class BindableEmitter extends JSSubEmitter implements
 
 
     /** temp
-     *  todo : figure out easy access to JSGoogDocEmitter for emitType
-     *  for now, the following is copied (simplified) from JSGoogDocEmitter
+     *  todo : figure out easy access to JSRoyaleDocEmitter for emitType
+     *  for now, the following is copied (simplified) from JSRoyaleDocEmitter
      */
 
     protected String convertASTypeToJS(String qname)

@@ -184,11 +184,11 @@ public class TestRoyaleProject extends ASTestBase
         String fileName = "Test";
 
         try {
-			((RoyaleJSProject)project).config.setCompilerAllowSubclassOverrides(null, true);
+			project.config.setCompilerAllowSubclassOverrides(null, true);
 		} catch (ConfigurationException e) {
             Assert.fail(e.getMessage());
 		}
-        project.setTargetSettings(new TargetSettings(((RoyaleJSProject)project).config, (RoyaleJSProject)project));
+        project.setTargetSettings(new TargetSettings(project.config, (RoyaleJSProject)project));
         
         sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
                 projectDirPath + "/overrides").getPath();
@@ -207,11 +207,11 @@ public class TestRoyaleProject extends ASTestBase
         String fileName = "Test";
 
         try {
-			((RoyaleJSProject)project).config.setCompilerAllowSubclassOverrides(null, true);
+			project.config.setCompilerAllowSubclassOverrides(null, true);
 		} catch (ConfigurationException e) {
             Assert.fail(e.getMessage());
 		}
-        project.setTargetSettings(new TargetSettings(((RoyaleJSProject)project).config, (RoyaleJSProject)project));
+        project.setTargetSettings(new TargetSettings(project.config, (RoyaleJSProject)project));
         
         sourcePath = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(),
                 projectDirPath + "/bad_overrides").getPath();

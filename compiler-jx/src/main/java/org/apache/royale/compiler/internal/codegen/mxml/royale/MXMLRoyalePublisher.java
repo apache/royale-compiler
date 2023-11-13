@@ -27,15 +27,16 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
-import org.apache.royale.compiler.codegen.js.goog.IJSGoogPublisher;
+import org.apache.royale.compiler.codegen.js.royale.IJSRoyalePublisher;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.css.ICSSPropertyValue;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.filespecs.IFileSpecification;
-import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogPublisher;
+import org.apache.royale.compiler.internal.codegen.js.JSPublisher;
 import org.apache.royale.compiler.internal.codegen.js.goog.JarSourceFile;
 import org.apache.royale.compiler.internal.css.CSSArrayPropertyValue;
 import org.apache.royale.compiler.internal.css.CSSFontFace;
@@ -56,9 +57,11 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 
-public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPublisher
+public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublisher
 {
 
     public static final String ROYALE_OUTPUT_DIR_NAME = "bin";
@@ -88,6 +91,8 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
     public MXMLRoyalePublisher(RoyaleJSProject project, Configuration config)
     {
         super(project, config);
+        googConfiguration = (JSGoogConfiguration) config;
+
         this.isMarmotinniRun = googConfiguration.getMarmotinni() != null;
         this.outputPathParameter = configuration.getOutput();
         this.moduleOutput = googConfiguration.getModuleOutput();
@@ -96,7 +101,7 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
         this.project = project;
     }
 
-    protected RoyaleJSProject project;
+    protected JSGoogConfiguration googConfiguration;
 
     private boolean isMarmotinniRun;
     private String outputPathParameter;
@@ -1044,6 +1049,18 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
         }
     }
 
+    protected void writeFile(File target, String content, boolean append)
+            throws IOException
+    {
+        if (!target.exists()) {
+            target.createNewFile();
+        }
+
+        FileWriter fw = new FileWriter(target, append);
+        fw.write(content);
+        fw.close();
+    }
+
     protected void copyFontFile(CSSFunctionCallPropertyValue fn, File sourceDir, File targetDir) throws IOException {
         String fontPath = fn.rawArguments;
         if (fontPath.startsWith("'")) {
@@ -1178,4 +1195,65 @@ public class MXMLRoyalePublisher extends JSGoogPublisher implements IJSGoogPubli
 		writeFile(new File(targetDir, generatedName + ".js"), factoryClass.toString(), false);
 		return generatedName;
 	}
+
+    protected void appendSourceMapLocation(File path, String projectName)
+            throws IOException
+    {
+        if (!googConfiguration.getSourceMap())
+        {
+            return;
+        }
+        StringBuilder appendString = new StringBuilder();
+        appendString.append("\n//# sourceMappingURL=./" + projectName
+                + ".js.map");
+        writeFile(path, appendString.toString(), true);
+    }
+
+    protected List<SourceFile> getClasspathResources(File jarFile) throws IOException {
+        return getClasspathResources(jarFile, null);
+    }
+
+    protected List<SourceFile> getClasspathResources(File jarFile, Properties whiteList) throws IOException {
+        List<SourceFile> sourceFiles = new LinkedList<SourceFile>();
+
+        JarFile jar = null;
+        try {
+            jar = new JarFile(jarFile);
+            for (Enumeration<JarEntry> jarEntries = jar.entries(); jarEntries.hasMoreElements(); ) {
+                JarEntry jarEntry = jarEntries.nextElement();
+                String fileName = jarEntry.getName();
+                // Add only JS files and if a white-list is specified, only files on that white-list.
+                if (fileName.endsWith(".js") && ((whiteList == null) || (whiteList.containsKey(fileName)))) {
+                    // Dump the file.
+                    InputStream is = jar.getInputStream(jarEntry);
+                    String code = IOUtils.toString(is, "UTF-8");
+                    SourceFile sourceFile = new JarSourceFile(jarEntry.getName(), code, false);
+                    is.close();
+                    sourceFiles.add(sourceFile);
+                }
+            }
+        } finally {
+            if(jar != null) {
+                jar.close();
+            }
+        }
+
+        return sourceFiles;
+    }
+
+    protected List<SourceFile> getDirectoryResources(File directory) throws IOException {
+        List<SourceFile> sourceFiles = new LinkedList<SourceFile>();
+
+        Collection<File> files = FileUtils.listFiles(directory,
+                new RegexFileFilter("^.*(\\.js)"), DirectoryFileFilter.DIRECTORY);
+        for (File file : files)
+        {
+            String relative = directory.toURI().relativize(file.toURI()).getPath();
+            String code = FileUtils.readFileToString(file, "UTF-8");
+            SourceFile sourceFile = new JarSourceFile(relative, code, false);
+            sourceFiles.add(sourceFile);
+        }
+
+        return sourceFiles;
+    }
 }

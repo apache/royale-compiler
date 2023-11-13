@@ -42,7 +42,6 @@ import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
-import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
@@ -107,7 +106,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                     if (emitExports)
                     	writeNewline(" * @export");
                     if (p.type != null)
-                    	writeNewline(" * @type {"+ JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "}");
+                    	writeNewline(" * @type {"+ JSRoyaleDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "}");
                     writeNewline(" */");
                     write(getEmitter().formatQualifiedName(qname));
                     write(ASEmitterTokens.MEMBER_ACCESS);
@@ -150,7 +149,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                         if (p.resolvedExport && !p.suppressExport)
                             writeNewline(" * @export");
                         if (p.type != null)
-                            writeNewline(" * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "}"); 
+                            writeNewline(" * @type {" + JSRoyaleDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "}"); 
                         writeNewline(" */");
                         write(getEmitter().formatQualifiedName(qname));
                         write(ASEmitterTokens.MEMBER_ACCESS);
@@ -358,7 +357,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                 	String typeName = p.type.getBaseName();
                 	if (getModel().isInternalClass(typeName))
     					typeName = getModel().getInternalClasses().get(typeName);
-					writeNewline(" * @type {" + JSGoogDocEmitter.convertASTypeToJSType(typeName, p.type.getPackageName()) + "}");
+					writeNewline(" * @type {" + JSRoyaleDocEmitter.convertASTypeToJSType(typeName, p.type.getPackageName()) + "}");
                 }
                 writeNewline(" */");
                 FunctionNode fnNode = getterNode != null ? (FunctionNode) getterNode : (FunctionNode) setterNode;
@@ -517,7 +516,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                     if (emitExports)
                     	writeNewline(" * @export");
                     if (p.type != null)
-                    	writeNewline(" * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "}");
+                    	writeNewline(" * @type {" + JSRoyaleDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "}");
                     writeNewline(" */");
                     write(getEmitter().formatQualifiedName(qname));
                     if (p.uri != null)
@@ -561,7 +560,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                     if (p.resolvedExport && !p.suppressExport)
                         writeNewline(" * @export");
                     if (p.type != null)
-                        writeNewline(" * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "}"); 
+                        writeNewline(" * @type {" + JSRoyaleDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "}"); 
                     writeNewline(" */");
                     write(getEmitter().formatQualifiedName(qname));
                     write(ASEmitterTokens.MEMBER_ACCESS);
@@ -672,7 +671,7 @@ public class AccessorEmitter extends JSSubEmitter implements
                 String baseName = p.name;
             	writeNewline("/**");
                 if (p.type != null)
-                	writeNewline(" * @type {" + JSGoogDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "}");
+                	writeNewline(" * @type {" + JSRoyaleDocEmitter.convertASTypeToJSType(p.type.getBaseName(), p.type.getPackageName()) + "}");
                 writeNewline(" */");
 				FunctionNode fnNode = getterNode != null ? (FunctionNode) getterNode : (FunctionNode) setterNode;
 				if (p.uri != null)

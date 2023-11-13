@@ -35,7 +35,6 @@ import org.apache.royale.compiler.asdoc.IASDocTag;
 import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.codegen.js.royale.IJSRoyaleASDocEmitter;
 import org.apache.royale.compiler.codegen.js.royale.IJSRoyaleEmitter;
-import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IAccessorDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
@@ -44,7 +43,6 @@ import org.apache.royale.compiler.definitions.IParameterDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.metadata.IDeprecationInfo;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
-import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitter;
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleASDocEmitter;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
@@ -77,7 +75,7 @@ import org.apache.royale.compiler.utils.NativeUtils;
  * @author Michael Schmalle
  * @author Erik de Bruin
  */
-public class JSRoyaleASDocEmitter extends JSGoogEmitter implements IJSRoyaleEmitter, IJSRoyaleASDocEmitter
+public class JSRoyaleASDocEmitter extends JSRoyaleEmitter implements IJSRoyaleASDocEmitter
 {
 
 	private boolean firstMember = true;

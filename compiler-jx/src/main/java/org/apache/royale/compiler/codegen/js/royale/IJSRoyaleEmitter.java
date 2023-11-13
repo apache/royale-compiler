@@ -19,12 +19,12 @@
 
 package org.apache.royale.compiler.codegen.js.royale;
 
-import org.apache.royale.compiler.codegen.js.goog.IJSGoogEmitter;
+import org.apache.royale.compiler.codegen.js.IJSEmitter;
 
 /**
  * @author Erik de Bruin
  */
-public interface IJSRoyaleEmitter extends IJSGoogEmitter
+public interface IJSRoyaleEmitter extends IJSEmitter
 {
 
 }

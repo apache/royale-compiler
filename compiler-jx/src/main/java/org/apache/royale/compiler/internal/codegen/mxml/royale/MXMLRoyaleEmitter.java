@@ -71,7 +71,7 @@ import org.apache.royale.compiler.internal.codegen.js.JSSessionModel.BindableVar
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleBasicMXMLDescriptorEmitter;
-import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.jx.BindableEmitter;
 import org.apache.royale.compiler.internal.codegen.js.jx.PackageFooterEmitter;
@@ -921,7 +921,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             writeNewline();
             writeNewline("/**");
             writeNewline(" * @export");
-            writeNewline(" * @type {" + JSGoogDocEmitter.convertASTypeToJSType(formatQualifiedName(node.getName()), "") + "}");
+            writeNewline(" * @type {" + JSRoyaleDocEmitter.convertASTypeToJSType(formatQualifiedName(node.getName()), "") + "}");
             writeNewline(" */");
             String cname = node.getFileNode().getName();
             write(cname);

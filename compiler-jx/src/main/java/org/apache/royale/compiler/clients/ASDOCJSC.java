@@ -40,7 +40,6 @@ import org.apache.royale.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
 import org.apache.royale.compiler.internal.driver.as.ASBackend;
 import org.apache.royale.compiler.internal.driver.js.goog.ASDocConfiguration;
-import org.apache.royale.compiler.internal.driver.js.goog.GoogBackend;
 import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleASDocBackend;
 import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleASDocDITABackend;
 import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleBackend;
@@ -143,10 +142,6 @@ public class ASDOCJSC extends MXMLJSCRoyale
 
                 case ROYALE_DITA:
                     backend = new MXMLRoyaleASDocDITABackend();
-                    break;
-                    
-                case GOOG:
-                    backend = new GoogBackend();
                     break;
 
                 default:

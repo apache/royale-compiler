@@ -39,7 +39,7 @@ import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.clients.problems.ProblemQueryProvider;
 import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
 import org.apache.royale.compiler.codegen.js.IJSWriter;
-import org.apache.royale.compiler.codegen.js.goog.IJSGoogPublisher;
+import org.apache.royale.compiler.codegen.js.royale.IJSRoyalePublisher;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.ConfigurationBuffer;
 import org.apache.royale.compiler.config.Configurator;
@@ -53,7 +53,7 @@ import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyT
 import org.apache.royale.compiler.exceptions.ConfigurationException.OnlyOneSource;
 import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogDocEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.config.FlashBuilderConfigurator;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
@@ -204,7 +204,7 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
     protected ITarget target;
     protected ITargetSettings targetSettings;
     protected IJSApplication jsTarget;
-    private IJSGoogPublisher jsPublisher;
+    private IJSRoyalePublisher jsPublisher;
     
     public MXMLJSCRoyale()
     {
@@ -422,7 +422,7 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
                 Set<String> closurePropNamesToKeep = new HashSet<String>();
                 //use a LinkedHashSet because the order of the exported names matters -JT
                 LinkedHashSet<String> closureSymbolNamesToExport = new LinkedHashSet<String>();
-                jsPublisher = (IJSGoogPublisher) project.getBackend().createPublisher(
+                jsPublisher = (IJSRoyalePublisher) project.getBackend().createPublisher(
                         project, errors, config);
 
                 File outputFolder = jsPublisher.getOutputFolder();
@@ -766,7 +766,7 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
     {
     	if (s.contains("__AS3__.vec.Vector"))
     		return "Array";
-    	return JSGoogDocEmitter.convertASTypeToJSType(s, "");
+    	return JSRoyaleDocEmitter.convertASTypeToJSType(s, "");
     }
 
 	private void outputResourceBundle(ResourceBundleCompilationUnit cu, File outputFolder) {
