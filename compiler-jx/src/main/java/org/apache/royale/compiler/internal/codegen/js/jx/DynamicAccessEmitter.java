@@ -25,7 +25,6 @@ import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
-import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
@@ -33,17 +32,13 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterToke
 import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.BinaryOperatorAssignmentNode;
-import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
-import org.apache.royale.compiler.parsing.IASToken;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.ILiteralNode;
-import org.apache.royale.compiler.tree.as.IOperatorNode.OperatorType;
 import org.apache.royale.compiler.utils.ASNodeUtils;
-import org.apache.royale.compiler.utils.NativeUtils;
 
 public class DynamicAccessEmitter extends JSSubEmitter implements
         ISubEmitter<IDynamicAccessNode>
@@ -83,51 +78,14 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
         		isProxy = fjs.isProxy((IExpressionNode)leftOperandNode);
 	    	if (isXML)
 	    	{
-				if (type == null) {
-	    			//this can happen if myThing is of type Object or AnyType (*)
-					//with example: myXml.somethingChild[myThing.id]
-	    			//use Stringify with 'child' method, which has support for attributes vs elements
-					write(".child('' +");
-						getWalker().walk(rightOperandNode);
-					write(")");
-					if (ASNodeUtils.hasParenClose(node))
-						write(ASEmitterTokens.PAREN_CLOSE);
-					return;
-				}
-				if (type.isInstanceOf("String", getProject()))
+				if (emitXmlDynamicAccess(node, type))
 				{
-					String field = fjs.stringifyNode(rightOperandNode);
-					if (field.startsWith("\"@"))
-					{
-						field = field.replace("@", "");
-						write(".attribute(" + field + ")");
-					}
-					else
-						write(".child(" + field + ")");
-					if (ASNodeUtils.hasParenClose(node))
-						write(ASEmitterTokens.PAREN_CLOSE);
-					return;
-				}
-				else if (type.isInstanceOf("QName", getProject()))
-				{
-					String field = fjs.stringifyNode(rightOperandNode);					
-					write(".child(" + field + ")");
-					if (ASNodeUtils.hasParenClose(node))
-						write(ASEmitterTokens.PAREN_CLOSE);
 					return;
 				}
 	    	}
         	else if (isProxy)
         	{
-        		boolean isNonStringLiteral = rightOperandNode instanceof ILiteralNode && ((ILiteralNode) rightOperandNode).getLiteralType() != ILiteralNode.LiteralType.STRING;
-        		write(".getProperty(");
-        		if (isNonStringLiteral) write("'");
-        		String s = fjs.stringifyNode(rightOperandNode);
-        		write(s);
-        		if (isNonStringLiteral) write("'");
-        		write(")");
-				if (ASNodeUtils.hasParenClose(node))
-					write(ASEmitterTokens.PAREN_CLOSE);
+				emitProxyGetProperty(node);
         		return;
         	}
     	}
@@ -190,4 +148,57 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
 		if (ASNodeUtils.hasParenClose(node))
 			write(ASEmitterTokens.PAREN_CLOSE);
     }
+
+	private boolean emitXmlDynamicAccess(IDynamicAccessNode node, ITypeDefinition type) {
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
+        IExpressionNode rightOperandNode = node.getRightOperandNode();
+		if (type == null) {
+			//this can happen if myThing is of type Object or AnyType (*)
+			//with example: myXml.somethingChild[myThing.id]
+			//use Stringify with 'child' method, which has support for attributes vs elements
+			write(".child('' +");
+				getWalker().walk(rightOperandNode);
+			write(")");
+			if (ASNodeUtils.hasParenClose(node))
+				write(ASEmitterTokens.PAREN_CLOSE);
+			return true;
+		}
+		if (type.isInstanceOf("String", getProject()))
+		{
+			String field = fjs.stringifyNode(rightOperandNode);
+			if (field.startsWith("\"@"))
+			{
+				field = field.replace("@", "");
+				write(".attribute(" + field + ")");
+			}
+			else
+				write(".child(" + field + ")");
+			if (ASNodeUtils.hasParenClose(node))
+				write(ASEmitterTokens.PAREN_CLOSE);
+			return true;
+		}
+		else if (type.isInstanceOf("QName", getProject()))
+		{
+			String field = fjs.stringifyNode(rightOperandNode);					
+			write(".child(" + field + ")");
+			if (ASNodeUtils.hasParenClose(node))
+				write(ASEmitterTokens.PAREN_CLOSE);
+			return true;
+		}
+		return false;
+	}
+
+	private void emitProxyGetProperty(IDynamicAccessNode node) {
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
+        IExpressionNode rightOperandNode = node.getRightOperandNode();
+		boolean isNonStringLiteral = rightOperandNode instanceof ILiteralNode && ((ILiteralNode) rightOperandNode).getLiteralType() != ILiteralNode.LiteralType.STRING;
+		write(".getProperty(");
+		if (isNonStringLiteral) write("'");
+		String s = fjs.stringifyNode(rightOperandNode);
+		write(s);
+		if (isNonStringLiteral) write("'");
+		write(")");
+		if (ASNodeUtils.hasParenClose(node))
+			write(ASEmitterTokens.PAREN_CLOSE);
+	}
 }

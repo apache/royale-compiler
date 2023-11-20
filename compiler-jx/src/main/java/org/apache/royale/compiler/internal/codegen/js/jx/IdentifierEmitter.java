@@ -89,109 +89,19 @@ public class IdentifierEmitter extends JSSubEmitter implements
             Object initialValue = constDef.resolveInitialValue(project);
             if (initialValue != null)
             {
-                startMapping(parentNode);
-                if(initialValue instanceof String)
-                {
-                    write(ASEmitterTokens.DOUBLE_QUOTE);
-                    write((String) initialValue);
-                    write(ASEmitterTokens.DOUBLE_QUOTE);
-                }
-                else if(initialValue == ABCConstants.UNDEFINED_VALUE)
-                {
-                    write(IASLanguageConstants.UNDEFINED);
-                }
-                else if(initialValue == ABCConstants.NULL_VALUE)
-                {
-                    write(IASLanguageConstants.NULL);
-                }
-                else
-                {
-                    write(initialValue.toString());
-                }
-                endMapping(parentNode);
+                emitInitialValue(parentNode, initialValue);
                 return;
             }
         }
         if (isStatic)
         {
             String sname = nodeDef.getParent().getQualifiedName();
-            if (sname.equals("Array"))
-            {
-            	String baseName = nodeDef.getBaseName();
-            	if (baseName.equals("CASEINSENSITIVE"))
-            	{
-                    startMapping(parentNode);
-            		write("1");
-                    endMapping(parentNode);
-            		return;
-            	}
-            	else if (baseName.equals("DESCENDING"))
-            	{
-                    startMapping(parentNode);
-            		write("2");
-                    endMapping(parentNode);
-            		return;
-            	}
-            	else if (baseName.equals("UNIQUESORT"))
-            	{
-                    startMapping(parentNode);
-            		write("4");
-                    endMapping(parentNode);
-            		return;
-            	}
-            	else if (baseName.equals("RETURNINDEXEDARRAY"))
-            	{
-                    startMapping(parentNode);
-            		write("8");
-                    endMapping(parentNode);
-            		return;
-            	}
-            	else if (baseName.equals("NUMERIC"))
-            	{
-                    startMapping(parentNode);
-            		write("16");
-                    endMapping(parentNode);
-            		return;
-            	}
-            }
-            else if (sname.equals("int"))
-            {
-            	String baseName = nodeDef.getBaseName();
-            	if (baseName.equals("MAX_VALUE"))
-            	{
-                    startMapping(parentNode);
-            		write("2147483647");
-                    endMapping(parentNode);
-            		return;
-            	}
-            	else if (baseName.equals("MIN_VALUE"))
-            	{
-                    startMapping(parentNode);
-            		write("-2147483648");
-                    endMapping(parentNode);
-            		return;
-            	}
-            }
-            else if (sname.equals("uint"))
-            {
-            	String baseName = nodeDef.getBaseName();
-            	if (baseName.equals("MAX_VALUE"))
-            	{
-                    startMapping(parentNode);
-            		write("4294967295");
-                    endMapping(parentNode);
-            		return;
-            	}
-            	else if (baseName.equals("MIN_VALUE"))
-            	{
-                    startMapping(parentNode);
-            		write("0");
-                    endMapping(parentNode);
-            		return;
-            	}
-            }
             if (sname.length() > 0)
             {
+                if (emitStaticConstants(parentNode, nodeDef))
+                {
+                    return;
+                }
                 IASNode prevSibling = parentNode.getChild(0);
                 if(prevSibling == node)
                 {
@@ -416,6 +326,133 @@ public class IdentifierEmitter extends JSSubEmitter implements
         }
     }
     
+    private void emitInitialValue(IASNode parentNode, Object initialValue) {
+        startMapping(parentNode);
+        if(initialValue instanceof String)
+        {
+            write(ASEmitterTokens.DOUBLE_QUOTE);
+            write((String) initialValue);
+            write(ASEmitterTokens.DOUBLE_QUOTE);
+        }
+        else if(initialValue == ABCConstants.UNDEFINED_VALUE)
+        {
+            write(IASLanguageConstants.UNDEFINED);
+        }
+        else if(initialValue == ABCConstants.NULL_VALUE)
+        {
+            write(IASLanguageConstants.NULL);
+        }
+        else
+        {
+            write(initialValue.toString());
+        }
+        endMapping(parentNode);
+    }
     
+    private boolean emitStaticConstants(IASNode parentNode, IDefinition nodeDef)
+    {
+        String sname = nodeDef.getParent().getQualifiedName();
+        if (sname.equals("Array"))
+        {
+            String baseName = nodeDef.getBaseName();
+            if (emitArrayConstant(parentNode, baseName))
+            {
+                return true;
+            }
+        }
+        else if (sname.equals("int"))
+        {
+            String baseName = nodeDef.getBaseName();
+            if (emitIntConstant(parentNode, baseName))
+            {
+                return true;
+            }
+        }
+        else if (sname.equals("uint"))
+        {
+            String baseName = nodeDef.getBaseName();
+            if (emitUintConstant(parentNode, baseName))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
+    private boolean emitArrayConstant(IASNode parentNode, String baseName) {
+        if (baseName.equals("CASEINSENSITIVE"))
+        {
+            startMapping(parentNode);
+            write("1");
+            endMapping(parentNode);
+            return true;
+        }
+        else if (baseName.equals("DESCENDING"))
+        {
+            startMapping(parentNode);
+            write("2");
+            endMapping(parentNode);
+            return true;
+        }
+        else if (baseName.equals("UNIQUESORT"))
+        {
+            startMapping(parentNode);
+            write("4");
+            endMapping(parentNode);
+            return true;
+        }
+        else if (baseName.equals("RETURNINDEXEDARRAY"))
+        {
+            startMapping(parentNode);
+            write("8");
+            endMapping(parentNode);
+            return true;
+        }
+        else if (baseName.equals("NUMERIC"))
+        {
+            startMapping(parentNode);
+            write("16");
+            endMapping(parentNode);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean emitIntConstant(IASNode parentNode, String baseName)
+    {
+        if (baseName.equals("MAX_VALUE"))
+        {
+            startMapping(parentNode);
+            write("2147483647");
+            endMapping(parentNode);
+            return true;
+        }
+        else if (baseName.equals("MIN_VALUE"))
+        {
+            startMapping(parentNode);
+            write("-2147483648");
+            endMapping(parentNode);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean emitUintConstant(IASNode parentNode, String baseName)
+    {
+        if (baseName.equals("MAX_VALUE"))
+        {
+            startMapping(parentNode);
+            write("4294967295");
+            endMapping(parentNode);
+            return true;
+        }
+        else if (baseName.equals("MIN_VALUE"))
+        {
+            startMapping(parentNode);
+            write("0");
+            endMapping(parentNode);
+            return true;
+        }
+        return false;
+    }
 }
