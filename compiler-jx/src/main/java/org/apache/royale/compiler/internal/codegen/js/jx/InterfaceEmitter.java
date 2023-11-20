@@ -28,7 +28,6 @@ import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
-import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.tree.as.TypedExpressionNode;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -60,90 +59,101 @@ public class InterfaceEmitter extends JSSubEmitter implements
         String qname = node.getQualifiedName();
         if (qname != null && !qname.equals(""))
         {
-            write(getEmitter().formatQualifiedName(qname));
-            write(ASEmitterTokens.SPACE);
-            writeToken(ASEmitterTokens.EQUAL);
-            write(ASEmitterTokens.FUNCTION);
-            write(ASEmitterTokens.PAREN_OPEN);
-            write(ASEmitterTokens.PAREN_CLOSE);
-            write(ASEmitterTokens.SPACE);
-            write(ASEmitterTokens.BLOCK_OPEN);
-            writeNewline();
-            write(ASEmitterTokens.BLOCK_CLOSE);
-            write(ASEmitterTokens.SEMICOLON);
+            emitConstructor(qname);
         }
-
-        JSRoyaleDocEmitter doc = (JSRoyaleDocEmitter) getEmitter().getDocEmitter();
   	    
         final IDefinitionNode[] members = node.getAllMemberDefinitionNodes();
         for (IDefinitionNode mnode : members)
         {
-            boolean isAccessor = mnode.getNodeID() == ASTNodeID.GetterID
-                    || mnode.getNodeID() == ASTNodeID.SetterID;
-
-            String memberName = mnode.getQualifiedName();
-            if (!isAccessor
-                    || !getModel().getInterfacePropertyMap().contains(memberName))
-            {
-                writeNewline();
-
-                if (isAccessor)
-                {
-                	IAccessorNode accessor = (IAccessorNode)mnode;
-                	String propType = accessor.getVariableType();
-                	IExpressionNode typeNode = accessor.getVariableTypeNode();
-                	ITypeDefinition typeDef = typeNode.resolveType(project);
-                	String packageName = typeDef.getPackageName();
-                	packageName = project.getActualPackageName(packageName);
-                    if (typeNode instanceof TypedExpressionNode) {
-                        propType = "Vector.<" +
-                        JSRoyaleDocEmitter.convertASTypeToJSType(
-                                        ((TypedExpressionNode)typeNode).getTypeNode().resolveType(project).getQualifiedName(),
-                                        "")
-                                +">";
-                        packageName = "";
-                    }
-                    write(JSDocEmitterTokens.JSDOC_OPEN);
-                    write(ASEmitterTokens.SPACE);
-                    fjs.getDocEmitter().emitType(propType, packageName);
-                    write(ASEmitterTokens.SPACE);
-                    write(JSDocEmitterTokens.JSDOC_CLOSE);
-                }
-                else
-                {
-                	doc.emitMethodDoc((IFunctionNode)mnode, project);
-                }
-                write(getEmitter().formatQualifiedName(qname));
-                write(ASEmitterTokens.MEMBER_ACCESS);
-                write(JSEmitterTokens.PROTOTYPE);
-                write(ASEmitterTokens.MEMBER_ACCESS);
-                write(memberName);
-
-                if (isAccessor
-                        && !getModel().getInterfacePropertyMap()
-                                .contains(memberName))
-                {
-                    getModel().getInterfacePropertyMap().add(memberName);
-                }
-                else
-                {
-                    write(ASEmitterTokens.SPACE);
-                    writeToken(ASEmitterTokens.EQUAL);
-                    write(ASEmitterTokens.FUNCTION);
-
-                    fjs.emitParameters(((IFunctionNode) mnode)
-                            .getParametersContainerNode());
-
-                    write(ASEmitterTokens.SPACE);
-                    write(ASEmitterTokens.BLOCK_OPEN);
-                    writeNewline();
-                    write(ASEmitterTokens.BLOCK_CLOSE);
-                }
-
-                write(ASEmitterTokens.SEMICOLON);
-            }
+            emitMember(mnode, node);
         }
         fjs.getPackageFooterEmitter().emitClassInfo(node);
+    }
+
+    private void emitConstructor(String qname) {
+        write(getEmitter().formatQualifiedName(qname));
+        write(ASEmitterTokens.SPACE);
+        writeToken(ASEmitterTokens.EQUAL);
+        write(ASEmitterTokens.FUNCTION);
+        write(ASEmitterTokens.PAREN_OPEN);
+        write(ASEmitterTokens.PAREN_CLOSE);
+        write(ASEmitterTokens.SPACE);
+        write(ASEmitterTokens.BLOCK_OPEN);
+        writeNewline();
+        write(ASEmitterTokens.BLOCK_CLOSE);
+        write(ASEmitterTokens.SEMICOLON);
+    }
+
+    private void emitMember(IDefinitionNode mnode, IInterfaceNode node) {
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
+        JSRoyaleDocEmitter doc = (JSRoyaleDocEmitter) getEmitter().getDocEmitter();
+
+        String qname = node.getQualifiedName();
+
+        boolean isAccessor = mnode.getNodeID() == ASTNodeID.GetterID
+                || mnode.getNodeID() == ASTNodeID.SetterID;
+
+        String memberName = mnode.getQualifiedName();
+        if (!isAccessor
+                || !getModel().getInterfacePropertyMap().contains(memberName))
+        {
+            writeNewline();
+
+            if (isAccessor)
+            {
+                IAccessorNode accessor = (IAccessorNode)mnode;
+                String propType = accessor.getVariableType();
+                IExpressionNode typeNode = accessor.getVariableTypeNode();
+                ITypeDefinition typeDef = typeNode.resolveType(getWalker().getProject());
+                String packageName = typeDef.getPackageName();
+                packageName = getWalker().getProject().getActualPackageName(packageName);
+                if (typeNode instanceof TypedExpressionNode) {
+                    propType = "Vector.<" +
+                    JSRoyaleDocEmitter.convertASTypeToJSType(
+                                    ((TypedExpressionNode)typeNode).getTypeNode().resolveType(getWalker().getProject()).getQualifiedName(),
+                                    "")
+                            +">";
+                    packageName = "";
+                }
+                write(JSDocEmitterTokens.JSDOC_OPEN);
+                write(ASEmitterTokens.SPACE);
+                fjs.getDocEmitter().emitType(propType, packageName);
+                write(ASEmitterTokens.SPACE);
+                write(JSDocEmitterTokens.JSDOC_CLOSE);
+            }
+            else
+            {
+                doc.emitMethodDoc((IFunctionNode)mnode, getWalker().getProject());
+            }
+            write(getEmitter().formatQualifiedName(qname));
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(JSEmitterTokens.PROTOTYPE);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(memberName);
+
+            if (isAccessor
+                    && !getModel().getInterfacePropertyMap()
+                            .contains(memberName))
+            {
+                getModel().getInterfacePropertyMap().add(memberName);
+            }
+            else
+            {
+                write(ASEmitterTokens.SPACE);
+                writeToken(ASEmitterTokens.EQUAL);
+                write(ASEmitterTokens.FUNCTION);
+
+                fjs.emitParameters(((IFunctionNode) mnode)
+                        .getParametersContainerNode());
+
+                write(ASEmitterTokens.SPACE);
+                write(ASEmitterTokens.BLOCK_OPEN);
+                writeNewline();
+                write(ASEmitterTokens.BLOCK_CLOSE);
+            }
+
+            write(ASEmitterTokens.SEMICOLON);
+        }
     }
 
 }

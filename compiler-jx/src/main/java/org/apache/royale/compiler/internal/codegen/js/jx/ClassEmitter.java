@@ -32,9 +32,7 @@ import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
-import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
-import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.utils.DocEmitterUtils;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
@@ -99,125 +97,18 @@ public class ClassEmitter extends JSSubEmitter implements
 
         IFunctionDefinition ctorDefinition = definition.getConstructor();
 
-        // look for force-linking pattern in scope block node
-        int childNodeCount = node.getChildCount();
-        for (int i = 0; i < childNodeCount; i++)
-        {
-        	IASNode child = node.getChild(i);
-        	if (child.getNodeID() == ASTNodeID.BlockID)
-        	{
-        		int blockNodeCount = child.getChildCount();
-        		for (int j = 0; j < blockNodeCount - 1; j++)
-        		{
-        			IASNode blockChild = child.getChild(j);
-        			if (blockChild.getNodeID() == ASTNodeID.ImportID)
-        			{
-        				IASNode afterChild = child.getChild(j + 1);
-        				if (afterChild.getNodeID() == ASTNodeID.IdentifierID)
-        				{
-        					IDefinition def = ((IdentifierNode)afterChild).resolve(project);
-        					if (def instanceof IClassDefinition)
-        					{
-        						fjs.usedNames.add(def.getQualifiedName());
-        					}
-        				}
-        			}
-        		}
-        		break;
-        	}        	
-        }
+        collectUsedNames(node);
         
         // Static-only (Singleton) classes may not have a constructor
         if (ctorDefinition != null)
         {
-            IFunctionNode ctorNode = (IFunctionNode) ctorDefinition.getNode();
-            if (ctorNode != null)
-            {
-                // constructor
-                getEmitter().emitMethod(ctorNode);
-                write(ASEmitterTokens.SEMICOLON);
-            }
-            else
-            {
-                String qname = definition.getQualifiedName();
-                if (qname != null && !qname.equals(""))
-                {
-                    if (fjs.getModel().isExterns && definition.getBaseName().equals(qname))
-                    {
-                        writeToken(ASEmitterTokens.VAR);
-                    }
-                    write(getEmitter().formatQualifiedName(qname));
-                    write(ASEmitterTokens.SPACE);
-                    writeToken(ASEmitterTokens.EQUAL);
-                    write(ASEmitterTokens.FUNCTION);
-                    write(ASEmitterTokens.PAREN_OPEN);
-                    write(ASEmitterTokens.PAREN_CLOSE);
-                    write(ASEmitterTokens.SPACE);
-                    write(ASEmitterTokens.BLOCK_OPEN);
-                    writeNewline();
-                    fjs.emitComplexInitializers(node);
-                    write(ASEmitterTokens.BLOCK_CLOSE);
-                    write(ASEmitterTokens.SEMICOLON);
-                }
-            }
+            emitConstructor(ctorDefinition, definition, node);
         }
 
         IDefinitionNode[] dnodes = node.getAllMemberNodes();
         for (IDefinitionNode dnode : dnodes)
         {
-            if (dnode.getNodeID() == ASTNodeID.VariableID)
-            {
-                writeNewline();
-                writeNewline();
-                writeNewline();
-                getEmitter().emitField((IVariableNode) dnode);
-                startMapping(dnode, dnode);
-                write(ASEmitterTokens.SEMICOLON);
-                endMapping(dnode);
-            }
-            else if (dnode.getNodeID() == ASTNodeID.FunctionID)
-            {
-                if (!((IFunctionNode) dnode).isConstructor())
-                {
-                    writeNewline();
-                    writeNewline();
-                    writeNewline();
-                    getEmitter().emitMethod((IFunctionNode) dnode);
-                    write(ASEmitterTokens.SEMICOLON);
-                    if (getModel().defaultXMLNamespaceActive) {
-                        getModel().registerDefaultXMLNamespace((FunctionScope) ((IFunctionNode) dnode).getScopedNode().getScope(), null);
-                    }
-                }
-            }
-            else if (dnode.getNodeID() == ASTNodeID.GetterID
-                    || dnode.getNodeID() == ASTNodeID.SetterID)
-            {
-                //writeNewline();
-                //writeNewline();
-                //writeNewline();
-                fjs.emitAccessors((IAccessorNode) dnode);
-                //this shouldn't write anything, just set up
-                //a data structure for emitASGettersAndSetters
-                //write(ASEmitterTokens.SEMICOLON);
-            }
-            else if (dnode.getNodeID() == ASTNodeID.BindableVariableID)
-            {
-                writeNewline();
-                writeNewline();
-                writeNewline();
-                getEmitter().emitField((IVariableNode) dnode);
-                startMapping(dnode, dnode);
-                write(ASEmitterTokens.SEMICOLON);
-                endMapping(dnode);
-            } else if (dnode.getNodeID() == ASTNodeID.NamespaceID) {
-                writeNewline();
-                writeNewline();
-                writeNewline();
-                getEmitter().emitNamespace((INamespaceNode) dnode);
-                startMapping(dnode, dnode);
-                write(ASEmitterTokens.SEMICOLON);
-                endMapping(dnode);
-            }
+            emitMember(dnode);
         }
 
         fjs.getBindableEmitter().emit(definition);
@@ -301,5 +192,127 @@ public class ClassEmitter extends JSSubEmitter implements
         }    
         if (wroteOne)
         	writeNewline();
+    }
+
+    private void emitConstructor(IFunctionDefinition ctorDefinition, IClassDefinition definition, IClassNode node) {
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
+        IFunctionNode ctorNode = (IFunctionNode) ctorDefinition.getNode();
+        if (ctorNode != null)
+        {
+            // constructor
+            getEmitter().emitMethod(ctorNode);
+            write(ASEmitterTokens.SEMICOLON);
+        }
+        else
+        {
+            String qname = definition.getQualifiedName();
+            if (qname != null && !qname.equals(""))
+            {
+                if (fjs.getModel().isExterns && definition.getBaseName().equals(qname))
+                {
+                    writeToken(ASEmitterTokens.VAR);
+                }
+                write(getEmitter().formatQualifiedName(qname));
+                write(ASEmitterTokens.SPACE);
+                writeToken(ASEmitterTokens.EQUAL);
+                write(ASEmitterTokens.FUNCTION);
+                write(ASEmitterTokens.PAREN_OPEN);
+                write(ASEmitterTokens.PAREN_CLOSE);
+                write(ASEmitterTokens.SPACE);
+                write(ASEmitterTokens.BLOCK_OPEN);
+                writeNewline();
+                fjs.emitComplexInitializers(node);
+                write(ASEmitterTokens.BLOCK_CLOSE);
+                write(ASEmitterTokens.SEMICOLON);
+            }
+        }
+    }
+
+    private void collectUsedNames(IClassNode node) {
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
+        // look for force-linking pattern in scope block node
+        int childNodeCount = node.getChildCount();
+        for (int i = 0; i < childNodeCount; i++)
+        {
+            IASNode child = node.getChild(i);
+            if (child.getNodeID() == ASTNodeID.BlockID)
+            {
+                int blockNodeCount = child.getChildCount();
+                for (int j = 0; j < blockNodeCount - 1; j++)
+                {
+                    IASNode blockChild = child.getChild(j);
+                    if (blockChild.getNodeID() == ASTNodeID.ImportID)
+                    {
+                        IASNode afterChild = child.getChild(j + 1);
+                        if (afterChild.getNodeID() == ASTNodeID.IdentifierID)
+                        {
+                            IDefinition def = ((IdentifierNode)afterChild).resolve(getWalker().getProject());
+                            if (def instanceof IClassDefinition)
+                            {
+                                fjs.usedNames.add(def.getQualifiedName());
+                            }
+                        }
+                    }
+                }
+                break;
+            }        	
+        }
+    }
+
+    private void emitMember(IDefinitionNode dnode) {
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
+        if (dnode.getNodeID() == ASTNodeID.VariableID)
+        {
+            writeNewline();
+            writeNewline();
+            writeNewline();
+            getEmitter().emitField((IVariableNode) dnode);
+            startMapping(dnode, dnode);
+            write(ASEmitterTokens.SEMICOLON);
+            endMapping(dnode);
+        }
+        else if (dnode.getNodeID() == ASTNodeID.FunctionID)
+        {
+            if (!((IFunctionNode) dnode).isConstructor())
+            {
+                writeNewline();
+                writeNewline();
+                writeNewline();
+                getEmitter().emitMethod((IFunctionNode) dnode);
+                write(ASEmitterTokens.SEMICOLON);
+                if (getModel().defaultXMLNamespaceActive) {
+                    getModel().registerDefaultXMLNamespace((FunctionScope) ((IFunctionNode) dnode).getScopedNode().getScope(), null);
+                }
+            }
+        }
+        else if (dnode.getNodeID() == ASTNodeID.GetterID
+                || dnode.getNodeID() == ASTNodeID.SetterID)
+        {
+            //writeNewline();
+            //writeNewline();
+            //writeNewline();
+            fjs.emitAccessors((IAccessorNode) dnode);
+            //this shouldn't write anything, just set up
+            //a data structure for emitASGettersAndSetters
+            //write(ASEmitterTokens.SEMICOLON);
+        }
+        else if (dnode.getNodeID() == ASTNodeID.BindableVariableID)
+        {
+            writeNewline();
+            writeNewline();
+            writeNewline();
+            getEmitter().emitField((IVariableNode) dnode);
+            startMapping(dnode, dnode);
+            write(ASEmitterTokens.SEMICOLON);
+            endMapping(dnode);
+        } else if (dnode.getNodeID() == ASTNodeID.NamespaceID) {
+            writeNewline();
+            writeNewline();
+            writeNewline();
+            getEmitter().emitNamespace((INamespaceNode) dnode);
+            startMapping(dnode, dnode);
+            write(ASEmitterTokens.SEMICOLON);
+            endMapping(dnode);
+        }
     }
 }
