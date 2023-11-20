@@ -136,23 +136,7 @@ public class MethodEmitter extends JSSubEmitter implements
 
         if (isConstructor && node.getScopedNode().getChildCount() == 0)
         {
-            write(ASEmitterTokens.SPACE);
-            write(ASEmitterTokens.BLOCK_OPEN);
-            if (hasSuperClass && !getEmitter().getModel().isExterns)
-                fjs.emitSuperCall(node, JSSessionModel.CONSTRUCTOR_EMPTY);
-            //add whatever variant of the bindable implementation is necessary inside the constructor
-            if (addingBindableImplementsSupport) {
-                writeNewline("",true);
-                fjs.getBindableEmitter().emitBindableImplementsConstructorCode(true);
-            } else if (addingBindableExtendsSupport) {
-                IClassDefinition classDefinition = (IClassDefinition) node.getDefinition().getAncestorOfType(IClassDefinition.class);
-                fjs.getBindableEmitter().emitBindableExtendsConstructorCode(classDefinition.getQualifiedName(),true);
-            } else
-                writeNewline();
-            IClassNode cnode = (IClassNode) node.getAncestorOfType(IClassNode.class);
-            fjs.emitComplexInitializers(cnode);
-
-            write(ASEmitterTokens.BLOCK_CLOSE);
+            emitEmptyConstructorFallbackContent(node, hasSuperClass, addingBindableImplementsSupport, addingBindableExtendsSupport);
         }
 
         if (!isConstructor || node.getScopedNode().getChildCount() > 0)
@@ -162,27 +146,53 @@ public class MethodEmitter extends JSSubEmitter implements
 
         if (isConstructor && !getEmitter().getModel().isExterns)
         {
-            if (hasSuperClass) {
-                writeNewline(ASEmitterTokens.SEMICOLON);
-                write(JSGoogEmitterTokens.GOOG_INHERITS);
-                write(ASEmitterTokens.PAREN_OPEN);
-                write(fjs.formatQualifiedName(qname));
-                writeToken(ASEmitterTokens.COMMA);
-                String sname = EmitterUtils.getSuperClassDefinition(node, project)
-                        .getQualifiedName();
-                write(fjs.formatQualifiedName(sname));
-                write(ASEmitterTokens.PAREN_CLOSE);
-            } else if (addingBindableExtendsSupport) {
-                //add goog.inherits for the 'extends' bindable implementation support
-                writeNewline(ASEmitterTokens.SEMICOLON);
-                writeNewline("// Compiler generated Binding support implementation:");
-                write(JSGoogEmitterTokens.GOOG_INHERITS);
-                write(ASEmitterTokens.PAREN_OPEN);
-                write(fjs.formatQualifiedName(qname));
-                writeToken(ASEmitterTokens.COMMA);
-                write(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME));
-                write(ASEmitterTokens.PAREN_CLOSE);
-            }
+            emitExtendsSuperClass(node, qname, hasSuperClass, addingBindableExtendsSupport);
+        }
+    }
+
+    private void emitEmptyConstructorFallbackContent(IFunctionNode node, boolean hasSuperClass, boolean addingBindableImplementsSupport, boolean addingBindableExtendsSupport) {
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
+        write(ASEmitterTokens.SPACE);
+        write(ASEmitterTokens.BLOCK_OPEN);
+        if (hasSuperClass && !getEmitter().getModel().isExterns)
+            fjs.emitSuperCall(node, JSSessionModel.CONSTRUCTOR_EMPTY);
+        //add whatever variant of the bindable implementation is necessary inside the constructor
+        if (addingBindableImplementsSupport) {
+            writeNewline("",true);
+            fjs.getBindableEmitter().emitBindableImplementsConstructorCode(true);
+        } else if (addingBindableExtendsSupport) {
+            IClassDefinition classDefinition = (IClassDefinition) node.getDefinition().getAncestorOfType(IClassDefinition.class);
+            fjs.getBindableEmitter().emitBindableExtendsConstructorCode(classDefinition.getQualifiedName(),true);
+        } else
+            writeNewline();
+        IClassNode cnode = (IClassNode) node.getAncestorOfType(IClassNode.class);
+        fjs.emitComplexInitializers(cnode);
+
+        write(ASEmitterTokens.BLOCK_CLOSE);
+    }
+
+    private void emitExtendsSuperClass(IFunctionNode node, String qname, boolean hasSuperClass, boolean addingBindableExtendsSupport) {
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
+        if (hasSuperClass) {
+            writeNewline(ASEmitterTokens.SEMICOLON);
+            write(JSGoogEmitterTokens.GOOG_INHERITS);
+            write(ASEmitterTokens.PAREN_OPEN);
+            write(fjs.formatQualifiedName(qname));
+            writeToken(ASEmitterTokens.COMMA);
+            String sname = EmitterUtils.getSuperClassDefinition(node, getWalker().getProject())
+                    .getQualifiedName();
+            write(fjs.formatQualifiedName(sname));
+            write(ASEmitterTokens.PAREN_CLOSE);
+        } else if (addingBindableExtendsSupport) {
+            //add goog.inherits for the 'extends' bindable implementation support
+            writeNewline(ASEmitterTokens.SEMICOLON);
+            writeNewline("// Compiler generated Binding support implementation:");
+            write(JSGoogEmitterTokens.GOOG_INHERITS);
+            write(ASEmitterTokens.PAREN_OPEN);
+            write(fjs.formatQualifiedName(qname));
+            writeToken(ASEmitterTokens.COMMA);
+            write(fjs.formatQualifiedName(BindableEmitter.DISPATCHER_CLASS_QNAME));
+            write(ASEmitterTokens.PAREN_CLOSE);
         }
     }
 }

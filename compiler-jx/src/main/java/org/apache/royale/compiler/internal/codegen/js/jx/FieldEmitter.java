@@ -32,7 +32,6 @@ import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSessionModel.BindableVarInfo;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
-import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.utils.EmitterUtils;
 import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
@@ -110,7 +109,7 @@ public class FieldEmitter extends JSSubEmitter implements
     @Override
     public void emit(IVariableNode node)
     {
-        IExpressionNode vnode = node.getAssignedValueNode();;
+        IExpressionNode vnode = node.getAssignedValueNode();
         boolean isBindable = (node.getNodeID() == ASTNodeID.BindableVariableID && !node.isConst());
         IDefinition ndef = node.getDefinition();
         IDefinition definition = EmitterUtils.getClassDefinition(node);
@@ -121,7 +120,7 @@ public class FieldEmitter extends JSSubEmitter implements
         boolean isComplexInitializedStatic = vnode != null && ndef.isStatic() && !isBindable && isComplex(vnode, definition);
         JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
         IDefinition def = null;
-        IExpressionNode enode = node.getVariableTypeNode();//getAssignedValueNode();
+        IExpressionNode enode = node.getVariableTypeNode();
         if (enode != null)
         {
             def = enode.resolveType(getProject());
@@ -164,124 +163,7 @@ public class FieldEmitter extends JSSubEmitter implements
             className = getEmitter().formatQualifiedName(definition.getQualifiedName());
             if (isComplexInitializedStatic)
             {
-	            write(className);
-                write(ASEmitterTokens.MEMBER_ACCESS.getToken());
-                write(fjs.formatGetter(getFieldName(node, fjs)));
-	            endMapping(node.getNameExpressionNode());
-                write(ASEmitterTokens.SPACE);
-                writeToken(ASEmitterTokens.EQUAL);
-                write(ASEmitterTokens.FUNCTION);
-                write(ASEmitterTokens.PAREN_OPEN);
-                writeToken(ASEmitterTokens.PAREN_CLOSE);
-                writeNewline(ASEmitterTokens.BLOCK_OPEN, true);
-                String vnodeString = getEmitter().stringifyNode(vnode);
-                writeToken(ASEmitterTokens.VAR);
-                writeToken("value");
-                writeToken(ASEmitterTokens.EQUAL);
-                write(vnodeString);
-                writeNewline(ASEmitterTokens.SEMICOLON);
-                write(IASLanguageConstants.Object);
-                write(ASEmitterTokens.MEMBER_ACCESS);
-                write(JSEmitterTokens.DEFINE_PROPERTIES);
-                write(ASEmitterTokens.PAREN_OPEN);
-                write(className);
-                writeToken(ASEmitterTokens.COMMA);
-                writeToken(ASEmitterTokens.BLOCK_OPEN);
-	            write(getFieldName(node, fjs));
-                writeToken(ASEmitterTokens.COLON);
-                if (node.isConst())
-                	write("{ value: value, writable: false }");
-                else
-                    write("{ value: value, writable: true }");
-                write(ASEmitterTokens.BLOCK_CLOSE);
-                write(ASEmitterTokens.PAREN_CLOSE);
-                writeNewline(ASEmitterTokens.SEMICOLON);
-                writeToken(ASEmitterTokens.RETURN);
-                write("value");
-                indentPop();
-                writeNewline(ASEmitterTokens.SEMICOLON);
-                write(ASEmitterTokens.BLOCK_CLOSE);
-                writeNewline(ASEmitterTokens.SEMICOLON);
-                if (!node.isConst())
-                {
-		            write(className);
-                    write(ASEmitterTokens.MEMBER_ACCESS.getToken());
-                    write(fjs.formatSetter(getFieldName(node, fjs)));
-	                write(ASEmitterTokens.SPACE);
-	                writeToken(ASEmitterTokens.EQUAL);
-	                write(ASEmitterTokens.FUNCTION);
-	                write(ASEmitterTokens.PAREN_OPEN);
-	                write("value");
-	                writeToken(ASEmitterTokens.PAREN_CLOSE);
-	                writeNewline(ASEmitterTokens.BLOCK_OPEN, true);
-	                write(IASLanguageConstants.Object);
-	                write(ASEmitterTokens.MEMBER_ACCESS);
-	                write(JSEmitterTokens.DEFINE_PROPERTIES);
-	                write(ASEmitterTokens.PAREN_OPEN);
-	                write(className);
-	                writeToken(ASEmitterTokens.COMMA);
-                    writeToken(ASEmitterTokens.BLOCK_OPEN);
-		            write(getFieldName(node, fjs));
-	                writeToken(ASEmitterTokens.COLON);
-	                write("{ value: value, writable: true }");
-                    write(ASEmitterTokens.BLOCK_CLOSE);
-	                write(ASEmitterTokens.PAREN_CLOSE);
-	                indentPop();
-	                writeNewline(ASEmitterTokens.SEMICOLON);
-	                write(ASEmitterTokens.BLOCK_CLOSE);
-	                writeNewline(ASEmitterTokens.SEMICOLON);
-                }
-                //Fix for references to the target : the following empty declaration is required for @lends to work in Object.defineProperties below
-                //otherwise references elsewhere in code to the target can be renamed (and therefore do not work)
-                if (getEmitter().getDocEmitter() instanceof IJSRoyaleDocEmitter)
-                {
-                    ((IJSRoyaleDocEmitter) getEmitter().getDocEmitter()).emitFieldDoc(node, def, getProject());
-                }
-                write(className);
-                write(ASEmitterTokens.MEMBER_ACCESS);
-                write(getFieldName(node, fjs));
-                write(ASEmitterTokens.SEMICOLON);
-                writeNewline();
-                writeNewline();
-                write(IASLanguageConstants.Object);
-                write(ASEmitterTokens.MEMBER_ACCESS);
-                write(JSEmitterTokens.DEFINE_PROPERTIES);
-                write(ASEmitterTokens.PAREN_OPEN);
-                write(className);
-                writeToken(ASEmitterTokens.COMMA);
-                write("/** @lends {" + className
-                        + "} */ ");
-                writeNewline(ASEmitterTokens.BLOCK_OPEN);
-                // TODO (mschmalle)
-                if (getEmitter().getDocEmitter() instanceof IJSRoyaleDocEmitter)
-                {
-                    ((IJSRoyaleDocEmitter) getEmitter().getDocEmitter()).emitFieldDoc(node, def, getProject());
-                }
-	            write(getFieldName(node, fjs));
-                writeToken(ASEmitterTokens.COLON);
-                writeNewline(ASEmitterTokens.BLOCK_OPEN, true);
-                write(ASEmitterTokens.GET);
-                write(ASEmitterTokens.COLON);
-                write(ASEmitterTokens.SPACE);
-                write(className);
-                write(ASEmitterTokens.MEMBER_ACCESS);
-                write(fjs.formatGetter(getFieldName(node, fjs)));
-	            if (!node.isConst())
-	            {
-	            	writeNewline(ASEmitterTokens.COMMA);
-	                write(ASEmitterTokens.SET);
-	                write(ASEmitterTokens.COLON);
-	                write(ASEmitterTokens.SPACE);
-	                write(className);
-	                write(ASEmitterTokens.MEMBER_ACCESS);
-	                write(fjs.formatSetter(getFieldName(node, fjs)));
-	            }
-            	writeNewline(ASEmitterTokens.COMMA);
-                write("configurable: true");
-                write(ASEmitterTokens.BLOCK_CLOSE);
-                write(ASEmitterTokens.BLOCK_CLOSE);
-                write(ASEmitterTokens.PAREN_CLOSE);
-                indentPop();
+                emitComplexInitializedStatic(node, className, def);
             }
             else
             {
@@ -395,55 +277,7 @@ public class FieldEmitter extends JSSubEmitter implements
         }
         if (vnode == null && def != null)
         {
-            String defName = def.getQualifiedName();
-        	if (defName.equals("int") || defName.equals("uint"))
-        	{
-                write(ASEmitterTokens.SPACE);
-                writeToken(ASEmitterTokens.EQUAL);
-                write("0");
-            }
-            else
-            {
-                boolean defaultInitializers = false;
-                ICompilerProject project = getProject();
-                if(project instanceof RoyaleJSProject)
-                {
-                    RoyaleJSProject fjsProject = (RoyaleJSProject) project;
-                    if(fjsProject.config != null)
-                    {
-                        defaultInitializers = fjsProject.config.getJsDefaultInitializers();
-                    }
-                }
-                if (defaultInitializers)
-                {
-                    if (defName.equals("Number"))
-                    {
-                        write(ASEmitterTokens.SPACE);
-                        writeToken(ASEmitterTokens.EQUAL);
-                        write(IASKeywordConstants.NA_N);
-                    }
-                    else if (defName.equals("Boolean"))
-                    {
-                        write(ASEmitterTokens.SPACE);
-                        writeToken(ASEmitterTokens.EQUAL);
-                        write(IASKeywordConstants.FALSE);
-                        
-                    } else if (defName.equals("*")) {
-                        //setting the value to *undefined* is needed  to create the field
-                        //on the prototype - this is important for reflection purposes
-                        write(ASEmitterTokens.SPACE);
-                        writeToken(ASEmitterTokens.EQUAL);
-                        write(ASEmitterTokens.UNDEFINED);
-                    }
-                    else
-                    {
-                        //everything else should default to null
-                        write(ASEmitterTokens.SPACE);
-                        writeToken(ASEmitterTokens.EQUAL);
-                        write(IASKeywordConstants.NULL);
-                    }
-                }
-            }
+            emitDefaultInitializerForDefinition(def);
         }
 
         if (!(node instanceof ChainedVariableNode))
@@ -462,19 +296,7 @@ public class FieldEmitter extends JSSubEmitter implements
         }
         if (node.getNodeID() == ASTNodeID.BindableVariableID && !node.isConst())
         {
-            if (getModel().getBindableVars().get(node.getName()) == null) {
-                BindableVarInfo bindableVarInfo = new BindableVarInfo();
-                bindableVarInfo.isStatic = node.hasModifier(ASModifier.STATIC);;
-                bindableVarInfo.namespace = node.getNamespace();
-                bindableVarInfo.type = def.getQualifiedName();
-                getModel().getBindableVars().put(node.getName(), bindableVarInfo);
-                IMetaTagsNode metaTags = node.getMetaTags();
-                if (metaTags != null) {
-                    IMetaTagNode[] tags = metaTags.getAllTags();
-                    if (tags.length > 0)
-                        bindableVarInfo.metaTags = tags;
-                }
-            }
+            putBindableVariable(node, def);
         }
     }
     
@@ -544,5 +366,197 @@ public class FieldEmitter extends JSSubEmitter implements
         }
 
         return false;
+    }
+
+    private void emitComplexInitializedStatic(IVariableNode node, String className, IDefinition variableTypeExprDef) {
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
+        IExpressionNode vnode = node.getAssignedValueNode();
+        write(className);
+        write(ASEmitterTokens.MEMBER_ACCESS.getToken());
+        write(fjs.formatGetter(getFieldName(node, fjs)));
+        endMapping(node.getNameExpressionNode());
+        write(ASEmitterTokens.SPACE);
+        writeToken(ASEmitterTokens.EQUAL);
+        write(ASEmitterTokens.FUNCTION);
+        write(ASEmitterTokens.PAREN_OPEN);
+        writeToken(ASEmitterTokens.PAREN_CLOSE);
+        writeNewline(ASEmitterTokens.BLOCK_OPEN, true);
+        String vnodeString = getEmitter().stringifyNode(vnode);
+        writeToken(ASEmitterTokens.VAR);
+        writeToken("value");
+        writeToken(ASEmitterTokens.EQUAL);
+        write(vnodeString);
+        writeNewline(ASEmitterTokens.SEMICOLON);
+        write(IASLanguageConstants.Object);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(JSEmitterTokens.DEFINE_PROPERTIES);
+        write(ASEmitterTokens.PAREN_OPEN);
+        write(className);
+        writeToken(ASEmitterTokens.COMMA);
+        writeToken(ASEmitterTokens.BLOCK_OPEN);
+        write(getFieldName(node, fjs));
+        writeToken(ASEmitterTokens.COLON);
+        if (node.isConst())
+            write("{ value: value, writable: false }");
+        else
+            write("{ value: value, writable: true }");
+        write(ASEmitterTokens.BLOCK_CLOSE);
+        write(ASEmitterTokens.PAREN_CLOSE);
+        writeNewline(ASEmitterTokens.SEMICOLON);
+        writeToken(ASEmitterTokens.RETURN);
+        write("value");
+        indentPop();
+        writeNewline(ASEmitterTokens.SEMICOLON);
+        write(ASEmitterTokens.BLOCK_CLOSE);
+        writeNewline(ASEmitterTokens.SEMICOLON);
+        if (!node.isConst())
+        {
+            write(className);
+            write(ASEmitterTokens.MEMBER_ACCESS.getToken());
+            write(fjs.formatSetter(getFieldName(node, fjs)));
+            write(ASEmitterTokens.SPACE);
+            writeToken(ASEmitterTokens.EQUAL);
+            write(ASEmitterTokens.FUNCTION);
+            write(ASEmitterTokens.PAREN_OPEN);
+            write("value");
+            writeToken(ASEmitterTokens.PAREN_CLOSE);
+            writeNewline(ASEmitterTokens.BLOCK_OPEN, true);
+            write(IASLanguageConstants.Object);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(JSEmitterTokens.DEFINE_PROPERTIES);
+            write(ASEmitterTokens.PAREN_OPEN);
+            write(className);
+            writeToken(ASEmitterTokens.COMMA);
+            writeToken(ASEmitterTokens.BLOCK_OPEN);
+            write(getFieldName(node, fjs));
+            writeToken(ASEmitterTokens.COLON);
+            write("{ value: value, writable: true }");
+            write(ASEmitterTokens.BLOCK_CLOSE);
+            write(ASEmitterTokens.PAREN_CLOSE);
+            indentPop();
+            writeNewline(ASEmitterTokens.SEMICOLON);
+            write(ASEmitterTokens.BLOCK_CLOSE);
+            writeNewline(ASEmitterTokens.SEMICOLON);
+        }
+        //Fix for references to the target : the following empty declaration is required for @lends to work in Object.defineProperties below
+        //otherwise references elsewhere in code to the target can be renamed (and therefore do not work)
+        if (getEmitter().getDocEmitter() instanceof IJSRoyaleDocEmitter)
+        {
+            ((IJSRoyaleDocEmitter) getEmitter().getDocEmitter()).emitFieldDoc(node, variableTypeExprDef, getProject());
+        }
+        write(className);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(getFieldName(node, fjs));
+        write(ASEmitterTokens.SEMICOLON);
+        writeNewline();
+        writeNewline();
+        write(IASLanguageConstants.Object);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(JSEmitterTokens.DEFINE_PROPERTIES);
+        write(ASEmitterTokens.PAREN_OPEN);
+        write(className);
+        writeToken(ASEmitterTokens.COMMA);
+        write("/** @lends {" + className
+                + "} */ ");
+        writeNewline(ASEmitterTokens.BLOCK_OPEN);
+        // TODO (mschmalle)
+        if (getEmitter().getDocEmitter() instanceof IJSRoyaleDocEmitter)
+        {
+            ((IJSRoyaleDocEmitter) getEmitter().getDocEmitter()).emitFieldDoc(node, variableTypeExprDef, getProject());
+        }
+        write(getFieldName(node, fjs));
+        writeToken(ASEmitterTokens.COLON);
+        writeNewline(ASEmitterTokens.BLOCK_OPEN, true);
+        write(ASEmitterTokens.GET);
+        write(ASEmitterTokens.COLON);
+        write(ASEmitterTokens.SPACE);
+        write(className);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(fjs.formatGetter(getFieldName(node, fjs)));
+        if (!node.isConst())
+        {
+            writeNewline(ASEmitterTokens.COMMA);
+            write(ASEmitterTokens.SET);
+            write(ASEmitterTokens.COLON);
+            write(ASEmitterTokens.SPACE);
+            write(className);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(fjs.formatSetter(getFieldName(node, fjs)));
+        }
+        writeNewline(ASEmitterTokens.COMMA);
+        write("configurable: true");
+        write(ASEmitterTokens.BLOCK_CLOSE);
+        write(ASEmitterTokens.BLOCK_CLOSE);
+        write(ASEmitterTokens.PAREN_CLOSE);
+        indentPop();
+    }
+
+    private void emitDefaultInitializerForDefinition(IDefinition def) {
+
+        String defName = def.getQualifiedName();
+        if (defName.equals("int") || defName.equals("uint"))
+        {
+            write(ASEmitterTokens.SPACE);
+            writeToken(ASEmitterTokens.EQUAL);
+            write("0");
+        }
+        else
+        {
+            boolean defaultInitializers = false;
+            ICompilerProject project = getProject();
+            if(project instanceof RoyaleJSProject)
+            {
+                RoyaleJSProject fjsProject = (RoyaleJSProject) project;
+                if(fjsProject.config != null)
+                {
+                    defaultInitializers = fjsProject.config.getJsDefaultInitializers();
+                }
+            }
+            if (defaultInitializers)
+            {
+                if (defName.equals("Number"))
+                {
+                    write(ASEmitterTokens.SPACE);
+                    writeToken(ASEmitterTokens.EQUAL);
+                    write(IASKeywordConstants.NA_N);
+                }
+                else if (defName.equals("Boolean"))
+                {
+                    write(ASEmitterTokens.SPACE);
+                    writeToken(ASEmitterTokens.EQUAL);
+                    write(IASKeywordConstants.FALSE);
+                    
+                } else if (defName.equals("*")) {
+                    //setting the value to *undefined* is needed  to create the field
+                    //on the prototype - this is important for reflection purposes
+                    write(ASEmitterTokens.SPACE);
+                    writeToken(ASEmitterTokens.EQUAL);
+                    write(ASEmitterTokens.UNDEFINED);
+                }
+                else
+                {
+                    //everything else should default to null
+                    write(ASEmitterTokens.SPACE);
+                    writeToken(ASEmitterTokens.EQUAL);
+                    write(IASKeywordConstants.NULL);
+                }
+            }
+        }
+    }
+
+    private void putBindableVariable(IVariableNode node, IDefinition variableTypeExprDef) {
+        if (getModel().getBindableVars().get(node.getName()) == null) {
+            BindableVarInfo bindableVarInfo = new BindableVarInfo();
+            bindableVarInfo.isStatic = node.hasModifier(ASModifier.STATIC);;
+            bindableVarInfo.namespace = node.getNamespace();
+            bindableVarInfo.type = variableTypeExprDef.getQualifiedName();
+            getModel().getBindableVars().put(node.getName(), bindableVarInfo);
+            IMetaTagsNode metaTags = node.getMetaTags();
+            if (metaTags != null) {
+                IMetaTagNode[] tags = metaTags.getAllTags();
+                if (tags.length > 0)
+                    bindableVarInfo.metaTags = tags;
+            }
+        }
     }
 }
