@@ -11,7 +11,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * org.apache.royale.A
+ *
+ * @fileoverview
+ *
+ * @suppress {checkTypes|accessControls}
+ */
+
 goog.provide('org.apache.royale.A');
+
+
 
 /**
  * @constructor
@@ -19,31 +29,37 @@ goog.provide('org.apache.royale.A');
 org.apache.royale.A = function() {
 };
 
+
 /**
  * @private
  * @type {number}
  */
 org.apache.royale.A.prototype._a = -1;
 
+
 /**
+ * @nocollapse
+ * @export
  * @type {number}
  */
 org.apache.royale.A.prototype.a;
 
-Object.defineProperty(
-	org.apache.royale.A.prototype, 
-	'a', 
-	{get:function() {
-		var self = this;
-		return -1;
-	}, configurable:true}
-);
 
-Object.defineProperty(
-	org.apache.royale.A.prototype, 
-	'a', 
-	{set:function(value) {
-		var self = this;
-		self._a = value;
-	}, configurable:true}
+org.apache.royale.A.prototype.get__a = function() {
+  return -1;
+};
+
+
+org.apache.royale.A.prototype.set__a = function(value) {
+  this._a = value;
+};
+
+
+Object.defineProperties(org.apache.royale.A.prototype, /** @lends {org.apache.royale.A.prototype} */ {
+/**
+ * @type {number}
+ */
+a: {
+get: org.apache.royale.A.prototype.get__a,
+set: org.apache.royale.A.prototype.set__a}}
 );

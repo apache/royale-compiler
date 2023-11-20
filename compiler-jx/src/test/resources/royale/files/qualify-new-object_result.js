@@ -11,38 +11,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * org.apache.royale.A
+ *
+ * @fileoverview
+ *
+ * @suppress {checkTypes|accessControls}
+ */
+
 goog.provide('org.apache.royale.A');
 
 goog.require('custom.TestImplementation');
+
+
 
 /**
  * @constructor
  * @extends {custom.TestImplementation}
  */
 org.apache.royale.A = function() {
-	var self = this;
-	org.apache.royale.A.base(this, 'constructor');
-	self.init();
+  org.apache.royale.A.base(this, 'constructor');
+  this.init();
 };
 goog.inherits(org.apache.royale.A, custom.TestImplementation);
+
 
 /**
  * @private
  * @type {custom.TestImplementation}
  */
-org.apache.royale.A.prototype._privateVar;
+org.apache.royale.A.prototype._privateVar = null;
 
+
+/**
+ */
 org.apache.royale.A.prototype.init = function() {
-	var self = this;
-	var /** @type {custom.TestImplementation} */ btn = new custom.TestImplementation();
-	self._privateVar = new custom.TestImplementation();
-	self.addEventListener("click", function() {
-	});
+  var self = this;
+  var /** @type {custom.TestImplementation} */ btn = new custom.TestImplementation();
+  this._privateVar = new custom.TestImplementation();
+  this.addEventListener("click", function() {
+  });
 };
 
+
+/**
+ */
 org.apache.royale.A.prototype.start = function() {
-	var self = this;
-	var /** @type {string} */ localVar = self._privateVar.label;
-	self.init();
-	doIt();
+  var /** @type {string} */ localVar = org.apache.royale.utils.Language.string(this._privateVar.label);
+  this.init();
+  doIt();
 };

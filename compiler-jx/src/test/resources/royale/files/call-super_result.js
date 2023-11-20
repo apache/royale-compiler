@@ -11,10 +11,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * org.apache.royale.A
+ *
+ * @fileoverview
+ *
+ * @suppress {checkTypes|accessControls}
+ */
+
 goog.provide('org.apache.royale.A');
 
-goog.require('custom.TestInterface');
 goog.require('custom.TestImplementation');
+goog.require('custom.TestInterface');
+
+
 
 /**
  * @constructor
@@ -23,10 +33,10 @@ goog.require('custom.TestImplementation');
  * @param {string} z
  */
 org.apache.royale.A = function(z) {
-	var self = this;
-	org.apache.royale.A.base(this, 'constructor', z);
+  org.apache.royale.A.base(this, 'constructor', z);
 };
 goog.inherits(org.apache.royale.A, custom.TestImplementation);
+
 
 /**
  * @param {string} a
@@ -34,8 +44,7 @@ goog.inherits(org.apache.royale.A, custom.TestImplementation);
  * @return {string}
  */
 org.apache.royale.A.prototype.hasSuperCall = function(a, b) {
-	var self = this;
-	org.apache.royale.A.base(this, 'hasSuperCall', a, b, 100);
-	var /** @type {string} */ result = myRegularFunctionCall(-1);
-	return result;
+  org.apache.royale.A.superClass_.hasSuperCall.apply(this, [a, b, 100]);
+  var /** @type {string} */ result = org.apache.royale.utils.Language.string(myRegularFunctionCall(-1));
+  return result;
 };

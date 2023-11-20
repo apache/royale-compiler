@@ -11,10 +11,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * org.apache.royale.A
+ *
+ * @fileoverview
+ *
+ * @suppress {checkTypes|accessControls}
+ */
+
 goog.provide('org.apache.royale.A');
 
-goog.require('custom.TestInterface');
 goog.require('custom.TestImplementation');
+goog.require('custom.TestInterface');
+
+
 
 /**
  * @constructor
@@ -22,23 +32,28 @@ goog.require('custom.TestImplementation');
  * @implements {custom.TestInterface}
  */
 org.apache.royale.A = function() {
-	var self = this;
-	org.apache.royale.A.base(this, 'constructor');
-	self.trace(typeof("a"));
+  org.apache.royale.A.base(this, 'constructor');
+  
+  this._a = new ArgumentError();
+  org.apache.royale.utils.Language.trace(typeof("a"));
 };
 goog.inherits(org.apache.royale.A, custom.TestImplementation);
 
+
 /**
+ * @nocollapse
  * @const
  * @type {string}
  */
 org.apache.royale.A.MY_CLASS_CONST = "myClassConst";
 
+
 /**
  * @private
  * @type {ArgumentError}
  */
-org.apache.royale.A.prototype._a = new ArgumentError();
+org.apache.royale.A.prototype._a = null;
+
 
 /**
  * @const
