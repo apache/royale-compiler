@@ -67,23 +67,15 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         if (ASNodeUtils.hasParenOpen(node))
             write(ASEmitterTokens.PAREN_OPEN);
 
-        IExpressionNode leftNode = node.getLeftOperandNode();
-        IASNode rightNode = node.getRightOperandNode();
-
     	JSRoyaleEmitter fjs = (JSRoyaleEmitter)getEmitter();
         if (fjs.isDateProperty(node, false))
         {
-    		writeLeftSide(node, leftNode, rightNode);
-            String rightName = ((IIdentifierNode)rightNode).getName();
-            DatePropertiesGetters propGetter = DatePropertiesGetters.valueOf(rightName.toUpperCase());
-            write(ASEmitterTokens.MEMBER_ACCESS);
-            write(propGetter.getFunctionName());
-            write(ASEmitterTokens.PAREN_OPEN);
-            write(ASEmitterTokens.PAREN_CLOSE);
-			if (ASNodeUtils.hasParenClose(node))
-				write(ASEmitterTokens.PAREN_CLOSE);
+			writeDateGetterMemberAccess(node);
     		return;
         }
+
+        IExpressionNode leftNode = node.getLeftOperandNode();
+        IExpressionNode rightNode = node.getRightOperandNode();
         IDefinition def = node.resolve(getProject());
         //extra check to cope with e4x member access identifier nodes that resolve
 		//to instance member function definitions
@@ -125,135 +117,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         							!((rightNode.getNodeID() == ASTNodeID.ArrayIndexExpressionID) && 
         									(((DynamicAccessNode)rightNode).getLeftOperandNode().getNodeID() == ASTNodeID.Op_AtID));
         		if (descendant || child) {
-					writeLeftSide(node, leftNode, rightNode);
-					if (descendant)
-						write(".descendants(");
-					if (child)
-						write(".child(");
-					String closeMethodCall = "')";
-					String s = "";
-					boolean isNamespaceAccessNode = rightNode instanceof INamespaceAccessExpressionNode;
-					ArrayList<IDefinition> usedNamespaceDefs = null;
-					if (!isNamespaceAccessNode) {
-						//check for open namespaces
-						NamespaceDefinition.INamespaceDirective item = ((NodeBase) node).getASScope().getFirstNamespaceDirective();
-						while(item != null) {
-							if (item instanceof NamespaceDefinition.IUseNamespaceDirective) {
-								
-								INamespaceDefinition itemDef = ((NamespaceDefinition.IUseNamespaceDirective) item).resolveNamespaceReference(getProject());
-								if (itemDef == null) {
-									//@todo - either resolve this or make it an actual Warning.
-								//	System.out.println("Ambiguous 'use namespace "+((NamespaceDefinition.IUseNamespaceDirective) item).getBaseName()+ "', probably conflicts with local var name:"+node.getSourcePath()+":"+node.getLine()+":"+node.getColumn());
-									IDefinition lookupDef = ((NodeBase) node).getASScope().findProperty(getProject(), ((NamespaceDefinition.IUseNamespaceDirective) item).getBaseName(), DependencyType.NAMESPACE);
-									if (lookupDef instanceof IVariableDefinition) {
-										//it seems that swf ignores this too...adding it in creates a different result
-										/*if (usedNamespaceDefs == null) {
-											usedNamespaceDefs = new ArrayList<IDefinition>();
-										}
-										
-										if (!usedNamespaceDefs.contains(lookupDef)) {
-											usedNamespaceDefs.add(lookupDef);
-										}*/
-									}
-									
-								} else {
-									if (usedNamespaceDefs == null) {
-										usedNamespaceDefs = new ArrayList<IDefinition>();
-									}
-									if (!usedNamespaceDefs.contains(itemDef)) usedNamespaceDefs.add(itemDef);
-								}
-							}
-							item = item.getNext();
-						}
-					}
-					
-					if (isNamespaceAccessNode || usedNamespaceDefs != null) {
-						if (isNamespaceAccessNode) {
-							NamespaceIdentifierNode namespaceIdentifierNode = (NamespaceIdentifierNode) ((INamespaceAccessExpressionNode) rightNode).getLeftOperandNode();
-							IDefinition nsDef =  namespaceIdentifierNode.resolve(getProject());
-							if (nsDef instanceof INamespaceDefinition
-									&& ((INamespaceDefinition)nsDef).getNamespaceClassification().equals(INamespaceDefinition.NamespaceClassification.LANGUAGE)) {
-								//deal with built-ins
-								String name = ((NamespaceIdentifierNode) ((INamespaceAccessExpressionNode) rightNode).getLeftOperandNode()).getName();
-								if (name.equals(INamespaceConstants.ANY)) {
-									//let the internal support within 'QName' class deal with it
-									write("new QName(null,'");
-									//only stringify the right node at the next step (it is the localName part)
-									rightNode = ((INamespaceAccessExpressionNode) rightNode).getRightOperandNode();
-									closeMethodCall = "'))";
-								} else if (name.equals(IASKeywordConstants.PUBLIC)
-										|| name.equals(IASKeywordConstants.PROTECTED)) {
-									//@todo check this, but both public and protected appear to have the effect of skipping the namespace part in swf, so just use default namespace
-									write("/* as3 " + name + " */ '");
-									//skip the namespace to just output the name
-									rightNode = ((INamespaceAccessExpressionNode) rightNode).getRightOperandNode();
-								} else {
-									//this is an unlikely condition, but do something that should give same results as swf...
-									//private, internal namespaces used in an XML context (I don't think this makes sense, but is possible to do in code)
-									//@todo check this, but it seems like it should never match anything in a valid XML query
-									write("new QName('");
-									//provide an 'unlikely' 'uri':
-									write("_as3Lang_" + fjs.stringifyNode(namespaceIdentifierNode));
-									write(s + "','");
-									//only stringify the right node at the next step (it is the localName part)
-									rightNode = ((INamespaceAccessExpressionNode) rightNode).getRightOperandNode();
-									closeMethodCall = "'))";
-								}
-							} else {
-								write("new QName(");
-								s = fjs.stringifyNode(namespaceIdentifierNode);
-								write(s + ",'");
-								//only stringify the right node at the next step (it is the localName part)
-								rightNode = ((INamespaceAccessExpressionNode) rightNode).getRightOperandNode();
-								closeMethodCall = "'))";
-							}
-						} else {
-							//use a special MultiQName compiler support method
-							//to simulate a MultiName for the used namespaces (which includes 'no namespace')
-							write("XML.multiQName([");
-							int count = 0;
-							for (IDefinition nsDef:usedNamespaceDefs) {
-								if (count > 0) write(",");
-								if (nsDef instanceof INamespaceDefinition) {
-									write("'"+((INamespaceDefinition)nsDef).getURI()+"'");
-								} else {
-									String varName = getEmitter().stringifyNode(((IVariableDefinition) nsDef).getVariableNode().getNameExpressionNode());
-									write(varName);
-								}
-								count++;
-							}
-							write("]");
-							write(", '");
-							closeMethodCall = "'))";
-						}
-					} else if (getModel().defaultXMLNamespaceActive
-						&& ((MemberAccessExpressionNode) node).getASScope() instanceof FunctionScope
-						&& getModel().getDefaultXMLNamespace((FunctionScope)((MemberAccessExpressionNode) node).getASScope()) != null) {
-						//new QName('contextualDefaultNameSpace','originalValueHere')
-						write("new QName(");
-						getEmitter().getWalker().walk(getModel().getDefaultXMLNamespace((FunctionScope)((MemberAccessExpressionNode) node).getASScope()));
-						write(",'");
-						closeMethodCall = "'))";
-					} else {
-						//regular string value
-						write("'"); //normal string name for child
-					}
-					
-			
-					s = fjs.stringifyNode(rightNode);
-					int dot = s.indexOf('.');
-					if (dot != -1) {
-						String name = s.substring(0, dot);
-						String afterDot = s.substring(dot);
-						write(name);
-						write(closeMethodCall);
-						write(afterDot);
-					} else {
-						write(s);
-						write(closeMethodCall);
-					}
-					if (ASNodeUtils.hasParenClose(node))
-						write(ASEmitterTokens.PAREN_CLOSE);
+					writeXmlDescendantOrChild(node, descendant, child);
 					return;
 				}
         	}
@@ -264,36 +128,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         							rightNode.getNodeID() != ASTNodeID.Op_AtID;
         		if (child)
 	        	{
-	        		writeLeftSide(node, leftNode, rightNode);
-	        		if (child)
-	        			write(".getProperty(");
-	        		String s = fjs.stringifyNode(rightNode);
-	        		int dot = s.indexOf('.');
-	        		if (dot != -1)
-	        		{
-	        			String name = s.substring(0, dot);
-	        			String afterDot = s.substring(dot);
-	        			write("'");
-	        			write(name);
-	        			write("'");
-	        			write(")");
-	        			write(afterDot);
-	        		}
-	        		else
-	        		{
-	        			if ((s.startsWith("'") && s.endsWith("'")) || (s.startsWith("\"") && s.endsWith("\"")))
-	        			{
-	        				// already quoted
-		        			write(s);
-		        		}
-		        		else
-		        		{
-		        			write("'");
-		        			write(s);
-		        			write("'");
-		        		}
-	        			write(")");
-	        		}
+					writeProxyGetProperty(node);
 	        		return;
 	        	}
         	}
@@ -302,30 +137,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         		// if you define a local variable with the same URI as a
         		// namespace that defines a namespaced property
         		// it doesn't resolve above so we handle it here
-        		NamespaceAccessExpressionNode naen = (NamespaceAccessExpressionNode)rightNode;
-        		IDefinition d = naen.getLeftOperandNode().resolve(getProject());
-        		IdentifierNode r = (IdentifierNode)(naen.getRightOperandNode());
-        		// output bracket access with QName
-        		writeLeftSide(node, leftNode, rightNode);
-				//exception: variable member access needs to have literal output, because there is no guarantee that string access will work in release mode after renaming
-				if (((NamespaceAccessExpressionNode) rightNode).resolve(getProject()) instanceof IVariableDefinition) {
-					write(JSRoyaleEmitter.formatNamespacedProperty(d.toString(), r.getName(),true));
-				} else {
-					write(ASEmitterTokens.SQUARE_OPEN);
-					write(ASEmitterTokens.NEW);
-					write(ASEmitterTokens.SPACE);
-					write(IASLanguageConstants.QName);
-					write(ASEmitterTokens.PAREN_OPEN);
-					write(fjs.formatQualifiedName(d.getQualifiedName()));
-					write(ASEmitterTokens.COMMA);
-					write(ASEmitterTokens.SPACE);
-					write(ASEmitterTokens.SINGLE_QUOTE);
-					write(r.getName());
-					write(ASEmitterTokens.SINGLE_QUOTE);
-					write(ASEmitterTokens.PAREN_CLOSE);
-					write(".objectAccessFormat()");
-					write(ASEmitterTokens.SQUARE_CLOSE);
-				}
+				writeNullDefinitionRightSideNamespaceAccessExpressionNode(node);
         		return;
         	}
         }
@@ -341,88 +153,18 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         {
         	if (def.getBaseName().equals("removeAt"))
         	{
-        		writeLeftSide(node, leftNode, rightNode);
-        		write(".splice");
+				writeArrayRemoveAt(node);
         		return;
         	}
         	else if (def.getBaseName().equals("insertAt"))
         	{
-        		writeLeftSide(node, leftNode, rightNode);
-        		write(".splice");
+				writeArrayInsertAt(node);
         		return;
         	}
         }
     	else if (rightNode instanceof NamespaceAccessExpressionNode)
     	{
-			boolean isStatic = false;
-			if (def != null && def.isStatic())
-				isStatic = true;
-			boolean needClosure = false;
-			if (def instanceof FunctionDefinition && (!(def instanceof AccessorDefinition))
-					&& !def.getBaseName().equals("constructor")) // don't wrap references to obj.constructor
-			{
-				IASNode parentNode = node.getParent();
-				if (parentNode != null)
-				{
-					ASTNodeID parentNodeId = parentNode.getNodeID();
-					// we need a closure if this MAE is the top-level in a chain
-					// of MAE and not in a function call.
-					needClosure = !isStatic && parentNodeId != ASTNodeID.FunctionCallID &&
-								parentNodeId != ASTNodeID.MemberAccessExpressionID &&
-								parentNodeId != ASTNodeID.ArrayIndexExpressionID;
-				}
-			}
-			
-			if (needClosure
-					&& getEmitter().getDocEmitter() instanceof JSRoyaleDocEmitter
-					&& ((JSRoyaleDocEmitter)getEmitter().getDocEmitter()).getSuppressClosure())
-				needClosure = false;
-        	if (needClosure)
-        		getEmitter().emitClosureStart();
-
-    		NamespaceAccessExpressionNode naen = (NamespaceAccessExpressionNode)rightNode;
-    		IDefinition d = naen.getLeftOperandNode().resolve(getProject());
-    		IdentifierNode r = (IdentifierNode)(naen.getRightOperandNode());
-    		// output bracket access with QName
-    		writeLeftSide(node, leftNode, rightNode);
-    		if (!d.getBaseName().equals(ASEmitterTokens.PRIVATE.getToken()))
-    		{
-				//exception: variable member access needs to have literal output, because there is no guarantee that string access will work in release mode after renaming
-    			if (naen.resolve(getProject()) instanceof IVariableDefinition) {
-					write(JSRoyaleEmitter.formatNamespacedProperty(d.toString(), r.getName(),true));
-				} else {
-					write(ASEmitterTokens.SQUARE_OPEN);
-					write(ASEmitterTokens.NEW);
-					write(ASEmitterTokens.SPACE);
-					write(IASLanguageConstants.QName);
-					write(ASEmitterTokens.PAREN_OPEN);
-					write(fjs.formatQualifiedName(d.getQualifiedName()));
-					write(ASEmitterTokens.COMMA);
-					write(ASEmitterTokens.SPACE);
-					write(ASEmitterTokens.SINGLE_QUOTE);
-					write(r.getName());
-					write(ASEmitterTokens.SINGLE_QUOTE);
-					write(ASEmitterTokens.PAREN_CLOSE);
-					write(".objectAccessFormat()");
-					write(ASEmitterTokens.SQUARE_CLOSE);
-				}
-    		}
-    		else
-    		{
-                write(node.getOperator().getOperatorText());
-	    		write(r.getName());    			
-    		}
-        
-			if (needClosure)
-			{
-				write(ASEmitterTokens.COMMA);
-				write(ASEmitterTokens.SPACE);
-				if (leftNode.getNodeID() == ASTNodeID.SuperID)
-					write(ASEmitterTokens.THIS);
-				else
-					writeLeftSide(node, leftNode, rightNode);
-				getEmitter().emitClosureEnd(leftNode, def);
-			}
+			writeRightSideNamespaceAccessExpressionNode(node, def);
     		return;
 		}
         boolean isCustomNamespace = false;
@@ -552,14 +294,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 			}
 			if (emitDynamicAccess)
 			{
-				IIdentifierNode identifierNode = (IIdentifierNode) node.getRightOperandNode();
-				startMapping(node, rightNode);
-				write(ASEmitterTokens.SQUARE_OPEN);
-				write(ASEmitterTokens.DOUBLE_QUOTE);
-				write(identifierNode.getName());
-				write(ASEmitterTokens.DOUBLE_QUOTE);
-				write(ASEmitterTokens.SQUARE_CLOSE);
-				endMapping(node);
+				writeDynamicAccessForIdentifier(node);
 			}
 			else
 			{
@@ -587,6 +322,325 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         if (ASNodeUtils.hasParenClose(node))
             write(ASEmitterTokens.PAREN_CLOSE);
     }
+
+	private void writeDateGetterMemberAccess(IMemberAccessExpressionNode node)
+	{
+		IExpressionNode leftNode = node.getLeftOperandNode();
+		IExpressionNode rightNode = node.getRightOperandNode();
+		writeLeftSide(node, leftNode, rightNode);
+		String rightName = ((IIdentifierNode)rightNode).getName();
+		DatePropertiesGetters propGetter = DatePropertiesGetters.valueOf(rightName.toUpperCase());
+		write(ASEmitterTokens.MEMBER_ACCESS);
+		write(propGetter.getFunctionName());
+		write(ASEmitterTokens.PAREN_OPEN);
+		write(ASEmitterTokens.PAREN_CLOSE);
+		if (ASNodeUtils.hasParenClose(node))
+			write(ASEmitterTokens.PAREN_CLOSE);
+	}
+
+	private void writeArrayRemoveAt(IMemberAccessExpressionNode node) {
+		IExpressionNode leftNode = node.getLeftOperandNode();
+		IExpressionNode rightNode = node.getRightOperandNode();
+		writeLeftSide(node, leftNode, rightNode);
+		// removeAt() doesn't exist in JS, but we can replace with splice()
+		// the parameters are rewritten as part of emitting the function call
+		write(".splice");
+	}
+
+	private void writeArrayInsertAt(IMemberAccessExpressionNode node) {
+		IExpressionNode leftNode = node.getLeftOperandNode();
+		IExpressionNode rightNode = node.getRightOperandNode();
+		writeLeftSide(node, leftNode, rightNode);
+		// insertAt() doesn't exist in JS, but we can replace with splice()
+		// the parameters are rewritten as part of emitting the function call
+		write(".splice");
+	}
+
+	private void writeDynamicAccessForIdentifier(IMemberAccessExpressionNode node) {
+		IIdentifierNode identifierNode = (IIdentifierNode) node.getRightOperandNode();
+		startMapping(node, identifierNode);
+		write(ASEmitterTokens.SQUARE_OPEN);
+		write(ASEmitterTokens.DOUBLE_QUOTE);
+		write(identifierNode.getName());
+		write(ASEmitterTokens.DOUBLE_QUOTE);
+		write(ASEmitterTokens.SQUARE_CLOSE);
+		endMapping(node);
+	}
+
+	private void writeProxyGetProperty(IMemberAccessExpressionNode node) {
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
+		IExpressionNode leftNode = node.getLeftOperandNode();
+		IExpressionNode rightNode = node.getRightOperandNode();
+		writeLeftSide(node, leftNode, rightNode);
+		write(".getProperty(");
+		String s = fjs.stringifyNode(rightNode);
+		int dot = s.indexOf('.');
+		if (dot != -1)
+		{
+			String name = s.substring(0, dot);
+			String afterDot = s.substring(dot);
+			write("'");
+			write(name);
+			write("'");
+			write(")");
+			write(afterDot);
+		}
+		else
+		{
+			if ((s.startsWith("'") && s.endsWith("'")) || (s.startsWith("\"") && s.endsWith("\"")))
+			{
+				// already quoted
+				write(s);
+			}
+			else
+			{
+				write("'");
+				write(s);
+				write("'");
+			}
+			write(")");
+		}
+	}
+
+	private void writeNullDefinitionRightSideNamespaceAccessExpressionNode(IMemberAccessExpressionNode node) {
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
+		IExpressionNode leftNode = node.getLeftOperandNode();
+		IExpressionNode rightNode = node.getRightOperandNode();
+		NamespaceAccessExpressionNode naen = (NamespaceAccessExpressionNode)rightNode;
+		IDefinition d = naen.getLeftOperandNode().resolve(getProject());
+		IdentifierNode r = (IdentifierNode)(naen.getRightOperandNode());
+		// output bracket access with QName
+		writeLeftSide(node, leftNode, rightNode);
+		//exception: variable member access needs to have literal output, because there is no guarantee that string access will work in release mode after renaming
+		if (((NamespaceAccessExpressionNode) rightNode).resolve(getProject()) instanceof IVariableDefinition) {
+			write(JSRoyaleEmitter.formatNamespacedProperty(d.toString(), r.getName(),true));
+		} else {
+			write(ASEmitterTokens.SQUARE_OPEN);
+			write(ASEmitterTokens.NEW);
+			write(ASEmitterTokens.SPACE);
+			write(IASLanguageConstants.QName);
+			write(ASEmitterTokens.PAREN_OPEN);
+			write(fjs.formatQualifiedName(d.getQualifiedName()));
+			write(ASEmitterTokens.COMMA);
+			write(ASEmitterTokens.SPACE);
+			write(ASEmitterTokens.SINGLE_QUOTE);
+			write(r.getName());
+			write(ASEmitterTokens.SINGLE_QUOTE);
+			write(ASEmitterTokens.PAREN_CLOSE);
+			write(".objectAccessFormat()");
+			write(ASEmitterTokens.SQUARE_CLOSE);
+		}
+	}
+
+	private void writeRightSideNamespaceAccessExpressionNode(IMemberAccessExpressionNode node, IDefinition def) {
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
+		IExpressionNode leftNode = node.getLeftOperandNode();
+		IExpressionNode rightNode = node.getRightOperandNode();
+		boolean isStatic = false;
+		if (def != null && def.isStatic())
+			isStatic = true;
+		boolean needClosure = false;
+		if (def instanceof FunctionDefinition && (!(def instanceof AccessorDefinition))
+				&& !def.getBaseName().equals("constructor")) // don't wrap references to obj.constructor
+		{
+			IASNode parentNode = node.getParent();
+			if (parentNode != null)
+			{
+				ASTNodeID parentNodeId = parentNode.getNodeID();
+				// we need a closure if this MAE is the top-level in a chain
+				// of MAE and not in a function call.
+				needClosure = !isStatic && parentNodeId != ASTNodeID.FunctionCallID &&
+							parentNodeId != ASTNodeID.MemberAccessExpressionID &&
+							parentNodeId != ASTNodeID.ArrayIndexExpressionID;
+			}
+		}
+		
+		if (needClosure
+				&& getEmitter().getDocEmitter() instanceof JSRoyaleDocEmitter
+				&& ((JSRoyaleDocEmitter)getEmitter().getDocEmitter()).getSuppressClosure())
+			needClosure = false;
+		if (needClosure)
+			getEmitter().emitClosureStart();
+
+		NamespaceAccessExpressionNode naen = (NamespaceAccessExpressionNode)rightNode;
+		IDefinition d = naen.getLeftOperandNode().resolve(getProject());
+		IdentifierNode r = (IdentifierNode)(naen.getRightOperandNode());
+		// output bracket access with QName
+		writeLeftSide(node, leftNode, rightNode);
+		if (!d.getBaseName().equals(ASEmitterTokens.PRIVATE.getToken()))
+		{
+			//exception: variable member access needs to have literal output, because there is no guarantee that string access will work in release mode after renaming
+			if (naen.resolve(getProject()) instanceof IVariableDefinition) {
+				write(JSRoyaleEmitter.formatNamespacedProperty(d.toString(), r.getName(),true));
+			} else {
+				write(ASEmitterTokens.SQUARE_OPEN);
+				write(ASEmitterTokens.NEW);
+				write(ASEmitterTokens.SPACE);
+				write(IASLanguageConstants.QName);
+				write(ASEmitterTokens.PAREN_OPEN);
+				write(fjs.formatQualifiedName(d.getQualifiedName()));
+				write(ASEmitterTokens.COMMA);
+				write(ASEmitterTokens.SPACE);
+				write(ASEmitterTokens.SINGLE_QUOTE);
+				write(r.getName());
+				write(ASEmitterTokens.SINGLE_QUOTE);
+				write(ASEmitterTokens.PAREN_CLOSE);
+				write(".objectAccessFormat()");
+				write(ASEmitterTokens.SQUARE_CLOSE);
+			}
+		}
+		else
+		{
+			write(node.getOperator().getOperatorText());
+			write(r.getName());    			
+		}
+	
+		if (needClosure)
+		{
+			write(ASEmitterTokens.COMMA);
+			write(ASEmitterTokens.SPACE);
+			if (leftNode.getNodeID() == ASTNodeID.SuperID)
+				write(ASEmitterTokens.THIS);
+			else
+				writeLeftSide(node, leftNode, rightNode);
+			getEmitter().emitClosureEnd(leftNode, def);
+		}
+	}
+
+	private void writeXmlDescendantOrChild(IMemberAccessExpressionNode node, boolean descendant, boolean child) {
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
+		IExpressionNode leftNode = node.getLeftOperandNode();
+		IExpressionNode rightNode = node.getRightOperandNode();
+		writeLeftSide(node, leftNode, rightNode);
+		if (descendant)
+			write(".descendants(");
+		if (child)
+			write(".child(");
+		String closeMethodCall = "')";
+		String s = "";
+		boolean isNamespaceAccessNode = rightNode instanceof INamespaceAccessExpressionNode;
+		ArrayList<IDefinition> usedNamespaceDefs = null;
+		if (!isNamespaceAccessNode) {
+			//check for open namespaces
+			NamespaceDefinition.INamespaceDirective item = ((NodeBase) node).getASScope().getFirstNamespaceDirective();
+			while(item != null) {
+				if (item instanceof NamespaceDefinition.IUseNamespaceDirective) {
+					
+					INamespaceDefinition itemDef = ((NamespaceDefinition.IUseNamespaceDirective) item).resolveNamespaceReference(getProject());
+					if (itemDef == null) {
+						//@todo - either resolve this or make it an actual Warning.
+					//	System.out.println("Ambiguous 'use namespace "+((NamespaceDefinition.IUseNamespaceDirective) item).getBaseName()+ "', probably conflicts with local var name:"+node.getSourcePath()+":"+node.getLine()+":"+node.getColumn());
+						IDefinition lookupDef = ((NodeBase) node).getASScope().findProperty(getProject(), ((NamespaceDefinition.IUseNamespaceDirective) item).getBaseName(), DependencyType.NAMESPACE);
+						if (lookupDef instanceof IVariableDefinition) {
+							//it seems that swf ignores this too...adding it in creates a different result
+							/*if (usedNamespaceDefs == null) {
+								usedNamespaceDefs = new ArrayList<IDefinition>();
+							}
+							
+							if (!usedNamespaceDefs.contains(lookupDef)) {
+								usedNamespaceDefs.add(lookupDef);
+							}*/
+						}
+						
+					} else {
+						if (usedNamespaceDefs == null) {
+							usedNamespaceDefs = new ArrayList<IDefinition>();
+						}
+						if (!usedNamespaceDefs.contains(itemDef)) usedNamespaceDefs.add(itemDef);
+					}
+				}
+				item = item.getNext();
+			}
+		}
+		
+		if (isNamespaceAccessNode || usedNamespaceDefs != null) {
+			if (isNamespaceAccessNode) {
+				NamespaceIdentifierNode namespaceIdentifierNode = (NamespaceIdentifierNode) ((INamespaceAccessExpressionNode) rightNode).getLeftOperandNode();
+				IDefinition nsDef =  namespaceIdentifierNode.resolve(getProject());
+				if (nsDef instanceof INamespaceDefinition
+						&& ((INamespaceDefinition)nsDef).getNamespaceClassification().equals(INamespaceDefinition.NamespaceClassification.LANGUAGE)) {
+					//deal with built-ins
+					String name = ((NamespaceIdentifierNode) ((INamespaceAccessExpressionNode) rightNode).getLeftOperandNode()).getName();
+					if (name.equals(INamespaceConstants.ANY)) {
+						//let the internal support within 'QName' class deal with it
+						write("new QName(null,'");
+						//only stringify the right node at the next step (it is the localName part)
+						rightNode = ((INamespaceAccessExpressionNode) rightNode).getRightOperandNode();
+						closeMethodCall = "'))";
+					} else if (name.equals(IASKeywordConstants.PUBLIC)
+							|| name.equals(IASKeywordConstants.PROTECTED)) {
+						//@todo check this, but both public and protected appear to have the effect of skipping the namespace part in swf, so just use default namespace
+						write("/* as3 " + name + " */ '");
+						//skip the namespace to just output the name
+						rightNode = ((INamespaceAccessExpressionNode) rightNode).getRightOperandNode();
+					} else {
+						//this is an unlikely condition, but do something that should give same results as swf...
+						//private, internal namespaces used in an XML context (I don't think this makes sense, but is possible to do in code)
+						//@todo check this, but it seems like it should never match anything in a valid XML query
+						write("new QName('");
+						//provide an 'unlikely' 'uri':
+						write("_as3Lang_" + fjs.stringifyNode(namespaceIdentifierNode));
+						write(s + "','");
+						//only stringify the right node at the next step (it is the localName part)
+						rightNode = ((INamespaceAccessExpressionNode) rightNode).getRightOperandNode();
+						closeMethodCall = "'))";
+					}
+				} else {
+					write("new QName(");
+					s = fjs.stringifyNode(namespaceIdentifierNode);
+					write(s + ",'");
+					//only stringify the right node at the next step (it is the localName part)
+					rightNode = ((INamespaceAccessExpressionNode) rightNode).getRightOperandNode();
+					closeMethodCall = "'))";
+				}
+			} else {
+				//use a special MultiQName compiler support method
+				//to simulate a MultiName for the used namespaces (which includes 'no namespace')
+				write("XML.multiQName([");
+				int count = 0;
+				for (IDefinition nsDef:usedNamespaceDefs) {
+					if (count > 0) write(",");
+					if (nsDef instanceof INamespaceDefinition) {
+						write("'"+((INamespaceDefinition)nsDef).getURI()+"'");
+					} else {
+						String varName = getEmitter().stringifyNode(((IVariableDefinition) nsDef).getVariableNode().getNameExpressionNode());
+						write(varName);
+					}
+					count++;
+				}
+				write("]");
+				write(", '");
+				closeMethodCall = "'))";
+			}
+		} else if (getModel().defaultXMLNamespaceActive
+			&& ((MemberAccessExpressionNode) node).getASScope() instanceof FunctionScope
+			&& getModel().getDefaultXMLNamespace((FunctionScope)((MemberAccessExpressionNode) node).getASScope()) != null) {
+			//new QName('contextualDefaultNameSpace','originalValueHere')
+			write("new QName(");
+			getEmitter().getWalker().walk(getModel().getDefaultXMLNamespace((FunctionScope)((MemberAccessExpressionNode) node).getASScope()));
+			write(",'");
+			closeMethodCall = "'))";
+		} else {
+			//regular string value
+			write("'"); //normal string name for child
+		}
+		
+
+		s = fjs.stringifyNode(rightNode);
+		int dot = s.indexOf('.');
+		if (dot != -1) {
+			String name = s.substring(0, dot);
+			String afterDot = s.substring(dot);
+			write(name);
+			write(closeMethodCall);
+			write(afterDot);
+		} else {
+			write(s);
+			write(closeMethodCall);
+		}
+		if (ASNodeUtils.hasParenClose(node))
+			write(ASEmitterTokens.PAREN_CLOSE);
+	}
 
     private boolean writeLeftSide(IMemberAccessExpressionNode node, IASNode leftNode, IASNode rightNode)
     {
