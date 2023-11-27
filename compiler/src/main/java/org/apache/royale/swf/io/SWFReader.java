@@ -756,7 +756,12 @@ public class SWFReader implements ISWFReader, ITagContainer
     {
         // Read the reserved 2 bytes
         bitStream.readUI16();
-        String password = bitStream.readString();
+        String password = null;
+        // if the read-boundary was reached, there is no password
+        if (bitStream.getOffset() < bitStream.getReadBoundary())
+        {
+            password = bitStream.readString();
+        }
         return new EnableTelemetryTag(password);
     }
 
