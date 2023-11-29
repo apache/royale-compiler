@@ -1136,15 +1136,17 @@ public class ASProjectScope extends ASScopeBase
             }
 
             // Remove the definition from the shadow set.
-            String qName = definition.getQualifiedName();
-            Set<IDefinition> shadowedDefinitions = qnameToShadowedDefinitions.get(qName);
-            assert shadowedDefinitions != null : "If the def to remove is shadowed, we should have a set of shadowed defs.";
-            assert shadowedDefinitions.contains(definition) : "If the def to remove is shadowed it should be in this set.";
-            if (shadowedDefinitions.size() == 1)
-                qnameToShadowedDefinitions.remove(qName);
-            else
-                shadowedDefinitions.remove(definition);
-
+            if (qnameToShadowedDefinitions != null)
+            {
+                String qName = definition.getQualifiedName();
+                Set<IDefinition> shadowedDefinitions = qnameToShadowedDefinitions.get(qName);
+                assert shadowedDefinitions != null : "If the def to remove is shadowed, we should have a set of shadowed defs.";
+                assert shadowedDefinitions.contains(definition) : "If the def to remove is shadowed it should be in this set.";
+                if (shadowedDefinitions.size() == 1)
+                    qnameToShadowedDefinitions.remove(qName);
+                else
+                    shadowedDefinitions.remove(definition);
+            }
         }
         finally
         {
