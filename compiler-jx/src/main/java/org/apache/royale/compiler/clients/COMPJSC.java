@@ -206,7 +206,7 @@ public class COMPJSC extends MXMLJSC
 	                    	break targetloop;
 	                    }
 	                    break;
-	                // if you add a new js-output-type here, don't forget to also add it
+	                // if you add a new target here, don't forget to also add it
 	                // to flex2.tools.MxmlJSC in flex-compiler-oem for IDE support
 	                }
             	}

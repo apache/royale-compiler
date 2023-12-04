@@ -123,8 +123,6 @@ public class MXMLJSCRoyaleCordova implements JSCompilerEntryPoint, ProblemQueryP
         }
     }
 
-    public static MXMLJSC.JSOutputType jsOutputType;
-
     @Override
     public String getName()
     {

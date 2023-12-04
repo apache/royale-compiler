@@ -102,6 +102,8 @@ public class JSConfiguration extends Configuration
     // 'js-output-type'
     //
 
+    // NOTE: js-output-type was replaced by targets
+
     @Config
     @Mapping("js-output-type")
     public void setJSOutputType(ConfigurationValue cv, String value)

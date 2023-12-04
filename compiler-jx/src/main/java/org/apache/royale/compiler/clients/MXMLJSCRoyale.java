@@ -143,8 +143,6 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
         }
     }
 
-    public static MXMLJSC.JSOutputType jsOutputType;
-
     @Override
     public String getName()
     {

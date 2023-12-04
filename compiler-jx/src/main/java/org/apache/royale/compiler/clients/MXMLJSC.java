@@ -89,40 +89,6 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     /*
      * JS output type enumerations.
      */
-    public enum JSOutputType
-    {
-        ROYALE("royale"),
-        ROYALE_DUAL("royale_dual"),
-        ROYALE_DITA("royale_dita"),
-        JSC("jsc"),
-        NODE("node");
-
-        private String text;
-
-        JSOutputType(String text)
-        {
-            this.text = text;
-        }
-
-        public String getText()
-        {
-            return this.text;
-        }
-
-        public static JSOutputType fromString(String text)
-        {
-            for (JSOutputType jsOutputType : JSOutputType.values())
-            {
-                if (text.equalsIgnoreCase(jsOutputType.text))
-                    return jsOutputType;
-            }
-            return ROYALE;
-        }
-    }
-
-    /*
-     * JS output type enumerations.
-     */
     public enum JSTargetType
     {
         SWF("SWF"),
@@ -182,8 +148,6 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
         	return code;
         }
     }
-
-    public static JSOutputType jsOutputType;
 
     @Override
     public String getName()
@@ -383,7 +347,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 	                    	break targetloop;
 	                    }
 	                    break;
-	                // if you add a new js-output-type here, don't forget to also add it
+	                // if you add a new target here, don't forget to also add it
 	                // to flex2.tools.MxmlJSC in flex-compiler-oem for IDE support
 	                }
             	}

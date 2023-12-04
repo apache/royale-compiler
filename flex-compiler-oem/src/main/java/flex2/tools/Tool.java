@@ -28,7 +28,6 @@ import java.util.*;
 
 import org.apache.royale.compiler.clients.COMPC;
 import org.apache.royale.compiler.clients.MXMLC;
-import org.apache.royale.compiler.clients.MXMLJSC.JSOutputType;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.clients.problems.ProblemQueryProvider;
 import org.apache.royale.compiler.config.Configuration;

@@ -111,6 +111,40 @@ public class ASDOCJSC extends MXMLJSCRoyale
         System.exit(exitCode);
     }
 
+    /*
+     * JS output type enumerations.
+     */
+    public enum JSOutputType
+    {
+        ROYALE("royale"),
+        ROYALE_DUAL("royale_dual"),
+        ROYALE_DITA("royale_dita"),
+        JSC("jsc"),
+        NODE("node");
+
+        private String text;
+
+        JSOutputType(String text)
+        {
+            this.text = text;
+        }
+
+        public String getText()
+        {
+            return this.text;
+        }
+
+        public static JSOutputType fromString(String text)
+        {
+            for (JSOutputType jsOutputType : JSOutputType.values())
+            {
+                if (text.equalsIgnoreCase(jsOutputType.text))
+                    return jsOutputType;
+            }
+            return ROYALE;
+        }
+    }
+
     /**
      * Entry point for the {@code <compc>} Ant task.
      *
@@ -126,7 +160,7 @@ public class ASDOCJSC extends MXMLJSCRoyale
         {
             if (s.contains("js-output-type"))
             {
-                jsOutputType = MXMLJSC.JSOutputType.fromString(s.split("=")[1]);
+                JSOutputType jsOutputType = JSOutputType.fromString(s.split("=")[1]);
 
                 switch (jsOutputType)
                 {
