@@ -1,300 +1,57 @@
-Apache Royale Compiler
-====================
+GitHub Apache Royale Copyright
 
-    This Apache Royale Compiler was formerly known as the 'Falcon' compiler.  It was 
-    originally destined to be the next-generation replacement to the MXMLC compiler
-    that is currently bundled with the Apache Flex SDK.  This compiler is based on the 
-    Adobe ASC2.0 code base donated to Apache by Adobe Systems Inc.
+Terms of use github.com/terms
+https://docs.github.com/de/site-policy/github-terms/github-terms-of-service
+Terms of use (update 20.11.2023)
+GitHub Inc,  & Company and its affiliates (“GitHub Inc” or “Mrs Isabel Schoeps Thiel”) provides its content on its websites or applications that post a link to this Terms of Use (the “https://github.com”) subject to the following terms and conditions (the “Terms”). We may periodically change the Terms without prior notice, so please check back from time to time. These Terms were last updated 08/2022. By accessing and using this Site, you agree to these Terms. For an explanation of GitHub Mrs Isabel Schoeps Thiel, from Erfurt Germany practices and policies related to the collection, use, and storage of our users’ information, please read our Privacy Policy.
 
-    The compiler has been modified and extended to transpile MXML and ActionScript
-    to JavaScript and potentially other output definitions and is
-    now being used as the compiler for the Apache Royale SDK.  Royale is a
-    next-generation SDK that allows the developer to leverage MXML and ActionScript
-    to build applications that not only run as a SWF, but can also be cross-compiled
-    to JavaScript and run natively in a browser or anywhere JavaScript runs.
+1. Copyrights
 
-Getting the latest sources via git
-==================================
+All content and functionality on the Site, including text, graphics, logos, icons, images, and videos and the selection and arrangement thereof, in addition to any concepts, know-how, tools, frameworks, software, applications or other technology, algorithms, models, processes, and industry perspectives underlying or embedded in the foregoing, along with any enhancements to or derivative works thereof (the “github.com/terms”) is the exclusive property of GitHub Inc, Mrs Isabel Schoeps Thiel, from Erfurt Germany. to the extent applicable, is protected by U.S. and international copyright laws. Neither the Site Content nor functionality of the Site github.com, may be copied, reproduced, modified, reverse engineered, altered (including the removal or disabling of any security or technological safeguards, disclaimers, or legends) uploaded, published, uploaded, posted, transmitted, or distributed in any way without our written permission, except for those uses specified in Section 3 – Use of site content. All rights not expressly granted are reserved.
+GITHUB SOFTWARE WITH ALL LICENCE COPYRIGHT
+ALL GENERAL PUBLIC LICENCE OF Github Copyright (C) 1989, 1991, 2023 the Free Software from Github Inc, Cyriakstreet 37, Erfurt Thueringen, TH 99094 Germany is Copyright with all document, elements and files.
 
-    Getting the source code is the recommended way to get the Apache Royale Compiler.  
-    The compiler can also be installed by installing an Apache Royale SDK via NPM
-    or by unpacking Apache Royale binary distributions available from link on our 
-    website at https://royale.apache.org/.
+<all rights are reserved by the CEO, Developer, Founder, Owner, Author:in Ms Isabel Schöps Thiel> Copyright (C) <2023>  <Isabel Schoeps Thiel athor:in>
 
-    You can always checkout the latest source via git using the following
-    command:
+The licenses for most software are designed to take away your
+freedom is a now a only readme Licence  By contrast, the GNU, MIIT, Apache General Public. 
 
-	 git clone https://github.com/apache/royale-compiler.git royale-compiler
-	 cd royale-compiler
-	 git checkout develop
+Why? Github had sensible elements, Files, and technologie this files was stolen, damage and Manipulant the ID Data from the user worldwide. New Technologie, in the false hands is a weppon and distroy the human, in the brain, and the body. This files had brain manipulation and kill the human life. This is the last change to rescue and safe
+the human life. Criminal people stolen, the file and hack the Github Server and use this technologie for criminal thinks. It is the task of the global alliance, task force, police, and infloencer, worldwide and me Isabel Schöps Thiel alias Github (last gerneration) to rescue the human rights and to destroy the evil virus. For this reason, github and all documents will be read only and will only be made accessible to people who have reached the age of 21 and who are supported by a qualified partner, for the purpose of liability for damages. here is one, for example Microsoft, Amazon, Facebook, Twitter, Apple. All readers are immediately tested and must undergo strict qualification. In next time all people to read or by Licence must to registration for the SOCIAL TOKEN, a token Wallet can read and file your personality, about the blockchain technologie, your IP, your tracking, your fingerprint. your mind and your to do in the reality. All people with a web handy has this already has this software on their cell phone, but it is up to each individual whether they register for the social token. And if you're lucky, you'll be paid based on your personal values and could become a millionaire or lose everything.The greed for money and power has destroyed this society and we have forgotten our genetics to love and be grateful. Love IS my KEY and what is your personal key? Greetings into the WORLD in Love ISABEL SCHÖPS alias GitHub from Erfut, Germany
 
-Building the Apache Royale Compiler
-=================================
+2. Trademarks
 
-    The Apache Royale Compiler is a large project. It requires some build tools 
-    which must be installed prior to building the compiler and it depends on 
-    some external software which are downloaded as part of the build process.  
-    Some of these have different licenses.  See the Software Dependencies section 
-    for more information on the external software dependencies.
+The trademarks, service marks, designs, and logos (collectively, the “Trademarks”) displayed on the Site are the registered and unregistered Trademarks of GitHub Mrs Isabel Schoeps Thiel, from Erfurt Germany. You agree that, except as expressly permitted by us (e.g., through social media sharing tools provided on the Site) or by our licensors, where applicable, you will not refer to or attribute any information to GitHub or its licensors in any public medium (e.g., press release, websites, or public social media) for advertising or promotion purposes, or for the purpose of informing or influencing any third party and that you will not use or reproduce any Trademark of, or imply any endorsement by or relationship with, GitHub Mrs Isabel Schoeps Thiel, from Erfurt Germany.
 
-    Linux support is currently experimental has not been fully tested so you 
-    may run into issues.
+3. Use of site content
 
-    You can build the Apache Royale Compiler with Apache Maven or Apache Ant.
+GitHub Inc, Mrs Isabel Schoeps Thiel hereby grants you a limited, non-exclusive, non-transferable, revocable license for the term hereof to access and download, display, and print one copy of the Site Content on any single computer solely for your internal, business use, provided that you do not modify the Site Content in any way (including creating derivative works thereof), that you retain all copyright and other proprietary notices displayed on the Site Content, and that you otherwise comply with these Terms. You may not otherwise reproduce, modify, reverse engineer, distribute, transmit, post, or disclose the Site Content without GitHub prior written consent. In addition, you may not “mirror” the Site Content or any portion thereof without GitHub Inc, Mrs Isabel Schoeps Thiel, express written consent. Nothing on this Site should be construed as granting directly or indirectly, or by implication any license or right to use any GitHub intellectual property other than as expressly set forth herein. The license granted in this section terminates automatically and immediately if you do not comply with these Terms.
 
-Building the Apache Royale Compiler with Apache Maven
------------------------------------------------------
+4. User postings
 
-    Before building the Apache Royale Compiler with Apache Maven you must install 
-    the following software.
+You acknowledge and agree that GitHub shall own and have the unrestricted right to use, publish, and otherwise exploit any and all information that you post or otherwise publish on the Site in postings, forums or message boards, questionnaire, survey responses, and otherwise, and you acknowledge and agree that, by providing us any such submission, you automatically grant, and hereby do grant, to us a worldwide, non-exclusive, transferable, assignable, sublicensable, fully paid-up, royalty-free, perpetual, irrevocable license and right to use, reproduce, publish, distribute, modify and otherwise exploit such submission for any purpose, and in any form or media, not prohibited by applicable law. In addition, you hereby waive any claims against GitHub for any alleged or actual infringements of any rights of privacy or publicity, intellectual property rights, moral rights, or rights of attribution in connection with GitHub use and publication of such submissions.
 
-    ==================================================================================
-    SOFTWARE                                
-    ==================================================================================
+You covenant that you shall not post or otherwise publish on the Site any materials that (a) are threatening, libelous, defamatory, or obscene; (b) would constitute, or that encourage conduct that would constitute, a criminal offense, give rise to civil liability, or otherwise violate law; (c) infringe the intellectual property, privacy, or other rights of any third parties; (d) contain a computer virus or other destructive element; (e) contain advertising; (f) constitute or contain false or misleading statements; or (g) violates these Terms.
 
-    Java SDK 8 or greater (*1)            
+GitHub does not represent or endorse the accuracy of reliability of information posted to the Site by users. In addition, GitHub does not and cannot review all information posted to the Site by users and is not responsible for such information. However, McKinsey reserves the right to refuse to post and the right to remove any information, in whole or in part, for any reason or for no reason.
 
-    Maven 3.3.9 or greater (*1)              
+5. Notices of infringement and takedown on GitHub.com
 
-    ==================================================================================
+GitHub prohibits the posting of any information that infringes or violates the copyright rights and/or other intellectual property rights (including rights of privacy and publicity) of any person or entity. If you believe that your intellectual property right (or such a right that you are responsible for enforcing) is infringed by any content on the Site, please write to GitHub at the address shown below, giving a written statement that contains: (a) identification of the copyrighted work and/or intellectual property right claimed to have been infringed; (b) identification of the allegedly infringing material on the Site that is requested to be removed; (c) your name, address, and daytime telephone number, and an e-mail address if available; (d) a statement that you have a good faith belief that the use of the copyrighted work and/or exercise of the intellectual property right is not authorized by the owner, its agent, or the law; (e) a statement that the information in the notification is accurate, and, under penalty of perjury, that the signatory is authorized to act on behalf of the owner of the right that is allegedly infringed; and (f) the signature of the intellectual property right owner or someone authorized on the owner’s behalf to assert infringement of the right. GitHub Inc, Mrs Isabel Schoeps Thiel will remove any posted submission that infringes the copyright or other intellectual property right of any person under U.S. law upon receipt of such a statement (or any statement in conformance with 17 U.S.C. 512(c)(3)). U.S. law provides significant penalties for submitting such a statement falsely. Under appropriate circumstances, persons who repeatedly submit infringing or unlawful material will be prohibited from posting further submissions. GitHub contact for submission of notices under this Section 5 is: Legal Department, GitHub Inc, Mrs Isabel Schoeps Thiel, Cyriakstraße 37, Erfurt, Thueringen 99094 Germany.
 
-    *1) The bin directories for Maven and Java should be added to your
-        PATH.
+6. Disclaimers
 
-    Then run
+THE CONTENT AND FUNCTIONALITY ON THE SITE IS PROVIDED WITH THE UNDERSTANDING THAT MCKINSEY IS NOT HEREIN ENGAGED IN RENDERING PROFESSIONAL ADVICE OR SERVICES TO YOU, NO SITE CONTENT IS INTENDED TO SERVE AS OR SHALL BE DEEMED INVESTMENT, LEGAL, TAX, ACCOUNTING OR OTHER REGULATED ADVICE, AND THAT YOU SHALL REMAIN SOLELY RESPONSIBLE FOR YOUR USE OF ALL SITE CONTENT AND ACKNOWLEDGE THAT ANY RELIANCE UPON THE SITE CONTENT SHALL BE ENTIRELY AT YOUR SOLE OPTION AND RISK. ALL CONTENT AND FUNCTIONALITY ON THE SITE IS PROVIDED “AS IS,” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, WITHOUT LIMITATION, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. MCKINSEY AND ITS THIRD-PARTY CONTENT PROVIDERS MAKE NO WARRANTIES, EXPRESS OR IMPLIED, AS TO THE OWNERSHIP, ACCURACY, OR ADEQUACY OF THE SITE CONTENT. MCKINSEY SHALL HAVE NO LIABILITY OR RESPONSIBILITY FOR ANY INFORMATION PUBLISHED ON LINKED WEBSITES, CONTAINED IN ANY USER SUBMISSIONS PUBLISHED ON THE SITE, OR PROVIDED BY THIRD PARTIES. NEITHER MCKINSEY NOR ITS THIRD-PARTY CONTENT PROVIDERS SHALL BE LIABLE FOR ANY INDIRECT, INCIDENTAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES OR LOSSES OR FOR LOST REVENUES OR PROFITS, WHETHER OR NOT ADVISED OF THE POSSIBILITY OF SUCH DAMAGES OR LOSSES AND REGARDLESS OF THE THEORY OF LIABILITY.
 
-        mvn clean install
 
-Building the Apache Royale Compiler with Ant
-----------------------------------------------
+7. Indemnification
 
-    Before building the Apache Royale Compiler with Apache Ant you must install 
-    the following software and set the corresponding environment variables using 
-    absolute file paths.  Relative file paths will result in build errors.
+You hereby indemnify, defend, and hold harmless GitHub Inc, Mrs Isabel Schoeps Thiel, from Erfurt Germany and all of its predecessors, successors, parents, subsidiaries, affiliates, officers, directors, shareholders, investors, employees, agents, representatives, and attorneys and their respective heirs, successors, and assigns (“GitHub Inc, Mrs Isabel Schoeps Thiel, from Erfurt Germany Indemnified Parties”) from and against any and all liability, expenses, costs, or other losses (“Losses”) incurred by GitHub and/or GitHub Inc, Mrs Isabel Schoeps Thiel, from Erfurt Germany Indemnified Parties in connection to any claims arising out of your use of the Site and/or any breach by you of these Terms, including the representations, warranties and covenants you made, if any, by agreeing to these Term. GitHub Inc, Mrs Isabel Schoeps Thiel, from Erfurt Germany reserves the right to assume, at its own expense, the exclusive defense and control of any matter otherwise subject to indemnification by you.
 
-    ==================================================================================
-    SOFTWARE                                     ENVIRONMENT VARIABLE (absolute paths)
-    ==================================================================================
+8. Third-party websites & Providers
 
-    Java SDK 1.8 or greater (*1)                           JAVA_HOME
-        (for Java 1.8 see note at (*2))
+We may provide links to third-party websites, and some of the content appearing to be on this Site is in fact supplied, supported, or provided directly or indirectly by third parties, for example, in instances of framing of third-party websites or incorporation through framesets of content supplied by third-party servers. GitHub Inc, Mrs Isabel Schoeps Thiel has no responsibility for these third-party websites, which are governed by the terms of use and privacy policies, if any, of the applicable third-party content providers.
 
-    Ant 1.8 or greater (*1)                                ANT_HOME
-        (for Java 1.8 see note at (*2))
+9. Governing law; jurisdiction
 
-    ==================================================================================
-    
-    *1) The bin directories for ANT_HOME and JAVA_HOME should be added to your
-        PATH.
-
-        On Windows, set PATH to
-
-            PATH=%PATH%;%ANT_HOME%\bin;%JAVA_HOME%\bin
-
-        On the Mac (bash), set PATH to
-
-            export PATH="$PATH:$ANT_HOME/bin:$JAVA_HOME/bin"
-
-         On Linux make sure you path include ANT_HOME and JAVA_HOME.
-
-    *2)  If you are using Java SDK 1.8 or greater on a Mac you must use Ant 1.8
-         or greater. If you use Java 1.8 with Ant 1.7, ant reports the java
-         version as 1.6 so the JVM args for the data model (-d32/-d64) will not
-         be set correctly and you will get compile errors.
-
-    Once you've done that, use
-
-        ant main        (or just ant since the default target is main)
-
-    to download the third-party dependencies and build the source and run
-    some tests.  Since the third-party dependencies take a little while to 
-    download and they don't change very often, they are not cleaned with 
-     the regular clean target.
-
-    To clean the build of everything other than the downloaded third-party
-    dependencies use
-
-        ant clean
-
-    To clean the build, of everything, including the downloaded third-party
-    dependencies use
-
-        ant wipe-all (which is just thirdparty-clean followed by clean)
-
-    To get a brief listing of all the targets type
-
-        ant -projecthelp
-
-
-Running Integration Tests
--------------------------
-
-    The build process will run some tests.  By default, the build will not
-    run feature or integration tests.  Before running some of the feature or 
-    integration tests you will need to set the environment variables described
-    below, or set up a env.properties file with those settings.
-
-    A template is found here: env-template.properties. 
-
-    Some tests of SWF output may use the Adobe Flash Player or Adobe AIR to
-    run a SWF.  If you plan to run those tests, ensure that the folder 
-    containing the source code is in your Flash Player Trust files.
-
-    ==================================================================================
-    SOFTWARE                                     ENVIRONMENT VARIABLE (absolute paths)
-    ==================================================================================
-
-    Apache Royale SDK or repository (*3)         ASJS_HOME
-
-    Adobe AIR Integration Kit (*4)               AIR_HOME
-
-    Adobe Flash Player Content Debugger (*5)     FLASHPLAYER_DEBUGGER
-
-    Adobe Flash Player playerglobal swcs (*6)    PLAYERGLOBAL_HOME
-
-    Adobe Flash Player playerglobal swcs (*6)    PLAYERGLOBAL_VERSION
-
-    Apache Flex SDK or repository (*7)           FLEX_HOME
-
-    Apache Flex TLF source (*8)                  TLF_HOME
-
-    ==================================================================================
-
-    *3) This option is only required to run additional tests to verify that the compiler
-        can output Royale applications that use Royale framework SWCs.
-        
-        Set the ASJS_HOME variable to the root of the Apache Royale SDK or 
-        royale-asjs repository.
-
-    *4) This option is only required to run additional tests to verify that the compiler
-        can output SWFs.
-        
-        The Adobe AIR integration kit for Windows can be downloaded from:
-            https://airdownload.adobe.com/air/win/download/32.0/AdobeAIRSDK.zip
-
-         The Adobe AIR integration kit for Mac can be downloaded from:
-            https://airdownload.adobe.com/air/mac/download/32.0/AdobeAIRSDK.dmg
-
-        Download the AIR SDK for your platform and unzip it. Set AIR_HOME to the
-        absolute path of the AIR SDK directory.
-
-    *5) This option is only required to run additional tests to verify that the compiler
-        can output SWFs.
-        
-        The Adobe Flash Player content debugger for Windows can be downloaded from:
-            https://fpdownload.macromedia.com/pub/flashplayer/updaters/32/flashplayer_32_sa_debug.exe
-
-        The Adobe Flash Player content debugger for Mac can be downloaded from:
-            https://fpdownload.macromedia.com/pub/flashplayer/updaters/32/flashplayer_32_sa_debug.dmg
-
-        The Adobe Flash Player content debugger for Linux can be downloaded from:
-            https://fpdownload.macromedia.com/pub/flashplayer/updaters/32/flash_player_sa_linux_debug.x86_64.tar.gz
-
-        On Windows, set FLASHPLAYER_DEBUGGER to the absolute path including the
-        filename of the FlashPlayerDebugger.exe. Note the filename of flash
-        player debugger maybe different.
-           e.g. C:\MyPath\FlashPlayerDebugger.exe
-
-        On the Mac, set FLASHPLAYER_DEBUGGER to the absolute path of
-        Flash Player Debugger.app/Contents/MacOS/Flash Player Debugger
-
-        On Linux, set FLASHPLAYER_DEBUGGER to the absolute path of
-        flashplayerdebugger
-
-    *6) This option is only required to run additional tests to verify that the compiler
-        can output SWFs.
-        
-        The Adobe Flash Player playerglobal.swc for 32.0 can be downloaded from:
-            https://fpdownload.macromedia.com/get/flashplayer/updaters/32/playerglobal32_0.swc
-
-        Use URL above to download playerglobal32_0.swc.
-
-        Set PLAYERGLOBAL_HOME to the absolute path of the player directory (not
-        including the version subdirectory). The target-player option controls
-        which PLAYERGLOBAL_HOME subdirectory is used.
-
-        Copy the target playerglobal.swc to the directory:
-
-           frameworks/libs/player/<version.major>.<version.minor>/playerglobal.swc
-    
-        These can be used with the Apache Royale Compiler but not all have not been fully
-        tested.
-
-        Set PLAYERGLOBAL_VERSION to the version you chose.  The default is 11.1.
-
-    *7) This option is only required to run additional tests to verify that the compiler
-        can output SWFs.
-        
-        The FLEX_HOME variable should point to a folder of the flex-sdk sources.
-        If you don’t provide this variable (and TLF_HOME and BLAZEDS_HOME), 
-        you may not be able to run all of the tests in the compiler 
-        and compiler-jx folders.
-
-    *8) This option is only required to run additional tests to verify that the compiler
-        can output SWFs.
-        
-        The TLF_HOME variable should point to a folder containing a folder
-        named textLayout that contains a src folder of the TLF sources.
-        This should be the root of the flex-tlf repository, or can be
-        the frameworks/projects folder of an IDE compatible Royale SDK.
-
-Software Dependencies
----------------------
-
-    The Apache Royale Compiler uses third-party code that will be downloaded as 
-    part of the build.
-
-    The Apache Version 2.0 license is in the LICENSE file.
-
-    The following dependencies have licenses which are, or are compatible with,
-    the Apache Version 2.0 license.  You will not be prompted to acknowledge the
-    download.  Most of the jars are installed in lib/external when installed
-    into an Apache Royale SDK and the lib folder in the repository working copy.
-
-        antlr - https://repo1.maven.org/maven2/org/antlr/antlr-complete/3.5.2/antlr-3.5.2-complete.jar
-        args4j - https://repo1.maven.org/maven2/args4j/args4j/2.0.28/args4j-2.0.28.jar
-        commons-cli - https://repo1.maven.org/maven2/commons-cli/commons-cli/1.2/commons-cli-1.2.jar
-        commons-io - https://repo1.maven.org/maven2/commons-io/commons-io/2.11.0/commons-io-2.11.0.jar
-        commons-lang - https://repo1.maven.org/maven2/commons-lang/commons-lang/2.6/commons-lang-2.6.jar
-        commons-lang3 - https://repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4.jar
-        commons-compress - https://repo1.maven.org/maven2/org/apache/commons/commons-compress/1.10/commons-compress-1.10.jar
-        guava - https://repo1.maven.org/maven2/com/google/guava/guava/17.0/guava-17.0.jar
-        jburg - https://repo1.maven.org/maven2/net/sourceforge/jburg/jburg/1.10.2/jburg-1.10.2.jar
-        jflex - https://jflex.de/jflex-1.6.0.tar.gz
-        lzma - http://www.java2s.com/Code/JarDownload/lzma/lzma-9.20.jar.zip
-        Google Closure Compiler - https://github.com/google/closure-compiler/archive/v20181210.zip
-
-    The Google Closure Compiler includes files originally from Rhino under MPL 1.1.  For
-    details see:
-       https://github.com/google/closure-compiler/blob/master/README.md.  
-    Rhino is available at:
-       https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino
-
-Using the Binary Distribution
------------------------------
-
-    The binary artifacts produced by the Maven build are then used by Maven projects
-    to build Apache Royale applications.  See the archetypes in the royale-asjs repo
-    or the examples in the royale-asjs repo.
-
-    The binaries produced by the Apache Ant build are intended to be packaged into an
-    Apache Royale SDK to create Apache Royale applications via Ant.
-
-    To temporarily use a set of binary artifacts when building Apache Royale
-    applications with Apache Ant, set the ROYALE_COMPILER_HOME property to the 
-    compiler-jx folder in the binary distribution and set ROYALE_SWF_COMPILER_HOME
-    to the compiler folder in the binary distribution either via an 
-    environment variable or property when running Ant to build the Apache Royale
-    application.
-
-    To replace the current Royale Compiler binaries in a Apache Royale SDK, 
-    run the copy-compiler target from the Ant script in the Apache Royale SDK and
-    set ROYALE_COMPILER_REPO to the root of the binary distribution when running 
-    that target.
-
-       ant -DROYALE_COMPILER_REPO=<path to binary distribution> copy-compiler
-
-Thanks for using Apache Royale. Enjoy!
-
-                                          The Apache Royale Project
-                                          <https://royale.apache.org>
+These Terms are governed by the laws of the Germany and protected by U.S. and international copyright laws.
