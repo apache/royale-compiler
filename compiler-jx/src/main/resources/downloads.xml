@@ -116,15 +116,28 @@
 
     <!--  guava -->
     <property name="guava.name" value="guava"/>
-    <property name="guava.version" value="25.1-jre"/>
+    <property name="guava.version" value="32.0.0-jre"/>
     <antcall target="download-dependency">
       <param name="name" value="${guava.name}"/>
       <param name="src.server" value="${maven.search.url}"/>
       <param name="src.folder" value="com/google/guava/guava/${guava.version}"/>
       <param name="src.filename" value="guava-${guava.version}.jar"/>
-      <param name="src.checksum" value="da3838847d109ac435f0d3ed4ae1c794"/>
+      <param name="src.checksum" value="677b5dfdedfbdbc13bc00478878de7aa"/>
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${guava.name}.jar"/>
+    </antcall>
+
+    <property name="failureaccess.name" value="failureaccess"/>
+    <property name="failureaccess.version" value="1.0.2"/>
+    <antcall target="download-dependency">
+      <param name="name" value="${failureaccess.name}"/>
+      <param name="src.server" value="${maven.search.url}"/>
+      <param name="src.folder" value="com/google/guava/failureaccess/${failureaccess.version}"/>
+      <param name="src.filename" value="failureaccess-${failureaccess.version}.jar"/>
+      <param name="src.checksum" value="3f75955b49b6758fd6d1e1bd9bf777b3"/>
+      <param name="dest.folder" value=""/>
+      <param name="dest.filename" value="${failureaccess.name}.jar"/>
+      <param name="license.use.apache" value="true"/>
     </antcall>
 
     <!--  flex-tool-api -->

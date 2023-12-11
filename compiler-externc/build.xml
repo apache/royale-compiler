@@ -133,7 +133,7 @@
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
                 <attribute name="Main-Class" value="org.apache.royale.compiler.clients.EXTERNC" />
-                <attribute name="Class-Path" value="../../compiler/lib/external/commons-cli.jar ../../lib/external/commons-cli.jar ../../compiler/lib/external/commons-io.jar ../../lib/external/commons-io.jar ../../compiler/lib/external/guava.jar ../../lib/external/guava.jar ../../compiler/lib/external/flex-tool-api.jar ../../lib/external/flex-tool-api.jar google/closure-compiler/compiler.jar ../../compiler/lib/compiler-common.jar ../../lib/compiler-common.jar .."/>
+                <attribute name="Class-Path" value="../../compiler/lib/external/commons-cli.jar ../../lib/external/commons-cli.jar ../../compiler/lib/external/commons-io.jar ../../lib/external/commons-io.jar ../../compiler/lib/external/guava.jar ../../lib/external/guava.jar ../../compiler/lib/external/failureaccess.jar ../../lib/external/failureaccess.jar ../../compiler/lib/external/flex-tool-api.jar ../../lib/external/flex-tool-api.jar google/closure-compiler/compiler.jar ../../compiler/lib/compiler-common.jar ../../lib/compiler-common.jar .."/>
                 <!-- The .. in the line above allows the compiler to load the env.properties file -->
             </manifest>
         </jar>

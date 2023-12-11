@@ -43,7 +43,7 @@
                 <archive>
                   <manifestEntries>
                     <!-- These paths are all defined the way the layout will be in the distribution -->
-                    <Class-Path>compiler-common.jar external/antlr.jar external/antlr-runtime.jar external/commons-cli.jar external/commons-io.jar external/guava.jar external/lzma-sdk-4j.jar external/flex-tool-api.jar ..</Class-Path>
+                    <Class-Path>compiler-common.jar external/antlr.jar external/antlr-runtime.jar external/commons-cli.jar external/commons-io.jar external/guava.jar external/failureaccess.jar external/lzma-sdk-4j.jar external/flex-tool-api.jar ..</Class-Path>
                   </manifestEntries>
                 </archive>
               </configuration>
@@ -606,7 +606,12 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>25.1-jre</version>
+      <version>32.0.0-jre</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>failureaccess</artifactId>
+      <version>1.0.2</version>
     </dependency>
     <dependency>
       <groupId>net.sourceforge.jburg</groupId>

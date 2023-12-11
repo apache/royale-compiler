@@ -100,7 +100,7 @@
                 <attribute name="Implementation-Title" value="${manifest.Implementation-Title}"/>
                 <attribute name="Implementation-Version" value="${manifest.Implementation-Version}.${build.number}"/>
                 <attribute name="Implementation-Vendor" value="${manifest.Implementation-Vendor}"/>
-                <attribute name="Class-Path" value="external/commons-cli.jar external/commons-io.jar external/guava.jar .."/>
+                <attribute name="Class-Path" value="external/commons-cli.jar external/commons-io.jar external/guava.jar external/failureaccess.jar .."/>
                 <!-- The .. in the line above allows the compiler to load the env.properties file -->
             </manifest>
         </jar>

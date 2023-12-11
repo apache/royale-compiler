@@ -74,6 +74,7 @@
 		<filelist dir="${lib}">
 			<file name="commons-io.jar" />
             <file name="guava.jar" />
+            <file name="failureaccess.jar" />
 			<file name="flex-tool-api.jar" />
             <file name="externc.jar" />
             <file name="compiler-playerglobalc.jar" />
@@ -103,7 +104,7 @@
 	
 	<target name="main" depends="prebuild,compile">
         
-        <property name="jar.classpath" value="commons-io.jar guava.jar ../../lib/external/antlr.jar ../../compiler/lib/external/antlr.jar ../../lib/external/commons-lang-2.6.jar ../../compiler/lib/external/commons-lang-2.6.jar google/closure-compiler/compiler.jar ../../compiler/lib/compiler.jar ../../lib/compiler.jar  ../../compiler/lib/compiler-common.jar ../../lib/compiler-common.jar" />
+        <property name="jar.classpath" value="commons-io.jar guava.jar failureaccess.jar ../../lib/external/antlr.jar ../../compiler/lib/external/antlr.jar ../../lib/external/commons-lang-2.6.jar ../../compiler/lib/external/commons-lang-2.6.jar google/closure-compiler/compiler.jar ../../compiler/lib/compiler.jar ../../lib/compiler.jar  ../../compiler/lib/compiler-common.jar ../../lib/compiler-common.jar" />
 
         <copy file="${basedir}/../LICENSE.base" tofile="${classes.dir}/META-INF/LICENSE"/>
         <copy file="${basedir}/../NOTICE.base" tofile="${classes.dir}/META-INF/NOTICE"/>
