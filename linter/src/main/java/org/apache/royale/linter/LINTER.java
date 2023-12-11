@@ -105,10 +105,10 @@ public class LINTER {
 					FileSpecification fileSpec = new FileSpecification(filePath);
 					String fileText = IOUtils.toString(fileSpec.createReader());
 					if (filePath.endsWith(FILE_EXTENSION_MXML)) {
-						ASLinter linter = new ASLinter(settings);
+						MXMLLinter linter = new MXMLLinter(settings);
 						linter.lint(filePath, fileText, problemQuery.getProblems());
 					} else {
-						MXMLLinter linter = new MXMLLinter(settings);
+						ASLinter linter = new ASLinter(settings);
 						linter.lint(filePath, fileText, problemQuery.getProblems());
 					}
 				}
