@@ -272,7 +272,7 @@ Software Dependencies
     details see:
        https://github.com/google/closure-compiler/blob/master/README.md.  
     Rhino is available at:
-       https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino
+       https://github.com/mozilla/rhino
 
 Using the Binary Distribution
 -----------------------------
