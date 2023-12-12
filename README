@@ -279,7 +279,8 @@ Using the Binary Distribution
     or the examples in the royale-asjs repo.
 
     The binaries produced by the Apache Ant build are intended to be packaged into an
-    Apache Royale SDK to create Apache Royale applications via Ant.
+    Apache Royale SDK to create Apache Royale applications via IDEs, Ant build
+    scripts, or by running the compiler executables directly from the command line.
 
     To temporarily use a set of binary artifacts when building Apache Royale
     applications with Apache Ant, set the ROYALE_COMPILER_HOME property to the 
