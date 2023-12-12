@@ -537,6 +537,12 @@ public class MXMLTreeBuilder
             {
                 text = SourceFragmentsReader.concatPhysicalText(fragments);
             }
+            if (flags.contains(TextParsingFlags.ALLOW_BINDING))
+            {
+                // if binding is allowed, then the { and } characters may be 
+                // escaped with backslash, so remove the backslash
+                text = text.replaceAll("\\\\\\{", "{").replaceAll("\\\\\\}", "}");
+            }
 
             value = parseValue(propertyNode, type, text, flags, defaultValue, isAttribute);
 

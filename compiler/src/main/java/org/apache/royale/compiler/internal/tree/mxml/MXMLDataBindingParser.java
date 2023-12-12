@@ -189,7 +189,7 @@ class MXMLDataBindingParser
                     case RIGHT_BRACE:
                     {
                         nesting--;
-                        if (nesting == 0)
+                        if (nesting == 0 && !escape && leftBraceCharIndex != -1)
                         {
                             // We've found the matching '}' for the '{'.
                             // Record where the '{' and '}' are.
@@ -197,6 +197,10 @@ class MXMLDataBindingParser
                                 result = LinkedListMultimap.<ISourceFragment, Integer> create();
                             result.put(leftBraceFragment, leftBraceCharIndex);
                             result.put(fragment, i);
+                            // clear the left brace, so that we can start
+                            // searching for a new one
+                            leftBraceFragment = null;
+                            leftBraceCharIndex = -1;
                         }
                         escape = false;
                         break;
@@ -351,6 +355,8 @@ class MXMLDataBindingParser
     {
         ISourceFragment[] fragments = fragmentList.toArray(new ISourceFragment[0]);
         String text = SourceFragmentsReader.concatLogicalText(fragments);
+        // the { and } characters may be escaped with backslash, so remove it
+        text = text.replaceAll("\\\\\\{", "{").replaceAll("\\\\\\}", "}");
 
         // LiteralNode automatically strips out quote characters at the
         // beginning and end of the string.
