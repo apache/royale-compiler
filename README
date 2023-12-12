@@ -1,17 +1,20 @@
 Apache Royale Compiler
 ====================
 
-    This Apache Royale Compiler was formerly known as the 'Falcon' compiler.  It was 
+    The Apache Royale Compiler compiles ActionScript 3.0 and MXML code to SWF
+    or JavaScript.
+    
+    The Apache Royale Compiler was formerly known as the 'Falcon' compiler.  It was 
     originally destined to be the next-generation replacement to the MXMLC compiler
     that is currently bundled with the Apache Flex SDK.  This compiler is based on the 
-    Adobe ASC2.0 code base donated to Apache by Adobe Systems Inc.
+    Adobe 'ASC 2.0' code base donated to Apache by Adobe Systems Inc.
 
     The compiler has been modified and extended to transpile MXML and ActionScript
-    to JavaScript and potentially other output definitions and is
+    to JavaScript, and potentially other output definitions, and it is
     now being used as the compiler for the Apache Royale SDK.  Royale is a
     next-generation SDK that allows the developer to leverage MXML and ActionScript
     to build applications that not only run as a SWF, but can also be cross-compiled
-    to JavaScript and run natively in a browser or anywhere JavaScript runs.
+    to JavaScript and run natively in a browser — or anywhere that JavaScript runs.
 
 Getting the latest sources via git
 ==================================
