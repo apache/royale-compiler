@@ -221,7 +221,7 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
         info.addSourceFragments(attribute.getSourcePath(), fragments);
 
         // parse out text and make correct kind of child node
-        processFragments(builder, attribute, info);
+        processFragments(builder, attribute, info, true);
 
         info.clearFragments();
 
@@ -230,7 +230,8 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
 
     private void processFragments(MXMLTreeBuilder builder,
                                   ISourceLocation sourceLocation,
-                                  MXMLNodeInfo info)
+                                  MXMLNodeInfo info,
+                                  boolean isAttribute)
     {
         ITypeDefinition propertyType = getPropertyType(builder);
 
@@ -256,7 +257,7 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
         }
 
         instanceNode = builder.createInstanceNode(
-                this, propertyType, fragments, location, flags, classNode);
+                this, propertyType, fragments, location, flags, classNode, isAttribute);
 
         // If we don't have a value, we can't do codegen.
         if (instanceNode == null)
@@ -350,7 +351,7 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
         // use helpers to set offsets on fragments and create child node of correct type
         accumulateTextFragments(builder, text, info);
 
-        processFragments(builder, text, info);
+        processFragments(builder, text, info, false);
     }
 
     void initializeDefaultProperty(MXMLTreeBuilder builder, IVariableDefinition defaultPropertyDefinition,
@@ -623,7 +624,7 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
         if (instanceNode == null)
         {
             // use helpers for parse for bindings, @functions, create correct child node
-            processFragments(builder, tag, info);
+            processFragments(builder, tag, info, false);
         }
 
         validateProperty(builder, tag);

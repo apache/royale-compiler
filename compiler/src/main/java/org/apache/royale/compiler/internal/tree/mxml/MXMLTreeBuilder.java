@@ -350,7 +350,8 @@ public class MXMLTreeBuilder
      * <code>null</code>.
      */
     private Object parseValue(IMXMLNode propertyNode, ITypeDefinition type,
-                              String text, EnumSet<TextParsingFlags> flags)
+                              String text, EnumSet<TextParsingFlags> flags,
+                              Object defaultValue, boolean isAttribute)
     {
         Object result = null;
 
@@ -359,51 +360,67 @@ public class MXMLTreeBuilder
             typeName = type.getQualifiedName();
         }
 
-        if (typeName.equals(IASLanguageConstants.Boolean))
+        if (typeName.equals(IASLanguageConstants.String))
         {
-            result = mxmlDialect.parseBoolean(project, text, flags);
-        }
-        else if (typeName.equals(IASLanguageConstants._int))
-        {
-            result = mxmlDialect.parseInt(project, text, flags);
-            if (result == null)
-                result = parsePercent(project, propertyNode, text, flags);
-        }
-        else if (typeName.equals(IASLanguageConstants.uint))
-        {
-            result = mxmlDialect.parseUint(project, text, flags);
-            if (result == null)
-                result = parsePercent(project, propertyNode, text, flags);
-        }
-        else if (typeName.equals(IASLanguageConstants.Number))
-
-        {
-            result = mxmlDialect.parseNumber(project, text, flags);
-            if (result == null)
-                result = parsePercent(project, propertyNode, text, flags);
-        }
-        else if (typeName.equals(IASLanguageConstants.String))
-        {
+            // for other types below, we always return the default value if the
+            // text is entirely whitespace, but we preserve the whitespace for
+            // strings specified with attributes
+            if (!isAttribute && mxmlDialect.isWhitespace(text))
+            {
+                return defaultValue;
+            }
             result = mxmlDialect.parseString(project, text, flags);
         }
-        else if (typeName.equals(IASLanguageConstants.Array))
+        else
         {
-            result = mxmlDialect.parseArray(project, text, flags);
-            if (result == null && flags.contains(TextParsingFlags.RICH_TEXT_CONTENT))
+            // if a non-string value is only whitespace, return the default value
+            if (mxmlDialect.isWhitespace(text))
             {
-                result = mxmlDialect.parseString(project, text, flags);
-                if (result != null)
+                return defaultValue;
+            }
+
+            if (typeName.equals(IASLanguageConstants.Boolean))
+            {
+                result = mxmlDialect.parseBoolean(project, text, flags);
+            }
+            else if (typeName.equals(IASLanguageConstants._int))
+            {
+                result = mxmlDialect.parseInt(project, text, flags);
+                if (result == null)
+                    result = parsePercent(project, propertyNode, text, flags);
+            }
+            else if (typeName.equals(IASLanguageConstants.uint))
+            {
+                result = mxmlDialect.parseUint(project, text, flags);
+                if (result == null)
+                    result = parsePercent(project, propertyNode, text, flags);
+            }
+            else if (typeName.equals(IASLanguageConstants.Number))
+
+            {
+                result = mxmlDialect.parseNumber(project, text, flags);
+                if (result == null)
+                    result = parsePercent(project, propertyNode, text, flags);
+            }
+            else if (typeName.equals(IASLanguageConstants.Array))
+            {
+                result = mxmlDialect.parseArray(project, text, flags);
+                if (result == null && flags.contains(TextParsingFlags.RICH_TEXT_CONTENT))
                 {
-                	ArrayList<Object> arr = new ArrayList<Object>();
-                	arr.add(result);
-                	result = arr;
+                    result = mxmlDialect.parseString(project, text, flags);
+                    if (result != null)
+                    {
+                        ArrayList<Object> arr = new ArrayList<Object>();
+                        arr.add(result);
+                        result = arr;
+                    }
                 }
             }
-        }
-        else if (typeName.equals(IASLanguageConstants.Object) ||
-                 typeName.equals(IASLanguageConstants.ANY_TYPE))
-        {
-            result = mxmlDialect.parseObject(project, text, flags);
+            else if (typeName.equals(IASLanguageConstants.Object) ||
+                    typeName.equals(IASLanguageConstants.ANY_TYPE))
+            {
+                result = mxmlDialect.parseObject(project, text, flags);
+            }
         }
 
         return result;
@@ -473,7 +490,8 @@ public class MXMLTreeBuilder
                                               ISourceFragment[] fragments,
                                               ISourceLocation location,
                                               EnumSet<TextParsingFlags> flags,
-                                              Object defaultValue)
+                                              Object defaultValue,
+                                              boolean isAttribute)
     {
         Object value = null;
         if (type.getQualifiedName().equals(IASLanguageConstants.String)
@@ -520,9 +538,7 @@ public class MXMLTreeBuilder
                 text = SourceFragmentsReader.concatPhysicalText(fragments);
             }
 
-            value = mxmlDialect.isWhitespace(text) ?
-                        defaultValue :
-                        parseValue(propertyNode, type, text, flags);
+            value = parseValue(propertyNode, type, text, flags, defaultValue, isAttribute);
 
             if (value == null)
             {
@@ -600,6 +616,16 @@ public class MXMLTreeBuilder
         node.runPostProcess(postProcessSteps, classScope);
     }
 
+    public NodeBase createExpressionNode(IMXMLNode propertyNode, ITypeDefinition type,
+                                         ISourceFragment[] fragments,
+                                         ISourceLocation location,
+                                         EnumSet<TextParsingFlags> flags,
+                                         Object defaultValue,
+                                         MXMLClassDefinitionNode classNode)
+    {
+        return createExpressionNode(propertyNode, type, fragments, location, flags, defaultValue, classNode, false);
+    }
+
     /**
      * Creates a databinding node, a class directive node, or a literal node.
      */
@@ -608,7 +634,8 @@ public class MXMLTreeBuilder
                                          ISourceLocation location,
                                          EnumSet<TextParsingFlags> flags,
                                          Object defaultValue,
-                                         MXMLClassDefinitionNode classNode)
+                                         MXMLClassDefinitionNode classNode,
+                                         boolean isAttribute)
     {
         NodeBase expressionNode = null;
 
@@ -659,7 +686,7 @@ public class MXMLTreeBuilder
 
         // Look for other primitive values.
         if (expressionNode == null)
-            expressionNode = createLiteralNode(propertyNode, type, fragments, location, flags, defaultValue);
+            expressionNode = createLiteralNode(propertyNode, type, fragments, location, flags, defaultValue, isAttribute);
 
         if (expressionNode == null)
         {
@@ -669,6 +696,16 @@ public class MXMLTreeBuilder
         }
 
         return expressionNode;
+    }
+
+
+    public MXMLInstanceNode createInstanceNode(NodeBase parent, ITypeDefinition type,
+                                               ISourceFragment[] fragments,
+                                               ISourceLocation location,
+                                               EnumSet<TextParsingFlags> flags,
+                                               MXMLClassDefinitionNode classNode)
+    {
+        return createInstanceNode(parent, type, fragments, location, flags, classNode, false);
     }
 
     /**
@@ -707,7 +744,8 @@ public class MXMLTreeBuilder
                                                ISourceFragment[] fragments,
                                                ISourceLocation location,
                                                EnumSet<TextParsingFlags> flags,
-                                               MXMLClassDefinitionNode classNode)
+                                               MXMLClassDefinitionNode classNode,
+                                               boolean isAttribute)
     {
         MXMLInstanceNode instanceNode = null;
 
@@ -761,7 +799,7 @@ public class MXMLTreeBuilder
         else
         {
             NodeBase expressionNode = createExpressionNode(
-                    (IMXMLNode)parent, type, fragments, location, flags, null, classNode);
+                    (IMXMLNode)parent, type, fragments, location, flags, null, classNode, isAttribute);
 
             // If we produced a databinding node or a class directive node,
             // those are already instance nodes.

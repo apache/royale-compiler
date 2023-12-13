@@ -3302,11 +3302,19 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         String s = node.getValue().toString();
         if (ps.valueNeedsQuotes)
         {
-            // escape all single quotes found within the string
+            // all backslashes in the value need to be be escaped
+            // for example: we don't want "\" + "n" to be treated as a new line,
+            // so it should become "\" + "\" + "n" instead. to insert a new line
+            // in MXML, use &#xA; instead.
+            s = s.replace("\\", "\\\\");
+
+            // the string will be wrapped with single quotes, so escape all
+            // existing single quotes found within the string
             s = s.replace(ASEmitterTokens.SINGLE_QUOTE.getToken(),
                     "\\" + ASEmitterTokens.SINGLE_QUOTE.getToken());
         }
-        s = s.replace("\r\n", "\\n");
+        s = s.replace("\t", "\\t");
+        s = s.replace("\r", "\\r");
         s = s.replace("\n", "\\n");
         ps.value += s;
 

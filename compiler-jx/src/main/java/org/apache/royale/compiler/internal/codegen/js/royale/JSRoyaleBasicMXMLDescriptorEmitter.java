@@ -19,6 +19,8 @@
 
 package org.apache.royale.compiler.internal.codegen.js.royale;
 
+import java.util.regex.Matcher;
+
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.mxml.js.IMXMLJSEmitter;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
@@ -244,12 +246,6 @@ public class JSRoyaleBasicMXMLDescriptorEmitter extends MXMLSubEmitter implement
             {
                 write(ASEmitterTokens.TRUE);
                 writeDelimiter(writeNewline);
-                // need to do other escaping here?
-                // restrict="0-9.\"
-                if (specifier.value.endsWith("\\'") && !specifier.value.endsWith("\\\\'"))
-                {
-                	specifier.value = specifier.value.substring(0, specifier.value.length() - 1) + "\\'";
-                }
                 write(specifier.value);
             }
             else
