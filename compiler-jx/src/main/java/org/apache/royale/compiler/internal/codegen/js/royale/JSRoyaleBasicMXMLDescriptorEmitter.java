@@ -19,8 +19,6 @@
 
 package org.apache.royale.compiler.internal.codegen.js.royale;
 
-import java.util.regex.Matcher;
-
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.mxml.js.IMXMLJSEmitter;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
