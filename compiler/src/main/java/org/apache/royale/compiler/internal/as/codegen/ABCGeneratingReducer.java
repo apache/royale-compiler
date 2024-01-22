@@ -5693,6 +5693,10 @@ public class ABCGeneratingReducer
 
         int range = lookupSwitchInfo.maxCase - lookupSwitchInfo.minCase;
 
+        // range is so large that it overflowed the int
+        if (range < 0)
+            return null;
+
         // if the range is greater than 20 and if less than 50% ranges dense, then use if/else
         if ((range > 20) && (range < cases.size() * 2))
             return null;
