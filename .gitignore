@@ -50,4 +50,3 @@ ditaa-diagram.*
 
 # JUnit temp files
 junittestcases*.properties
-/.mvn/wrapper/maven-wrapper.jar
