@@ -149,8 +149,8 @@
             Do all the Antlr2 code generation
       -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antlr-plugin</artifactId>
+        <groupId>org.omnifaces</groupId>
+        <artifactId>antlr-maven-plugin</artifactId>
         <executions>
           <execution>
             <id>generate-as-parser</id>
