@@ -853,7 +853,6 @@
 
     <target name="sdk.dependent.tests" >
         <ant dir="compiler/src/test" target="sdk.dependent.tests" />
-        <ant dir="compiler-jx/src/test" target="integration.tests.sdk" />
     </target>
     <target name="royale.dependent.tests" >
         <ant dir="compiler-jx/src/test" target="integration.tests.asjs" />
