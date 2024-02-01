@@ -19,7 +19,6 @@
 
 package mxml.tags;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -85,7 +84,6 @@ public class MXMLWebServiceTagTests extends MXMLInstanceTagTestsBase
         compileAndRun(mxml, true, true, false, null);
     }
 	
-    @Ignore
     @Test
     public void MXMLWebServiceTag_operation()
     {
@@ -109,7 +107,6 @@ public class MXMLWebServiceTagTests extends MXMLInstanceTagTestsBase
         compileAndRun(mxml, true, true, false, null);
     }
 
-    @Ignore
     @Test
     public void MXMLWebServiceTag_twoOperations()
     {

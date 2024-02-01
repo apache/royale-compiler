@@ -19,7 +19,6 @@
 
 package mxml.tags;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -63,14 +62,13 @@ public class MXMLRemoteObjectTagTests extends MXMLInstanceTagTestsBase
         compileAndRun(mxml, true, true, false, null);
     }
 	
-    @Ignore
     @Test
     public void MXMLRemoteObjectTag_method()
     {
         String[] declarations = new String[]
         {
             "<mx:RemoteObject id='ro1'>",
-    		// "    <mx:method name='m1'/>",
+    		"    <mx:method name='m1'/>",
     		"</mx:RemoteObject>"
         };
         String[] scriptDeclarations = new String[]
@@ -87,7 +85,6 @@ public class MXMLRemoteObjectTagTests extends MXMLInstanceTagTestsBase
         compileAndRun(mxml, true, true, false, null);
     }
 	
-    @Ignore
     @Test
     public void MXMLRemoteObjectTag_twoMethods()
     {

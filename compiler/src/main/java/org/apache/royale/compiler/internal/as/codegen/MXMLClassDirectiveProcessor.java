@@ -1883,7 +1883,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             numProperties += 1;
         
         int numOperations = context.getCounter(IL.WEB_SERVICE_OPERATIONS_OR_REMOTE_OBJECT_METHODS);
-        if (numOperations > 0)
+        if (numOperations > 0 && getProject().getTargetSettings().getMxmlChildrenAsData())
         	numProperties += 1;
         if (newCodeGen && addCounters)
             context.pushNumericConstant(numProperties);
@@ -1894,7 +1894,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         if (context.hasModel)
             context.transfer(IL.MXML_MODEL_PROPERTIES);
         context.transfer(IL.PROPERTIES);
-        if (numOperations > 0)
+        if (numOperations > 0 && getProject().getTargetSettings().getMxmlChildrenAsData())
         {
             context.addInstruction(OP_pushstring, "operations");
             context.addInstruction(OP_pushfalse);
@@ -1976,7 +1976,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             //   temp.operations = { "op1":operation1, "op2":operation2 };
             // to initialize WebService.operations property from a list of <s:operation> tags.
             final int operationsCount = context.getCounter(IL.WEB_SERVICE_OPERATIONS_OR_REMOTE_OBJECT_METHODS);
-            if(operationsCount > 0)
+            if(!getProject().getTargetSettings().getMxmlChildrenAsData() && operationsCount > 0)
             {
                 context.pushTarget();
                 context.transfer(IL.WEB_SERVICE_OPERATIONS_OR_REMOTE_OBJECT_METHODS);
