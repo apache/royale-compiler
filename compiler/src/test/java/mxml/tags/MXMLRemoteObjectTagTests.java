@@ -19,6 +19,7 @@
 
 package mxml.tags;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -44,13 +45,57 @@ public class MXMLRemoteObjectTagTests extends MXMLInstanceTagTestsBase
 	}
 	
     @Test
+    public void MXMLRemoteObjectTag()
+    {
+        String[] declarations = new String[]
+        {
+            "<mx:RemoteObject id='ro1'>",
+    		"</mx:RemoteObject>"
+        };
+        String[] scriptDeclarations = new String[]
+        {
+        };
+        String[] asserts = new String[]
+        {
+            "assertEqual('ro1 is RemoteObject', ro1 is RemoteObject, true);",
+        };
+        String mxml = getMXML(declarations, scriptDeclarations, asserts);
+        compileAndRun(mxml, true, true, false, null);
+    }
+	
+    @Ignore
+    @Test
+    public void MXMLRemoteObjectTag_method()
+    {
+        String[] declarations = new String[]
+        {
+            "<mx:RemoteObject id='ro1'>",
+    		// "    <mx:method name='m1'/>",
+    		"</mx:RemoteObject>"
+        };
+        String[] scriptDeclarations = new String[]
+        {
+        	"import mx.rpc.remoting.mxml.Operation;"
+        };
+        String[] asserts = new String[]
+        {
+            "assertEqual('ro1 is RemoteObject', ro1 is RemoteObject, true);",
+            "assertEqual('ro1.operations.m1', ro1.operations['m1'] is Operation, true);",
+            "assertEqual('ro1.operations.m1.name', ro1.operations['m1'].name, 'm1');",
+        };
+        String mxml = getMXML(declarations, scriptDeclarations, asserts);
+        compileAndRun(mxml, true, true, false, null);
+    }
+	
+    @Ignore
+    @Test
     public void MXMLRemoteObjectTag_twoMethods()
     {
         String[] declarations = new String[]
         {
             "<mx:RemoteObject id='ro1'>",
     		"    <mx:method name='m1'/>",
-            "    <mx:destination>http://whatever</mx:destination>",
+            "    <mx:destination>https://example.com</mx:destination>",
     		"    <mx:method name='m2'/>",
     		"</mx:RemoteObject>"
         };
@@ -61,7 +106,7 @@ public class MXMLRemoteObjectTagTests extends MXMLInstanceTagTestsBase
         String[] asserts = new String[]
         {
             "assertEqual('ro1 is RemoteObject', ro1 is RemoteObject, true);",
-            "assertEqual('ro1.destination', ro1.destination, 'http://whatever');",
+            "assertEqual('ro1.destination', ro1.destination, 'https://example.com');",
             "assertEqual('ro1.operations.m1', ro1.operations['m1'] is Operation, true);",
             "assertEqual('ro1.operations.m1.name', ro1.operations['m1'].name, 'm1');",
             "assertEqual('ro1.operations.m2', ro1.operations['m2'] is Operation, true);",

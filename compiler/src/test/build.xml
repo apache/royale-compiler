@@ -369,10 +369,10 @@
                     <!-- <include name="f/**"/> -->
                     <include name="**/MXMLComponentTagTests.class"/>
                     <include name="**/MXMLComponentNodeTests.class"/>
-                    <!-- <include name="**/MXMLHTTPServiceTagTests.class"/> -->
+                    <include name="**/MXMLHTTPServiceTagTests.class"/>
                     <include name="**/MXMLModelTagTests.class"/>
-                    <!-- <include name="**/MXMLRemoteObjectTagTests.class"/> -->
-                    <!-- <include name="**/MXMLWebServiceTagTests.class"/> -->
+                    <include name="**/MXMLRemoteObjectTagTests.class"/>
+                    <include name="**/MXMLWebServiceTagTests.class"/>
                     <include name="**/MXMLProperty*.class"/>
                     <exclude name="**/MXMLPropertyTestsBase.class"/>
                     <include name="**/MXMLDesignLayerNodeTests.class"/>

@@ -47,16 +47,55 @@ public class MXMLHTTPServiceTagTests extends MXMLInstanceTagTestsBase
 	}
 	
     @Test
+    public void MXMLHTTPServiceTag_withUrlAndMethodAttributes()
+    {
+        String[] declarations = new String[]
+        {
+            "<mx:HTTPService id='hs1' url='https://example.com' method='POST'>",
+    		"</mx:HTTPService>"
+        };
+        String[] asserts = new String[]
+        {
+            "assertEqual('hs1 is HTTPService', hs1 is HTTPService, true);",
+            "assertEqual('hs1.url', hs1.url, 'https://example.com');",
+            "assertEqual('hs1.method', hs1.method, 'POST');"
+        };
+        String mxml = getMXML(declarations, asserts);
+        compileAndRun(mxml, true, true, false, null);
+    }
+	
+    @Test
+    public void MXMLHTTPServiceTag_withUrlAndMethodTags()
+    {
+        String[] declarations = new String[]
+        {
+            "<mx:HTTPService id='hs1'>",
+            "    <mx:url>https://example.com</mx:url>",
+    		"    <mx:method>POST</mx:method>",
+    		"</mx:HTTPService>"
+        };
+        String[] asserts = new String[]
+        {
+            "assertEqual('hs1 is HTTPService', hs1 is HTTPService, true);",
+            "assertEqual('hs1.url', hs1.url, 'https://example.com');",
+            "assertEqual('hs1.method', hs1.method, 'POST');"
+        };
+        String mxml = getMXML(declarations, asserts);
+        compileAndRun(mxml, true, true, false, null);
+    }
+	
+    @Test
     public void MXMLHTTPServiceTag_withRequest()
     {
         String[] declarations = new String[]
         {
             "<mx:HTTPService id='hs1'>",
-            "    <mx:url>http://whatever</mx:url>",
+            "    <mx:url>https://example.com</mx:url>",
     		"    <mx:request xmlns=''>",
     		"        <a>abc</a>",
     		"        <b>123</b>",
     		"        <c>false</c>",
+    		// "        <d><d1>456.7</d1></d>",
     		"    </mx:request>",
     		"    <mx:method>POST</mx:method>",
     		"</mx:HTTPService>"
@@ -64,10 +103,11 @@ public class MXMLHTTPServiceTagTests extends MXMLInstanceTagTestsBase
         String[] asserts = new String[]
         {
             "assertEqual('hs1 is HTTPService', hs1 is HTTPService, true);",
-            "assertEqual('hs1.url', hs1.url, 'http://whatever');",
+            "assertEqual('hs1.url', hs1.url, 'https://example.com');",
             "assertEqual('hs1.request.a', hs1.request['a'], 'abc');",
             "assertEqual('hs1.request.b', hs1.request['b'], 123);",
             "assertEqual('hs1.request.c', hs1.request['c'], false);",
+            // "assertEqual('hs1.request.d.d1', hs1.request['d']['d1'], 456.7);",
             "assertEqual('hs1.method', hs1.method, 'POST');"
         };
         String mxml = getMXML(declarations, asserts);

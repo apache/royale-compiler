@@ -19,6 +19,7 @@
 
 package mxml.tags;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -44,6 +45,71 @@ public class MXMLWebServiceTagTests extends MXMLInstanceTagTestsBase
 		return "xmlns:mx='library://ns.adobe.com/flex/mx'";
 	}
 	
+    @Test
+    public void MXMLWebServiceTag()
+    {
+        String[] declarations = new String[]
+        {
+            "<mx:WebService id='ws1'>",
+    		"</mx:WebService>"
+        };
+        String[] scriptDeclarations = new String[]
+        {
+        };
+        String[] asserts = new String[]
+        {
+            "assertEqual('ws1 is WebService', ws1 is WebService, true);",
+        };
+        String mxml = getMXML(declarations, scriptDeclarations, asserts);
+        compileAndRun(mxml, true, true, false, null);
+    }
+	
+    @Test
+    public void MXMLWebServiceTag_description()
+    {
+        String[] declarations = new String[]
+        {
+            "<mx:WebService id='ws1'>",
+            "    <mx:description>whatever</mx:description>",
+    		"</mx:WebService>"
+        };
+        String[] scriptDeclarations = new String[]
+        {
+        };
+        String[] asserts = new String[]
+        {
+            "assertEqual('ws1 is WebService', ws1 is WebService, true);",
+            "assertEqual('ws1.description', ws1.description, 'whatever');",
+        };
+        String mxml = getMXML(declarations, scriptDeclarations, asserts);
+        compileAndRun(mxml, true, true, false, null);
+    }
+	
+    @Ignore
+    @Test
+    public void MXMLWebServiceTag_operation()
+    {
+        String[] declarations = new String[]
+        {
+            "<mx:WebService id='ws1' wsdl='https://example.com'>",
+    		"    <mx:operation name='op1'/>",
+    		"</mx:WebService>"
+        };
+        String[] scriptDeclarations = new String[]
+        {
+        	"import mx.rpc.soap.mxml.Operation;"
+        };
+        String[] asserts = new String[]
+        {
+            "assertEqual('ws1 is WebService', ws1 is WebService, true);",
+            "assertEqual('ws1.operations.op1', ws1.operations['op1'] is Operation, true);",
+            "assertEqual('ws1.operations.op1.name', ws1.operations['op1'].name, 'op1');",
+        };
+        String mxml = getMXML(declarations, scriptDeclarations, asserts);
+        compileAndRun(mxml, true, true, false, null);
+    }
+
+    @Ignore
     @Test
     public void MXMLWebServiceTag_twoOperations()
     {
