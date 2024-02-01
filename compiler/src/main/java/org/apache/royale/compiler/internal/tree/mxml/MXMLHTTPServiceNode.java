@@ -23,6 +23,7 @@ import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.mxml.IMXMLTagData;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.mxml.IMXMLHTTPServiceNode;
 
@@ -53,7 +54,6 @@ import org.apache.royale.compiler.tree.mxml.IMXMLHTTPServiceNode;
  */
 class MXMLHTTPServiceNode extends MXMLInstanceNode implements IMXMLHTTPServiceNode
 {
-
     private static final String TAG_REQUEST = "request";
 
     /**
@@ -72,15 +72,10 @@ class MXMLHTTPServiceNode extends MXMLInstanceNode implements IMXMLHTTPServiceNo
         return ASTNodeID.MXMLHTTPServiceID;
     }
 
-    /**
-     * Create special {@link MXMLHTTPServiceRequestPropertyNode} for
-     * {@code <s:request>} tag. Otherwise, fall-back to the normal creation
-     * logic.
-     */
     @Override
-    protected final MXMLSpecifierNodeBase createSpecifierNode(MXMLTreeBuilder builder, String specifierName)
+    protected void processChildTag(MXMLTreeBuilder builder, IMXMLTagData tag, IMXMLTagData childTag, MXMLNodeInfo info)
     {
-        if (TAG_REQUEST.equals(specifierName))
+        if (TAG_REQUEST.equals(childTag.getShortName()) && childTag.getURI().equals(tag.getURI()))
         {
             final RoyaleProject project = builder.getProject();
             final IClassDefinition classHTTPService = getClassReference(project);
@@ -89,9 +84,13 @@ class MXMLHTTPServiceNode extends MXMLInstanceNode implements IMXMLHTTPServiceNo
             {
                 final MXMLHTTPServiceRequestPropertyNode requestPropertyNode = new MXMLHTTPServiceRequestPropertyNode(this);
                 requestPropertyNode.setDefinition(definitionRequest);
-                return requestPropertyNode;
+                requestPropertyNode.initializeFromTag(builder, childTag);
+                info.addChildNode(requestPropertyNode);
             }
         }
-        return super.createSpecifierNode(builder, specifierName);
+        else
+        {
+            super.processChildTag(builder, tag, childTag, info);
+        }
     }
 }

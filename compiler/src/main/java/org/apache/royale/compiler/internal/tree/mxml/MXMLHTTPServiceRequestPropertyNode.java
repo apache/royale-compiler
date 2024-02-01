@@ -22,6 +22,7 @@ package org.apache.royale.compiler.internal.tree.mxml;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.mxml.IMXMLTagData;
+import org.apache.royale.compiler.mxml.IMXMLUnitData;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLHTTPServiceRequestPropertyNode;
@@ -32,7 +33,6 @@ import org.apache.royale.compiler.tree.mxml.IMXMLNode;
  */
 class MXMLHTTPServiceRequestPropertyNode extends MXMLPropertySpecifierNode implements IMXMLHTTPServiceRequestPropertyNode
 {
-
     /**
      * Create node for {@code <s:request>} tag.
      * 
@@ -68,8 +68,30 @@ class MXMLHTTPServiceRequestPropertyNode extends MXMLPropertySpecifierNode imple
     public IASNode getChild(int i)
     {
         if (i != 0)
+        {
             throw new IndexOutOfBoundsException("Request node only have one child node.");
+        }
         return objectNode;
+    }
+
+    @Override
+    protected void initializeFromTag(MXMLTreeBuilder builder, IMXMLTagData tag)
+    {
+        setLocation(tag);
+
+        MXMLNodeInfo info = createNodeInfo(builder);
+
+        // Process each child tag.
+        for (IMXMLUnitData unit = tag.getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
+        {
+            if (unit instanceof IMXMLTagData)
+            {
+                processChildTag(builder, tag, (IMXMLTagData) unit, info);
+            }
+        }
+
+        // Do any final processing.
+        initializationComplete(builder, tag, info);
     }
 
     /**
@@ -105,8 +127,6 @@ class MXMLHTTPServiceRequestPropertyNode extends MXMLPropertySpecifierNode imple
     {
         final RoyaleProject project = builder.getProject();
         objectNode.setClassReference(project, IASLanguageConstants.Object);
-        objectNode.initializeFromTag(builder, tag);
-        objectNode.initializationComplete(builder, tag, createNodeInfo(builder));
         objectNode.setChildren(info.getChildNodeList().toArray(new IMXMLNode[0]));
     }
 }
