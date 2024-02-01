@@ -42,4 +42,47 @@ public class MXMLInstanceTagTests extends MXMLInstanceTagTestsBase
         String mxml = getMXML(declarations, asserts);
         compileAndRun(mxml);
     }
+
+    @Test
+    public void MXMLInstanceTag_propertiesAsAttributes()
+    {
+        String[] declarations = new String[]
+        {
+            "<custom:TestInstance id='b' name='whatever' value='123.4' color='0xff9900' visible='true'/>"
+        };
+        String[] asserts = new String[]
+        {
+	        "assertEqual('b', b is TestInstance, true);",
+	        "assertEqual('b.name', b.name, 'whatever');",
+	        "assertEqual('b.value', b.value, 123.4);",
+	        "assertEqual('b.color', b.color, 0xff9900);",
+	        "assertEqual('b.visible', b.visible, true);"
+        };
+        String mxml = getMXML(declarations, asserts);
+        compileAndRun(mxml);
+    }
+
+    @Test
+    public void MXMLInstanceTag_propertiesAsTags()
+    {
+        String[] declarations = new String[]
+        {
+            "<custom:TestInstance id='b'>",
+            "  <custom:name>whatever</custom:name>",
+            "  <custom:value>123.4</custom:value>",
+            "  <custom:color>0xff9900</custom:color>",
+            "  <custom:visible>true</custom:visible>",
+            "</custom:TestInstance>"
+        };
+        String[] asserts = new String[]
+        {
+	        "assertEqual('b', b is TestInstance, true);",
+	        "assertEqual('b.name', b.name, 'whatever');",
+	        "assertEqual('b.value', b.value, 123.4);",
+	        "assertEqual('b.color', b.color, 0xff9900);",
+	        "assertEqual('b.visible', b.visible, true);"
+        };
+        String mxml = getMXML(declarations, asserts);
+        compileAndRun(mxml);
+    }
 }
