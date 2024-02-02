@@ -63,7 +63,7 @@ class MXMLRemoteObjectNode extends MXMLInstanceNode implements IMXMLRemoteObject
     protected void processChildTag(MXMLTreeBuilder builder, IMXMLTagData tag, IMXMLTagData childTag, MXMLNodeInfo info)
     {
         // Create MXMLRemoteObjectMethodNode for a {@code <method>} child tag.
-        if (TAG_METHOD.equals(childTag.getShortName()) && childTag.getURI().equals(tag.getURI()))
+        if (TAG_METHOD.equals(childTag.getShortName()) && childTag.getURI() != null && childTag.getURI().equals(tag.getURI()))
         {
             final RoyaleProject project = builder.getProject();
             final XMLName name = new XMLName(childTag.getXMLName().getXMLNamespace(), BASENAME_REMOTE_OBJECT_METHOD);

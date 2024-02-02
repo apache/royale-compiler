@@ -122,7 +122,7 @@ class MXMLWebServiceOperationNode extends MXMLInstanceNode implements IMXMLWebSe
     {
         String childTagShortName = childTag.getShortName();
         // request is just an alias for arguments
-        if ((TAG_ARGUMENTS.equals(childTagShortName) || TAG_REQUEST.equals(childTagShortName)) && childTag.getURI().equals(tag.getURI()))
+        if ((TAG_ARGUMENTS.equals(childTagShortName) || TAG_REQUEST.equals(childTagShortName)) && childTag.getURI() != null && childTag.getURI().equals(tag.getURI()))
         {
             final RoyaleProject project = builder.getProject();
             final IClassDefinition classOperation = getClassReference(project);

@@ -75,7 +75,7 @@ class MXMLHTTPServiceNode extends MXMLInstanceNode implements IMXMLHTTPServiceNo
     @Override
     protected void processChildTag(MXMLTreeBuilder builder, IMXMLTagData tag, IMXMLTagData childTag, MXMLNodeInfo info)
     {
-        if (TAG_REQUEST.equals(childTag.getShortName()) && childTag.getURI().equals(tag.getURI()))
+        if (TAG_REQUEST.equals(childTag.getShortName()) && childTag.getURI() != null && childTag.getURI().equals(tag.getURI()))
         {
             final RoyaleProject project = builder.getProject();
             final IClassDefinition classHTTPService = getClassReference(project);
