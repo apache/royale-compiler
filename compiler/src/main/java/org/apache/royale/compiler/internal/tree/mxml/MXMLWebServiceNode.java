@@ -63,7 +63,7 @@ class MXMLWebServiceNode extends MXMLInstanceNode implements IMXMLWebServiceNode
     protected void processChildTag(MXMLTreeBuilder builder, IMXMLTagData tag, IMXMLTagData childTag, MXMLNodeInfo info)
     {
         // Create MXMLWebServiceOperationNode for an {@code <operation>} child tag.
-        if (childTag.getShortName().equals(TAG_OPERATION))
+        if (TAG_OPERATION.equals(childTag.getShortName()) && childTag.getURI().equals(tag.getURI()))
         {
             final RoyaleProject project = builder.getProject();
             final XMLName name = new XMLName(childTag.getXMLName().getXMLNamespace(), BASENAME_WEB_SERVICE_OPERATION);
