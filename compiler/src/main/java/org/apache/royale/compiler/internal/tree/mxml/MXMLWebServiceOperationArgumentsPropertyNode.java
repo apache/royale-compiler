@@ -25,20 +25,20 @@ import org.apache.royale.compiler.mxml.IMXMLTagData;
 import org.apache.royale.compiler.mxml.IMXMLUnitData;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.mxml.IMXMLHTTPServiceRequestPropertyNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLWebServiceOperationArgumentsPropertyNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLNode;
 
 /**
- * AST node for {@code <request>} tag under a {@code <HTTPService>} tag.
+ * AST node for the {@code <arguments>} tag under the {@code <operation>} tag, which is under the {@code <WebService>} tag.
  */
-class MXMLHTTPServiceRequestPropertyNode extends MXMLPropertySpecifierNode implements IMXMLHTTPServiceRequestPropertyNode
+class MXMLWebServiceOperationArgumentsPropertyNode extends MXMLPropertySpecifierNode implements IMXMLWebServiceOperationArgumentsPropertyNode
 {
     /**
-     * Create node for {@code <request>} tag.
+     * Create node for {@code <arguments>} tag.
      * 
      * @param parent Parent node.
      */
-    MXMLHTTPServiceRequestPropertyNode(MXMLHTTPServiceNode parent)
+    MXMLWebServiceOperationArgumentsPropertyNode(MXMLWebServiceOperationNode parent)
     {
         super(parent);
         objectNode = new MXMLObjectNode(this);
@@ -53,7 +53,7 @@ class MXMLHTTPServiceRequestPropertyNode extends MXMLPropertySpecifierNode imple
     }
 
     /**
-     * {@code <request>} node only have one "instance" node of type "Object".
+     * {@code <arguments>} node only have one "instance" node of type "Object".
      */
     @Override
     public int getChildCount()
@@ -62,14 +62,14 @@ class MXMLHTTPServiceRequestPropertyNode extends MXMLPropertySpecifierNode imple
     }
 
     /**
-     * {@code <request>} node only have one "instance" node of type "Object".
+     * {@code <arguments>} node only have one "instance" node of type "Object".
      */
     @Override
     public IASNode getChild(int i)
     {
         if (i != 0)
         {
-            throw new IndexOutOfBoundsException("Request node only have one child node.");
+            throw new IndexOutOfBoundsException("Arguments node only have one child node.");
         }
         return objectNode;
     }
@@ -108,7 +108,7 @@ class MXMLHTTPServiceRequestPropertyNode extends MXMLPropertySpecifierNode imple
     }
 
     /**
-     * Synthesize an "instance" node of type "Object" to own all the request
+     * Synthesize an "instance" node of type "Object" to own all the arguments
      * fields.
      */
     @Override
@@ -120,7 +120,7 @@ class MXMLHTTPServiceRequestPropertyNode extends MXMLPropertySpecifierNode imple
     }
 
     /**
-     * Span "object" node's offset to the parent "request" node. Make the
+     * Span "object" node's offset to the parent "arguments" node. Make the
      * dynamic request properties children of the "object" node.
      */
     private void initializeObjectNode(MXMLTreeBuilder builder, IMXMLTagData tag, MXMLNodeInfo info)

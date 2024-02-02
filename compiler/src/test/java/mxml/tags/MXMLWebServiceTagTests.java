@@ -134,4 +134,74 @@ public class MXMLWebServiceTagTests extends MXMLInstanceTagTestsBase
         String mxml = getMXML(declarations, scriptDeclarations, asserts);
         compileAndRun(mxml, true, true, false, null);
     }
+	
+    @Test
+    public void MXMLWebServiceTag_operation_withArguments()
+    {
+        String[] declarations = new String[]
+        {
+            "<mx:WebService id='ws1' wsdl='https://example.com'>",
+    		"    <mx:operation name='op1'>",
+    		"        <mx:arguments>",
+    		"            <a>abc</a>",
+    		"            <b>123</b>",
+    		"            <c>false</c>",
+            "        </mx:arguments>",
+            "    </mx:operation>",
+    		"</mx:WebService>"
+        };
+        String[] scriptDeclarations = new String[]
+        {
+        	"import mx.rpc.soap.mxml.Operation;"
+        };
+        String[] asserts = new String[]
+        {
+            "assertEqual('ws1 is WebService', ws1 is WebService, true);",
+            "assertEqual('ws1.operations.op1', ws1.operations['op1'] is Operation, true);",
+            "assertEqual('ws1.operations.op1.name', ws1.operations['op1'].name, 'op1');",
+            "assertEqual('ws1.operations.op1.arguments.a', ws1.operations['op1'].arguments['a'], 'abc');",
+            "assertEqual('ws1.operations.op1.arguments.b', ws1.operations['op1'].arguments['b'], 123);",
+            "assertEqual('ws1.operations.op1.arguments.c', ws1.operations['op1'].arguments['c'], false);",
+            "assertEqual('ws1.operations.op1.request.a', ws1.operations['op1'].request['a'], 'abc');",
+            "assertEqual('ws1.operations.op1.request.b', ws1.operations['op1'].request['b'], 123);",
+            "assertEqual('ws1.operations.op1.request.c', ws1.operations['op1'].request['c'], false);",
+        };
+        String mxml = getMXML(declarations, scriptDeclarations, asserts);
+        compileAndRun(mxml, true, true, false, null);
+    }
+	
+    @Test
+    public void MXMLWebServiceTag_operation_withRequest()
+    {
+        String[] declarations = new String[]
+        {
+            "<mx:WebService id='ws1' wsdl='https://example.com'>",
+    		"    <mx:operation name='op1'>",
+    		"        <mx:request>",
+    		"            <a>abc</a>",
+    		"            <b>123</b>",
+    		"            <c>false</c>",
+            "        </mx:request>",
+            "    </mx:operation>",
+    		"</mx:WebService>"
+        };
+        String[] scriptDeclarations = new String[]
+        {
+        	"import mx.rpc.soap.mxml.Operation;"
+        };
+        String[] asserts = new String[]
+        {
+            "assertEqual('ws1 is WebService', ws1 is WebService, true);",
+            "assertEqual('ws1.operations.op1', ws1.operations['op1'] is Operation, true);",
+            "assertEqual('ws1.operations.op1.name', ws1.operations['op1'].name, 'op1');",
+            "assertEqual('ws1.operations.op1.arguments.a', ws1.operations['op1'].arguments['a'], 'abc');",
+            "assertEqual('ws1.operations.op1.arguments.b', ws1.operations['op1'].arguments['b'], 123);",
+            "assertEqual('ws1.operations.op1.arguments.c', ws1.operations['op1'].arguments['c'], false);",
+            "assertEqual('ws1.operations.op1.request.a', ws1.operations['op1'].request['a'], 'abc');",
+            "assertEqual('ws1.operations.op1.request.b', ws1.operations['op1'].request['b'], 123);",
+            "assertEqual('ws1.operations.op1.request.c', ws1.operations['op1'].request['c'], false);",
+        };
+        String mxml = getMXML(declarations, scriptDeclarations, asserts);
+        compileAndRun(mxml, true, true, false, null);
+    }
 }

@@ -19,6 +19,7 @@
 
 package org.apache.royale.compiler.internal.tree.mxml;
 
+import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.mxml.IMXMLTagData;
 import org.apache.royale.compiler.problems.ICompilerProblem;
@@ -32,11 +33,16 @@ import org.apache.royale.compiler.tree.mxml.IMXMLStringNode;
 
 import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.*;
 
+import org.apache.royale.compiler.definitions.IClassDefinition;
+import org.apache.royale.compiler.definitions.IDefinition;
+
 /**
  * Implementation of the {@link IMXMLRemoteObjectMethodNode} interface.
  */
 class MXMLRemoteObjectMethodNode extends MXMLInstanceNode implements IMXMLRemoteObjectMethodNode
 {
+    private static final String TAG_ARGUMENTS = "arguments";
+
     /**
      * Create an AST node.
      * 
@@ -109,5 +115,27 @@ class MXMLRemoteObjectMethodNode extends MXMLInstanceNode implements IMXMLRemote
     public final String getMethodName()
     {
         return methodName;
+    }
+
+    @Override
+    protected void processChildTag(MXMLTreeBuilder builder, IMXMLTagData tag, IMXMLTagData childTag, MXMLNodeInfo info)
+    {
+        if (TAG_ARGUMENTS.equals(childTag.getShortName()) && childTag.getURI().equals(tag.getURI()))
+        {
+            final RoyaleProject project = builder.getProject();
+            final IClassDefinition classOperation = getClassReference(project);
+            final IDefinition definitionRequest = project.resolveSpecifier(classOperation, TAG_ARGUMENTS);
+            if (definitionRequest != null)
+            {
+                final MXMLRemoteObjectMethodArgumentsPropertyNode argsPropertyNode = new MXMLRemoteObjectMethodArgumentsPropertyNode(this);
+                argsPropertyNode.setDefinition(definitionRequest);
+                argsPropertyNode.initializeFromTag(builder, childTag);
+                info.addChildNode(argsPropertyNode);
+            }
+        }
+        else
+        {
+            super.processChildTag(builder, tag, childTag, info);
+        }
     }
 }

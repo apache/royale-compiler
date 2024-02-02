@@ -184,7 +184,6 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLDateID:
         case MXMLDefinitionID:
         case MXMLDesignLayerID:
-        case MXMLHTTPServiceRequestID:
         case MXMLLibraryID:
         case MXMLModelID:
         case MXMLModelPropertyID:

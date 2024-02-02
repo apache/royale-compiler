@@ -112,4 +112,40 @@ public class MXMLRemoteObjectTagTests extends MXMLInstanceTagTestsBase
         String mxml = getMXML(declarations, scriptDeclarations, asserts);
         compileAndRun(mxml, true, true, false, null);
     }
+	
+    @Test
+    public void MXMLRemoteObjectTag_method_withArguments()
+    {
+        String[] declarations = new String[]
+        {
+            "<mx:RemoteObject id='ro1'>",
+    		"    <mx:method name='m1'>",
+    		"        <mx:arguments>",
+    		"            <a>abc</a>",
+    		"            <b>123</b>",
+    		"            <c>false</c>",
+    		"        </mx:arguments>",
+    		"    </mx:method>",
+    		"</mx:RemoteObject>"
+        };
+        String[] scriptDeclarations = new String[]
+        {
+        	"import mx.rpc.remoting.mxml.Operation;"
+        };
+        String[] asserts = new String[]
+        {
+            "assertEqual('ro1 is RemoteObject', ro1 is RemoteObject, true);",
+            "assertEqual('ro1.operations.m1', ro1.operations['m1'] is Operation, true);",
+            "assertEqual('ro1.operations.m1.name', ro1.operations['m1'].name, 'm1');",
+            "assertEqual('ro1.operations.m1.argumentNames.length', ro1.operations['m1'].argumentNames.length, 3);",
+            "assertEqual('ro1.operations.m1.argumentNames[0]', ro1.operations['m1'].argumentNames[0], 'a');",
+            "assertEqual('ro1.operations.m1.argumentNames[1]', ro1.operations['m1'].argumentNames[1], 'b');",
+            "assertEqual('ro1.operations.m1.argumentNames[1]', ro1.operations['m1'].argumentNames[2], 'c');",
+            "assertEqual('ro1.operations.m1.arguments.a', ro1.operations['m1'].arguments['a'], 'abc');",
+            "assertEqual('ro1.operations.m1.arguments.b', ro1.operations['m1'].arguments['b'], 123);",
+            "assertEqual('ro1.operations.m1.arguments.c', ro1.operations['m1'].arguments['c'], false);",
+        };
+        String mxml = getMXML(declarations, scriptDeclarations, asserts);
+        compileAndRun(mxml, true, true, false, null);
+    }
 }

@@ -1,21 +1,21 @@
 /*
- *
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- */
+*
+*  Licensed to the Apache Software Foundation (ASF) under one or more
+*  contributor license agreements.  See the NOTICE file distributed with
+*  this work for additional information regarding copyright ownership.
+*  The ASF licenses this file to You under the Apache License, Version 2.0
+*  (the "License"); you may not use this file except in compliance with
+*  the License.  You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*
+*/
 
 package org.apache.royale.compiler.internal.tree.mxml;
 
@@ -25,20 +25,20 @@ import org.apache.royale.compiler.mxml.IMXMLTagData;
 import org.apache.royale.compiler.mxml.IMXMLUnitData;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.mxml.IMXMLHTTPServiceRequestPropertyNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLRemoteObjectMethodArgumentsPropertyNode;
 
 /**
- * AST node for {@code <request>} tag under a {@code <HTTPService>} tag.
+ * AST node for the {@code <arguments>} tag under the {@code <method>} tag, which is under the {@code <RemoteObject>} tag.
  */
-class MXMLHTTPServiceRequestPropertyNode extends MXMLPropertySpecifierNode implements IMXMLHTTPServiceRequestPropertyNode
+class MXMLRemoteObjectMethodArgumentsPropertyNode extends MXMLPropertySpecifierNode implements IMXMLRemoteObjectMethodArgumentsPropertyNode
 {
     /**
-     * Create node for {@code <request>} tag.
+     * Create node for {@code <arguments>} tag.
      * 
      * @param parent Parent node.
      */
-    MXMLHTTPServiceRequestPropertyNode(MXMLHTTPServiceNode parent)
+    MXMLRemoteObjectMethodArgumentsPropertyNode(MXMLRemoteObjectMethodNode parent)
     {
         super(parent);
         objectNode = new MXMLObjectNode(this);
@@ -53,7 +53,7 @@ class MXMLHTTPServiceRequestPropertyNode extends MXMLPropertySpecifierNode imple
     }
 
     /**
-     * {@code <request>} node only have one "instance" node of type "Object".
+     * {@code <arguments>} node only have one "instance" node of type "Object".
      */
     @Override
     public int getChildCount()
@@ -62,14 +62,14 @@ class MXMLHTTPServiceRequestPropertyNode extends MXMLPropertySpecifierNode imple
     }
 
     /**
-     * {@code <request>} node only have one "instance" node of type "Object".
+     * {@code <arguments>} node only have one "instance" node of type "Object".
      */
     @Override
     public IASNode getChild(int i)
     {
         if (i != 0)
         {
-            throw new IndexOutOfBoundsException("Request node only have one child node.");
+            throw new IndexOutOfBoundsException("Arguments node only have one child node.");
         }
         return objectNode;
     }
@@ -100,6 +100,11 @@ class MXMLHTTPServiceRequestPropertyNode extends MXMLPropertySpecifierNode imple
     @Override
     protected void processChildTag(MXMLTreeBuilder builder, IMXMLTagData tag, IMXMLTagData childTag, MXMLNodeInfo info)
     {
+        if (childTag.getPrefix() != null)
+        {
+            // TODO Report a problem because a prefix means nothing.
+        }
+
         final MXMLPropertySpecifierNode specifierNode = new MXMLPropertySpecifierNode(this);
         specifierNode.setDynamicName(childTag.getShortName());
         specifierNode.initializeFromTag(builder, childTag);
@@ -108,7 +113,7 @@ class MXMLHTTPServiceRequestPropertyNode extends MXMLPropertySpecifierNode imple
     }
 
     /**
-     * Synthesize an "instance" node of type "Object" to own all the request
+     * Synthesize an "instance" node of type "Object" to own all the arguments
      * fields.
      */
     @Override
@@ -120,7 +125,7 @@ class MXMLHTTPServiceRequestPropertyNode extends MXMLPropertySpecifierNode imple
     }
 
     /**
-     * Span "object" node's offset to the parent "request" node. Make the
+     * Span "object" node's offset to the parent "arguments" node. Make the
      * dynamic request properties children of the "object" node.
      */
     private void initializeObjectNode(MXMLTreeBuilder builder, IMXMLTagData tag, MXMLNodeInfo info)

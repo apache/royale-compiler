@@ -112,6 +112,7 @@ import java.util.Vector;
 
 import org.apache.royale.abc.ABCConstants;
 import org.apache.royale.abc.instructionlist.InstructionList;
+import org.apache.royale.abc.semantics.Instruction;
 import org.apache.royale.abc.semantics.Label;
 import org.apache.royale.abc.semantics.MethodBodyInfo;
 import org.apache.royale.abc.semantics.MethodInfo;
@@ -959,7 +960,6 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
                 processMXMLEventSpecifier((IMXMLEventSpecifierNode) node, childContext);
                 break;
             }
-            case MXMLHTTPServiceRequestID:
             case MXMLPropertySpecifierID:
             {
                 processMXMLPropertySpecifier((IMXMLPropertySpecifierNode) node, childContext);
@@ -2979,19 +2979,19 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
     
     void processMXMLWebServiceOperation(IMXMLWebServiceOperationNode node, Context context)
     {
-        processOperationOrMethod(node, context, node.getOperationName());
+        processOperationOrMethod(node, context, node.getOperationName(), false);
     }
     
     void processMXMLRemoteObjectMethod(IMXMLRemoteObjectMethodNode node, Context context)
     {
-        processOperationOrMethod(node, context, node.getMethodName());
+        processOperationOrMethod(node, context, node.getMethodName(), true);
     }
     
     /**
      * Generates instructions in the current context to push the value of an
      * {@code IMXMLOperationNode}.
      */
-    void processOperationOrMethod(IMXMLInstanceNode node, Context context, String name)
+    void processOperationOrMethod(IMXMLInstanceNode node, Context context, String name, boolean includeArgNames)
     {
         // If 'name' is undefined, the WebService node will report problem.
         if (!Strings.isNullOrEmpty(name))
@@ -3015,15 +3015,27 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         					propNode = (IMXMLPropertySpecifierNode)argNode;
         					argList.add(propNode.getName());
         				}
-        				if (argList.size() > 0)
+        				if (includeArgNames && argList.size() > 0)
         				{
         		            context.startUsing(IL.PROPERTIES);
-        		            context.addInstruction(OP_pushstring, "argumentNames");
-        		            context.addInstruction(OP_pushtrue);
-        		            for (String s : argList)
-            		            context.addInstruction(OP_pushstring, s);
-        	                context.addInstruction(OP_newarray, argList.size());      
-        		            context.stopUsing(IL.PROPERTIES, 1);        					
+
+                            if (!getProject().getTargetSettings().getMxmlChildrenAsData())
+                            {
+                                context.addInstruction(OP_dup);
+                                for (String s : argList)
+                                    context.addInstruction(OP_pushstring, s);
+                                context.addInstruction(OP_newarray, argList.size());   
+                                context.addInstruction(OP_setproperty,  new Name("argumentNames"));
+                            }
+                            else
+                            {
+                                context.addInstruction(OP_pushstring, "argumentNames");
+                                context.addInstruction(OP_pushtrue);
+                                for (String s : argList)
+                                    context.addInstruction(OP_pushstring, s);
+                                context.addInstruction(OP_newarray, argList.size());    
+                            }
+                            context.stopUsing(IL.PROPERTIES, 1);
         				}
         				break;
         			}

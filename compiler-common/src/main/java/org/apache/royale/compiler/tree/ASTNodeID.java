@@ -251,7 +251,6 @@ public enum ASTNodeID
     MXMLFileID(null, true),
     MXMLFunctionID(null, true),
     MXMLHTTPServiceID(null, true),
-    MXMLHTTPServiceRequestID(null, true),
     MXMLImplementsID(null, true),
     MXMLInstanceID(null, true),
     MXMLIntID(null, true),
