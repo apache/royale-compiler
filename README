@@ -79,11 +79,9 @@ Building the Apache Royale Compiler with Ant
     SOFTWARE                                     ENVIRONMENT VARIABLE (absolute paths)
     ==================================================================================
 
-    Java SDK 1.8 or greater (*1)                           JAVA_HOME
-        (for Java 1.8 see note at (*2))
+    Java JDK 11 or greater (*1)                            JAVA_HOME
 
     Ant 1.8 or greater (*1)                                ANT_HOME
-        (for Java 1.8 see note at (*2))
 
     ==================================================================================
     
@@ -99,11 +97,6 @@ Building the Apache Royale Compiler with Ant
             export PATH="$PATH:$ANT_HOME/bin:$JAVA_HOME/bin"
 
          On Linux make sure you path include ANT_HOME and JAVA_HOME.
-
-    *2)  If you are using Java SDK 1.8 or greater on a Mac you must use Ant 1.8
-         or greater. If you use Java 1.8 with Ant 1.7, ant reports the java
-         version as 1.6 so the JVM args for the data model (-d32/-d64) will not
-         be set correctly and you will get compile errors.
 
     Once you've done that, use
 
