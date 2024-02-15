@@ -1225,19 +1225,31 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 			switch (token.getType()) {
 				case ASTokenTypes.TOKEN_ASDOC_COMMENT: {
 					if (skipFormatting) {
-						return token.getText();
+						String tokenText = token.getText();
+						if (tokenText != null) {
+							return tokenText;
+						}
+						return "";
 					}
 					return formatASDocComment(token.getText(), indent);
 				}
 				case ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT: {
 					if (skipFormatting) {
-						return token.getText();
+						String tokenText = token.getText();
+						if (tokenText != null) {
+							return tokenText;
+						}
+						return "";
 					}
 					return formatSingleLineComment(token.getText());
 				}
 				case ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT: {
 					if (skipFormatting) {
-						return token.getText();
+						String tokenText = token.getText();
+						if (tokenText != null) {
+							return tokenText;
+						}
+						return "";
 					}
 					return formatMultiLineComment(token.getText());
 				}
@@ -1246,17 +1258,31 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 				}
 				case ASTokenTypes.TOKEN_SEMICOLON: {
 					if (skipFormatting) {
-						return token.isImplicit() ? "" : token.getText();
+						if (token.isImplicit()) {
+							return "";
+						}
+						String tokenText = token.getText();
+						if (tokenText != null) {
+							return tokenText;
+						}
+						return "";
 					}
 					boolean skipSemicolon = Semicolons.REMOVE.equals(settings.semicolons)
 							|| (Semicolons.IGNORE.equals(settings.semicolons) && token.isImplicit());
 					if (!skipSemicolon) {
-						return token.getText();
+						String tokenText = token.getText();
+						if (tokenText != null) {
+							return tokenText;
+						}
 					}
 					return "";
 				}
 				default: {
-					return token.getText();
+					String tokenText = token.getText();
+					if (tokenText != null) {
+						return tokenText;
+					}
+					return "";
 				}
 			}
 		}
