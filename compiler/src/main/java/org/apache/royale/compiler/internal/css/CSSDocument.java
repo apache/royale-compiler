@@ -19,6 +19,7 @@
 
 package org.apache.royale.compiler.internal.css;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -30,16 +31,14 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
-
 import org.apache.royale.compiler.css.ICSSDocument;
 import org.apache.royale.compiler.css.ICSSFontFace;
 import org.apache.royale.compiler.css.ICSSNamespaceDefinition;
+import org.apache.royale.compiler.css.ICSSNode;
 import org.apache.royale.compiler.css.ICSSRule;
-import org.apache.royale.compiler.internal.css.CSSLexer;
-import org.apache.royale.compiler.internal.css.CSSParser;
-import org.apache.royale.compiler.internal.css.CSSTree;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
+
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -51,6 +50,7 @@ public class CSSDocument extends CSSNodeBase implements ICSSDocument
 {
     /** The short name for the default namespace is an empty string. */
     private static final String DEFAULT_NAMESPACE_SHORT_NAME = "";
+    private static final int NOT_SET = -1;
 
     /**
      * Parse a CSS document into {@link ICSSDocument} model.
@@ -132,6 +132,53 @@ public class CSSDocument extends CSSNodeBase implements ICSSDocument
         children.add(new CSSTypedNode(CSSModelTreeType.NAMESPACE_LIST, this.namespaces));
         children.add(new CSSTypedNode(CSSModelTreeType.FONT_FACE_LIST, this.fontFaces));
         children.add(new CSSTypedNode(CSSModelTreeType.RULE_LIST, this.rules));
+
+        List<ICSSNode> allNodes = new ArrayList<ICSSNode>();
+        allNodes.addAll(this.namespaces);
+        allNodes.addAll(this.fontFaces);
+        allNodes.addAll(this.rules);
+        int line = NOT_SET;
+        int column = NOT_SET;
+        int endLine = NOT_SET;
+        int endColumn = NOT_SET;
+        int start = NOT_SET;
+        int end = NOT_SET;
+        for (ICSSNode node : allNodes)
+        {
+            if (start == NOT_SET || start > node.getStart())
+            {
+                start = node.getStart();
+            }
+            if (end == NOT_SET || end < node.getStart())
+            {
+                end = node.getEnd();
+            }
+            if (line == NOT_SET || line > node.getLine())
+            {
+                line = node.getLine();
+                column = node.getColumn();
+            }
+            else if (line == node.getLine() && column > node.getColumn())
+            {
+                column = node.getColumn();
+            }
+            if (endLine == NOT_SET || endLine < node.getEndLine())
+            {
+                endLine = node.getEndLine();
+                endColumn = node.getEndColumn();
+            }
+            else if (endLine == node.getEndLine() && endColumn < node.getEndColumn())
+            {
+                endColumn = node.getEndColumn();
+            }
+        }
+        setStart(start);
+        setEnd(end);
+        setLine(line);
+        setColumn(column);
+        setEndLine(endLine);
+        setEndColumn(endColumn);
+        setSourcePath(tokenStream.getSourceName());
     }
 
     private final ImmutableList<ICSSRule> rules;
