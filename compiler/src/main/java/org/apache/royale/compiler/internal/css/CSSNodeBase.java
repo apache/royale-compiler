@@ -82,6 +82,8 @@ class CSSNodeBase extends SourceLocation implements ICSSNode
     {
         int line = NOT_SET;
         int column = NOT_SET;
+        int endLine = NOT_SET;
+        int endColumn = NOT_SET;
         int start = NOT_SET;
         int stop = NOT_SET;
 
@@ -93,7 +95,7 @@ class CSSNodeBase extends SourceLocation implements ICSSNode
                     (CommonToken)tokenStream.get(tokenStartIndex);
             start = startToken.getStartIndex();
             line = startToken.getLine();
-            column = startToken.getCharPositionInLine() + 1;
+            column = startToken.getCharPositionInLine();
         }
 
         final int tokenStopIndex = tree.getTokenStopIndex();
@@ -102,12 +104,25 @@ class CSSNodeBase extends SourceLocation implements ICSSNode
             final CommonToken stopToken =
                     (CommonToken)tokenStream.get(tokenStopIndex);
             stop = stopToken.getStopIndex() + 1;
+            endLine = stopToken.getLine();
+            endColumn = stopToken.getCharPositionInLine() + stopToken.getText().length();
+        }
+
+        if (endLine == NOT_SET)
+        {
+            endLine = line;
+            if (endColumn == NOT_SET)
+            {
+                endColumn = column;
+            }
         }
 
         setStart(start);
         setEnd(stop);
         setLine(line);
         setColumn(column);
+        setEndLine(endLine);
+        setEndColumn(endColumn);
         setSourcePath(tokenStream.getSourceName());
     }
 

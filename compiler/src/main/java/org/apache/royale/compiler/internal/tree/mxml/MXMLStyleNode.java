@@ -63,6 +63,8 @@ class MXMLStyleNode extends MXMLNodeBase implements IMXMLStyleNode
      * {@code <fx:Style src="styles.css" />}.
      */
     private String cssText;
+
+    private int cssTextStart = 0;
     
     /**
      * path of included css.
@@ -91,6 +93,8 @@ class MXMLStyleNode extends MXMLNodeBase implements IMXMLStyleNode
             {
                 ANTLRStringStream stream = new ANTLRStringStream(cssText);
                 stream.name = cssSourcePath != null ? cssSourcePath : getSourcePath();
+                stream.setLine(getLine());
+                stream.setCharPositionInLine(cssTextStart);
                 cssDocument = CSSDocument.parse(stream, problems);
             }
             else
@@ -122,6 +126,7 @@ class MXMLStyleNode extends MXMLNodeBase implements IMXMLStyleNode
             if (sourcePath != null)
             {
                 cssText = builder.readExternalFile(attribute, sourcePath);
+                cssTextStart = 0;
                 cssSourcePath = sourcePath;
             }
         }
@@ -154,7 +159,10 @@ class MXMLStyleNode extends MXMLNodeBase implements IMXMLStyleNode
 
         // If <fx:Style> tag has a valid 'source' attribute, the text of the node is ignored.
         if (cssText == null)
+        {
             cssText = tag.getCompilableText();
+            cssTextStart = tag.getEndColumn() + 1;
+        }
 
         // Register this "style" node with the root "MXMLFileNode".
         builder.getFileNode().getStyleNodes().add(this);
