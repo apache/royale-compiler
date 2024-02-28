@@ -64,7 +64,8 @@ class MXMLStyleNode extends MXMLNodeBase implements IMXMLStyleNode
      */
     private String cssText;
 
-    private int cssTextStart = 0;
+    private int cssContentStart = -1;
+    private int cssCharPos = -1;
     
     /**
      * path of included css.
@@ -85,6 +86,12 @@ class MXMLStyleNode extends MXMLNodeBase implements IMXMLStyleNode
     }
 
     @Override
+    public int getContentStart()
+    {
+        return cssContentStart;
+    }
+
+    @Override
     public ICSSDocument getCSSDocument(final Collection<ICompilerProblem> problems)
     {
         if (cssDocument == null)
@@ -94,7 +101,7 @@ class MXMLStyleNode extends MXMLNodeBase implements IMXMLStyleNode
                 ANTLRStringStream stream = new ANTLRStringStream(cssText);
                 stream.name = cssSourcePath != null ? cssSourcePath : getSourcePath();
                 stream.setLine(getLine());
-                stream.setCharPositionInLine(cssTextStart);
+                stream.setCharPositionInLine(cssCharPos);
                 cssDocument = CSSDocument.parse(stream, problems);
             }
             else
@@ -126,7 +133,8 @@ class MXMLStyleNode extends MXMLNodeBase implements IMXMLStyleNode
             if (sourcePath != null)
             {
                 cssText = builder.readExternalFile(attribute, sourcePath);
-                cssTextStart = 0;
+                cssCharPos = -1;
+                cssContentStart = -1;
                 cssSourcePath = sourcePath;
             }
         }
@@ -161,7 +169,8 @@ class MXMLStyleNode extends MXMLNodeBase implements IMXMLStyleNode
         if (cssText == null)
         {
             cssText = tag.getCompilableText();
-            cssTextStart = tag.getEndColumn() + 1;
+            cssCharPos = tag.getEndColumn() + 1;
+            cssContentStart = tag.getEnd();
         }
 
         // Register this "style" node with the root "MXMLFileNode".

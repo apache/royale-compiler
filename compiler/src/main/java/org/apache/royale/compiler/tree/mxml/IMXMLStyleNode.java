@@ -40,4 +40,10 @@ public interface IMXMLStyleNode extends IMXMLNode
      * @return An {@link ICSSDocument} object.
      */
     ICSSDocument getCSSDocument(Collection<ICompilerProblem> problems);
+
+    /**
+     * Gets the start position of the CSS text content. Returns -1 if the
+     * <code>&lt;Style&gt;</code> tag has a <code>source</code> attribute.
+     */
+    public int getContentStart();
 }
