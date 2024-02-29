@@ -7,7 +7,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="../compiler/lib/external/flex-tool-api.jar"/>
 	<classpathentry kind="lib" path="../compiler/lib/external/commons-lang3-3.4.jar"/>
-	<classpathentry kind="lib" path="../compiler/lib/external/commons-compress-1.10.jar"/>
+	<classpathentry kind="lib" path="../compiler/lib/external/commons-compress-1.26.0.jar"/>
 	<classpathentry kind="lib" path="../compiler/lib/external/antlr.jar"/>
 	<classpathentry kind="lib" path="../compiler/lib/external/junit-4.10.jar"/>
 	<classpathentry kind="lib" path="../compiler/lib/external/jburg.jar"/>

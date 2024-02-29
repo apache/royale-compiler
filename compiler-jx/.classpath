@@ -13,7 +13,7 @@
 	<classpathentry kind="lib" path="lib/junit-4.10.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/COMMONS_COMPRESS"/>
 	<classpathentry kind="lib" path="../compiler/lib/external/commons-lang-2.6.jar"/>
-	<classpathentry kind="lib" path="../compiler/lib/external/commons-compress-1.10.jar"/>
+	<classpathentry kind="lib" path="../compiler/lib/external/commons-compress-1.26.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/compiler-common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/compiler-externc"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/compiler-test-utils"/>

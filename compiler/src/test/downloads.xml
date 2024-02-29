@@ -144,24 +144,24 @@
     <target name="commons-compress-jar-check" description="Checks if commons-compress JAR exists.">
         <condition property="commons-compress.jar.exists">
             <and>
-                <available file="${external.lib.dir}/commons-compress-1.10.jar"/>
+                <available file="${external.lib.dir}/commons-compress-1.26.0.jar"/>
             </and>
         </condition>
     </target>
 
     <target name="commons-compress-jar" depends="commons-compress-jar-check" unless="commons-compress.jar.exists"
             description="Copies the commons-compress JAR to the lib directory.">
-        <echo message="Obtaining lib/external/commons-compress-1.10.jar"/>
+        <echo message="Obtaining lib/external/commons-compress-1.26.0.jar"/>
         <antcall target="commons-compress-download-jar"/>
     </target>
 
     <target name="commons-compress-download-jar" depends="commons-compress-jar-check" unless="commons-compress.jar.exists"
             description="Downloads the commons-compress jar.">
         <antcall target="download-jar">
-            <param name="srcUrl" value="https://repo1.maven.org/maven2/org/apache/commons/commons-compress/1.10"/>
-            <param name="srcJarFile" value="commons-compress-1.10.jar"/>
+            <param name="srcUrl" value="https://repo1.maven.org/maven2/org/apache/commons/commons-compress/1.26.0"/>
+            <param name="srcJarFile" value="commons-compress-1.26.0.jar"/>
             <param name="destDir" value="${external.lib.dir}"/>
-            <param name="destJarFile" value="commons-compress-1.10.jar"/>
+            <param name="destJarFile" value="commons-compress-1.26.0.jar"/>
         </antcall>
     </target>
 

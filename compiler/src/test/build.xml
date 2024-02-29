@@ -402,7 +402,7 @@
 
     <target name="wipe" depends="clean">
         <delete file="${compiler}/lib/external/commons-lang3-3.4.jar"/>
-        <delete file="${compiler}/lib/external/commons-compress-1.10.jar"/>
+        <delete file="${compiler}/lib/external/commons-compress-1.26.0.jar"/>
         <delete file="${compiler}/lib/external/junit-4.10.jar"/>
     </target>
 

@@ -19,7 +19,7 @@
 	<classpathentry kind="lib" path="lib/external/junit-4.10.jar"/>
 	<classpathentry kind="lib" path="lib/external/commons-lang3-3.4.jar"/>
 	<classpathentry kind="lib" path="lib/external/jburg.jar"/>
-	<classpathentry kind="lib" path="lib/external/commons-compress-1.10.jar"/>
+	<classpathentry kind="lib" path="lib/external/commons-compress-1.26.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/compiler-common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/compiler-externc"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/compiler-test-utils"/>
