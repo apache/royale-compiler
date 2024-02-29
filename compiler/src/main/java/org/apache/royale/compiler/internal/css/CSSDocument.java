@@ -178,7 +178,10 @@ public class CSSDocument extends CSSNodeBase implements ICSSDocument
         setColumn(column);
         setEndLine(endLine);
         setEndColumn(endColumn);
-        setSourcePath(tokenStream.getSourceName());
+        if (tokenStream != null)
+        {
+            setSourcePath(tokenStream.getSourceName());
+        }
     }
 
     private final ImmutableList<ICSSRule> rules;
