@@ -3269,9 +3269,12 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     		primitiveDeclarationNodes.add(node);
     		return;
     	}
-        getCurrentDescriptor("ps").valueNeedsQuotes = true;
+        MXMLDescriptorSpecifier currentDescriptor = getCurrentDescriptor("ps");
+        currentDescriptor.valueNeedsQuotes = true;
 
         emitAttributeValue(node);
+
+        currentDescriptor.valueNeedsQuotes = false;
     }
     
     @Override

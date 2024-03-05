@@ -123,6 +123,22 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
     }
 
     @Test
+    public void testMixedArrayChildren()
+    {
+        String fileName = "MixedArrayChildren";
+
+        IMXMLFileNode node = compileMXML(fileName, true,
+                new File(testAdapter.getUnitTestBaseDir(), "royale/files").getPath(), false);
+		assertNotNull(node);
+
+        mxmlBlockWalker.visitFile(node);
+        
+        // writeResultToFile(writer.toString(), fileName);
+
+        assertOutWithMetadata(getCodeFromFile(fileName + "_result", true, "royale/files"));
+    }
+
+    @Test
     public void testBackslashStringAttribute()
     {
         String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/royale/basic\">"
