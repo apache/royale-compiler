@@ -19,6 +19,11 @@
 
 package org.apache.royale.compiler.internal.tree.mxml;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.mxml.IMXMLTagData;
@@ -81,35 +86,56 @@ class MXMLRemoteObjectMethodArgumentsPropertyNode extends MXMLPropertySpecifierN
 
         MXMLNodeInfo info = createNodeInfo(builder);
 
-        // Process each child tag.
+        // look for duplicate property tags
+        // if there's more than one of the same tag, the value will be an array
+        Map<String, List<IMXMLTagData>> propertyNameToTags = new HashMap<>();
         for (IMXMLUnitData unit = tag.getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
         {
             if (unit instanceof IMXMLTagData)
             {
-                processChildTag(builder, tag, (IMXMLTagData) unit, info);
+                IMXMLTagData childTag = (IMXMLTagData) unit;
+                String propertyName = childTag.getShortName();
+                List<IMXMLTagData> tagsForProperty = propertyNameToTags.get(propertyName);
+                if (tagsForProperty == null)
+                {
+                    tagsForProperty = new ArrayList<IMXMLTagData>();
+                    propertyNameToTags.put(propertyName, tagsForProperty);
+                }
+                tagsForProperty.add(childTag);
             }
+        }
+
+        // for each property found, initialize its tags
+        for (String propertyName : propertyNameToTags.keySet())
+        {
+            final List<IMXMLTagData> tagsForProperty = propertyNameToTags.get(propertyName);
+            final MXMLPropertySpecifierNode specifierNode = new MXMLPropertySpecifierNode(this);
+            specifierNode.setDynamicName(propertyName);
+            if (tagsForProperty.size() > 1)
+            {
+                List<IMXMLNode> argsChildNodes = new ArrayList<IMXMLNode>();
+                for (IMXMLTagData childTag : tagsForProperty)
+                {
+                    final MXMLPropertySpecifierNode childSpecifierNode = new MXMLPropertySpecifierNode(this);
+                    childSpecifierNode.setDynamicName(propertyName);
+                    childSpecifierNode.initializeFromTag(builder, childTag);
+                    argsChildNodes.add(childSpecifierNode.getInstanceNode());
+                }
+
+                MXMLArrayNode argsArrayNode = new MXMLArrayNode(objectNode);
+                argsArrayNode.setChildren(argsChildNodes.toArray(new IMXMLNode[0]));
+                specifierNode.setInstanceNode(argsArrayNode);
+            }
+            else
+            {
+                specifierNode.initializeFromTag(builder, tagsForProperty.get(0));
+            }
+            specifierNode.setParent(objectNode);
+            info.addChildNode(specifierNode);
         }
 
         // Do any final processing.
         initializationComplete(builder, tag, info);
-    }
-
-    /**
-     * Add child tags as dynamic properties to the "object" node.
-     */
-    @Override
-    protected void processChildTag(MXMLTreeBuilder builder, IMXMLTagData tag, IMXMLTagData childTag, MXMLNodeInfo info)
-    {
-        if (childTag.getPrefix() != null)
-        {
-            // TODO Report a problem because a prefix means nothing.
-        }
-
-        final MXMLPropertySpecifierNode specifierNode = new MXMLPropertySpecifierNode(this);
-        specifierNode.setDynamicName(childTag.getShortName());
-        specifierNode.initializeFromTag(builder, childTag);
-        specifierNode.setParent(objectNode);
-        info.addChildNode(specifierNode);
     }
 
     /**

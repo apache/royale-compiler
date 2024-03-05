@@ -124,6 +124,9 @@ public class MXMLRemoteObjectTagTests extends MXMLInstanceTagTestsBase
     		"            <a>abc</a>",
     		"            <b>123</b>",
     		"            <c>false</c>",
+    		"            <d>456.7</d>",
+    		"            <d>hello</d>",
+    		"            <d>true</d>",
     		"        </mx:arguments>",
     		"    </mx:method>",
     		"</mx:RemoteObject>"
@@ -137,13 +140,17 @@ public class MXMLRemoteObjectTagTests extends MXMLInstanceTagTestsBase
             "assertEqual('ro1 is RemoteObject', ro1 is RemoteObject, true);",
             "assertEqual('ro1.operations.m1', ro1.operations['m1'] is Operation, true);",
             "assertEqual('ro1.operations.m1.name', ro1.operations['m1'].name, 'm1');",
-            "assertEqual('ro1.operations.m1.argumentNames.length', ro1.operations['m1'].argumentNames.length, 3);",
+            "assertEqual('ro1.operations.m1.argumentNames.length', ro1.operations['m1'].argumentNames.length, 4);",
             "assertEqual('ro1.operations.m1.argumentNames[0]', ro1.operations['m1'].argumentNames[0], 'a');",
             "assertEqual('ro1.operations.m1.argumentNames[1]', ro1.operations['m1'].argumentNames[1], 'b');",
             "assertEqual('ro1.operations.m1.argumentNames[1]', ro1.operations['m1'].argumentNames[2], 'c');",
             "assertEqual('ro1.operations.m1.arguments.a', ro1.operations['m1'].arguments['a'], 'abc');",
             "assertEqual('ro1.operations.m1.arguments.b', ro1.operations['m1'].arguments['b'], 123);",
             "assertEqual('ro1.operations.m1.arguments.c', ro1.operations['m1'].arguments['c'], false);",
+            "assertEqual('ro1.operations.m1.arguments.d.length', ro1.operations['m1'].arguments['d'].length, 3);",
+            "assertEqual('ro1.operations.m1.arguments.d[0]', ro1.operations['m1'].arguments['d'][0], 456.7);",
+            "assertEqual('ro1.operations.m1.arguments.d[1]', ro1.operations['m1'].arguments['d'][1], 'hello');",
+            "assertEqual('ro1.operations.m1.arguments.d[2]', ro1.operations['m1'].arguments['d'][2], true);",
         };
         String mxml = getMXML(declarations, scriptDeclarations, asserts);
         compileAndRun(mxml, true, true, false, null);

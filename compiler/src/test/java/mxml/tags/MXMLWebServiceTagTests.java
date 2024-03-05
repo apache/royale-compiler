@@ -146,6 +146,9 @@ public class MXMLWebServiceTagTests extends MXMLInstanceTagTestsBase
     		"            <a>abc</a>",
     		"            <b>123</b>",
     		"            <c>false</c>",
+    		"            <d>456.7</d>",
+    		"            <d>hello</d>",
+    		"            <d>true</d>",
             "        </mx:arguments>",
             "    </mx:operation>",
     		"</mx:WebService>"
@@ -162,9 +165,17 @@ public class MXMLWebServiceTagTests extends MXMLInstanceTagTestsBase
             "assertEqual('ws1.operations.op1.arguments.a', ws1.operations['op1'].arguments['a'], 'abc');",
             "assertEqual('ws1.operations.op1.arguments.b', ws1.operations['op1'].arguments['b'], 123);",
             "assertEqual('ws1.operations.op1.arguments.c', ws1.operations['op1'].arguments['c'], false);",
+            "assertEqual('ws1.operations.op1.arguments.d.length', ws1.operations['op1'].arguments['d'].length, 3);",
+            "assertEqual('ws1.operations.op1.arguments.d[0]', ws1.operations['op1'].arguments['d'][0], 456.7);",
+            "assertEqual('ws1.operations.op1.arguments.d[1]', ws1.operations['op1'].arguments['d'][1], 'hello');",
+            "assertEqual('ws1.operations.op1.arguments.d[2]', ws1.operations['op1'].arguments['d'][2], true);",
             "assertEqual('ws1.operations.op1.request.a', ws1.operations['op1'].request['a'], 'abc');",
             "assertEqual('ws1.operations.op1.request.b', ws1.operations['op1'].request['b'], 123);",
             "assertEqual('ws1.operations.op1.request.c', ws1.operations['op1'].request['c'], false);",
+            "assertEqual('ws1.operations.op1.request.d.length', ws1.operations['op1'].request['d'].length, 3);",
+            "assertEqual('ws1.operations.op1.request.d[0]', ws1.operations['op1'].request['d'][0], 456.7);",
+            "assertEqual('ws1.operations.op1.request.d[1]', ws1.operations['op1'].request['d'][1], 'hello');",
+            "assertEqual('ws1.operations.op1.request.d[2]', ws1.operations['op1'].request['d'][2], true);",
         };
         String mxml = getMXML(declarations, scriptDeclarations, asserts);
         compileAndRun(mxml, true, true, false, null);
@@ -181,6 +192,9 @@ public class MXMLWebServiceTagTests extends MXMLInstanceTagTestsBase
     		"            <a>abc</a>",
     		"            <b>123</b>",
     		"            <c>false</c>",
+    		"            <d>456.7</d>",
+    		"            <d>hello</d>",
+    		"            <d>true</d>",
             "        </mx:request>",
             "    </mx:operation>",
     		"</mx:WebService>"
@@ -197,9 +211,17 @@ public class MXMLWebServiceTagTests extends MXMLInstanceTagTestsBase
             "assertEqual('ws1.operations.op1.arguments.a', ws1.operations['op1'].arguments['a'], 'abc');",
             "assertEqual('ws1.operations.op1.arguments.b', ws1.operations['op1'].arguments['b'], 123);",
             "assertEqual('ws1.operations.op1.arguments.c', ws1.operations['op1'].arguments['c'], false);",
+            "assertEqual('ws1.operations.op1.arguments.d.length', ws1.operations['op1'].arguments['d'].length, 3);",
+            "assertEqual('ws1.operations.op1.arguments.d[0]', ws1.operations['op1'].arguments['d'][0], 456.7);",
+            "assertEqual('ws1.operations.op1.arguments.d[1]', ws1.operations['op1'].arguments['d'][1], 'hello');",
+            "assertEqual('ws1.operations.op1.arguments.d[2]', ws1.operations['op1'].arguments['d'][2], true);",
             "assertEqual('ws1.operations.op1.request.a', ws1.operations['op1'].request['a'], 'abc');",
             "assertEqual('ws1.operations.op1.request.b', ws1.operations['op1'].request['b'], 123);",
             "assertEqual('ws1.operations.op1.request.c', ws1.operations['op1'].request['c'], false);",
+            "assertEqual('ws1.operations.op1.request.d.length', ws1.operations['op1'].request['d'].length, 3);",
+            "assertEqual('ws1.operations.op1.request.d[0]', ws1.operations['op1'].request['d'][0], 456.7);",
+            "assertEqual('ws1.operations.op1.request.d[1]', ws1.operations['op1'].request['d'][1], 'hello');",
+            "assertEqual('ws1.operations.op1.request.d[2]', ws1.operations['op1'].request['d'][2], true);",
         };
         String mxml = getMXML(declarations, scriptDeclarations, asserts);
         compileAndRun(mxml, true, true, false, null);

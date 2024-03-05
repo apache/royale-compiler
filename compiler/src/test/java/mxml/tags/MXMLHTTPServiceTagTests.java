@@ -95,7 +95,9 @@ public class MXMLHTTPServiceTagTests extends MXMLInstanceTagTestsBase
     		"        <a>abc</a>",
     		"        <b>123</b>",
     		"        <c>false</c>",
-    		// "        <d><d1>456.7</d1></d>",
+    		"        <d>456.7</d>",
+    		"        <d>hello</d>",
+    		"        <d>true</d>",
     		"    </mx:request>",
     		"    <mx:method>POST</mx:method>",
     		"</mx:HTTPService>"
@@ -107,7 +109,10 @@ public class MXMLHTTPServiceTagTests extends MXMLInstanceTagTestsBase
             "assertEqual('hs1.request.a', hs1.request['a'], 'abc');",
             "assertEqual('hs1.request.b', hs1.request['b'], 123);",
             "assertEqual('hs1.request.c', hs1.request['c'], false);",
-            // "assertEqual('hs1.request.d.d1', hs1.request['d']['d1'], 456.7);",
+            "assertEqual('hs1.request.d.length', hs1.request['d'].length, 3);",
+            "assertEqual('hs1.request.d[0]', hs1.request['d'][0], 456.7);",
+            "assertEqual('hs1.request.d[1]', hs1.request['d'][1], 'hello');",
+            "assertEqual('hs1.request.d[2]', hs1.request['d'][2], true);",
             "assertEqual('hs1.method', hs1.method, 'POST');"
         };
         String mxml = getMXML(declarations, asserts);
