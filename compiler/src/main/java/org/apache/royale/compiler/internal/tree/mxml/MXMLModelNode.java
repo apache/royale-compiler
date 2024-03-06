@@ -27,6 +27,7 @@ import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.royale.compiler.mxml.IMXMLTagData;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.MXMLDualContentProblem;
+import org.apache.royale.compiler.problems.MXMLModelOnlyOneRootTagProblem;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLModelNode;
@@ -54,6 +55,9 @@ class MXMLModelNode extends MXMLInstanceNode implements IMXMLModelNode
      * The sole child node.
      */
     private MXMLModelRootNode rootNode;
+
+    // did we see more than one child tag?
+    boolean multipleTags = false;
 
     @Override
     public ASTNodeID getNodeID()
@@ -136,7 +140,7 @@ class MXMLModelNode extends MXMLInstanceNode implements IMXMLModelNode
         }
         else
         {
-            // TODO Report a problem if more than one root node.
+            multipleTags = true;
         }
     }
 
@@ -149,6 +153,12 @@ class MXMLModelNode extends MXMLInstanceNode implements IMXMLModelNode
         if (info.hasSourceAttribute && info.hasDualContent)
         {
             ICompilerProblem problem = new MXMLDualContentProblem(tag, tag.getShortName());
+            builder.addProblem(problem);
+        }
+
+        if (multipleTags)
+        {
+            MXMLModelOnlyOneRootTagProblem problem = new MXMLModelOnlyOneRootTagProblem(tag);
             builder.addProblem(problem);
         }
     }
