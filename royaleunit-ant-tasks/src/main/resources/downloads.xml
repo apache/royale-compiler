@@ -27,7 +27,7 @@
 
           Licenses:
               dom4j (1.6.1) - BSD
-              Java-WebSocket (1.4.0) - MIT
+              Java-WebSocket (1.5.6) - MIT
               slf4j-api (1.7.25) - MIT
   -->
 
@@ -138,13 +138,13 @@
 
     <!--  Java-WebSocket -->
     <property name="javawebsocket.name" value="java-websocket"/>
-    <property name="javawebsocket.version" value="1.4.0"/>
+    <property name="javawebsocket.version" value="1.5.6"/>
     <antcall target="download-dependency">
       <param name="name" value="${javawebsocket.name}"/>
       <param name="src.server" value="${maven.search.url}"/>
       <param name="src.folder" value="org/java-websocket/Java-WebSocket/${javawebsocket.version}"/>
       <param name="src.filename" value="Java-WebSocket-${javawebsocket.version}.jar"/>
-      <param name="src.checksum" value="59c1134b8c50ace9e074e9f1d5da4aaa"/>
+      <param name="src.checksum" value="0f1954158331fd4e8891669f103c935c"/>
       <param name="dest.folder" value="royaleunit"/>
       <param name="dest.filename" value="${javawebsocket.name}.jar"/>
       <param name="license.use.url" value="https://raw.githubusercontent.com/TooTallNate/Java-WebSocket/master/LICENSE"/>

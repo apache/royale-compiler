@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Callable;
 
 import org.apache.tools.ant.BuildException;
 import org.java_websocket.WebSocket;
@@ -55,7 +54,7 @@ public class RoyaleUnitWebSocketServer extends WebSocketServer implements IRoyal
     }
 
     @Override
-    public void stop() throws IOException, InterruptedException
+    public void stop() throws InterruptedException
     {
         LoggingUtil.log("\nStopping server ...");
 
