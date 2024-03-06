@@ -20,18 +20,17 @@
 package org.apache.royale.compiler.internal.tree.mxml;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.mxml.IMXMLTagData;
-import org.apache.royale.compiler.mxml.IMXMLUnitData;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.mxml.IMXMLWebServiceOperationArgumentsPropertyNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLModelPropertyContainerNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLModelPropertyNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLWebServiceOperationArgumentsPropertyNode;
 
 /**
  * AST node for the {@code <arguments>} tag under the {@code <operation>} tag, which is under the {@code <WebService>} tag.
@@ -86,56 +85,84 @@ class MXMLWebServiceOperationArgumentsPropertyNode extends MXMLPropertySpecifier
 
         MXMLNodeInfo info = createNodeInfo(builder);
 
-        // look for duplicate property tags
-        // if there's more than one of the same tag, the value will be an array
-        Map<String, List<IMXMLTagData>> propertyNameToTags = new HashMap<>();
-        for (IMXMLUnitData unit = tag.getFirstChildUnit(); unit != null; unit = unit.getNextSiblingUnit())
-        {
-            if (unit instanceof IMXMLTagData)
-            {
-                IMXMLTagData childTag = (IMXMLTagData) unit;
-                String propertyName = childTag.getShortName();
-                List<IMXMLTagData> tagsForProperty = propertyNameToTags.get(propertyName);
-                if (tagsForProperty == null)
-                {
-                    tagsForProperty = new ArrayList<IMXMLTagData>();
-                    propertyNameToTags.put(propertyName, tagsForProperty);
-                }
-                tagsForProperty.add(childTag);
-            }
-        }
+        // parse it like <fx:Model>, but convert to property specifiers
+        MXMLModelRootNode modelRootNode = new MXMLModelRootNode(this);
+        modelRootNode.initializeFromTag(builder, tag);
 
-        // for each property found, initialize its tags
-        for (String propertyName : propertyNameToTags.keySet())
+        final RoyaleProject project = builder.getProject();
+        for (MXMLPropertySpecifierNode specifierNode : getPropertySpecifiers(builder, modelRootNode, objectNode, this, project))
         {
-            final List<IMXMLTagData> tagsForProperty = propertyNameToTags.get(propertyName);
-            final MXMLPropertySpecifierNode specifierNode = new MXMLPropertySpecifierNode(this);
-            specifierNode.setDynamicName(propertyName);
-            if (tagsForProperty.size() > 1)
-            {
-                List<IMXMLNode> argsChildNodes = new ArrayList<IMXMLNode>();
-                for (IMXMLTagData childTag : tagsForProperty)
-                {
-                    final MXMLPropertySpecifierNode childSpecifierNode = new MXMLPropertySpecifierNode(this);
-                    childSpecifierNode.setDynamicName(propertyName);
-                    childSpecifierNode.initializeFromTag(builder, childTag);
-                    argsChildNodes.add(childSpecifierNode.getInstanceNode());
-                }
-
-                MXMLArrayNode argsArrayNode = new MXMLArrayNode(objectNode);
-                argsArrayNode.setChildren(argsChildNodes.toArray(new IMXMLNode[0]));
-                specifierNode.setInstanceNode(argsArrayNode);
-            }
-            else
-            {
-                specifierNode.initializeFromTag(builder, tagsForProperty.get(0));
-            }
-            specifierNode.setParent(objectNode);
             info.addChildNode(specifierNode);
         }
 
         // Do any final processing.
         initializationComplete(builder, tag, info);
+    }
+
+    protected MXMLPropertySpecifierNode[] getPropertySpecifiers(MXMLTreeBuilder builder, IMXMLModelPropertyContainerNode containerNode, MXMLObjectNode parentNode, MXMLPropertySpecifierNode parentSpecifierNode, RoyaleProject project)
+    {
+        List<MXMLPropertySpecifierNode> propSpecifiers = new ArrayList<MXMLPropertySpecifierNode>();
+        for (String propertyName : containerNode.getPropertyNames()) {
+            IMXMLModelPropertyNode[] propertyNodes = containerNode.getPropertyNodes(propertyName);
+            MXMLPropertySpecifierNode specifierNode = getPropertySpecifier(builder, propertyName, propertyNodes, parentNode, parentSpecifierNode, project);
+            propSpecifiers.add(specifierNode);
+        }
+        return propSpecifiers.toArray(new MXMLPropertySpecifierNode[0]);
+    }
+
+    protected MXMLPropertySpecifierNode getPropertySpecifier(MXMLTreeBuilder builder, String propertyName, IMXMLModelPropertyNode[] propertyNodes, MXMLObjectNode parentNode, MXMLPropertySpecifierNode parentSpecifierNode, RoyaleProject project)
+    {
+        final MXMLPropertySpecifierNode specifierNode = new MXMLPropertySpecifierNode(parentNode);
+        specifierNode.setDynamicName(propertyName);
+        if (propertyNodes.length > 1)
+        {
+            MXMLArrayNode argsArrayNode = new MXMLArrayNode(this);
+            argsArrayNode.setClassReference(project, IASLanguageConstants.Array);
+
+            List<IMXMLNode> argsChildNodes = new ArrayList<IMXMLNode>();
+            for (IMXMLModelPropertyNode propNode : propertyNodes)
+            {
+                if (propNode.hasLeafValue())
+                {
+                    MXMLInstanceNode propInstanceNode = (MXMLInstanceNode) propNode.getInstanceNode();
+                    propInstanceNode.setParent(argsArrayNode);
+                    argsChildNodes.add(propInstanceNode);
+                }
+                else
+                {
+                    MXMLObjectNode propObjectNode = new MXMLObjectNode(this);
+                    propObjectNode.setLocation(propNode);
+                    propObjectNode.setClassReference(project, IASLanguageConstants.Object);
+                    MXMLPropertySpecifierNode[] propSpecifiers = getPropertySpecifiers(builder, propNode, propObjectNode, specifierNode, project);
+                    propObjectNode.setChildren(propSpecifiers);
+                    argsChildNodes.add(propObjectNode);
+                }
+            }
+
+            argsArrayNode.setChildren(argsChildNodes.toArray(new IMXMLNode[0]));
+            specifierNode.setInstanceNode(argsArrayNode);
+        }
+        else
+        {
+            IMXMLModelPropertyNode propNode = propertyNodes[0];
+            if (propNode.hasLeafValue())
+            {
+                MXMLInstanceNode propInstanceNode = (MXMLInstanceNode) propNode.getInstanceNode();
+                propInstanceNode.setParent(parentSpecifierNode);
+                specifierNode.setLocation(propNode);
+                specifierNode.setInstanceNode(propInstanceNode);
+            }
+            else
+            {
+                MXMLObjectNode propObjectNode = new MXMLObjectNode(this);
+                propObjectNode.setLocation(propNode);
+                propObjectNode.setClassReference(project, IASLanguageConstants.Object);
+                MXMLPropertySpecifierNode[] propSpecifiers = getPropertySpecifiers(builder, propNode, propObjectNode, specifierNode, project);
+                propObjectNode.setChildren(propSpecifiers);
+                specifierNode.setInstanceNode(propObjectNode);
+            }
+        }
+        return specifierNode;
     }
 
     /**
@@ -159,5 +186,6 @@ class MXMLWebServiceOperationArgumentsPropertyNode extends MXMLPropertySpecifier
         final RoyaleProject project = builder.getProject();
         objectNode.setClassReference(project, IASLanguageConstants.Object);
         objectNode.setChildren(info.getChildNodeList().toArray(new IMXMLNode[0]));
+        objectNode.setLocation(tag);
     }
 }

@@ -98,6 +98,13 @@ public class MXMLHTTPServiceTagTests extends MXMLInstanceTagTestsBase
     		"        <d>456.7</d>",
     		"        <d>hello</d>",
     		"        <d>true</d>",
+    		"        <e>",
+    		"            <e_1>890.1</e_1>",
+            "        </e>",
+    		"        <f f_1='234.5'/>",
+    		"        <g g_1='howdy'>",
+    		"            <g_1>678.9</g_1>",
+            "        </g>",
     		"    </mx:request>",
     		"    <mx:method>POST</mx:method>",
     		"</mx:HTTPService>"
@@ -113,6 +120,11 @@ public class MXMLHTTPServiceTagTests extends MXMLInstanceTagTestsBase
             "assertEqual('hs1.request.d[0]', hs1.request['d'][0], 456.7);",
             "assertEqual('hs1.request.d[1]', hs1.request['d'][1], 'hello');",
             "assertEqual('hs1.request.d[2]', hs1.request['d'][2], true);",
+            "assertEqual('hs1.request.e.e_1', hs1.request['e']['e_1'], 890.1);",
+            "assertEqual('hs1.request.f.f_1', hs1.request['f']['f_1'], 234.5);",
+            "assertEqual('hs1.request.g.g_1.length', hs1.request['g']['g_1'].length, 2);",
+            "assertEqual('hs1.request.g.g_1[0]', hs1.request['g']['g_1'][0], 'howdy');",
+            "assertEqual('hs1.request.g.g_1[1]', hs1.request['g']['g_1'][1], 678.9);",
             "assertEqual('hs1.method', hs1.method, 'POST');"
         };
         String mxml = getMXML(declarations, asserts);

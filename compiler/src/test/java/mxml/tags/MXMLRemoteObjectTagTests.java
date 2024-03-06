@@ -127,6 +127,13 @@ public class MXMLRemoteObjectTagTests extends MXMLInstanceTagTestsBase
     		"            <d>456.7</d>",
     		"            <d>hello</d>",
     		"            <d>true</d>",
+    		"            <e>",
+    		"                <e_1>890.1</e_1>",
+            "            </e>",
+    		"            <f f_1='234.5'/>",
+    		"            <g g_1='howdy'>",
+    		"                <g_1>678.9</g_1>",
+            "            </g>",
     		"        </mx:arguments>",
     		"    </mx:method>",
     		"</mx:RemoteObject>"
@@ -140,7 +147,7 @@ public class MXMLRemoteObjectTagTests extends MXMLInstanceTagTestsBase
             "assertEqual('ro1 is RemoteObject', ro1 is RemoteObject, true);",
             "assertEqual('ro1.operations.m1', ro1.operations['m1'] is Operation, true);",
             "assertEqual('ro1.operations.m1.name', ro1.operations['m1'].name, 'm1');",
-            "assertEqual('ro1.operations.m1.argumentNames.length', ro1.operations['m1'].argumentNames.length, 4);",
+            "assertEqual('ro1.operations.m1.argumentNames.length', ro1.operations['m1'].argumentNames.length, 7);",
             "assertEqual('ro1.operations.m1.argumentNames[0]', ro1.operations['m1'].argumentNames[0], 'a');",
             "assertEqual('ro1.operations.m1.argumentNames[1]', ro1.operations['m1'].argumentNames[1], 'b');",
             "assertEqual('ro1.operations.m1.argumentNames[1]', ro1.operations['m1'].argumentNames[2], 'c');",
@@ -151,6 +158,11 @@ public class MXMLRemoteObjectTagTests extends MXMLInstanceTagTestsBase
             "assertEqual('ro1.operations.m1.arguments.d[0]', ro1.operations['m1'].arguments['d'][0], 456.7);",
             "assertEqual('ro1.operations.m1.arguments.d[1]', ro1.operations['m1'].arguments['d'][1], 'hello');",
             "assertEqual('ro1.operations.m1.arguments.d[2]', ro1.operations['m1'].arguments['d'][2], true);",
+            "assertEqual('ro1.operations.m1.arguments.e.e_1', ro1.operations['m1'].arguments['e']['e_1'], 890.1);",
+            "assertEqual('ro1.operations.m1.arguments.f.f_1', ro1.operations['m1'].arguments['f']['f_1'], 234.5);",
+            "assertEqual('ro1.operations.m1.arguments.g.g_1.length', ro1.operations['m1'].arguments['g']['g_1'].length, 2);",
+            "assertEqual('ro1.operations.m1.arguments.g.g_1[0]', ro1.operations['m1'].arguments['g']['g_1'][0], 'howdy');",
+            "assertEqual('ro1.operations.m1.arguments.g.g_1[1]', ro1.operations['m1'].arguments['g']['g_1'][1], 678.9);",
         };
         String mxml = getMXML(declarations, scriptDeclarations, asserts);
         compileAndRun(mxml, true, true, false, null);
