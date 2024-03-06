@@ -152,6 +152,9 @@ abstract class MXMLModelPropertyContainerNodeBase extends MXMLNodeBase implement
     protected void initializeFromTag(MXMLTreeBuilder builder, IMXMLTagData tag)
     {
         name = tag.getShortName(); // see note in initializeFromAttribute about namespaces.
+
+        setLocation(tag);
+        
         super.initializeFromTag(builder, tag);
     }
 
@@ -182,6 +185,7 @@ abstract class MXMLModelPropertyContainerNodeBase extends MXMLNodeBase implement
 
         MXMLModelPropertyNode propertyNode = new MXMLModelPropertyNode(this);
         propertyNode.initializeFromTag(builder, childTag);
+        propertyNode.setLocation(childTag);
         info.addChildNode(propertyNode);
     }
 
