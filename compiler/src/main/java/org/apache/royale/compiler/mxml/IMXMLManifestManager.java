@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Set;
 
 import org.apache.royale.compiler.common.XMLName;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * 
@@ -79,4 +80,6 @@ public interface IMXMLManifestManager
      * specified set of namespaces.
      */
     Collection<String> getQualifiedNamesForNamespaces(Set<String> namespaceURIs, boolean manifestEntriesOnly);
+
+    void collectProblems(Collection<ICompilerProblem> problems);
 }

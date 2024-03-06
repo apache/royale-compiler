@@ -81,6 +81,7 @@ import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.royale.compiler.mxml.IMXMLManifestManager;
 import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.projects.ICompilerProjectWithNamedColor;
 import org.apache.royale.compiler.projects.IRoyaleProject;
 import org.apache.royale.compiler.scopes.IASScope;
@@ -1496,6 +1497,18 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     {
         return getMXMLManifestManager().getQualifiedNamesForNamespaces(
                 namespaceURIs, true);
+    }
+
+
+
+    @Override
+    public void collectProblems(Collection<ICompilerProblem> problems)
+    {
+        super.collectProblems(problems);
+        if (manifestManager != null)
+        {
+            manifestManager.collectProblems(problems);
+        }
     }
 
     /**

@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -36,11 +35,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-
+import org.xml.sax.SAXException;
 import org.apache.royale.compiler.mxml.IMXMLManifestManager;
 import org.apache.royale.compiler.mxml.IMXMLNamespaceMapping;
 import org.apache.royale.compiler.problems.ICompilerProblem;
-import org.apache.royale.compiler.problems.ManifestProblem;
+import org.apache.royale.compiler.problems.ManifestInconsistentComponentEntriesProblem;
+import org.apache.royale.compiler.problems.ManifestParsingProblem;
 import org.apache.royale.compiler.common.XMLName;
 import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.filespecs.IFileSpecification;
@@ -60,7 +60,7 @@ public class MXMLManifestManager implements IMXMLManifestManager
 {
     /**
      * Helper method to get the class name from the
-     * class info. Takes are of checking if the class
+     * class info. Takes care of checking if the class
      * info is null.
      * 
      * @param classInfo may be null.
@@ -109,11 +109,8 @@ public class MXMLManifestManager implements IMXMLManifestManager
      * an MXML tag name such as "&lt;s:Button&gt;".
      */
     private SetMultimap<String, XMLName> reverseLookupMap = HashMultimap.<String, XMLName>create();
-    
-    // Maps an MXML tag name to a list of (qname, path) duples,
-    // for reporting inconsistencies or duplications between manifests.
-    private HashMap<XMLName, ArrayList<ProblemEntry>> problemMap =
-        new HashMap<XMLName, ArrayList<ProblemEntry>>();
+
+    private Collection<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
     
     //
     // Object overrides
@@ -209,7 +206,7 @@ public class MXMLManifestManager implements IMXMLManifestManager
             
             // Add the mapping info in the <component> tag
             // to the maps of this manifest manager.
-            add(tagName, qname, swcFile.getAbsolutePath(), false);
+            add(tagName, qname, uri, swcFile.getAbsolutePath(), false);
         }        
     }
     
@@ -231,9 +228,17 @@ public class MXMLManifestManager implements IMXMLManifestManager
             documentBuilderFactory.setIgnoringComments(true);
             manifestDocument = documentBuilderFactory.newDocumentBuilder().parse(new InputSource(manifestFileSpec.createReader()));
         }
+        catch (SAXException e)
+        {
+            ManifestParsingProblem problem = new ManifestParsingProblem(e.getMessage(), uri, manifestFileName);
+            problems.add(problem);
+            return;
+        }
         catch (Exception e)
         {
-            // TODO Report a problem.
+            ManifestParsingProblem problem = new ManifestParsingProblem("Unknown parsing problem", uri, manifestFileName);
+            problems.add(problem);
+            return;
         }
 
         if (manifestDocument != null)
@@ -264,7 +269,7 @@ public class MXMLManifestManager implements IMXMLManifestManager
                     
                     if (id != null && className != null)
                     {
-                        add(tagName, className, manifestFileName, true);
+                        add(tagName, className, uri, manifestFileName, true);
 
                         if (lookupOnly)
                             addLookupOnly(tagName, className);
@@ -272,8 +277,6 @@ public class MXMLManifestManager implements IMXMLManifestManager
                 }
             }
         }
-        else
-            System.err.println("Unable to parse " + manifestFileName);
     }
     
     /**
@@ -286,8 +289,8 @@ public class MXMLManifestManager implements IMXMLManifestManager
      * 
      * @param file The SWC file in which the mapping was declared.
      */
-    private void add(XMLName tagName, String className, String fileName,
-                     boolean fromManifest)
+    private void add(XMLName tagName, String className, String uri,
+                     String fileName, boolean fromManifest)
     {
         if (!lookupMap.containsKey(tagName))
         {
@@ -306,8 +309,22 @@ public class MXMLManifestManager implements IMXMLManifestManager
             // otherwise getQualifiedNamesForNamespaces() won't return the
             // right names and COMPC won't link in all the classes that
             // were in manifests.
+            ClassInfo classInfo = lookupMap.get(tagName);
             if (fromManifest)
-                lookupMap.get(tagName).fromManifest = true;
+            {
+                boolean wasFromManifest = classInfo.fromManifest;
+                classInfo.fromManifest = true;
+                if (!wasFromManifest)
+                {
+                    // manifest takes precedence over SWC, and a manifest uses a
+                    // different class name than a SWC for the same URI, that is
+                    // not treated as an error.
+                    // however, if two manifests have different classes names
+                    // for the same URI, that will be treated as an error.
+                    classInfo.className = className;
+                    return;
+                }
+            }
         }
         
         // If subsequent classNames added for this tagName aren't consistent,
@@ -315,20 +332,15 @@ public class MXMLManifestManager implements IMXMLManifestManager
         // resolve to a class.
         String oldClassName = getClassName(lookupMap.get(tagName)); 
         if (className.equals(oldClassName))
+        {
             return;
+        }
         
         lookupMap.put(tagName, null);
         reverseLookupMap.remove(oldClassName, tagName);
         
-        // 
-        ProblemEntry entry = new ProblemEntry(className, fileName);
-        ArrayList<ProblemEntry> list = problemMap.get(tagName);
-        if (list == null)
-        {
-            list = new ArrayList<ProblemEntry>();
-            problemMap.put(tagName, list);
-        }
-        list.add(entry);
+        ICompilerProblem problem = new ManifestInconsistentComponentEntriesProblem(tagName.getName(), uri, fileName);
+        problems.add(problem);
     }
     
     /**
@@ -348,6 +360,11 @@ public class MXMLManifestManager implements IMXMLManifestManager
             lookupOnlyMap.put(tagName, className);
         }
     }
+
+    public void collectProblems(Collection<ICompilerProblem> problems)
+    {
+        problems.addAll(getProblems());
+    }
     
     /**
      * Looks for inconsistent manifest mappings and returns
@@ -357,22 +374,6 @@ public class MXMLManifestManager implements IMXMLManifestManager
      */
     public Collection<ICompilerProblem> getProblems()
     {
-        Collection<ICompilerProblem> problems = new HashSet<ICompilerProblem>();
-        
-        // Search the lookupMap for null values, which indicate
-        // an inconsistent tagName->className mapping.
-        for (XMLName key : lookupMap.keySet())
-        {
-            if (lookupMap.get(key) == null)
-            {
-                // The corresponding entry in the problemMap
-                // has information about all the mapping of that tagName.
-                List<ProblemEntry> list = problemMap.get(key);
-                ICompilerProblem problem = new ManifestProblem(list);
-                problems.add(problem);
-            }
-        }
-        
         return problems;
     }
     
@@ -396,28 +397,5 @@ public class MXMLManifestManager implements IMXMLManifestManager
         
         public String className;
         public boolean fromManifest;
-    }
-    
-    /**
-     * This inner class is a simple duple struct used to keep track
-     * of all the manifest mappings for a particular tag.
-     * For example, <whatever:Foo> might map to a.b.Foo in
-     * X.swc and Y.swc but c.d.Foo in Z.swc.
-     * We keep track of all of this so that we can create compiler
-     * problems describing where the inconsistencies are.
-     */
-    private static class ProblemEntry
-    {
-        ProblemEntry(String className, String fileName)
-        {
-            this.className = className;
-            this.fileName = fileName;
-        }
-        
-        @SuppressWarnings("unused")
-        public String className;
-        
-        @SuppressWarnings("unused")
-        public String fileName;
     }
 }

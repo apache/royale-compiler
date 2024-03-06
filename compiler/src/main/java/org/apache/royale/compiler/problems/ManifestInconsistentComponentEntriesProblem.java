@@ -19,22 +19,24 @@
 
 package org.apache.royale.compiler.problems;
 
-import java.util.List;
-
 /**
  * Problem generated when there are multiple and inconsistent manifest entries
  * for how an MXML tag should map to an ActionScript class.
  */
-public final class ManifestProblem extends CompilerProblem
+public final class ManifestInconsistentComponentEntriesProblem extends CompilerProblem
 {
-    // TODO What should this say?
     public static final String DESCRIPTION =
-        "Manifest problem";
+        "Manifest: Error loading namespace ${uri}: Component ${tagName} is defined more than once in this namespace.";
     
     public static final int errorCode = 1474;
     
-    public ManifestProblem(List<?> list)
+    public ManifestInconsistentComponentEntriesProblem(String tagName, String uri, String manifestFileName)
     {
-        super();
+        super(manifestFileName);
+        this.tagName = tagName;
+        this.uri = uri;
     }
+
+    public String tagName;
+    public String uri;
 }
