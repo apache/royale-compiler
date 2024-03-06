@@ -26,7 +26,7 @@
           For Apache, the JARS must be removed from the repository.
 
           Licenses:
-              dom4j (1.6.1) - BSD
+              dom4j (2.1.4) - BSD
   -->
 
   <!-- this script supports the usingDownloadCache property and
@@ -71,13 +71,13 @@
 
     <!--  dom4j -->
     <property name="dom4j.name" value="dom4j"/>
-    <property name="dom4j.version" value="1.6.1"/>
+    <property name="dom4j.version" value="2.1.4"/>
     <antcall target="download-dependency">
       <param name="name" value="${dom4j.name}"/>
       <param name="src.server" value="${maven.search.url}"/>
-      <param name="src.folder" value="dom4j/dom4j/${dom4j.version}"/>
+      <param name="src.folder" value="org/dom4j/dom4j/${dom4j.version}"/>
       <param name="src.filename" value="dom4j-${dom4j.version}.jar"/>
-      <param name="src.checksum" value="4d8f51d3fe3900efc6e395be48030d6d"/>
+      <param name="src.checksum" value="8246840e53db2781ca941e4d3f9ad715"/>
       <param name="dest.folder" value=""/>
       <param name="dest.filename" value="${dom4j.name}.jar"/>
       <param name="license.use.url" value="https://raw.githubusercontent.com/dom4j/dom4j/master/LICENSE"/>

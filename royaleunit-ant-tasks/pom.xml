@@ -64,9 +64,9 @@
       <version>1.10.14</version>
     </dependency>
     <dependency>
-      <groupId>dom4j</groupId>
+      <groupId>org.dom4j</groupId>
       <artifactId>dom4j</artifactId>
-      <version>1.6.1</version>
+      <version>2.1.4</version>
     </dependency>
     <dependency>
       <groupId>org.java-websocket</groupId>
