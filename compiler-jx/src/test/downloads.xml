@@ -33,7 +33,8 @@
 	       For Apache, the JARS must be removed from the repository.
 	       
 	       Licenses:
-            JUnit (4.10) - CPL 1.0        
+            JUnit (4.13.2) - CPL 1.0       
+            Hamcrest (2.2) - BSD 
 	-->
 		     
     <!-- 
@@ -41,7 +42,7 @@
         they are each downloaded only if they don't already exist. 
     -->
     
-	<target name="main" depends="prepare, junit-jar"
+	<target name="main" depends="prepare, junit-jar, hamcrest-jar"
 		    description="Downloads all the required thirdparty JARs"/>
 
     <target name="prepare" >
@@ -105,24 +106,52 @@
     <target name="junit-jar-check" description="Checks if JUnit JAR exists.">
     	<condition property="junit.jar.exists">
     	    <and>
-    	        <available file="${lib.dir}/junit-4.10.jar"/>
+    	        <available file="${lib.dir}/junit-4.13.2.jar"/>
     	    </and>
         </condition>
     </target>
     
     <target name="junit-jar" depends="junit-jar-check" unless="junit.jar.exists"
             description="Copies the JUnit JAR to the lib directory.">
-        <echo message="Obtaining lib/junit-4.10.jar"/>
+        <echo message="Obtaining lib/junit-4.13.2.jar"/>
         <antcall target="junit-download-jar"/>
     </target>
     
     <target name="junit-download-jar" depends="junit-jar-check" unless="junit.jar.exists"
             description="Downloads the JUnit jar.">
         <antcall target="download-jar">
-            <param name="srcUrl" value="https://search.maven.org/remotecontent?filepath=junit/junit/4.10"/>
-            <param name="srcJarFile" value="junit-4.10.jar"/>
+            <param name="srcUrl" value="https://search.maven.org/remotecontent?filepath=junit/junit/4.13.2"/>
+            <param name="srcJarFile" value="junit-4.13.2.jar"/>
             <param name="destDir" value="${lib.dir}"/>
-            <param name="destJarFile" value="junit-4.10.jar"/>
+            <param name="destJarFile" value="junit-4.13.2.jar"/>
+        </antcall>
+    </target>
+        
+    <!--
+        hamcrest
+    -->
+    
+    <target name="hamcrest-jar-check" description="Checks if hamcrest JAR exists.">
+    	<condition property="hamcrest.jar.exists">
+    	    <and>
+    	        <available file="${lib.dir}/hamcrest-2.2.jar"/>
+    	    </and>
+        </condition>
+    </target>
+    
+    <target name="hamcrest-jar" depends="hamcrest-jar-check" unless="hamcrest.jar.exists"
+            description="Copies the hamcrest JAR to the lib directory.">
+        <echo message="Obtaining lib/hamcrest-2.2.jar"/>
+        <antcall target="hamcrest-download-jar"/>
+    </target>
+    
+    <target name="hamcrest-download-jar" depends="hamcrest-jar-check" unless="hamcrest.jar.exists"
+            description="Downloads the hamcrest jar.">
+        <antcall target="download-jar">
+            <param name="srcUrl" value="https://search.maven.org/remotecontent?filepath=org/hamcrest/hamcrest/2.2"/>
+            <param name="srcJarFile" value="hamcrest-2.2.jar"/>
+            <param name="destDir" value="${lib.dir}"/>
+            <param name="destJarFile" value="hamcrest-2.2.jar"/>
         </antcall>
     </target>
     

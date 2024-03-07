@@ -401,9 +401,15 @@
     </target>
 
     <target name="wipe" depends="clean">
-        <delete file="${compiler}/lib/external/commons-lang3-3.4.jar"/>
-        <delete file="${compiler}/lib/external/commons-compress-1.26.0.jar"/>
-        <delete file="${compiler}/lib/external/junit-4.10.jar"/>
+        <delete >
+            <fileset dir="${compiler}/lib/external" includes="commons-lang3-*.jar" erroronmissingdir="false"/>
+        </delete>
+        <delete>
+            <fileset dir="${compiler}/lib/external" includes="commons-compress-*.jar" erroronmissingdir="false"/>
+        </delete>
+        <delete>
+            <fileset dir="${compiler}/lib/external" includes="junit-*.jar" erroronmissingdir="false"/>
+        </delete>
     </target>
 
 </project>
