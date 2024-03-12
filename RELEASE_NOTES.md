@@ -3,7 +3,42 @@ For additional information on recent issues that have been closed, see [Github I
 Apache Royale Compiler 0.9.11
 =============================
 
-- compiler: Added new `--infer-types` compiler option that allows the compiler to automatically detect an appropriate type for both variables and function signatures that omit declared types, based on either the initializer or return values.
+- compiler: Added new `--infer-types` compiler option that allows the compiler to automatically detect an appropriate type for both variables and function signatures that have omitted their declared types. Type inference is based on either the initializer or return values.
+- compiler: Improved type checking for `&&` and `||` binary operators and `?:` ternary operator.
+- compiler: Removed obsolete "AMD" and "Goog" JavaScript backends, and finished some refactoring to make codebase easier to maintain.
+- compiler: Now requires Java 11 or newer to run. Previously required Java 8 minimum.
+- compiler: Updated various Java dependencies with security updates.
+- compiler: Fixed some Flex SDK integration tests that had been failing for a while.
+- compiler: Fix parsing of `<arguments>` or `<request>` properties for `RemoteObject`, `WebService`, or `HTTPService` tags in MXML.
+- compiler: Fix missing warning for duplicate function parameter names.
+- compiler: Fix missing error for multiple root nodes in `<fx:Model>` tag.
+- compiler: Fix missing errors for invalid MXML manifest files.
+- compiler: Fix null exception when emitting JavaScript if a variable is untyped or function doesn't have a return type
+- compiler: Fix exception for multiple intializers in an MXML field tag.
+- compiler: Fix column position of string inside metadata.
+- compiler: Fix exception when an event attribute in MXML is missing `=` and quotes.
+- compiler: Fix unnecessary warning when reading SWF data that contains `EnableTelemetry` tag without a password.
+- compiler: Fix backslash as an escape character for `{` and `}` inside MXML data binding.
+- compiler: Fix backslash characters being unescaped in property values when emitting JavaScript.
+- compiler: Fix overflow exception caused by `uint` values that overflowed an integer in the compiler.
+- compiler: Fix incorrect error or warning positions for CSS content inside `<fx:Style>` tag.
+- compiler: Fix non-string values in an MXML array sometimes getting incorrectly wrapped in quotes when emitting JavaScript.
+- debugger: Fix exception when evaluating certain expressions at run-time.
+- formatter: Added `insert-new-line-else` configuration option.
+- formatter: Filtered out unnecessary compiler warnings.
+- formatter: Fix stack overflow on some platforms when `<fx:Script>` code is large enough.
+- formatter: Fix missing indent after empty object literal when `collapse-empty-blocks` is true (it's not a block).
+- formatter: Fix Unicode and ASCII escape sequences getting lost when formatting string literals.
+- formatter: Fix formatting for configuration constants that gate definitions (like types or fields) without braces.
+- formatter: Fix formatting for object literal inside parentheses.
+- formatter: Fix ignored formatting when file contains unresolved configuration constants.
+- formatter: Fix formatting for comments on same line as control flow that doesn't have braces.
+- formatter: Fix _asformat-config.xml_ file being ignored.
+- formatter: Fix ignored implicit semicolon being formatted as `null`.
+- formatter: Fix formatting for comment between brace and `else`.
+- formatter: Fix formatting of unary operators that (depending on context) may also be arithmetic operators.
+- linter: Fix implicit semicolon incorrectly detected as an empty statement that should be removed (it can't be removed).
+- linter: Fix MXML linter being incorrectly used for _.as_ files and AS3 linter being incorrectly used for _.mxml_ files.
 
 Apache Royale Compiler 0.9.10
 =============================
