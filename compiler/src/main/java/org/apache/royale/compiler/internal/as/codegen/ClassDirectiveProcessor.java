@@ -1216,6 +1216,16 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                 {
                     classScope.addProblem(new AbstractOutsideClassProblem(site) );
                 }
+                else
+                {
+                    if (modifiersSet != null)
+                    {
+                        if( modifiersSet.hasModifier(ASModifier.OVERRIDE) )
+                        {
+                            classScope.addProblem(new AbstractAndOverrideProblem(site) );
+                        }
+                    }
+                }
             }
             else
             {

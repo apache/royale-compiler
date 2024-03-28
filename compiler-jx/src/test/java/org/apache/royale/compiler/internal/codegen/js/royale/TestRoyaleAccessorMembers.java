@@ -46,7 +46,7 @@ public class TestRoyaleAccessorMembers extends TestAccessorMembers
     @Test
     public void testGetAccessor_withBody()
     {
-    	IClassNode node = (IClassNode) getNode("function get foo():int{return -1;}",
+    	  IClassNode node = (IClassNode) getNode("function get foo():int{return -1;}",
     			IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n" +
@@ -59,7 +59,7 @@ public class TestRoyaleAccessorMembers extends TestAccessorMembers
     @Test
     public void testGetAccessor_withNamespace()
     {
-    	IClassNode node = (IClassNode) getNode("public function get foo():int{return -1;}",
+    	  IClassNode node = (IClassNode) getNode("public function get foo():int{return -1;}",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n" +
@@ -72,7 +72,7 @@ public class TestRoyaleAccessorMembers extends TestAccessorMembers
     @Test
     public void testGetAccessor_withNamespaceOverride()
     {
-    	IClassNode node = (IClassNode) getNode("public class B extends A { public override function get foo():int{return super.foo;} }; public class A {public function get foo():int {return 0;}} ",
+    	  IClassNode node = (IClassNode) getNode("public class B extends A { public override function get foo():int{return super.foo;} }; public class A {public function get foo():int {return 0;}} ",
         		IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\n" +
@@ -83,7 +83,7 @@ public class TestRoyaleAccessorMembers extends TestAccessorMembers
     @Test
     public void testGetAccessor_withGeneratedSetOverride()
     {
-    	IClassNode node = (IClassNode) getNode("public class B extends A { public override function get foo():int{return super.foo;} }; public class A { public function set foo(value:int):void{} public function get foo():int {return 0;}}",
+    	  IClassNode node = (IClassNode) getNode("public class B extends A { public override function get foo():int{return super.foo;} }; public class A { public function set foo(value:int):void{} public function get foo():int {return 0;}}",
         		IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\n" +
@@ -95,7 +95,7 @@ public class TestRoyaleAccessorMembers extends TestAccessorMembers
     @Test
     public void testGetAccessor_withStatic()
     {
-    	IClassNode node = (IClassNode) getNode("public static function get foo():int{return -1;}",
+    	  IClassNode node = (IClassNode) getNode("public static function get foo():int{return -1;}",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n" +
@@ -121,7 +121,7 @@ public class TestRoyaleAccessorMembers extends TestAccessorMembers
     @Test
     public void testGetAccessor_withNamespace_withoutReturnType()
     {
-    	IClassNode node = (IClassNode) getNode("public function get foo(){return -1;}",
+    	  IClassNode node = (IClassNode) getNode("public function get foo(){return -1;}",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n" +
@@ -134,7 +134,7 @@ public class TestRoyaleAccessorMembers extends TestAccessorMembers
     @Test
     public void testSetAccessor()
     {
-    	IClassNode node = (IClassNode) getNode("function set foo(value:int):void{}",
+    	  IClassNode node = (IClassNode) getNode("function set foo(value:int):void{}",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n" +
@@ -146,7 +146,7 @@ public class TestRoyaleAccessorMembers extends TestAccessorMembers
     @Test
     public void testSetAccessor_withBody()
     {
-    	IClassNode node = (IClassNode) getNode("function set foo(value:int):void{fetch('haai');}",
+    	  IClassNode node = (IClassNode) getNode("function set foo(value:int):void{fetch('haai');}",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n" +
@@ -159,7 +159,7 @@ public class TestRoyaleAccessorMembers extends TestAccessorMembers
     @Test
     public void testSetAccessor_withNamespace()
     {
-    	IClassNode node = (IClassNode) getNode("public function set foo(value:int):void{}",
+    	  IClassNode node = (IClassNode) getNode("public function set foo(value:int):void{}",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n" +
@@ -172,7 +172,7 @@ public class TestRoyaleAccessorMembers extends TestAccessorMembers
     @Test
     public void testSetAccessor_withNamespaceOverride()
     {
-    	IClassNode node = (IClassNode) getNode("public class B extends A { public override function set foo(value:int):void {super.foo = value;} }; public class A { public function set foo(value:int):void{}}",
+    	  IClassNode node = (IClassNode) getNode("public class B extends A { public override function set foo(value:int):void {super.foo = value;} }; public class A { public function set foo(value:int):void{}}",
         		IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\n" +
@@ -184,7 +184,7 @@ public class TestRoyaleAccessorMembers extends TestAccessorMembers
     @Test
     public void testSetAccessor_withStatic()
     {
-    	IClassNode node = (IClassNode) getNode("public static function set foo(value:int):void{}",
+    	  IClassNode node = (IClassNode) getNode("public static function set foo(value:int):void{}",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n" +
@@ -196,7 +196,7 @@ public class TestRoyaleAccessorMembers extends TestAccessorMembers
     @Test
     public void testSetAccessor_withGeneratedGetOverride()
     {
-    	IClassNode node = (IClassNode) getNode("public class B extends A { public override function set foo(value:int):void {super.foo = value;} }; public class A { public function set foo(value:int):void{} public function get foo():int { return 0;}}",
+    	  IClassNode node = (IClassNode) getNode("public class B extends A { public override function set foo(value:int):void {super.foo = value;} }; public class A { public function set foo(value:int):void{} public function get foo():int { return 0;}}",
         		IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\n" +
@@ -207,7 +207,7 @@ public class TestRoyaleAccessorMembers extends TestAccessorMembers
     @Test
     public void testSetAccessorWithSuperSet()
     {
-    	IClassNode node = (IClassNode) getNode("public class B extends A { public override function set foo(value:int):void {super.foo = value;} }; public class A { public function set foo(value:int):void{} public function get foo():int { return 0;}}",
+    	  IClassNode node = (IClassNode) getNode("public class B extends A { public override function set foo(value:int):void {super.foo = value;} }; public class A { public function set foo(value:int):void{} public function get foo():int { return 0;}}",
         		IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\n" +
@@ -218,7 +218,7 @@ public class TestRoyaleAccessorMembers extends TestAccessorMembers
     @Test
     public void testSetAccessorWithSuperSetAndPropagatedValue()
     {
-    	IClassNode node = (IClassNode) getNode("public class B extends A { public override function set foo(value:int):void {var z:int = super.foo = value;} }; public class A { public function set foo(value:int):void{} public function get foo():int { return 0;}}",
+    	  IClassNode node = (IClassNode) getNode("public class B extends A { public override function set foo(value:int):void {var z:int = super.foo = value;} }; public class A { public function set foo(value:int):void{} public function get foo():int { return 0;}}",
         		IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n};\ngoog.inherits(B, A);\n\n\n" +
@@ -230,13 +230,31 @@ public class TestRoyaleAccessorMembers extends TestAccessorMembers
     @Test
     public void testSetAccessor_withoutParameterType()
     {
-    	IClassNode node = (IClassNode) getNode("function set foo(value):void{}",
+    	  IClassNode node = (IClassNode) getNode("function set foo(value):void{}",
         		IClassNode.class, WRAP_LEVEL_CLASS);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nRoyaleTest_A = function() {\n};\n\n\n" +
         "/**\n * @nocollapse\n * @type {*}\n */\nRoyaleTest_A.prototype.foo;\n\n\n" + 
 				"RoyaleTest_A.prototype.set__foo = function(value) {\n};\n\n\n" +
         		"Object.defineProperties(RoyaleTest_A.prototype, /** @lends {RoyaleTest_A.prototype} */ {\n/**\n * @type {*}\n */\nfoo: {\nset: RoyaleTest_A.prototype.set__foo}}\n);");
+    }
+
+    @Test
+    public void testGetAccessorWithAbstract()
+    {
+    	  IClassNode node = (IClassNode) getNode("public abstract class A { public abstract function get foo():int; }",
+        		IClassNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nA = function() {\n};\n\n\n/**\n * @nocollapse\n * @export\n * @type {number}\n */\nA.prototype.foo;\n\n\nA.prototype.get__foo = function() {\n};\n\n\nObject.defineProperties(A.prototype, /** @lends {A.prototype} */ {\n/**\n * @type {number}\n */\nfoo: {\nget: A.prototype.get__foo}}\n);");
+    }
+
+    @Test
+    public void testSetAccessorWithAbstract()
+    {
+    	  IClassNode node = (IClassNode) getNode("public abstract class A { public abstract function set foo(value:int):void; }",
+        		IClassNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nA = function() {\n};\n\n\n/**\n * @nocollapse\n * @export\n * @type {number}\n */\nA.prototype.foo;\n\n\nA.prototype.set__foo = function(value) {\n};\n\n\nObject.defineProperties(A.prototype, /** @lends {A.prototype} */ {\n/**\n * @type {number}\n */\nfoo: {\nset: A.prototype.set__foo}}\n);");
     }
     
     @Override

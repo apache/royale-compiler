@@ -4,6 +4,7 @@ Apache Royale Compiler 0.9.11
 =============================
 
 - compiler: Added new `--infer-types` compiler option that allows the compiler to automatically detect an appropriate type for both variables and function signatures that have omitted their declared types. Type inference is based on either the initializer or return values.
+- compiler: Abstract classes now support abstract getter and setter methods.
 - compiler: Improved type checking for `&&` and `||` binary operators and `?:` ternary operator.
 - compiler: Removed obsolete "AMD" and "Goog" JavaScript backends, and finished some refactoring to make codebase easier to maintain.
 - compiler: Now requires Java 11 or newer to run. Previously required Java 8 minimum.

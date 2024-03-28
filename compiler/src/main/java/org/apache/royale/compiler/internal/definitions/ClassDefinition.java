@@ -1504,7 +1504,7 @@ public class ClassDefinition extends ClassDefinitionBase implements IClassDefini
             for (int i = 0, l = defSet.getSize(); i < l; ++i)
             {
                 IDefinition def = defSet.getDefinition(i);
-                if (def instanceof FunctionDefinition && !(def instanceof IAccessorDefinition))
+                if (def instanceof FunctionDefinition)
                 {
                     FunctionDefinition abstractMethod = (FunctionDefinition)def;
 
@@ -1534,8 +1534,14 @@ public class ClassDefinition extends ClassDefinitionBase implements IClassDefini
                     if (c == null || c.isAbstract())
                     {
                         // Error, didn't implement the method
+                        String methodName = abstractMethod.getBaseName();
+                        if (abstractMethod instanceof IGetterDefinition) {
+                            methodName = "get " + methodName;
+                        } else if (abstractMethod instanceof ISetterDefinition) {
+                            methodName = "set " + methodName;
+                        }
                         problems.add(new UnimplementedAbstractMethodProblem(cls,
-                                abstractMethod.getBaseName(),
+                                methodName,
                                 this.getBaseName(),
                                 cls.getBaseName()));
                     }

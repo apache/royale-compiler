@@ -2187,6 +2187,21 @@ public class MethodBodySemanticChecker
         }
         
         // For super.f(...), check whether f is deprecated.
+        if (iNode instanceof IMemberAccessExpressionNode)
+        {
+            IMemberAccessExpressionNode mae = (IMemberAccessExpressionNode)iNode;
+            IExpressionNode rightNode = mae.getRightOperandNode();
+            IDefinition rightDef = rightNode.resolve(project);
+            if (rightDef instanceof IAccessorDefinition)
+            {
+                if (rightDef.isAbstract())
+                {
+                    addProblem(new AccessUndefinedPropertyProblem( 
+                            iNode, rightDef.getBaseName()
+                        ));
+                }
+            }
+        }
         if (iNode instanceof IFunctionCallNode)
         {
             IExpressionNode nameNode = ((IFunctionCallNode)iNode).getNameNode();

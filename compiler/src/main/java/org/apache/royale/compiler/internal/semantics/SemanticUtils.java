@@ -3237,8 +3237,7 @@ public class SemanticUtils
                 return parentDef.isAbstract()
                         && !funcDef.isStatic()
                         && !funcDef.isFinal()
-                        && !funcDef.isConstructor()
-                        && !(funcDef instanceof IAccessorDefinition);
+                        && !funcDef.isConstructor();
             }
             return false;
         }
