@@ -449,7 +449,7 @@ public class JSClosureCompilerWrapper
             if (manageDependencies)
             	entryPoints.add(projectName);
             options_.setDependencyOptions(DependencyOptions.fromFlags(manageDependencies ? DependencyMode.PRUNE_LEGACY : DependencyMode.NONE, 
-            				entryPoints, new ArrayList<String>(), null, manageDependencies, false));
+            				entryPoints, new ArrayList<String>(), null, false, false));
             
             // warnings already activated in previous incarnation
             options_.setWarningLevel(DiagnosticGroups.ACCESS_CONTROLS, CheckLevel.WARNING);
