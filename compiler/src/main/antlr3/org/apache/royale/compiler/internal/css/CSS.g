@@ -172,6 +172,13 @@ private final int endOfSimpleSelector()
     {
         return 0;
     }
+
+    
+    // If the next token is the end of the input, it's also end of a selector.
+    if (nextType == EOF)
+    {
+        return 0;
+    }
     
     return -1;
 }
