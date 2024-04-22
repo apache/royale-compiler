@@ -72,7 +72,13 @@ public class CSSDocument extends CSSNodeBase implements ICSSDocument
             final CommonTokenStream tokens = new CommonTokenStream(lexer);
             final CSSParser parser = new CSSParser(tokens);
             final CSSParser.stylesheet_return stylesheet = parser.stylesheet();
-            final CommonTree ast = (CommonTree)stylesheet.getTree();
+            CommonTree ast = (CommonTree)stylesheet.getTree();
+            if (ast == null)
+            {
+                // may be null if the input contains only comments -JT
+                // apache/royale-compiler#1218
+                ast = new CommonTree();
+            }
             final CommonTreeNodeStream nodes = new CommonTreeNodeStream(ast);
             nodes.setTokenStream(tokens);
 

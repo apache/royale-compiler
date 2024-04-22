@@ -24,6 +24,7 @@ Apache Royale Compiler 0.9.11
 - compiler: Fix overflow exception caused by `uint` values that overflowed an integer in the compiler.
 - compiler: Fix incorrect error or warning positions for CSS content inside `<fx:Style>` tag.
 - compiler: Fix non-string values in an MXML array sometimes getting incorrectly wrapped in quotes when emitting JavaScript.
+- compiler: Fix null exception for `<fx:Style>` tags that contain only comments.
 - debugger: Fix exception when evaluating certain expressions at run-time.
 - formatter: Added `insert-new-line-else` configuration option.
 - formatter: Filtered out unnecessary compiler warnings.
