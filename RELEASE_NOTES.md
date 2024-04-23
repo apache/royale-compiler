@@ -25,7 +25,7 @@ Apache Royale Compiler 0.9.11
 - compiler: Fix incorrect error or warning positions for CSS content inside `<fx:Style>` tag.
 - compiler: Fix non-string values in an MXML array sometimes getting incorrectly wrapped in quotes when emitting JavaScript.
 - compiler: Fix null exception for `<fx:Style>` tags that contain only comments.
-- compiler: Fix null exception for `<fx:Style>` tags that contain invalid CSS.
+- compiler: Fix exceptions for `<fx:Style>` tags that contain invalid CSS.
 - compiler: Fix crash when attempting to use `--remove-circulars=false` with a release build.
 - debugger: Fix exception when evaluating certain expressions at run-time.
 - formatter: Added `insert-new-line-else` configuration option.

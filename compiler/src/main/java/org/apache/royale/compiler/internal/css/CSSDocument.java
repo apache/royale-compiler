@@ -31,11 +31,14 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
+import org.apache.royale.compiler.clients.problems.CompilerProblemCategorizer;
 import org.apache.royale.compiler.css.ICSSDocument;
 import org.apache.royale.compiler.css.ICSSFontFace;
 import org.apache.royale.compiler.css.ICSSNamespaceDefinition;
 import org.apache.royale.compiler.css.ICSSNode;
 import org.apache.royale.compiler.css.ICSSRule;
+import org.apache.royale.compiler.problems.CSSParserProblem;
+import org.apache.royale.compiler.problems.CompilerProblemSeverity;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
 
@@ -70,28 +73,35 @@ public class CSSDocument extends CSSNodeBase implements ICSSDocument
             // parse and build tree
             final CSSLexer lexer = new CSSLexer(input);
             final CommonTokenStream tokens = new CommonTokenStream(lexer);
-            final CSSParser parser = new CSSParser(tokens);
-            final CSSParser.stylesheet_return stylesheet = parser.stylesheet();
-            CommonTree ast = (CommonTree)stylesheet.getTree();
-            if (ast == null)
-            {
-                // may be null if the input contains only comments -JT
-                // apache/royale-compiler#1218
-                ast = new CommonTree();
-            }
-            final CommonTreeNodeStream nodes = new CommonTreeNodeStream(ast);
-            nodes.setTokenStream(tokens);
-
-            // walk the tree and build definitions
-            final CSSTree treeWalker = new CSSTree(nodes);
-            treeWalker.stylesheet();
-
             problems.addAll(lexer.problems);
-            problems.addAll(parser.problems);
-            problems.addAll(treeWalker.problems);
+            if (!hasErrors(lexer.problems))
+            {
+                final CSSParser parser = new CSSParser(tokens);
+                final CSSParser.stylesheet_return stylesheet = parser.stylesheet();
+                problems.addAll(parser.problems);
+                if (!hasErrors(parser.problems))
+                {
+                    CommonTree ast = (CommonTree)stylesheet.getTree();
+                    if (ast == null)
+                    {
+                        // may be null if the input contains only comments -JT
+                        // apache/royale-compiler#1218
+                        ast = new CommonTree();
+                    }
+                    final CommonTreeNodeStream nodes = new CommonTreeNodeStream(ast);
+                    nodes.setTokenStream(tokens);
 
-            // definition models
-            return treeWalker.model;
+                    // walk the tree and build definitions
+                    final CSSTree treeWalker = new CSSTree(nodes);
+                    treeWalker.stylesheet();
+
+                    problems.addAll(treeWalker.problems);
+
+                    // definition models
+                    return treeWalker.model;
+                }
+            }
+            return null;
         }
         catch (RecognitionException e)
         {
@@ -233,4 +243,16 @@ public class CSSDocument extends CSSNodeBase implements ICSSDocument
     {
         return namespacesLookup.get(DEFAULT_NAMESPACE_SHORT_NAME);
     }
+
+	private static boolean hasErrors(Collection<CSSParserProblem> problems) {
+		CompilerProblemCategorizer categorizer = new CompilerProblemCategorizer(null);
+		for (ICompilerProblem problem : problems) {
+			CompilerProblemSeverity severity = categorizer.getProblemSeverity(problem);
+			if (CompilerProblemSeverity.ERROR.equals(severity)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
