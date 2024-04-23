@@ -62,6 +62,7 @@ package org.apache.royale.compiler.internal.css;
 import java.util.Map;
 import java.util.HashMap;
 import org.apache.royale.compiler.problems.CSSParserProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 }
 
 @lexer::header 
@@ -69,6 +70,7 @@ import org.apache.royale.compiler.problems.CSSParserProblem;
 package org.apache.royale.compiler.internal.css;
 
 import org.apache.royale.compiler.problems.CSSParserProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 } 
 
 @lexer::members
@@ -77,7 +79,7 @@ import org.apache.royale.compiler.problems.CSSParserProblem;
 /**
  * Lexer problems.
  */
-protected List<CSSParserProblem> problems = new ArrayList<CSSParserProblem>();
+protected List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
 
 /**
  * Collect lexer problems.
@@ -95,7 +97,7 @@ public void displayRecognitionError(String[] tokenNames, RecognitionException e)
 /**
  * Parser problems.
  */
-protected List<CSSParserProblem> problems = new ArrayList<CSSParserProblem>();
+protected List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
 
 /**
  * Collect parser problems.

@@ -244,7 +244,7 @@ public class CSSDocument extends CSSNodeBase implements ICSSDocument
         return namespacesLookup.get(DEFAULT_NAMESPACE_SHORT_NAME);
     }
 
-	private static boolean hasErrors(Collection<CSSParserProblem> problems) {
+	private static boolean hasErrors(Collection<ICompilerProblem> problems) {
 		CompilerProblemCategorizer categorizer = new CompilerProblemCategorizer(null);
 		for (ICompilerProblem problem : problems) {
 			CompilerProblemSeverity severity = categorizer.getProblemSeverity(problem);

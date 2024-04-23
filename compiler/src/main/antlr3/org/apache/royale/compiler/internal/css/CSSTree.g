@@ -57,6 +57,7 @@ import java.util.Map;
 import java.util.HashMap;
 import org.apache.royale.compiler.css.*;
 import org.apache.royale.compiler.problems.CSSParserProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 }
 
@@ -76,7 +77,7 @@ private final TokenStream tokenStream = getTreeNodeStream().getTokenStream();
 /**
  * Tree walker problems.
  */
-protected List<CSSParserProblem> problems = new ArrayList<CSSParserProblem>();
+protected List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
 
 /**
  * Used for building up attribute selector strings until we implement a data
