@@ -103,6 +103,10 @@ class MXMLStyleNode extends MXMLNodeBase implements IMXMLStyleNode
                 stream.setLine(getLine());
                 stream.setCharPositionInLine(cssCharPos);
                 cssDocument = CSSDocument.parse(stream, problems);
+                if (cssDocument == null)
+                {
+                    cssDocument = CSSDocumentCache.EMPTY_CSS_DOCUMENT;
+                }
             }
             else
             {
