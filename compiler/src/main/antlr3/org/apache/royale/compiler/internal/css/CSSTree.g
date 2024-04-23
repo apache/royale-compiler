@@ -131,7 +131,14 @@ namespaceStatement
 { 
     final CSSNamespaceDefinition ns = new CSSNamespaceDefinition(
             $id.text, $uri.text, $start, tokenStream);
-    $stylesheet::namespaces.add(ns); 
+    if (ns.getProblems().size() == 0)
+    {
+        $stylesheet::namespaces.add(ns); 
+    }
+    else
+    {
+        problems.addAll(ns.getProblems());
+    }
 }
     :   ^(AT_NAMESPACE id=ID? uri=STRING)
     ;
@@ -184,8 +191,20 @@ mediumCondition
 fontFace
 @after
 {
-    final CSSFontFace fontFace = new CSSFontFace($d.properties, $start, tokenStream);
-    $stylesheet::fontFaces.add(fontFace);
+    List<CSSProperty> properties = $d.properties;
+    if (properties == null)
+    {
+        properties = new ArrayList<CSSProperty>();
+    }
+    final CSSFontFace fontFace = new CSSFontFace(properties, $start, tokenStream);
+    if (fontFace.getProblems().size() == 0)
+    {
+        $stylesheet::fontFaces.add(fontFace);
+    }
+    else
+    {
+        problems.addAll(fontFace.getProblems());
+    }
 }
     :   ^(AT_FONT_FACE d=declarationsBlock)
     ;

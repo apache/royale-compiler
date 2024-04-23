@@ -19,12 +19,17 @@
 
 package org.apache.royale.compiler.internal.css;
 
-import static com.google.common.base.Preconditions.checkState;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTree;
-
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.common.SourceLocation;
 import org.apache.royale.compiler.css.ICSSNamespaceDefinition;
+import org.apache.royale.compiler.problems.CSSNamespaceEmptyURIProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+
 import com.google.common.base.Joiner;
 
 /**
@@ -48,12 +53,31 @@ public class CSSNamespaceDefinition extends CSSNodeBase implements ICSSNamespace
         }
 
         this.prefix = prefix;
-        this.uri = CSSStringPropertyValue.stripQuotes(uri);
-        checkState(this.uri.length() > 0, "@namespace URI can't be empty.");
+        if (uri == null)
+        {
+            this.uri = "";
+        }
+        else
+        {
+            this.uri = CSSStringPropertyValue.stripQuotes(uri);
+        }
+
+        if (this.uri.length() == 0)
+        {
+            ISourceLocation sourceLocation = new SourceLocation(tokenStream.getSourceName(), UNKNOWN, UNKNOWN, tree.getLine(), tree.getCharPositionInLine());
+            problems.add(new CSSNamespaceEmptyURIProblem(sourceLocation));
+        }
     }
 
     private final String prefix;
     private final String uri;
+
+    private final List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
+
+    public List<ICompilerProblem> getProblems()
+    {
+        return problems;
+    }
 
     @Override
     public String getPrefix()

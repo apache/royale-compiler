@@ -19,18 +19,19 @@
 
 package org.apache.royale.compiler.internal.css;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTree;
-
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.common.SourceLocation;
 import org.apache.royale.compiler.css.FontFaceSourceType;
 import org.apache.royale.compiler.css.ICSSFontFace;
 import org.apache.royale.compiler.css.ICSSProperty;
 import org.apache.royale.compiler.css.ICSSPropertyValue;
+import org.apache.royale.compiler.problems.CSSRequiredDescriptorProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 /**
  * Implementation for {@code @font-face} statement DOM.
@@ -96,14 +97,30 @@ public class CSSFontFace extends CSSNodeBase implements ICSSFontFace
             }
         }
 
-        checkNotNull(srcValue, "'src' is required in @font-face");
-        if (srcValue instanceof CSSArrayPropertyValue)
-            source = (CSSFunctionCallPropertyValue)(srcValue).getNthChild(0);
+        if (srcValue == null)
+        {
+            source = null;
+            ISourceLocation sourceLocation = new SourceLocation(tokenStream.getSourceName(), UNKNOWN, UNKNOWN, tree.getLine(), tree.getCharPositionInLine());
+            problems.add(new CSSRequiredDescriptorProblem(sourceLocation, "@font-face", "src"));
+        }
         else
-            source = (CSSFunctionCallPropertyValue)srcValue;
+        {
+            if (srcValue instanceof CSSArrayPropertyValue)
+                source = (CSSFunctionCallPropertyValue)(srcValue).getNthChild(0);
+            else
+                source = (CSSFunctionCallPropertyValue)srcValue;
+        }
 
-        checkNotNull(fontFamilyValue, "'fontFamily' is required in @font-face");
-        fontFamily = fontFamilyValue.toString();
+        if (fontFamilyValue == null)
+        {
+            fontFamily = null;
+            ISourceLocation sourceLocation = new SourceLocation(tokenStream.getSourceName(), UNKNOWN, UNKNOWN, tree.getLine(), tree.getCharPositionInLine());
+            problems.add(new CSSRequiredDescriptorProblem(sourceLocation, "@font-face", "fontFamily"));
+        }
+        else
+        {
+            fontFamily = fontFamilyValue.toString();
+        }
 
         fontStyle = fontStyleValue == null ? "normal" : fontStyleValue.toString();
         fontWeight = fontWeightValue == null ? "normal" : fontWeightValue.toString();
@@ -119,6 +136,13 @@ public class CSSFontFace extends CSSNodeBase implements ICSSFontFace
     private final String fontWeight;
     private final boolean isEmbedAsCFF;
     private final boolean isAdvancedAntiAliasing;
+
+    private final List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
+
+    public List<ICompilerProblem> getProblems()
+    {
+        return problems;
+    }
 
     public ArrayList<ICSSPropertyValue> getSources()
     {

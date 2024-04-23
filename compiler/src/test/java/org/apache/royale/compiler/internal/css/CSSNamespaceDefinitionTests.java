@@ -61,16 +61,10 @@ public class CSSNamespaceDefinitionTests extends CSSBaseTests {
 		String code = 
 				" @namespace s ;";
 		
-		errorFilters = new String[1];
-		errorFilters[0] = "missing STRING at ';'";
 		List<ICSSNamespaceDefinition> namespaces = getCSSNamespaceDefinition(code);
-		assertThat("namespaces.size()" , namespaces.size(), is(2) );	
-		
-		CSSNamespaceDefinition namespace = (CSSNamespaceDefinition) namespaces.get(1);
-		assertThat("namespace.getOperator()" , namespace.getOperator(), is( CSSModelTreeType.NAMESPACE_DEFINITION ) );
-		assertThat("namespace.getPrefix()" , namespace.getPrefix(), is( "s" ) );
-		//TODO why is it "missing STRING"?
-		assertThat("namespace.getURI()" , namespace.getURI(), is( "missing STRING" ) );
+		// invalid CSS syntax, so there are no namespaces created, and an error
+		// is reported instead
+		assertThat("namespaces.size()" , namespaces.size(), is(0) );	
 	}
 	
 	@Test
@@ -78,17 +72,38 @@ public class CSSNamespaceDefinitionTests extends CSSBaseTests {
 	{
 		String code = 
 				" @namespace ;";
-		
-		errorFilters = new String[1];
-		errorFilters[0] = "missing STRING at ';'";
+
 		List<ICSSNamespaceDefinition> namespaces = getCSSNamespaceDefinition(code);
-		assertThat("namespaces.size()" , namespaces.size(), is(2) );	
+		// invalid CSS syntax, so there are no namespaces created, and an error
+		// is reported instead
+		assertThat("namespaces.size()" , namespaces.size(), is(0) );	
+	}
+	
+	@Test
+	public void CSSNamespaceDefinitionTests_namespace3()
+	{
+		String code = 
+				" @namespace \"\";";
+
+		List<ICSSNamespaceDefinition> namespaces = getCSSNamespaceDefinition(code);
+		// CSS syntax is valid, but empty namespace is not allowed, so it is
+		// ignored, except to report an error.
+		// only the "custom" namespace is recognized.
+		assertThat("namespaces.size()" , namespaces.size(), is(1) );	
+	}
+	
+	@Test
+	public void CSSNamespaceDefinitionTests_namespace4()
+	{
+		String code = 
+				" @namespace pr \"\";";
+
+		List<ICSSNamespaceDefinition> namespaces = getCSSNamespaceDefinition(code);
+		// CSS syntax is valid, but empty namespace is not allowed, so it is
+		// ignored, except to report an error.
+		// only the "custom" namespace is recognized.
+		assertThat("namespaces.size()" , namespaces.size(), is(1) );	
 		
-		CSSNamespaceDefinition namespace = (CSSNamespaceDefinition) namespaces.get(1);
-		assertThat("namespace.getOperator()" , namespace.getOperator(), is( CSSModelTreeType.NAMESPACE_DEFINITION ) );
-		assertThat("namespace.getPrefix()" , namespace.getPrefix(), is( (String)null ) );
-		//TODO why is it "missing STRING"?
-		assertThat("namespace.getURI()" , namespace.getURI(), is( "missing STRING" ) );
 	}
 	
 	@Test
