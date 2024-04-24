@@ -580,7 +580,20 @@ FUNCTIONS : '-moz-linear-gradient'
           | 'progid:DXImageTransform.Microsoft.gradient'
           | 'translateX'
           | 'translateY'
+          | 'translateZ'
           | 'translate'
+          | 'rotateX'
+          | 'rotateY'
+          | 'rotateZ'
+          | 'scaleX'
+          | 'scaleY'
+          | 'scaleZ'
+          | 'skewX'
+          | 'skewY'
+          | 'skew'
+          | 'perspective'
+          | 'matrix'
+          | 'matrix3d'
           | 'blur'
           | 'brightness'
           | 'contrast'
@@ -606,7 +619,7 @@ NOT
 ALPHA_VALUE : 	'alpha(' ( options {greedy=false;}: . )* ')' ; 
 
 /** 
- * Matches an alpha filter - alpha(opacity=70)
+ * Matches an rotate value - rotate(24)
  */
 ROTATE_VALUE : 	'rotate(' ( options {greedy=false;}: . )* ')' ; 
 
