@@ -33,8 +33,18 @@ public final class UnexpectedExceptionProblem extends CompilerProblem
     {
         super();
         this.exceptionName = throwable.getClass().getName();
-        StackTraceElement element = throwable.getStackTrace()[0];
-        this.exceptionLocation = element.getClassName() + "." + element.getMethodName() + ":" + element.getLineNumber();
+        StringBuilder exceptionLocation = new StringBuilder();
+        boolean first = false;
+        for (StackTraceElement element : throwable.getStackTrace())
+        {
+            if (first)
+            {
+                exceptionLocation.append("\n\t");
+            }
+            exceptionLocation.append(element.getClassName() + "." + element.getMethodName() + ":" + element.getLineNumber());
+            first = true;
+        }
+        this.exceptionLocation = exceptionLocation.toString();
     }
 
     public final String exceptionName;
