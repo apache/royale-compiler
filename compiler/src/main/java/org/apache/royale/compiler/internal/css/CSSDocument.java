@@ -73,33 +73,32 @@ public class CSSDocument extends CSSNodeBase implements ICSSDocument
             // parse and build tree
             final CSSLexer lexer = new CSSLexer(input);
             final CommonTokenStream tokens = new CommonTokenStream(lexer);
+            final CSSParser parser = new CSSParser(tokens);
+            final CSSParser.stylesheet_return stylesheet = parser.stylesheet();
+            // both lexer and parser woon't have problems until after
+            // parser.stylesheet() returns
             problems.addAll(lexer.problems);
-            if (!hasErrors(lexer.problems))
+            problems.addAll(parser.problems);
+            if (!hasErrors(lexer.problems) && !hasErrors(parser.problems))
             {
-                final CSSParser parser = new CSSParser(tokens);
-                final CSSParser.stylesheet_return stylesheet = parser.stylesheet();
-                problems.addAll(parser.problems);
-                if (!hasErrors(parser.problems))
+                CommonTree ast = (CommonTree)stylesheet.getTree();
+                if (ast == null)
                 {
-                    CommonTree ast = (CommonTree)stylesheet.getTree();
-                    if (ast == null)
-                    {
-                        // may be null if the input contains only comments -JT
-                        // apache/royale-compiler#1218
-                        ast = new CommonTree();
-                    }
-                    final CommonTreeNodeStream nodes = new CommonTreeNodeStream(ast);
-                    nodes.setTokenStream(tokens);
-
-                    // walk the tree and build definitions
-                    final CSSTree treeWalker = new CSSTree(nodes);
-                    treeWalker.stylesheet();
-
-                    problems.addAll(treeWalker.problems);
-
-                    // definition models
-                    return treeWalker.model;
+                    // may be null if the input contains only comments -JT
+                    // apache/royale-compiler#1218
+                    ast = new CommonTree();
                 }
+                final CommonTreeNodeStream nodes = new CommonTreeNodeStream(ast);
+                nodes.setTokenStream(tokens);
+
+                // walk the tree and build definitions
+                final CSSTree treeWalker = new CSSTree(nodes);
+                treeWalker.stylesheet();
+
+                problems.addAll(treeWalker.problems);
+
+                // definition models
+                return treeWalker.model;
             }
             return null;
         }
