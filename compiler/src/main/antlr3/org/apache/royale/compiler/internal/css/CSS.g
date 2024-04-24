@@ -191,7 +191,7 @@ private final int endOfSimpleSelector()
  * Root rule for a CSS file.
  */
 stylesheet
-    :   ( namespaceStatement | fontFace | keyframes | mediaQuery | ruleset )*
+    :   ( namespaceStatement | fontFace | keyframes | mediaQuery | ruleset )* EOF
     ;
 
 /**
