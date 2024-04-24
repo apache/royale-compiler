@@ -645,7 +645,13 @@ RGBA : 	'rgba(' 	( WS* NUMBER ( PERCENT | ) WS* ) ','
 				( WS* NUMBER ( PERCENT | ) WS* ) ',' 
 				( WS* NUMBER ( PERCENT | ) WS* ) ',' 
 				( WS* NUMBER ( PERCENT | ) WS* ) 
-		')' ; 
+		')'
+    |   'rgba(' 	( WS* NUMBER ( PERCENT | ) WS* ) 
+				( WS* NUMBER ( PERCENT | ) WS* ) 
+				( WS* NUMBER ( PERCENT | ) WS* )
+				( WS* NUMBER ( PERCENT | ) WS* ) 
+		')'
+    ; 
 
 /** 
  * Matches a rgb definition - rgb(100%,100%,100%)
@@ -653,7 +659,12 @@ RGBA : 	'rgba(' 	( WS* NUMBER ( PERCENT | ) WS* ) ','
 RGB : 	'rgb(' 	( WS* NUMBER ( PERCENT | ) WS* ) ',' 
 				( WS* NUMBER ( PERCENT | ) WS* ) ',' 
 				( WS* NUMBER ( PERCENT | ) WS* ) 
-		')' ; 
+		')'
+    | 	'rgb(' 	( WS* NUMBER ( PERCENT | ) WS* )
+				( WS* NUMBER ( PERCENT | ) WS* )
+				( WS* NUMBER ( PERCENT | ) WS* ) 
+		')'
+    ; 
 
 
 /** Arguments of a function call property value. */

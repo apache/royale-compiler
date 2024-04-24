@@ -19,6 +19,8 @@
 
 package org.apache.royale.compiler.internal.css;
 
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import org.antlr.runtime.Token;
@@ -58,13 +60,25 @@ public class CSSRgbColorPropertyValue extends CSSPropertyValue
     protected static int getIntValue(String rgb)
     {        
         rgb = rgb.substring(4, rgb.length() - 1);
-        
-        StringTokenizer st = new StringTokenizer(rgb, ",");
+
         StringBuffer sb = new StringBuffer();
-        while (st.hasMoreElements())
+        Iterator<Object> iterator = null;
+        if (rgb.indexOf(",") != -1)
+        { 
+            // separated by commas is considered a legacy mode
+            StringTokenizer st = new StringTokenizer(rgb, ",");
+            iterator = st.asIterator();
+        }
+        else
         {
-            int digit;    
-            String t = (String)st.nextElement();
+            // separated by whitespace is allowed instead of commas
+            String[] elements = rgb.split("\\s+");
+            iterator = Arrays.<Object>stream(elements).iterator();
+        }
+        while (iterator.hasNext())
+        {
+            int digit;
+            String t = (String) iterator.next();
             t = t.trim();
             if(t.contains("%")) {
                 t = t.replaceAll("%", "");
@@ -76,7 +90,7 @@ public class CSSRgbColorPropertyValue extends CSSPropertyValue
                 digit = Float.valueOf(t).intValue();
                 sb.append(Character.forDigit((digit >> 4) & 15, 16));
                 sb.append(Character.forDigit(digit & 15, 16));
-            }            
+            }
         }
         return Integer.parseInt( sb.toString(), 16 );
     }
