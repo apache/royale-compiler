@@ -58,7 +58,7 @@ public class CSSRgbColorPropertyValue extends CSSPropertyValue
      * @return int value bit color.
      */
     protected static int getIntValue(String rgb)
-    {        
+    {
         rgb = rgb.substring(4, rgb.length() - 1);
 
         StringBuffer sb = new StringBuffer();
@@ -71,7 +71,7 @@ public class CSSRgbColorPropertyValue extends CSSPropertyValue
         }
         else
         {
-            // separated by whitespace is allowed instead of commas
+            // separated by whitespace is considered modern
             String[] elements = rgb.split("\\s+");
             iterator = Arrays.<Object>stream(elements).iterator();
         }

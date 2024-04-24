@@ -54,11 +54,11 @@ public class CSSRgbaColorPropertyValue extends CSSPropertyValue
     /**
      * Computes from the given rgb definition a int value. 
      * 
-     * @param rgb definition - rgba(100, 0, 0)
+     * @param rgba definition - rgba(100, 0, 0)
      * @return int value bit color.
      */
     protected static long getIntValue(String rgb)
-    {        
+    {
         rgb = rgb.substring(5, rgb.length() - 1);
         
         StringBuffer sb = new StringBuffer();
@@ -71,10 +71,11 @@ public class CSSRgbaColorPropertyValue extends CSSPropertyValue
         }
         else
         {
-            // separated by whitespace is allowed instead of commas
-            String[] elements = rgb.split("\\s+");
+            // separated by whitespace (with / before alpha) is considered modern
+            String[] elements = rgb.split("(\\s*\\/\\s*)|(\\s+)");
             iterator = Arrays.<Object>stream(elements).iterator();
         }
+        int tokenIndex = 0;
         while (iterator.hasNext())
         {
             int digit;
@@ -89,22 +90,22 @@ public class CSSRgbaColorPropertyValue extends CSSPropertyValue
             }
             else
             {
-                if (iterator.hasNext())
+                if (tokenIndex < 3)
                 {
                     digit = Float.valueOf(t).intValue();
                     sb.append(Character.forDigit((digit >> 4) & 15, 16));
                     sb.append(Character.forDigit(digit & 15, 16));
                 }
-                else
+                else // alpha
                 {
-                    // alpha
                     Float alpha = Float.valueOf(t);
                     alpha *= 255;
                     digit = alpha.intValue();
                     sb.insert(0, Character.forDigit((digit >> 4) & 15, 16));
                     sb.insert(1, Character.forDigit(digit & 15, 16));
                 }
-            }            
+            }
+            tokenIndex++;       
         }
         return Long.parseLong( sb.substring(0, 8), 16 );
     }

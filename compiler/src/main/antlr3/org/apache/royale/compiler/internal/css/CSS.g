@@ -673,7 +673,7 @@ MATRIX3D_VALUE :  'matrix3d(' 	( WS* NUMBER WS* ) ','
                     ; 
 
 /** 
- * Matches an rgba definition - rgba(100%,100%,100%,100%)
+ * Matches an rgba definition - rgba(100%,100%,100%,100%) or rgba(100% 100% 100% / 100%)
  */
 RGBA : 	'rgba(' 	( WS* NUMBER ( PERCENT | ) WS* ) ',' 
 				( WS* NUMBER ( PERCENT | ) WS* ) ',' 
@@ -682,13 +682,13 @@ RGBA : 	'rgba(' 	( WS* NUMBER ( PERCENT | ) WS* ) ','
 		')'
     |   'rgba(' 	( WS* NUMBER ( PERCENT | ) WS* ) 
 				( WS* NUMBER ( PERCENT | ) WS* ) 
-				( WS* NUMBER ( PERCENT | ) WS* )
+				( WS* NUMBER ( PERCENT | ) WS* ) '/'
 				( WS* NUMBER ( PERCENT | ) WS* ) 
 		')'
     ; 
 
 /** 
- * Matches a rgb definition - rgb(100%,100%,100%)
+ * Matches a rgb definition - rgb(100%,100%,100%) or rgb(100% 100% 100%)
  */
 RGB : 	'rgb(' 	( WS* NUMBER ( PERCENT | ) WS* ) ',' 
 				( WS* NUMBER ( PERCENT | ) WS* ) ',' 
