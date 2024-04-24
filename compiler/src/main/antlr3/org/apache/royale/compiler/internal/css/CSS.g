@@ -503,6 +503,8 @@ singleValue
     |   RECT_VALUE
     |   ROTATE_VALUE
     |   TRANSLATE3D_VALUE
+    |   MATRIX_VALUE
+    |   MATRIX3D_VALUE
     |   RGB
     |   RGBA
     |   STRING						
@@ -592,8 +594,6 @@ FUNCTIONS : '-moz-linear-gradient'
           | 'skewY'
           | 'skew'
           | 'perspective'
-          | 'matrix'
-          | 'matrix3d'
           | 'blur'
           | 'brightness'
           | 'contrast'
@@ -637,6 +637,40 @@ TRANSLATE3D_VALUE : 	'translate3d(' ( options {greedy=false;}: . )* ')' ;
  * Matches an rect value - rect(x,y,w,h)
  */
 RECT_VALUE : 	'rect(' ( options {greedy=false;}: . )* ')' ; 
+
+/** 
+ * Matches a matrix value - matrix(0, 1, 1, 0, 0, 0);
+ */
+MATRIX_VALUE :  'matrix(' 	( WS* NUMBER WS* ) ',' 
+				            ( WS* NUMBER WS* ) ',' 
+				            ( WS* NUMBER WS* ) ',' 
+				            ( WS* NUMBER WS* ) ',' 
+				            ( WS* NUMBER WS* ) ',' 
+				            ( WS* NUMBER WS* ) 
+		        ')'
+                ; 
+
+/** 
+ * Matches a matrix3d value - matrix3d(-0.6,1.3,0,0,-2.3,-0.6,0,0,0,0,1,0,0,0,10,1);
+ */
+MATRIX3D_VALUE :  'matrix3d(' 	( WS* NUMBER WS* ) ',' 
+				                ( WS* NUMBER WS* ) ',' 
+				                ( WS* NUMBER WS* ) ',' 
+				                ( WS* NUMBER WS* ) ',' 
+				                ( WS* NUMBER WS* ) ',' 
+				                ( WS* NUMBER WS* ) ',' 
+				                ( WS* NUMBER WS* ) ',' 
+				                ( WS* NUMBER WS* ) ',' 
+				                ( WS* NUMBER WS* ) ',' 
+				                ( WS* NUMBER WS* ) ',' 
+				                ( WS* NUMBER WS* ) ',' 
+				                ( WS* NUMBER WS* ) ',' 
+				                ( WS* NUMBER WS* ) ',' 
+				                ( WS* NUMBER WS* ) ',' 
+				                ( WS* NUMBER WS* ) ',' 
+				                ( WS* NUMBER WS* ) 
+		            ')'
+                    ; 
 
 /** 
  * Matches an rgba definition - rgba(100%,100%,100%,100%)

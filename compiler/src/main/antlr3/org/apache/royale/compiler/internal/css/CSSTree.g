@@ -418,6 +418,10 @@ singleValue returns [CSSPropertyValue propertyValue]
         { $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream); }
     |   TRANSLATE3D_VALUE
         { $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream); }
+    |   MATRIX_VALUE
+        { $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream); }
+    |   MATRIX3D_VALUE
+        { $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream); }
     |   RGB
     	{ $propertyValue = new CSSRgbColorPropertyValue($RGB.text, $start, tokenStream); }
     |   RGBA
