@@ -28,6 +28,9 @@ Apache Royale Compiler 0.9.11
 - compiler: Fix exceptions for `<fx:Style>` tags that contain invalid CSS.
 - compiler: Fix silently ignoring errors in some invalid CSS content, if it appears at the end after valid content.
 - compiler: Fix crash when attempting to use `--remove-circulars=false` with a release build.
+- compiler: Added CSS support for modern syntax without commas in `rgb` and `rgba` functions.
+- compiler: Added CSS support for `radial-gradient`, `conic-gradient`, and repeating gradient functions.
+- compiler: Added CSS support for several translate, rotate, scale, skew, and matrix transformation functions.
 - debugger: Fix exception when evaluating certain expressions at run-time.
 - formatter: Added `insert-new-line-else` configuration option.
 - formatter: Filtered out unnecessary compiler warnings.
