@@ -64,6 +64,7 @@ import org.apache.royale.compiler.definitions.IStyleDefinition;
 import org.apache.royale.compiler.definitions.references.IResolvedQualifiersReference;
 import org.apache.royale.compiler.definitions.references.ReferenceFactory;
 import org.apache.royale.compiler.internal.abc.ClassGeneratorHelper;
+import org.apache.royale.compiler.internal.caches.CSSDocumentCache;
 import org.apache.royale.compiler.internal.css.codegen.CSSCompilationSession;
 import org.apache.royale.compiler.internal.css.codegen.ICSSCodeGenResult;
 import org.apache.royale.compiler.internal.css.semantics.ActivatedStyleSheets;
@@ -517,13 +518,20 @@ public class RoyaleAppSWFTarget extends AppSWFTarget
             allCompilationUnitsInTarget.addAll(dependencies);
 
             // Get all activated defaults.css from SWCs.
-            final Map<ICSSDocument, File> activatedDefaultCSSList =
-                        getAllDefaultCSS(cssManager, allCompilationUnitsInTarget);
-            for (final Map.Entry<ICSSDocument, File> entry : activatedDefaultCSSList.entrySet())
+            try
             {
-                activatedStyleSheets.addLibraryCSS(entry.getKey(), entry.getValue().getAbsolutePath());
+                final Map<ICSSDocument, File> activatedDefaultCSSList =
+                            getAllDefaultCSS(cssManager, allCompilationUnitsInTarget);
+                for (final Map.Entry<ICSSDocument, File> entry : activatedDefaultCSSList.entrySet())
+                {
+                    activatedStyleSheets.addLibraryCSS(entry.getKey(), entry.getValue().getAbsolutePath());
+                }
+                //LoggingProfiler.onDefaultsCSSCollectionChanged(activatedStyleSheets);
             }
-            //LoggingProfiler.onDefaultsCSSCollectionChanged(activatedStyleSheets);
+            catch (CSSDocumentCache.ProblemParsingCSSRuntimeException cssError)
+            {
+                problems.addAll(cssError.cssParserProblems);   
+            }
 
             // Get all dependencies introduced by defaults.css from SWCs. 
             final ImmutableList<IDefinition> definitions =
