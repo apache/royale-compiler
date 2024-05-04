@@ -494,7 +494,7 @@ public class MXMLTreeBuilder
                                               boolean isAttribute)
     {
         Object value = null;
-        if (type.getQualifiedName().equals(IASLanguageConstants.String)
+        if (type != null && type.getQualifiedName().equals(IASLanguageConstants.String)
                 && flags.contains(TextParsingFlags.COLLAPSE_WHITE_SPACE))
         {
             // special case for [CollapseWhiteSpace]
@@ -546,7 +546,7 @@ public class MXMLTreeBuilder
 
             value = parseValue(propertyNode, type, text, flags, defaultValue, isAttribute);
 
-            if (value == null)
+            if (value == null && type != null)
             {
                 String typeName = type.getQualifiedName();
                 if (typeName.equals(IASLanguageConstants.String) ||
