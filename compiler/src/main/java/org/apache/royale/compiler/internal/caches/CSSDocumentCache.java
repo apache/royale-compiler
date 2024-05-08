@@ -139,6 +139,12 @@ public class CSSDocumentCache extends ConcurrentCacheStoreBase<ICSSDocument> imp
         }
 
         @Override
+        public ICSSNode getParent()
+        {
+            return null;
+        }
+
+        @Override
         public String getSourcePath()
         {
             // TODO Auto-generated method stub

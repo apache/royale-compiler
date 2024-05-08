@@ -57,4 +57,11 @@ public interface ICSSNode extends ISourceLocation
      * @return Node type.
      */
     CSSModelTreeType getOperator();
+
+    /**
+     * Get the parent of this node
+     * 
+     * @return the parent of this node
+     */
+    ICSSNode getParent();
 }

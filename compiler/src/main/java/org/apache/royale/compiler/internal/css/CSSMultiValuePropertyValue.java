@@ -42,6 +42,10 @@ public class CSSMultiValuePropertyValue extends CSSPropertyValue
     {
         super(ast, tokens, CSSModelTreeType.PROPERTY_VALUE);
         this.elements = ImmutableList.copyOf(elements);
+        for (CSSPropertyValue element : elements)
+        {
+            element.setParent(this);
+        }
         super.children.addAll(elements);
     }
 

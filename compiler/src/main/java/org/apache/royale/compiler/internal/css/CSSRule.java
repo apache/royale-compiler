@@ -49,14 +49,41 @@ public class CSSRule extends CSSNodeBase implements ICSSRule
         this.selectorGroup = new ImmutableList.Builder<ICSSSelector>().addAll(selectorGroup).build();
 
         if (mediaQueries == null)
+        {
             this.mediaQueryList = ImmutableList.of();
+        }
         else
+        {
             this.mediaQueryList = new ImmutableList.Builder<ICSSMediaQueryCondition>().addAll(mediaQueries).build();
+        }
 
         if (properties == null)
+        {
             this.propertyList = ImmutableList.of();
+        }
         else
+        {
             this.propertyList = new ImmutableList.Builder<ICSSProperty>().addAll(properties).build();
+        }
+
+        for (CSSSelector selector : selectorGroup)
+        {
+            selector.setParent(this);
+        }
+        if (mediaQueries != null)
+        {
+            for (CSSMediaQueryCondition mediaQuery : mediaQueries)
+            {
+                mediaQuery.setParent(this);
+            }
+        }
+        if (properties != null)
+        {
+            for (CSSProperty property : properties)
+            {
+                property.setParent(this);
+            }
+        }
 
         // setup tree
         this.children.add(new CSSTypedNode(CSSModelTreeType.SELECTOR_GROUP, this.selectorGroup));

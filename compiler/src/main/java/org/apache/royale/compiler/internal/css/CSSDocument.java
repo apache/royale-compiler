@@ -134,14 +134,23 @@ public class CSSDocument extends CSSNodeBase implements ICSSDocument
         this.namespaces = new ImmutableList.Builder<ICSSNamespaceDefinition>().addAll(namespaces).build();
         this.fontFaces = new ImmutableList.Builder<ICSSFontFace>().addAll(fontFaces).build();
         
+        for (CSSRule rule : rules)
+        {
+            rule.setParent(this);
+        }
         Map<String, CSSNamespaceDefinition> namespaceMap = new HashMap<String, CSSNamespaceDefinition>();
         for (CSSNamespaceDefinition namespace : namespaces)
         {
             final String prefix = namespace.getPrefix();
             final String key = prefix != null ? prefix : DEFAULT_NAMESPACE_SHORT_NAME;
             namespaceMap.put(key, namespace);
+            namespace.setParent(this);
         }
         this.namespacesLookup = ImmutableMap.copyOf(namespaceMap);
+        for (CSSFontFace fontFace : fontFaces)
+        {
+            fontFace.setParent(this);
+        }
 
         // setup tree
         children.add(new CSSTypedNode(CSSModelTreeType.NAMESPACE_LIST, this.namespaces));

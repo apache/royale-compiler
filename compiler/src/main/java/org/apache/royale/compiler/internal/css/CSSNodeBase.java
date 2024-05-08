@@ -27,9 +27,9 @@ import java.util.List;
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTree;
-
 import org.apache.royale.compiler.common.SourceLocation;
 import org.apache.royale.compiler.css.ICSSNode;
+
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 
@@ -71,6 +71,11 @@ class CSSNodeBase extends SourceLocation implements ICSSNode
      * their constructors.
      */
     protected final List<ICSSNode> children;
+
+    /**
+     * Parent node.
+     */
+    protected ICSSNode parent;
 
     /**
      * Initialize source location information.
@@ -179,5 +184,21 @@ class CSSNodeBase extends SourceLocation implements ICSSNode
     public CSSModelTreeType getOperator()
     {
         return type;
+    }
+
+    @Override
+    public ICSSNode getParent()
+    {
+        return parent;
+    }
+
+    /**
+     * Set the parent node. Used during parsing.
+     * 
+     * @param parent parent node
+     */
+    public void setParent(CSSNodeBase parent)
+    {
+        this.parent = parent;
     }
 }
