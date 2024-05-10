@@ -38,6 +38,11 @@ public class CSSCombinator extends CSSNodeBase implements ICSSCombinator
         assert type != null : "Combinator type can't be null.";
         this.selector = selector;
         this.type = type;
+
+        selector.setParent(this);
+        children.add(selector);
+        // TODO: include the operator
+        span(selector);
     }
 
     private final CSSSelector selector;
@@ -53,5 +58,13 @@ public class CSSCombinator extends CSSNodeBase implements ICSSCombinator
     public CombinatorType getCombinatorType()
     {
         return type;
+    }
+
+    @Override
+    public String toString()
+    {
+        final StringBuilder result = new StringBuilder();
+        result.append(getSelector().toString()).append(getCombinatorType().text);
+        return result.toString();
     }
 }

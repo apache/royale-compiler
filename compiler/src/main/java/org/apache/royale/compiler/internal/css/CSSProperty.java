@@ -36,6 +36,9 @@ public class CSSProperty extends CSSNodeBase implements ICSSProperty
         this.rawName = name;
         this.normalizedName = normalize(name);
         this.value = value;
+
+        value.setParent(this);
+        children.add(value);
     }
 
     private final String normalizedName;

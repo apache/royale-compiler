@@ -55,10 +55,51 @@ public class CSSSelector extends CSSNodeBase implements ICSSSelector
         this.namespacePrefix = namespacePrefix;
         this.elementName = elementName;
 
+        if (combinator != null)
+        {
+            combinator.setParent(this);
+            this.children.add(combinator);
+            if (combinator.getStart() < getStart())
+            {
+                setStart(combinator.getStart());
+            }
+            if (combinator.getLine() < getLine())
+            {
+                setLine(combinator.getLine());
+                setColumn(combinator.getColumn());
+            }
+            else if (combinator.getLine() == getLine() && combinator.getColumn() > getColumn())
+            {
+                setColumn(combinator.getColumn());
+            }
+        }
+
         if (conditions == null || conditions.isEmpty())
+        {
             this.conditions = ImmutableList.of();
+        }
         else
+        {
             this.conditions = new ImmutableList.Builder<ICSSSelectorCondition>().addAll(conditions).build();
+            for (CSSSelectorCondition condition : conditions)
+            {
+                condition.setParent(this);
+                if (condition.getEnd() > getEnd())
+                {
+                    setEnd(condition.getEnd());
+                }
+                if (condition.getEndLine() > getEndLine())
+                {
+                    setEndLine(condition.getEndLine());
+                    setEndColumn(condition.getEndColumn());
+                }
+                else if (condition.getEndLine() == getEndLine() && condition.getEndColumn() > getEndColumn())
+                {
+                    setEndColumn(condition.getEndColumn());
+                }
+            }
+            this.children.addAll(conditions);
+        }
 
     }
 

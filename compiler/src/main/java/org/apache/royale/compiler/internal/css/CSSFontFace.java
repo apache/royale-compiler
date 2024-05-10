@@ -28,7 +28,6 @@ import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.common.SourceLocation;
 import org.apache.royale.compiler.css.FontFaceSourceType;
 import org.apache.royale.compiler.css.ICSSFontFace;
-import org.apache.royale.compiler.css.ICSSProperty;
 import org.apache.royale.compiler.css.ICSSPropertyValue;
 import org.apache.royale.compiler.problems.CSSRequiredDescriptorProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
@@ -62,38 +61,43 @@ public class CSSFontFace extends CSSNodeBase implements ICSSFontFace
         ICSSPropertyValue embedAsCFFValue = null;
         ICSSPropertyValue advancedAAValue = null;
 
-        for (final ICSSProperty property : properties)
+        if (properties != null)
         {
-            final String name = property.getName();
-            final ICSSPropertyValue value = property.getValue();
-            if (name.equals("src"))
+            children.addAll(properties);
+            for (final CSSProperty property : properties)
             {
-                sources.add(value);
-                srcValue = value;
-            }
-            else if (name.equals("fontFamily"))
-            {
-                fontFamilyValue = value;
-            }
-            else if (name.equals("fontStyle"))
-            {
-                fontStyleValue = value;
-            }
-            else if (name.equals("fontWeight"))
-            {
-                fontWeightValue = value;
-            }
-            else if (name.equals("embedAsCFF"))
-            {
-                embedAsCFFValue = value;
-            }
-            else if (name.equals("advancedAntiAliasing"))
-            {
-                advancedAAValue = value;
-            }
-            else
-            {
-                // Ignore unknown properties.
+                property.setParent(this);
+                final String name = property.getName();
+                final ICSSPropertyValue value = property.getValue();
+                if (name.equals("src"))
+                {
+                    sources.add(value);
+                    srcValue = value;
+                }
+                else if (name.equals("fontFamily"))
+                {
+                    fontFamilyValue = value;
+                }
+                else if (name.equals("fontStyle"))
+                {
+                    fontStyleValue = value;
+                }
+                else if (name.equals("fontWeight"))
+                {
+                    fontWeightValue = value;
+                }
+                else if (name.equals("embedAsCFF"))
+                {
+                    embedAsCFFValue = value;
+                }
+                else if (name.equals("advancedAntiAliasing"))
+                {
+                    advancedAAValue = value;
+                }
+                else
+                {
+                    // Ignore unknown properties.
+                }
             }
         }
 

@@ -75,6 +75,19 @@ public class CSSRule extends CSSNodeBase implements ICSSRule
             for (CSSMediaQueryCondition mediaQuery : mediaQueries)
             {
                 mediaQuery.setParent(this);
+                if (mediaQuery.getStart() < getStart())
+                {
+                    setStart(mediaQuery.getStart());
+                }
+                if (mediaQuery.getLine() < getLine())
+                {
+                    setLine(mediaQuery.getLine());
+                    setColumn(mediaQuery.getColumn());
+                }
+                else if (mediaQuery.getLine() == getLine() && mediaQuery.getColumn() > getColumn())
+                {
+                    setColumn(mediaQuery.getColumn());
+                }
             }
         }
         if (properties != null)
