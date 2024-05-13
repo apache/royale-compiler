@@ -19,6 +19,8 @@
 
 package org.apache.royale.compiler.css;
 
+import com.google.common.collect.ImmutableList;
+
 /**
  * CSS DOM for an <code>@font-face</code> statement.
  */
@@ -79,5 +81,12 @@ public interface ICSSFontFace extends ICSSNode
      * @return True if this font face uses advanced anti-aliasing.
      */
     boolean getAdvancedAntiAliasing();
+
+    /**
+     * Get the CSS properties in their declared order.
+     * 
+     * @return A list of CSS properties.
+     */
+    ImmutableList<ICSSProperty> getProperties();
 
 }

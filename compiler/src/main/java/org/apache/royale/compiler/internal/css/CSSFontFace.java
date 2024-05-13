@@ -28,9 +28,12 @@ import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.common.SourceLocation;
 import org.apache.royale.compiler.css.FontFaceSourceType;
 import org.apache.royale.compiler.css.ICSSFontFace;
+import org.apache.royale.compiler.css.ICSSProperty;
 import org.apache.royale.compiler.css.ICSSPropertyValue;
 import org.apache.royale.compiler.problems.CSSRequiredDescriptorProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Implementation for {@code @font-face} statement DOM.
@@ -60,6 +63,15 @@ public class CSSFontFace extends CSSNodeBase implements ICSSFontFace
         ICSSPropertyValue fontWeightValue = null;
         ICSSPropertyValue embedAsCFFValue = null;
         ICSSPropertyValue advancedAAValue = null;
+
+        if (properties == null)
+        {
+            this.propertyList = ImmutableList.of();
+        }
+        else
+        {
+            this.propertyList = new ImmutableList.Builder<ICSSProperty>().addAll(properties).build();
+        }
 
         if (properties != null)
         {
@@ -141,6 +153,7 @@ public class CSSFontFace extends CSSNodeBase implements ICSSFontFace
     private final String fontWeight;
     private final boolean isEmbedAsCFF;
     private final boolean isAdvancedAntiAliasing;
+    private final ImmutableList<ICSSProperty> propertyList;
 
     private final List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
 
@@ -191,6 +204,12 @@ public class CSSFontFace extends CSSNodeBase implements ICSSFontFace
     public boolean getEmbedAsCFF()
     {
         return isEmbedAsCFF;
+    }
+
+    @Override
+    public ImmutableList<ICSSProperty> getProperties()
+    {
+        return propertyList;
     }
 
     @Override
