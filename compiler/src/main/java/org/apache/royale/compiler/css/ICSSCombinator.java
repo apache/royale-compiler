@@ -30,7 +30,7 @@ package org.apache.royale.compiler.css;
  * "descendant" (space character) and the combined selector is
  * {@code s|Button.rounded}.
  */
-public interface ICSSCombinator
+public interface ICSSCombinator extends ICSSNode
 {
 
     /**
