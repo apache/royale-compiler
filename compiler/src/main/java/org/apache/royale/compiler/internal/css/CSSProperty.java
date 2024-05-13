@@ -38,7 +38,8 @@ public class CSSProperty extends CSSNodeBase implements ICSSProperty
         this.value = value;
 
         value.setParent(this);
-        children.add(value);
+        // don't use children.add() here because JBurg doesn't expect the value
+        // to be part of the tree
     }
 
     private final String normalizedName;

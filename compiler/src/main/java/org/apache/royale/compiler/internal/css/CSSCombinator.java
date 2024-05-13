@@ -40,7 +40,8 @@ public class CSSCombinator extends CSSNodeBase implements ICSSCombinator
         this.type = type;
 
         selector.setParent(this);
-        children.add(selector);
+        // don't use children.add() here because JBurg doesn't expect the
+        // selector to be part of the tree
         // TODO: include the operator
         span(selector);
     }

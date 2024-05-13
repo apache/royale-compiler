@@ -58,7 +58,8 @@ public class CSSSelector extends CSSNodeBase implements ICSSSelector
         if (combinator != null)
         {
             combinator.setParent(this);
-            this.children.add(combinator);
+            // don't use children.add() here because JBurg doesn't expect the
+            // combinator to be part of the tree
             if (combinator.getStart() < getStart())
             {
                 setStart(combinator.getStart());
@@ -98,7 +99,8 @@ public class CSSSelector extends CSSNodeBase implements ICSSSelector
                     setEndColumn(condition.getEndColumn());
                 }
             }
-            this.children.addAll(conditions);
+            // don't use children.add() or addAll() here because JBurg doesn't
+            // expect the conditions to be part of the tree
         }
 
     }

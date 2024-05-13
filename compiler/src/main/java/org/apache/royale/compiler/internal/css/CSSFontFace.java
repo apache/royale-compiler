@@ -63,7 +63,8 @@ public class CSSFontFace extends CSSNodeBase implements ICSSFontFace
 
         if (properties != null)
         {
-            children.addAll(properties);
+            // don't use children.add() or addAll() here because JBurg doesn't
+            // expect the properties to be part of the tree
             for (final CSSProperty property : properties)
             {
                 property.setParent(this);
