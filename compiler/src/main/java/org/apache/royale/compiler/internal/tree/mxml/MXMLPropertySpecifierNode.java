@@ -317,7 +317,18 @@ class MXMLPropertySpecifierNode extends MXMLSpecifierNodeBase implements IMXMLPr
             {
                 if (unit instanceof IMXMLTagData)
                 {
-                    initializeDefaultProperty(builder, (IVariableDefinition)getDefinition(), 
+                    IVariableDefinition variableDefinition = null;
+                    IDefinition propertyDefinition = getDefinition();
+                    if (propertyDefinition instanceof IVariableDefinition)
+                    {
+                        variableDefinition = (IVariableDefinition) propertyDefinition;
+                    }
+                    // this code used to cast getDefinition() as
+                    // IVariableDefinition, but it crashed if the return value
+                    // was IStyleDefinition instead.
+                    // now, we pass null for definitions that aren't variables,
+                    // to avoid the crash. however, is that the right solution?
+                    initializeDefaultProperty(builder, variableDefinition, 
                                 tag, getListOfUnits(tag));
                     return;                        
                 }
