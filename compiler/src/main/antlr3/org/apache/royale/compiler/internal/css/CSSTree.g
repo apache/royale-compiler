@@ -55,9 +55,12 @@ package org.apache.royale.compiler.internal.css;
 
 import java.util.Map;
 import java.util.HashMap;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.common.SourceLocation;
 import org.apache.royale.compiler.css.*;
 import org.apache.royale.compiler.problems.CSSParserProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.CSSStrictFlexSyntaxProblem;
 
 }
 
@@ -85,6 +88,22 @@ protected List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
  */
 protected String curAttribute;
 
+/**
+ * Determines if problems should be reported for CSS syntax that would not be
+ * recognized by the Flex SDK compiler.
+ */
+protected boolean strictFlexCSS = false;
+
+public boolean getStrictFlexCSS()
+{
+    return strictFlexCSS;
+}
+
+public void setStrictFlexCSS(boolean value)
+{
+    strictFlexCSS = value;
+}
+
 
 /**
  * Collect problems.
@@ -93,6 +112,19 @@ protected String curAttribute;
 public void displayRecognitionError(String[] tokenNames, RecognitionException e)
 {
     problems.add(CSSParserProblem.create(this, tokenNames, e));
+}
+
+
+/**
+ * Collect strict Flex CSS problems.
+ */
+public void displayStrictFlexSyntaxError(String syntax, CommonTree tree)
+{
+    final ISourceLocation location = new SourceLocation(
+        getSourceName(),
+        -1, -1, // TODO Need start and end info from CSS
+        tree.getLine(), tree.getCharPositionInLine());
+    problems.add(new CSSStrictFlexSyntaxProblem(location, syntax));
 }
 }
 
@@ -283,6 +315,11 @@ scope
 }
 @after
 {
+    if (strictFlexCSS && !CombinatorType.DESCENDANT.equals(combinatorType))
+    {
+        // Flex supported only the DESCENDANT combinator type
+        problems.add(new CSSStrictFlexSyntaxProblem(combinator, combinatorType.text));
+    }
     final CSSSelector simpleSelector = new CSSSelector(
         combinator,
         $simpleSelector::element,
@@ -314,9 +351,27 @@ conditionSelector
 }
     :   ^(DOT c=ID)   { type = ConditionType.CLASS; name = $c.text; }  
     |   HASH_WORD   { type = ConditionType.ID; name = $HASH_WORD.text.substring(1); }
-    |   ^(COLON NOT arg=ARGUMENTS) { type = ConditionType.NOT; name = $arg.text; }
+    |   ^(COLON NOT arg=ARGUMENTS)
+        {
+            if (strictFlexCSS)
+            {
+                // Flex didn't support the CSS :not() pseudo-class
+                displayStrictFlexSyntaxError($COLON.text + $NOT.text, $NOT);
+            }
+            type = ConditionType.NOT;
+            name = $arg.text;
+        }
     |   ^(COLON s=ID) { type = ConditionType.PSEUDO; name = $s.text; } 
-    |   ^(DOUBLE_COLON dc=ID) { type = ConditionType.PSEUDO_ELEMENT; name = $dc.text; } 
+    |   ^(DOUBLE_COLON dc=ID)
+        {
+            if (strictFlexCSS)
+            {
+                // Flex didn't support CSS pseudo elements (but did support non-function pseudo-classes)
+                displayStrictFlexSyntaxError($DOUBLE_COLON.text, $DOUBLE_COLON);
+            }
+            type = ConditionType.PSEUDO_ELEMENT;
+            name = $dc.text;
+        } 
     |   attributeSelector { type = ConditionType.ATTRIBUTE; name = curAttribute.substring(1); }
     ;
   
@@ -334,7 +389,14 @@ elementSelector
     
 attributeSelector
     :   open = SQUARE_OPEN attributeName attributeOperator* attributeValue* close = SQUARE_END
-	{ curAttribute = $open.text + curAttribute + $close.text; }
+        {
+            if (strictFlexCSS)
+            {
+                // Flex didn't support CSS attributes
+                displayStrictFlexSyntaxError($SQUARE_OPEN.text, $SQUARE_OPEN);
+            }
+            curAttribute = $open.text + curAttribute + $close.text;
+        }
     ;
     
 attributeName
@@ -379,6 +441,11 @@ declarationsBlock returns [List<CSSProperty> properties]
 declaration returns [CSSProperty property]
 @after
 {
+    if (strictFlexCSS && $id.text.startsWith("--"))
+    {
+        // Flex didn't support CSS custom properties (CSS variables)
+        displayStrictFlexSyntaxError($id.text, $id);
+    }
     if ($id.text != null && $v.propertyValue != null)
         $property = new CSSProperty($id.text, $v.propertyValue, $start, tokenStream);  
 }
@@ -409,23 +476,65 @@ singleValue returns [CSSPropertyValue propertyValue]
     |   HASH_WORD         
         { $propertyValue = new CSSColorPropertyValue($start, tokenStream); }
     |   ALPHA_VALUE
-        { $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream); }
+        {
+            if (strictFlexCSS)
+            {
+                displayStrictFlexSyntaxError($ALPHA_VALUE.text, $ALPHA_VALUE);
+            }
+            $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream);
+        }
     |   RECT_VALUE
         { $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream); }
     |   ROTATE_VALUE
-        { $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream); }
+        {
+            if (strictFlexCSS)
+            {
+                displayStrictFlexSyntaxError($ROTATE_VALUE.text, $ROTATE_VALUE);
+            }
+            $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream);
+        }
     |   SCALE_VALUE
-        { $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream); }
+        {
+            if (strictFlexCSS)
+            {
+                displayStrictFlexSyntaxError($SCALE_VALUE.text, $SCALE_VALUE);
+            }
+            $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream);
+        }
     |   TRANSLATE3D_VALUE
-        { $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream); }
+        {
+            if (strictFlexCSS)
+            {
+                displayStrictFlexSyntaxError($TRANSLATE3D_VALUE.text, $TRANSLATE3D_VALUE);
+            }
+            $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream);
+        }
     |   MATRIX_VALUE
-        { $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream); }
+        {
+            if (strictFlexCSS)
+            {
+                displayStrictFlexSyntaxError($MATRIX_VALUE.text, $MATRIX_VALUE);
+            }
+            $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream);
+        }
     |   MATRIX3D_VALUE
-        { $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream); }
+        {
+            if (strictFlexCSS)
+            {
+                displayStrictFlexSyntaxError($MATRIX3D_VALUE.text, $MATRIX3D_VALUE);
+            }
+            $propertyValue = CSSKeywordPropertyValue.create($start, tokenStream);
+        }
     |   RGB
     	{ $propertyValue = new CSSRgbColorPropertyValue($RGB.text, $start, tokenStream); }
     |   RGBA
-    	{ $propertyValue = new CSSRgbaColorPropertyValue($RGBA.text, $start, tokenStream); }
+    	{
+            if (strictFlexCSS)
+            {
+                displayStrictFlexSyntaxError($RGBA.text, $RGBA);
+            }
+            $propertyValue = new CSSRgbaColorPropertyValue($RGBA.text, $start, tokenStream);
+        }
     |   ^(CLASS_REFERENCE cr=ARGUMENTS)
         { $propertyValue = new CSSFunctionCallPropertyValue($CLASS_REFERENCE.text, $cr.text, $start, tokenStream); }
     |   ^(PROPERTY_REFERENCE pr=ARGUMENTS)
@@ -437,11 +546,29 @@ singleValue returns [CSSPropertyValue propertyValue]
     |   ^(LOCAL l=ARGUMENTS)
         { $propertyValue = new CSSFunctionCallPropertyValue($LOCAL.text, $l.text, $start, tokenStream); }
     |   ^(CALC l=ARGUMENTS)
-        { $propertyValue = new CSSFunctionCallPropertyValue($CALC.text, $l.text, $start, tokenStream); }
+        {
+            if (strictFlexCSS)
+            {
+                displayStrictFlexSyntaxError($CALC.text, $CALC);
+            }
+            $propertyValue = new CSSFunctionCallPropertyValue($CALC.text, $l.text, $start, tokenStream);
+        }
     |   ^(VAR l=ARGUMENTS)
-        { $propertyValue = new CSSFunctionCallPropertyValue($VAR.text, $l.text, $start, tokenStream); }
+        {
+            if (strictFlexCSS)
+            {
+                displayStrictFlexSyntaxError($VAR.text, $VAR);
+            }
+            $propertyValue = new CSSFunctionCallPropertyValue($VAR.text, $l.text, $start, tokenStream);
+        }
     |   ^(FUNCTIONS l=ARGUMENTS)
-        { $propertyValue = new CSSFunctionCallPropertyValue($FUNCTIONS.text, $l.text, $start, tokenStream); }
+        {
+            if (strictFlexCSS)
+            {
+                displayStrictFlexSyntaxError($FUNCTIONS.text, $FUNCTIONS);
+            }
+            $propertyValue = new CSSFunctionCallPropertyValue($FUNCTIONS.text, $l.text, $start, tokenStream);
+        }
     |   s=STRING   
         { $propertyValue = new CSSStringPropertyValue($s.text, $start, tokenStream); }                   
     |   ID
