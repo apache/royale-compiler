@@ -93,7 +93,7 @@ public class CSSProperty extends CSSNodeBase implements ICSSProperty
 
 
     /**
-     * Normalize CSS property names to camel-case style names. Names alread in
+     * Normalize CSS property names to camel-case style names. Names already in
      * camel-cases will be returned as-is.
      * <p>
      * For example:<br>
@@ -107,6 +107,13 @@ public class CSSProperty extends CSSNodeBase implements ICSSProperty
     {
         if (name == null)
             return null;
+
+        if (name.startsWith("--")) {
+            // names of CSS custom properties should not be normalized
+            // because they are case-sensitive, and we don't want to normalize
+            // two different values to the same value
+            return name;
+        }
 
         final StringBuilder result = new StringBuilder();
 

@@ -497,6 +497,7 @@ singleValue
     |   URL ARGUMENTS formatOption*   -> ^(URL ARGUMENTS formatOption*)
     |   LOCAL ARGUMENTS		        -> ^(LOCAL ARGUMENTS)
     |   CALC ARGUMENTS		        -> ^(CALC ARGUMENTS)
+    |   VAR ARGUMENTS		        -> ^(VAR ARGUMENTS)
     |   FUNCTIONS ARGUMENTS		        -> ^(FUNCTIONS ARGUMENTS)
     |   ALPHA_VALUE
     |   SCALE_VALUE
@@ -572,6 +573,7 @@ FORMAT : 'format' ;
 LOCAL : 'local' ;
 CALC : 'calc' ;
 SCALE : 'scale' ;
+VAR : 'var' ;
 NULL : 'null' ;
 ONLY : 'only' ;
 CHILD : '>' ;
@@ -725,7 +727,7 @@ HASH_WORD
     :   '#' ( LETTER | DIGIT | '-' | '_' )+
     ;
 
-ID  :   ( '-' | '_' | '__' | '___' )? LETTER ( LETTER | DIGIT | '-' | '_'  )*
+ID  :   ( '-' | '--' | '_' | '__' | '___' )? LETTER ( LETTER | DIGIT | '-' | '_'  )*
     ;
     
 /**

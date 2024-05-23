@@ -438,6 +438,8 @@ singleValue returns [CSSPropertyValue propertyValue]
         { $propertyValue = new CSSFunctionCallPropertyValue($LOCAL.text, $l.text, $start, tokenStream); }
     |   ^(CALC l=ARGUMENTS)
         { $propertyValue = new CSSFunctionCallPropertyValue($CALC.text, $l.text, $start, tokenStream); }
+    |   ^(VAR l=ARGUMENTS)
+        { $propertyValue = new CSSFunctionCallPropertyValue($VAR.text, $l.text, $start, tokenStream); }
     |   ^(FUNCTIONS l=ARGUMENTS)
         { $propertyValue = new CSSFunctionCallPropertyValue($FUNCTIONS.text, $l.text, $start, tokenStream); }
     |   s=STRING   

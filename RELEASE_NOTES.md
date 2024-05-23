@@ -29,8 +29,9 @@ Apache Royale Compiler 0.9.11
 - compiler: Fix silently ignoring errors in some invalid CSS content, if it appears at the end after valid content.
 - compiler: Fix crash when attempting to use `--remove-circulars=false` with a release build.
 - compiler: Added CSS support for modern syntax without commas in `rgb` and `rgba` functions.
-- compiler: Added CSS support for `radial-gradient`, `conic-gradient`, and repeating gradient functions.
-- compiler: Added CSS support for several translate, rotate, scale, skew, and matrix transformation functions.
+- compiler: Added CSS support for `radial-gradient`, `conic-gradient`, and repeating gradient functions in JS.
+- compiler: Added CSS support for several translate, rotate, scale, skew, and matrix transformation functions in JS.
+- compiler: Add CSS support for declaring custom properties (CSS variables) and using `var` function in JS.
 - compiler: Fix crash when `[Style]` is of type `Object` and value is passed in MXML.
 - debugger: Fix exception when evaluating certain expressions at run-time.
 - formatter: Added `insert-new-line-else` configuration option.

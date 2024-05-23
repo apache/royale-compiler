@@ -616,6 +616,11 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                     // TODO: implement me
                 	line.append("null");
                 }
+                else if ("var".equals(functionCall.name))
+                {
+                    // TODO: implement me
+                	line.append("null");
+                }
                 else if ("Embed".equals(functionCall.name))
                 {
                     // TODO: implement me
