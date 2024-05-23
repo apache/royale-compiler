@@ -450,6 +450,7 @@ declaration returns [CSSProperty property]
         $property = new CSSProperty($id.text, $v.propertyValue, $start, tokenStream);  
 }
     :   ^(COLON id=ID v=value)
+    |   ^(COLON id=DASHED_ID v=value)
     ;
     
 value returns [CSSPropertyValue propertyValue]

@@ -431,6 +431,7 @@ declarationsBlock
  */  
 declaration
     :   ID COLON value	->	^(COLON ID value)
+    |   DASHED_ID COLON value -> ^(COLON DASHED_ID value)
     ;
     
 /**
@@ -727,7 +728,10 @@ HASH_WORD
     :   '#' ( LETTER | DIGIT | '-' | '_' )+
     ;
 
-ID  :   ( '-' | '--' | '_' | '__' | '___' )? LETTER ( LETTER | DIGIT | '-' | '_'  )*
+ID  :   ( '-' | '_' | '__' | '___' )? LETTER ( LETTER | DIGIT | '-' | '_'  )*
+    ;
+
+DASHED_ID  :   '--' LETTER ( LETTER | DIGIT | '-' | '_'  )*
     ;
     
 /**
