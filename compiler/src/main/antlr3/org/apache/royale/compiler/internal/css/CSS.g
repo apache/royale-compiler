@@ -537,6 +537,7 @@ attributeOperator
     
 attributeValue
     :    STRING
+    |    ID
     ;
     	
 /* Lexer Rules */
