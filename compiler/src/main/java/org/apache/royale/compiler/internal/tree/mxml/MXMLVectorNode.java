@@ -284,7 +284,7 @@ class MXMLVectorNode extends MXMLInstanceNode implements IMXMLVectorNode
     protected void initializationComplete(MXMLTreeBuilder builder, IMXMLTagData tag,
                                           MXMLNodeInfo info)
     {
-        setChildren(info.getChildNodeList().toArray(new MXMLInstanceNode[0]));
+        setChildren(info.getChildNodeList().toArray(new IMXMLNode[0]));
 
         // 'type' is a required attribute, and it makes this MXML compilation unit
         // dependent on the compilation unit for the class or interface specified by 'type'.
