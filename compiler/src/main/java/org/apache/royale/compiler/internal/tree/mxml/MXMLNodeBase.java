@@ -162,7 +162,16 @@ public abstract class MXMLNodeBase extends NodeBase implements IMXMLNode
         if (info != null)
             info.hasSourceAttribute = true;
 
-        String sourcePath = attribute.getMXMLDialect().trim(attribute.getRawValue());
+        String sourcePath = null;
+        String rawAttributeValue = attribute.getRawValue();
+        if (rawAttributeValue != null)
+        {
+            sourcePath = attribute.getMXMLDialect().trim(rawAttributeValue);
+        }
+        if (sourcePath == null)
+        {
+            sourcePath = "";
+        }
 
         if (sourcePath.isEmpty() && builder != null)
         {
