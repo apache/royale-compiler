@@ -36,6 +36,7 @@ Apache Royale Compiler 0.9.11
 - compiler: Fix crash when `[Style]` is of type `Object` and value is passed in MXML.
 - compiler: Fix null pointer exception when omitting quoted `<fx:Style>` value for `source` attribute.
 - compiler: Fix null pointer exception when omitting quoted `<fx:Binding>` value for `source`, `destination`, and `twoWay` attributes.
+- compiler: Fix null pointer exception when omitting quoted `<fx:Vector>` value for `fixed`, and `type` attributes.
 - compiler: Fix missing problem for invalid `twoWay` value for `<fx:Binding>` tag.
 - compiler: Fix exception for unexpected attributes added to `<fx:Array>` and `<fx:Vector>` tags.
 - compiler: Changed to better problem message when MXML `implements` attribute is empty.

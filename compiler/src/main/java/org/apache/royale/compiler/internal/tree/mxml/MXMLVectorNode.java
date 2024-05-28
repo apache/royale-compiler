@@ -109,7 +109,11 @@ class MXMLVectorNode extends MXMLInstanceNode implements IMXMLVectorNode
         if (attribute.isSpecialAttribute(ATTRIBUTE_TYPE))
         {
             RoyaleProject project = builder.getProject();
-            IDefinition def = resolveElementType(value, project);
+            IDefinition def = null;
+            if (value != null)
+            {
+                def = resolveElementType(value, project);
+            }
 
             if (def instanceof ITypeDefinition)
             {
@@ -124,6 +128,10 @@ class MXMLVectorNode extends MXMLInstanceNode implements IMXMLVectorNode
         else if (attribute.isSpecialAttribute(ATTRIBUTE_FIXED))
         {
             // TODO Improve this when we implement type recognition for text values.
+            if (value == null)
+            {
+                value = "";
+            }
             value = attribute.getMXMLDialect().trim(value);
             if (value.equals(IASLanguageConstants.TRUE))
             {
