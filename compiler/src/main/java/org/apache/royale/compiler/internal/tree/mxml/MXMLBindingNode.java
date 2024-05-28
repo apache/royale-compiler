@@ -27,6 +27,7 @@ import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.royale.compiler.mxml.IMXMLTagData;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.MXMLEmptyAttributeProblem;
+import org.apache.royale.compiler.problems.MXMLInvalidTextForTypeProblem;
 import org.apache.royale.compiler.problems.MXMLRequiredAttributeProblem;
 import org.apache.royale.compiler.problems.MXMLSameBindingSourceAndDestinationProblem;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -109,14 +110,24 @@ public class MXMLBindingNode extends MXMLNodeBase implements IMXMLBindingNode
         }
         else if (attribute.isSpecialAttribute(ATTRIBUTE_TWO_WAY))
         {
-            String value = attribute.getMXMLDialect().trim(attribute.getRawValue());
-            if (value.equals(IASLanguageConstants.TRUE))
+            String twoWayValue = "";
+            String rawTwoWayValue = attribute.getRawValue();
+            if (rawTwoWayValue != null)
+            {
+                twoWayValue = attribute.getMXMLDialect().trim(rawTwoWayValue);
+            }
+            if (twoWayValue.equals(IASLanguageConstants.TRUE))
+            {
                 twoWay = true;
-            else if (value.equals(IASLanguageConstants.FALSE))
+            }
+            else if (twoWayValue.equals(IASLanguageConstants.FALSE))
+            {
                 twoWay = false;
+            }
             else
             {
-                // TODO Report a problem;
+                MXMLInvalidTextForTypeProblem problem = new MXMLInvalidTextForTypeProblem(attribute, twoWayValue, "Boolean");
+                builder.addProblem(problem);
             }
         }
         else
@@ -154,7 +165,12 @@ public class MXMLBindingNode extends MXMLNodeBase implements IMXMLBindingNode
         }
         else
         {
-            trimmedSourceValue = builder.getMXMLDialect().trim(sourceAttribute.getRawValue());
+            trimmedSourceValue = "";
+            String rawSourceValue = sourceAttribute.getRawValue();
+            if (rawSourceValue != null)
+            {
+                trimmedSourceValue = builder.getMXMLDialect().trim(rawSourceValue);
+            }
             if (trimmedSourceValue.isEmpty())
             {
                 // 'source' attribute value cannot be empty
@@ -173,7 +189,12 @@ public class MXMLBindingNode extends MXMLNodeBase implements IMXMLBindingNode
         }
         else
         {
-            trimmedDestinationValue = builder.getMXMLDialect().trim(destinationAttribute.getRawValue());
+            trimmedDestinationValue = "";
+            String rawDestValue = destinationAttribute.getRawValue();
+            if (rawDestValue != null)
+            {
+                trimmedDestinationValue = builder.getMXMLDialect().trim(rawDestValue);
+            }
             if (trimmedDestinationValue.isEmpty())
             {
                 // 'destination' attribute value cannot be empty

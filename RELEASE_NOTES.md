@@ -35,6 +35,8 @@ Apache Royale Compiler 0.9.11
 - compiler: Add CSS support for declaring custom properties (CSS variables) and using `var` function in JS.
 - compiler: Fix crash when `[Style]` is of type `Object` and value is passed in MXML.
 - compiler: Fix null pointer exception when omitting quoted `<fx:Style>` value for `source` attribute.
+- compiler: Fix null pointer exception when omitting quoted `<fx:Binding>` value for `source`, `destination`, and `twoWay` attributes.
+- compiler: Fix missing problem for invalid `twoWay` value for `<fx:Binding>` tag.
 - debugger: Fix exception when evaluating certain expressions at run-time.
 - formatter: Added `insert-new-line-else` configuration option.
 - formatter: Filtered out unnecessary compiler warnings.
