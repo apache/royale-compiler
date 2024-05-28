@@ -187,7 +187,7 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
         // Process fragments gathered since the last child tag.
         processFragments(builder, info);
 
-        setChildren(info.getChildNodeList().toArray(new MXMLInstanceNode[0]));
+        setChildren(info.getChildNodeList().toArray(new IMXMLNode[0]));
     }
 
     private void processFragments(MXMLTreeBuilder builder, MXMLNodeInfo info)

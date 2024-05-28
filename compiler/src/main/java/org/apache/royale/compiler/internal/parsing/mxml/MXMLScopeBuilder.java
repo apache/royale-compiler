@@ -67,6 +67,7 @@ import org.apache.royale.compiler.mxml.IMXMLTextData;
 import org.apache.royale.compiler.mxml.IMXMLTextData.TextType;
 import org.apache.royale.compiler.mxml.IMXMLUnitData;
 import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.MXMLEmptyAttributeProblem;
 import org.apache.royale.compiler.problems.MXMLLibraryTagNotTheFirstChildProblem;
 
 import com.google.common.collect.ImmutableSet;
@@ -183,11 +184,18 @@ public class MXMLScopeBuilder
         IReference[] implementedInterfaces = null;
         if (implementsAttrValue != null) //TODO this should use a parser method that collects qnames or identifiers
         {
-            String interfaces[] = rootTag.getMXMLDialect().trim(implementsAttrValue).split(IMPLEMENTS_SPLITTER);
-            implementedInterfaces = new IReference[interfaces.length];
-            for( int i = 0; i < interfaces.length; ++i )
+            if (implementsAttrValue.trim().length() == 0)
             {
-                implementedInterfaces[i] = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), interfaces[i].trim());
+                problems.add(new MXMLEmptyAttributeProblem(rootTag.getTagAttributeData("implements")));
+            }
+            else
+            {
+                String interfaces[] = rootTag.getMXMLDialect().trim(implementsAttrValue).split(IMPLEMENTS_SPLITTER);
+                implementedInterfaces = new IReference[interfaces.length];
+                for( int i = 0; i < interfaces.length; ++i )
+                {
+                    implementedInterfaces[i] = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), interfaces[i].trim());
+                }
             }
         }
 

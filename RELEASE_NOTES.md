@@ -34,6 +34,12 @@ Apache Royale Compiler 0.9.11
 - compiler: Added CSS support for several translate, rotate, scale, skew, and matrix transformation functions in JS.
 - compiler: Add CSS support for declaring custom properties (CSS variables) and using `var` function in JS.
 - compiler: Fix crash when `[Style]` is of type `Object` and value is passed in MXML.
+- compiler: Fix null pointer exception when omitting quoted `<fx:Style>` value for `source` attribute.
+- compiler: Fix null pointer exception when omitting quoted `<fx:Binding>` value for `source`, `destination`, and `twoWay` attributes.
+- compiler: Fix null pointer exception when omitting quoted `<fx:Vector>` value for `fixed`, and `type` attributes.
+- compiler: Fix missing problem for invalid `twoWay` value for `<fx:Binding>` tag.
+- compiler: Fix exception for unexpected attributes added to `<fx:Array>` and `<fx:Vector>` tags.
+- compiler: Changed to better problem message when MXML `implements` attribute is empty.
 - debugger: Fix exception when evaluating certain expressions at run-time.
 - formatter: Added `insert-new-line-else` configuration option.
 - formatter: Filtered out unnecessary compiler warnings.
