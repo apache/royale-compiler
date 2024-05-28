@@ -414,7 +414,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
             result.append(",\n");
             String selName = this.resolvedSelectors.get(sel);
             if (selName == null || selName.equals("null"))
-                result.append("\"" + sel.toString() + "\"");
+                result.append("\"" + escapeDoubleQuotes(sel.toString()) + "\"");
             else
             {
             	selName = formatQualifiedName(selName);
