@@ -69,6 +69,7 @@ public class JSConfiguration extends Configuration
         setCompilerAllowPrivateConstructors(null, true);
         setCompilerAllowImportAliases(null, true);
         setCompilerStrictIdentifierNames(null, false);
+        setCompilerStrictFlexCSS(null, false);
     }
 
     //

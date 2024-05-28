@@ -65,6 +65,20 @@ public class CSSDocument extends CSSNodeBase implements ICSSDocument
      */
     public static CSSDocument parse(final CharStream input, final Collection<ICompilerProblem> problems)
     {
+        return parse(input, false, problems);
+    }
+
+    /**
+     * Parse a CSS document into {@link ICSSDocument} model.
+     * 
+     * @param input ANTLR input stream. The {@code CharStream#getSourceName()}
+     * must be implemented in order to make source location work.
+     * @param strictFlexCSS Enables Flex CSS compatibility mode, which is more limited.
+     * @param problems Parsing problems will be aggregated in this collection.
+     * @return CSS DOM object.
+     */
+    public static CSSDocument parse(final CharStream input, final boolean strictFlexCSS, final Collection<ICompilerProblem> problems)
+    {
         assert input != null : "CSS input can't be null";
         assert problems != null : "Problem collection can't be null";
 
@@ -93,6 +107,7 @@ public class CSSDocument extends CSSNodeBase implements ICSSDocument
 
                 // walk the tree and build definitions
                 final CSSTree treeWalker = new CSSTree(nodes);
+                treeWalker.setStrictFlexCSS(strictFlexCSS);
                 treeWalker.stylesheet();
 
                 problems.addAll(treeWalker.problems);

@@ -190,6 +190,12 @@ public class ConfigProcessor
         }
 
         @Override
+        public boolean getStrictFlexCSS() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
         public boolean getInferTypes() {
             // TODO Auto-generated method stub
             return false;

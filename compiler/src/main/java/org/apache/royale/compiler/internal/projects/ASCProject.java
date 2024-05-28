@@ -112,6 +112,12 @@ public class ASCProject extends CompilerProject implements IASCProject
 	}
 
 	@Override
+	public boolean getStrictFlexCSS() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
 	public boolean getInferTypes() {
 		// TODO Auto-generated method stub
 		return false;

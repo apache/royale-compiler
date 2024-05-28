@@ -53,6 +53,7 @@ import org.apache.royale.compiler.internal.units.requests.SyntaxTreeRequestResul
 import org.apache.royale.compiler.problems.CSSCodeGenProblem;
 import org.apache.royale.compiler.problems.FileNotFoundProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.units.requests.IABCBytesRequestResult;
 import org.apache.royale.compiler.units.requests.IFileScopeRequestResult;
@@ -158,7 +159,13 @@ public class StyleModuleCompilationUnit extends CompilationUnitBase
         try
         {
             final ANTLRFileStream fileStream = new ANTLRFileStream(cssFile.getPath());
-            css = CSSDocument.parse(fileStream, syntaxErrors);
+            boolean strictFlexCSS = false;
+            ICompilerProject project = getProject();
+            if (project != null)
+            {
+                strictFlexCSS = project.getStrictFlexCSS();
+            }
+            css = CSSDocument.parse(fileStream, strictFlexCSS, syntaxErrors);
         }
         catch (IOException e)
         {

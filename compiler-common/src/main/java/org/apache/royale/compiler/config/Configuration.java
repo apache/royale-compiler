@@ -1594,6 +1594,30 @@ public class Configuration
     }
 
     //
+    // 'compiler.strict-flex-css' option
+    //
+
+    private boolean strictFlexCSS = true;
+
+    public boolean getCompilerStrictFlexCSS()
+    {
+        return strictFlexCSS;
+    }
+
+    /**
+     * Whether the compiler will require only CSS syntax that not supported by
+     * the Flex SDK. When enabled, if newer CSS syntax is used, a problem will
+     * be reported.
+     */
+    @Config
+    @Mapping({ "compiler", "strict-flex-css" })
+    @RoyaleOnly
+    public void setCompilerStrictFlexCSS(ConfigurationValue cv, boolean strict)
+    {
+        this.strictFlexCSS = strict;
+    }
+
+    //
     // 'compiler.strict-identifier-names' option
     //
 

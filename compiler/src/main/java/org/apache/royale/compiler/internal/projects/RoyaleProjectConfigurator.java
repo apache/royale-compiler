@@ -274,6 +274,7 @@ public class RoyaleProjectConfigurator extends Configurator
             project.setAllowStrictFunctionTypes(configuration.getAllowStrictFunctionTypes());
 
             project.setStrictIdentifierNames(configuration.getCompilerStrictIdentifierNames());
+            project.setStrictFlexCSS(configuration.getCompilerStrictFlexCSS());
 
             project.setInferTypes(configuration.getInferTypes());
             

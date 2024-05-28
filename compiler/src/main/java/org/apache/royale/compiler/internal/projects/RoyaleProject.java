@@ -2556,6 +2556,21 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     	strictIdentifierNames = enabled;
     }
 
+    private boolean strictFlexCSS = false;
+    
+    /**
+     * Indicates if strict Flex CSS syntax is enforced.
+     */
+    @Override
+    public boolean getStrictFlexCSS()
+    {
+    	return strictFlexCSS;
+    }
+    public void setStrictFlexCSS(boolean enabled)
+    {
+    	strictFlexCSS = enabled;
+    }
+
     private boolean inferTypes = false;
 
     /**

@@ -33,7 +33,9 @@ import org.apache.royale.compiler.mxml.IMXMLTagData;
 import org.apache.royale.compiler.mxml.IMXMLTextData;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.MXMLDualContentProblem;
+import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLStyleNode;
 
 import static org.apache.royale.compiler.mxml.IMXMLLanguageConstants.*;
@@ -98,11 +100,21 @@ class MXMLStyleNode extends MXMLNodeBase implements IMXMLStyleNode
         {
             if (cssText != null && !cssText.isEmpty() && !cssText.trim().isEmpty())
             {
+                boolean strictFlexCSS = false;
+                IMXMLFileNode fileNode = getFileNode();
+                if (fileNode != null)
+                {
+                    ICompilerProject project = fileNode.getCompilerProject();
+                    if (project != null)
+                    {
+                        strictFlexCSS = project.getStrictFlexCSS();
+                    }
+                }
                 ANTLRStringStream stream = new ANTLRStringStream(cssText);
                 stream.name = cssSourcePath != null ? cssSourcePath : getSourcePath();
                 stream.setLine(getLine());
                 stream.setCharPositionInLine(cssCharPos);
-                cssDocument = CSSDocument.parse(stream, problems);
+                cssDocument = CSSDocument.parse(stream, strictFlexCSS, problems);
                 if (cssDocument == null)
                 {
                     cssDocument = CSSDocumentCache.EMPTY_CSS_DOCUMENT;

@@ -293,6 +293,11 @@ public interface ICompilerProject
      boolean getStrictIdentifierNames();
      
      /**
+      * @return True if strict Flex CSS syntax is enforced.
+      */
+     boolean getStrictFlexCSS();
+     
+     /**
       * @return True if type inference is enabled.
       */
      boolean getInferTypes();
