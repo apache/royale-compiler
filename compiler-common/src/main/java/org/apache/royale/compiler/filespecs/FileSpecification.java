@@ -206,14 +206,14 @@ public class FileSpecification extends BaseFileSpecification implements IBinaryF
 		public int read(byte[] b, int off, int len) throws IOException
 		{
 			byte[] temp = new byte[len];
-			int retval = super.read(temp, off, len);
+			int retval = super.read(temp, 0, len);
 			if (retval == -1)
 				return -1;
 			if (retval == 0)
 				return 0;
 			
 			int j = 0;
-			for (int i = off; i < retval; i++)
+			for (int i = 0; i < retval; i++)
 			{
 				byte c = temp[i];
 				if (c == '\r')
