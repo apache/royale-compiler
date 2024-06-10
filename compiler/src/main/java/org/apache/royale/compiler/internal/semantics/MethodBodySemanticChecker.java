@@ -2147,7 +2147,8 @@ public class MethodBodySemanticChecker
                 );
         }
 
-        while (iNode.getSourcePath().contains("compiler-jx") &&
+        while (iNode.getSourcePath() != null &&
+                iNode.getSourcePath().contains("compiler-jx") &&
         		iNode.getSourcePath().contains("config.as"))
 		{
         	iNode = iNode.getParent();
