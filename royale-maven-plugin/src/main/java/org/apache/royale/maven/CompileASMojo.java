@@ -128,12 +128,20 @@ public class CompileASMojo
 
     @Override
     protected boolean includeLibrary(Artifact library) {
+        String scope = library.getScope();
+        if ("test".equalsIgnoreCase(scope)) {
+            return false;
+        }
         String classifier = library.getClassifier();
-        return (classifier == null) && !("runtime".equalsIgnoreCase(library.getScope()));
+        return (classifier == null) && !("runtime".equalsIgnoreCase(scope));
     }
     
     @Override
     protected boolean includeLibraryJS(Artifact library) {
+        String scope = library.getScope();
+        if ("test".equalsIgnoreCase(scope)) {
+            return false;
+        }
         String classifier = library.getClassifier();
         return "typedefs".equalsIgnoreCase(classifier) ||
                 "js".equalsIgnoreCase(classifier);
@@ -141,9 +149,13 @@ public class CompileASMojo
 
     @Override
     protected boolean includeLibrarySWF(Artifact library) {
+        String scope = library.getScope();
+        if ("test".equalsIgnoreCase(scope)) {
+            return false;
+        }
         String classifier = library.getClassifier();
         return "swf".equalsIgnoreCase(classifier) ||
-        ((classifier == null) && "runtime".equalsIgnoreCase(library.getScope()));
+            ((classifier == null) && "runtime".equalsIgnoreCase(scope));
     }
 
 }

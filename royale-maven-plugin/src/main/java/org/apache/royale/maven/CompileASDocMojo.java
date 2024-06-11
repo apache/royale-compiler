@@ -162,11 +162,15 @@ public class CompileASDocMojo
 
     @Override
     protected boolean includeLibrary(Artifact library) {
+        String scope = library.getScope();
+        if ("test".equalsIgnoreCase(scope)) {
+            return false;
+        }
         switch (type.get()) {
             case SWF: {
                 String classifier = library.getClassifier();
                 return "swf".equalsIgnoreCase(classifier) ||
-                    ((classifier == null) && "runtime".equalsIgnoreCase(library.getScope()));
+                    ((classifier == null) && "runtime".equalsIgnoreCase(scope));
             }
             case JS: {
                 String classifier = library.getClassifier();

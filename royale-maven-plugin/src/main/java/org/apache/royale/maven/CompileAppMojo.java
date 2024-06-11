@@ -174,25 +174,35 @@ public class CompileAppMojo
 
     @Override
     protected boolean includeLibrary(Artifact library) {
+        String scope = library.getScope();
+        if ("test".equalsIgnoreCase(scope)) {
+            return false;
+        }
         String classifier = library.getClassifier();
-        return (classifier == null) && !("runtime".equalsIgnoreCase(library.getScope()));
+        return (classifier == null) && !("runtime".equalsIgnoreCase(scope));
     }
 
     @Override
     protected boolean includeLibraryJS(Artifact library) {
+        String scope = library.getScope();
+        if ("test".equalsIgnoreCase(scope)) {
+            return false;
+        }
         String classifier = library.getClassifier();
         // Strip out all externs except if the dependency was declared inside the pom itself.
         return "typedefs".equalsIgnoreCase(classifier) ||
                 "js".equalsIgnoreCase(classifier);
-        // || library.getDependencyTrail().size() == 2;
     }
 
     @Override
     protected boolean includeLibrarySWF(Artifact library) {
+        String scope = library.getScope();
+        if ("test".equalsIgnoreCase(scope)) {
+            return false;
+        }
         String classifier = library.getClassifier();
         return "swf".equalsIgnoreCase(classifier) ||
-            ((classifier == null) && "runtime".equalsIgnoreCase(library.getScope()));
-        // || library.getDependencyTrail().size() == 2;
+            ((classifier == null) && "runtime".equalsIgnoreCase(scope));
     }
 
     /*private void zipDirectory(File source, File target) {
