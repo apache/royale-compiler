@@ -505,7 +505,17 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
 
         ITargetSettings settings = getTargetSettings();
         if (settings != null)
+        {
             project.setTargetSettings(settings);
+        }
+        else
+        {
+            // if getTargetSettings() returned null, then there will definitely
+            // be new config problems that weren't there after applyToProject()
+            // succeeded
+            problems.addAll(projectConfigurator.getConfigurationProblems());
+            return false;
+        }
 
         target = project.getBackend().createTarget(project,
                 getTargetSettings(), null);
