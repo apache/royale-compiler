@@ -56,6 +56,7 @@ Apache Royale Compiler 0.9.11
 - formatter: Fix formatting of unary operators that (depending on context) may also be arithmetic operators.
 - linter: Fix implicit semicolon incorrectly detected as an empty statement that should be removed (it can't be removed).
 - linter: Fix MXML linter being incorrectly used for _.as_ files and AS3 linter being incorrectly used for _.mxml_ files.
+- Building royale-compiler now requires JDK 11 or newer.
 
 Apache Royale Compiler 0.9.10
 =============================
