@@ -26,7 +26,7 @@ This document will guide you through the process of building Royale from source.
 In order to build Royale you require the following software installed on your machine:
 
 - A Java JDK 1.8 or higher (a simple Java runtime is not enough) (http://www.oracle.com/technetwork/java/javase/downloads/index.html)
-- Apache Maven 3.3.1 or higher (http://maven.apache.org)
+- Apache Maven 3.8.1 or higher (http://maven.apache.org)
 - The Flash Player projector content debugger (https://www.adobe.com/support/flashplayer/debug_downloads.html)
 
 Make sure the following environment variable is set to the exact location of the Flash Player projector content debugger:

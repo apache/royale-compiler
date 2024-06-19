@@ -57,7 +57,7 @@ Building the Apache Royale Compiler with Apache Maven
 
     Java SDK 8 or greater (*1)            
 
-    Maven 3.3.9 or greater (*1)              
+    Maven 3.8.1 or greater (*1)              
 
     ==================================================================================
 
