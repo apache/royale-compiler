@@ -75,6 +75,7 @@ import flex2.compiler.io.VirtualFile;
  *
  * @author Roger Gonzalez
  */
+@SuppressWarnings("rawtypes")
 public final class ConfigurationBuffer
 {
     public ConfigurationBuffer( Class configClass )

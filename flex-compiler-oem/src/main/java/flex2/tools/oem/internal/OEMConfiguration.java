@@ -60,6 +60,7 @@ import flex2.tools.oem.Configuration;
  * @version 2.0.1
  * @author Clement Wong
  */
+@SuppressWarnings("rawtypes")
 public class OEMConfiguration implements Configuration, ConfigurationConstants, Cloneable
 {
 	/**
