@@ -19,7 +19,6 @@
 
 package flash.swf;
 
-import flash.swf.Dictionary;
 import flash.swf.actions.*;
 import flash.swf.debug.DebugModule;
 import flash.swf.debug.LineRecord;
@@ -141,7 +140,7 @@ public final class MovieMetaData extends TagHandler
 		return (String) functionNames.get(offset);
 	}
 
-	public Iterator getFunctionLines()
+	public Iterator<Object> getFunctionLines()
 	{
 		return preciseLines.iterator();
 	}
@@ -547,10 +546,10 @@ public final class MovieMetaData extends TagHandler
 	{
 		if (actions != null)
 		{
-			Iterator it = actions.clipActionRecords.iterator();
+			Iterator<ClipActionRecord> it = actions.clipActionRecords.iterator();
 			while (it.hasNext())
 			{
-				ClipActionRecord record = (ClipActionRecord) it.next();
+				ClipActionRecord record = it.next();
 				collectActions(record.actionList);
 			}
 		}

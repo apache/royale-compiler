@@ -42,9 +42,9 @@ public class LocalizationManager
 
     private ILocalizedText getLocalizedTextInner( Locale locale, String id )
     {
-        for (Iterator it = localizers.iterator(); it.hasNext(); )
+        for (Iterator<ILocalizer> it = localizers.iterator(); it.hasNext(); )
         {
-            ILocalizer localizer = (ILocalizer) it.next();
+            ILocalizer localizer = it.next();
 
             ILocalizedText text = localizer.getLocalizedText( locale, id );
 
@@ -74,7 +74,7 @@ public class LocalizationManager
         return t;
     }
 
-    protected static String replaceInlineReferences( String text, Map parameters )
+    protected static String replaceInlineReferences( String text, Map<?, ?> parameters )
     {
         if (parameters == null)
             return text;
@@ -119,12 +119,12 @@ public class LocalizationManager
 		return getLocalizedTextString( id, Collections.EMPTY_MAP );
 	}
 
-	public String getLocalizedTextString( String id, Map parameters )
+	public String getLocalizedTextString( String id, Map<?, ?> parameters )
 	{
 		return getLocalizedTextString(locale, id, parameters );
 	}
 
-    public String getLocalizedTextString( Locale locale, String id, Map parameters )
+    public String getLocalizedTextString( Locale locale, String id, Map<?, ?> parameters )
     {
         ILocalizedText t = getLocalizedText( locale, id );
 
@@ -153,7 +153,7 @@ public class LocalizationManager
         String id = object.getClass().getName().replaceAll( "\\$", "." );
 
         Map<String, Object> parameters = new HashMap<String, Object>();
-        Class c = object.getClass();
+        Class<?> c = object.getClass();
 
         while (c != Object.class)
         {
@@ -205,9 +205,9 @@ public class LocalizationManager
             if (parameters != null)
             {
                 s += "[";
-                for (Iterator it = parameters.entrySet().iterator(); it.hasNext(); )
+                for (Iterator<Map.Entry<String, Object>> it = parameters.entrySet().iterator(); it.hasNext(); )
                 {
-                    Map.Entry e = (Map.Entry) it.next();
+                    Map.Entry<String, Object> e = it.next();
                     s += e.getKey();
                     if (e.getValue() != null)
                         s += "='" + e.getValue() + "'";

@@ -118,7 +118,7 @@ public class FileInfoCache implements Comparator<SourceFile>
 		Arrays.sort(m_isolateFiles, this);
 	}
 
-	public Iterator getAllFiles(int isolateId) {
+	public Iterator<?> getAllFiles(int isolateId) {
 		populate();		
 		if (isolateId == Isolate.DEFAULT_ID)
 			return m_byInt.iterator();

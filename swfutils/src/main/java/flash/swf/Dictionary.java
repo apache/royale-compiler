@@ -65,10 +65,10 @@ public class Dictionary
                 // When we're decoding, we don't fill in the tags map, and so we'll have
                 // to search for the tag to see what it had when we read it in.
 
-                Iterator iterator = ids.entrySet().iterator();
+                Iterator<Entry<Integer, DefineTag>> iterator = ids.entrySet().iterator();
                 while (iterator.hasNext())
                 {
-                    Entry entry = (Entry) iterator.next();
+                    Entry<Integer, DefineTag> entry = iterator.next();
 
                     // [ets 1/14/04] we use an exact comparison here instead of equals() because this point
                     // should only be reached during *decoding*, by tools that want to report the id

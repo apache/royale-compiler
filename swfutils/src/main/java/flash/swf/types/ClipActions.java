@@ -34,7 +34,7 @@ public class ClipActions
     /**
      * Individual event handlers.  List of ClipActionRecord instances.
      */
-	public List clipActionRecords;
+	public List<ClipActionRecord> clipActionRecords;
 
     public boolean equals(Object object)
     {

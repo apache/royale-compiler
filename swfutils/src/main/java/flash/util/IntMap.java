@@ -158,9 +158,9 @@ public class IntMap
 		return ( (i >= 0) && (i+1 < size) ) ? values[i+1] : null;
 	}
 
-    public Iterator iterator()
+    public Iterator<Object> iterator()
     {
-        return new Iterator()
+        return new Iterator<Object>()
         {
             private int i = 0;
             public boolean hasNext()
@@ -175,7 +175,7 @@ public class IntMap
                     throw new NoSuchElementException();
                 }
                 final int j = i++;
-                return new Map.Entry()
+                return new Map.Entry<Object, Object>()
                 {
                     public Object getKey()
                     {
