@@ -888,7 +888,7 @@ public final class ConfigurationBuffer
             Class<?>[] pt = info.getSetterMethod().getParameterTypes();
             assert (pt.length == 2); // assumed to be checked upstream
 
-            Object o = pt[1].newInstance();
+            Object o = pt[1].getConstructor().newInstance();
 
             Field[] fields = pt[1].getFields();
 
@@ -930,11 +930,20 @@ public final class ConfigurationBuffer
 
             return o;
         }
+        catch (NoSuchMethodException e)
+        {
+            assert false : ("coding error: unable to find value object constructor when trying to set var " + cv.getVar());
+            throw new ConfigurationException.OtherThrowable(e, cv.getVar(), cv.getSource(), cv.getLine());
+        }
+        catch (InvocationTargetException e)
+        {
+            assert false : ("coding error: unable to invoke value object constructor when trying to set var " + cv.getVar());
+            throw new ConfigurationException.OtherThrowable(e, cv.getVar(), cv.getSource(), cv.getLine());
+        }
         catch (InstantiationException e)
         {
             assert false : ("coding error: unable to instantiate value object when trying to set var " + cv.getVar());
             throw new ConfigurationException.OtherThrowable(e, cv.getVar(), cv.getSource(), cv.getLine());
-
         }
         catch (IllegalAccessException e)
         {

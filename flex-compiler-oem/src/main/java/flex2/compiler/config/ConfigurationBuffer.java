@@ -829,21 +829,21 @@ public final class ConfigurationBuffer
     {
         try
         {
-            Class[] pt = info.getSetterMethod().getParameterTypes();
+            Class<?>[] pt = info.getSetterMethod().getParameterTypes();
             assert ( pt.length == 2 ); // assumed to be checked upstream
 
-            Object o = pt[1].newInstance();
+            Object o = pt[1].getConstructor().newInstance();
 
             Field[] fields = pt[1].getFields();
 
             assert ( fields.length == cv.getArgs().size() );   // assumed to be checked upstream
 
-            Iterator argsit = cv.getArgs().iterator();
+            Iterator<String> argsit = cv.getArgs().iterator();
             for (int f = 0; f < fields.length; ++f)
             {
                 String val = (String) argsit.next();
                 Object valobj = null;
-                Class fc = fields[f].getType();
+                Class<?> fc = fields[f].getType();
 
                 assert ( info.getArgType( f ) == fc );
                 assert ( info.getArgName( f ).equals( ConfigurationBuffer.c2h( fields[f].getName() )) );
@@ -873,6 +873,16 @@ public final class ConfigurationBuffer
             }
 
             return o;
+        }
+        catch (NoSuchMethodException e)
+        {
+            assert false : ("coding error: unable to find value object constructor when trying to set var " + cv.getVar());
+            throw new ConfigurationException.OtherThrowable(e, cv.getVar(), cv.getSource(), cv.getLine());
+        }
+        catch (InvocationTargetException e)
+        {
+            assert false : ("coding error: unable to invoke value object constructor when trying to set var " + cv.getVar());
+            throw new ConfigurationException.OtherThrowable(e, cv.getVar(), cv.getSource(), cv.getLine());
         }
         catch (InstantiationException e)
         {

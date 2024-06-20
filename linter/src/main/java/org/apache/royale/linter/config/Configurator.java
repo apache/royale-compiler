@@ -235,7 +235,7 @@ public class Configurator implements Cloneable
     {
         try
         {
-            return configurationClass.newInstance();
+            return configurationClass.getConstructor().newInstance();
         }
         catch (Exception e)
         {
@@ -247,7 +247,7 @@ public class Configurator implements Cloneable
             // problems.
             try
             {
-                return Configuration.class.newInstance();                
+                return Configuration.class.getConstructor().newInstance();                
             }
             catch (Exception e2)
             {
