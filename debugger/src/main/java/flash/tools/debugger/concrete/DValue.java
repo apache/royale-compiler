@@ -107,7 +107,7 @@ public class DValue implements Value
 	 */
 	public DValue(long id, int isolateId)
 	{
-		init(VariableType.UNKNOWN, null, null, 0, new Long(id));
+		init(VariableType.UNKNOWN, null, null, 0, Long.valueOf(id));
 		setIsolateId(isolateId);
 	}
 

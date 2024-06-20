@@ -433,7 +433,7 @@ public final class MovieMetaData extends TagHandler
     {
         for (int i=0; i < 256; i++)
         {
-            codes[i] = new Integer(i);
+            codes[i] = Integer.valueOf(i);
         }
     }
 
@@ -493,7 +493,7 @@ public final class MovieMetaData extends TagHandler
 			case ActionConstants.sactionDefineFunction:
 			case ActionConstants.sactionDefineFunction2:
 				DefineFunction f = (DefineFunction) a;
-				Integer size = new Integer(f.codeSize);
+				Integer size = Integer.valueOf(f.codeSize);
 
 				if (f.actionList.size() == 0)
 				{
@@ -512,9 +512,9 @@ public final class MovieMetaData extends TagHandler
 						{
 							// also find out the first line number of this function
 							if (lineno == null)
-								lineno = new Integer(((LineRecord)child).lineno);
+								lineno = Integer.valueOf(((LineRecord)child).lineno);
 
-							preciseLines.put(o, new Integer( ((LineRecord)child).lineno ));
+							preciseLines.put(o, Integer.valueOf( ((LineRecord)child).lineno ));
 						}
 						functionNames.put(o, f.name);
 						functionSizes.put(o, size);
@@ -854,10 +854,10 @@ public final class MovieMetaData extends TagHandler
 				Object function = pop(evalStack);
 				if (profileOffsets != null && "profile".equals(function))
 				{
-					profileOffsets.add(new Integer(offset - 13)); // Push 1
-					profileOffsets.add(new Integer(offset - 5)); // Push 'profile'
-					profileOffsets.add(new Integer(offset)); // CallFunction
-					profileOffsets.add(new Integer(offset + 1)); // Pop
+					profileOffsets.add(Integer.valueOf(offset - 13)); // Push 1
+					profileOffsets.add(Integer.valueOf(offset - 5)); // Push 'profile'
+					profileOffsets.add(Integer.valueOf(offset)); // CallFunction
+					profileOffsets.add(Integer.valueOf(offset + 1)); // Pop
 				}
 				int n = ((Number) pop(evalStack)).intValue();
 				for (int k = 0; k < n; k++)
@@ -1070,9 +1070,9 @@ class MFUCache
 		Integer count = cache.get(m);
 		if (count == null)
 		{
-			count = new Integer(0);
+			count = Integer.valueOf(0);
 		}
-		count = new Integer(count.intValue() + 1);
+		count = Integer.valueOf(count.intValue() + 1);
 		cache.put(m, count);
 
 		if (count.intValue() > topCount)

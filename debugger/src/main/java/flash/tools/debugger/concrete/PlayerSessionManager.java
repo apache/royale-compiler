@@ -106,7 +106,7 @@ public class PlayerSessionManager implements SessionManager2
 	 * Set preference 
 	 * If an invalid preference is passed, it will be silently ignored.
 	 */
-	public void			setPreference(String pref, int value)	{ m_prefs.put(pref, new Integer(value)); }
+	public void			setPreference(String pref, int value)	{ m_prefs.put(pref, Integer.valueOf(value)); }
 	public void			setPreference(String pref, String value){ m_prefs.put(pref, value);	}
 	public Set<String>	keySet()								{ return m_prefs.keySet(); }
 	public Object		getPreferenceAsObject(String pref)		{ return m_prefs.get(pref); }

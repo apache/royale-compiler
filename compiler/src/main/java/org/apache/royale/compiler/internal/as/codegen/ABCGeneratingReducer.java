@@ -5735,7 +5735,7 @@ public class ABCGeneratingReducer
             caseOffset = lookupSwitchInfo.minCase;
             lookupSwitchInfo.minCase = 0;
             lookupSwitchInfo.maxCase = lookupSwitchInfo.maxCase - caseOffset;
-            result.addInstruction(OP_pushint, new Integer(lookupSwitchInfo.minCase + 1));
+            result.addInstruction(OP_pushint, Integer.valueOf(lookupSwitchInfo.minCase + 1));
             result.addInstruction(OP_add_i);
         }
 
@@ -5764,7 +5764,7 @@ public class ABCGeneratingReducer
             // a constant of value 90000 was in a SWC as a double even though
             // the type of the constant was int
             if (caseValue instanceof Double)
-                caseValue = new Integer(((Double)caseValue).intValue());
+                caseValue = Integer.valueOf(((Double)caseValue).intValue());
             assert (caseValue instanceof Integer) : "reduce_lookup_switchStmt called on non integer case value";
             final int index = (Integer)caseValue - caseOffset;
             // if there is already a non-default value for this

@@ -64,9 +64,9 @@ final public class ActionFactory
     private static final Push pushFalseFlyweight = new Push(Boolean.FALSE);
     private static final Push pushUndefinedFlyweight = new Push(UNDEFINED);
     private static final Push pushNullFlyweight = new Push(null);
-    private static final Push pushFloat0Flyweight = new Push(new Float(0));
-    private static final Push pushInteger0Flyweight = new Push(new Integer(0));
-    private static final Push pushDouble0Flyweight = new Push(new Double(0));
+    private static final Push pushFloat0Flyweight = new Push(Float.valueOf(0));
+    private static final Push pushInteger0Flyweight = new Push(Integer.valueOf(0));
+    private static final Push pushDouble0Flyweight = new Push(Double.valueOf(0));
     private static final Action callFlyweight = new Action(ActionConstants.sactionCall);
     private static final StrictMode strictTrueFlyweight = new StrictMode(true);
     private static final StrictMode strictFalseFlyweight = new StrictMode(false);
@@ -80,8 +80,8 @@ final public class ActionFactory
 
 		for (int i=0; i < 256; i++)
 		{
-			ActionFactory.pushRegisterFlyweights[i] = new Push(new Byte((byte)i));
-			ActionFactory.pushCpoolFlyweights[i] = new Push(new Short((short)i));
+			ActionFactory.pushRegisterFlyweights[i] = new Push(Byte.valueOf((byte)i));
+			ActionFactory.pushCpoolFlyweights[i] = new Push(Short.valueOf((short)i));
 			ActionFactory.storeRegisterFlyweights[i] = new StoreRegister(i);
 		}
 	}
@@ -95,7 +95,7 @@ final public class ActionFactory
     {
         return (index < pushCpoolFlyweights.length)
                         ? pushCpoolFlyweights[index]
-                        : new Push(new Short((short)index));
+                        : new Push(Short.valueOf((short)index));
     }
 
     public static Push createPush(String s)
@@ -107,7 +107,7 @@ final public class ActionFactory
     {
         return fvalue == 0
                             ? pushFloat0Flyweight
-                            : new Push(new Float(fvalue));
+                            : new Push(Float.valueOf(fvalue));
     }
 
     public static Push createPushNull()
@@ -134,14 +134,14 @@ final public class ActionFactory
     {
         return dvalue == 0
                             ? pushDouble0Flyweight
-                            : new Push(new Double(dvalue));
+                            : new Push(Double.valueOf(dvalue));
     }
 
     public static Push createPush(int ivalue)
     {
         return ivalue == 0
                             ? pushInteger0Flyweight
-                            : new Push(new Integer(ivalue));
+                            : new Push(Integer.valueOf(ivalue));
     }
 
     public static StoreRegister createStoreRegister(int register)

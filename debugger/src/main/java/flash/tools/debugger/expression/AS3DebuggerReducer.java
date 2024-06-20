@@ -209,7 +209,7 @@ public class AS3DebuggerReducer {
 					eeContext.toValue(lhs.debuggerValue));
 			double d2 = ECMA.toNumber(session,
 					eeContext.toValue(rhs.debuggerValue));
-			return new DebuggerValue(new Double(d1 * d2));
+			return new DebuggerValue(Double.valueOf(d1 * d2));
 		}
 		case ABCConstants.OP_divide: {
 			// ECMA 11.5
@@ -217,7 +217,7 @@ public class AS3DebuggerReducer {
 					eeContext.toValue(lhs.debuggerValue));
 			double d2 = ECMA.toNumber(session,
 					eeContext.toValue(rhs.debuggerValue));
-			return new DebuggerValue(new Double(d1 / d2));
+			return new DebuggerValue(Double.valueOf(d1 / d2));
 		}
 		case ABCConstants.OP_modulo: {
 			// ECMA 11.5
@@ -225,7 +225,7 @@ public class AS3DebuggerReducer {
 					eeContext.toValue(lhs.debuggerValue));
 			double d2 = ECMA.toNumber(session,
 					eeContext.toValue(rhs.debuggerValue));
-			return new DebuggerValue(new Double(d1 % d2));
+			return new DebuggerValue(Double.valueOf(d1 % d2));
 		}
 		case ABCConstants.OP_add: {
 			// E4X 11.4.1 and ECMA 11.6.1
@@ -285,7 +285,7 @@ public class AS3DebuggerReducer {
 					return new DebuggerValue(ECMA.toString(session, v1)
 							+ ECMA.toString(session, v2));
 				} else {
-					return new DebuggerValue(new Double(ECMA.toNumber(session,
+					return new DebuggerValue(Double.valueOf(ECMA.toNumber(session,
 							v1) + ECMA.toNumber(session, v2)));
 				}
 			}
@@ -296,7 +296,7 @@ public class AS3DebuggerReducer {
 					eeContext.toValue(lhs.debuggerValue));
 			double d2 = ECMA.toNumber(session,
 					eeContext.toValue(rhs.debuggerValue));
-			return new DebuggerValue(new Double(d1 - d2));
+			return new DebuggerValue(Double.valueOf(d1 - d2));
 		}
 		case ABCConstants.OP_lshift: {
 			// ECMA 11.7.1
@@ -304,7 +304,7 @@ public class AS3DebuggerReducer {
 					.toInt32(session, eeContext.toValue(lhs.debuggerValue));
 			int n2 = (int) (ECMA.toUint32(session,
 					eeContext.toValue(rhs.debuggerValue)) & 0x1F);
-			return new DebuggerValue(new Double(n1 << n2));
+			return new DebuggerValue(Double.valueOf(n1 << n2));
 		}
 		case ABCConstants.OP_rshift: {
 			// ECMA 11.7.1
@@ -312,7 +312,7 @@ public class AS3DebuggerReducer {
 					.toInt32(session, eeContext.toValue(lhs.debuggerValue));
 			int n2 = (int) (ECMA.toUint32(session,
 					eeContext.toValue(rhs.debuggerValue)) & 0x1F);
-			return new DebuggerValue(new Double(n1 >> n2));
+			return new DebuggerValue(Double.valueOf(n1 >> n2));
 		}
 		case ABCConstants.OP_urshift: {
 			// ECMA 11.7.1
@@ -320,7 +320,7 @@ public class AS3DebuggerReducer {
 					eeContext.toValue(lhs.debuggerValue));
 			long n2 = (ECMA.toUint32(session,
 					eeContext.toValue(rhs.debuggerValue)) & 0x1F);
-			return new DebuggerValue(new Double(n1 >>> n2));
+			return new DebuggerValue(Double.valueOf(n1 >>> n2));
 		}
 		case ABCConstants.OP_lessthan: {
 			// ECMA 11.8.1
@@ -424,7 +424,7 @@ public class AS3DebuggerReducer {
 		}
 		case ABCConstants.OP_equals: {
 			// ECMA 11.9.1
-			return new DebuggerValue(new Boolean(ECMA.equals(session,
+			return new DebuggerValue(Boolean.valueOf(ECMA.equals(session,
 					eeContext.toValue(lhs.debuggerValue),
 					eeContext.toValue(rhs.debuggerValue))));
 		}
@@ -432,13 +432,13 @@ public class AS3DebuggerReducer {
 		// case ABCConstants.op_Tokens.NOTEQUALS_TOKEN:
 		// {
 		// // ECMA 11.9.2
-		// return new DebuggerValue(new Boolean(!ECMA.equals(session,
+		// return new DebuggerValue(Boolean.valueOf(!ECMA.equals(session,
 		// eeContext.toValue(lhs.debuggerValue), eeContext
 		// .toValue(rhs.debuggerValue))));
 		// }
 		case ABCConstants.OP_strictequals: {
 			// ECMA 11.9.4
-			return new DebuggerValue(new Boolean(ECMA.strictEquals(
+			return new DebuggerValue(Boolean.valueOf(ECMA.strictEquals(
 					eeContext.toValue(lhs.debuggerValue),
 					eeContext.toValue(rhs.debuggerValue))));
 		}
@@ -451,21 +451,21 @@ public class AS3DebuggerReducer {
 		 */
 		case ABCConstants.OP_bitand: {
 			// ECMA 11.10
-			return new DebuggerValue(new Double(ECMA.toInt32(session,
+			return new DebuggerValue(Double.valueOf(ECMA.toInt32(session,
 					eeContext.toValue(lhs.debuggerValue))
 					& ECMA.toInt32(session,
 							eeContext.toValue(rhs.debuggerValue))));
 		}
 		case ABCConstants.OP_bitxor: {
 			// ECMA 11.10
-			return new DebuggerValue(new Double(ECMA.toInt32(session,
+			return new DebuggerValue(Double.valueOf(ECMA.toInt32(session,
 					eeContext.toValue(lhs.debuggerValue))
 					^ ECMA.toInt32(session,
 							eeContext.toValue(rhs.debuggerValue))));
 		}
 		case ABCConstants.OP_bitor: {
 			// ECMA 11.10
-			return new DebuggerValue(new Double(ECMA.toInt32(session,
+			return new DebuggerValue(Double.valueOf(ECMA.toInt32(session,
 					eeContext.toValue(lhs.debuggerValue))
 					| ECMA.toInt32(session,
 							eeContext.toValue(rhs.debuggerValue))));
@@ -1234,7 +1234,7 @@ public class AS3DebuggerReducer {
 		Context eeContext = contextStack.scope();
 		DebuggerValue arg = (DebuggerValue) expr;
 		// ECMA 11.4.9
-		return new DebuggerValue(new Boolean(!ECMA.toBoolean(eeContext
+		return new DebuggerValue(Boolean.valueOf(!ECMA.toBoolean(eeContext
 				.toValue(arg.debuggerValue))));
 	}
 
@@ -1674,13 +1674,13 @@ public class AS3DebuggerReducer {
 				after = before - 1;
 			}
 			debuggerContext.assign(memberName,
-					debuggerContext.toValue(new Double(after)));
+					debuggerContext.toValue(Double.valueOf(after)));
 
 			Object result;
 			if (isPostFix) {
-				result = new Double(before);
+				result = Double.valueOf(before);
 			} else {
-				result = new Double(after);
+				result = Double.valueOf(after);
 			}
 
 			return new DebuggerValue(result);
@@ -1749,7 +1749,7 @@ public class AS3DebuggerReducer {
 		DebuggerValue lhs = (DebuggerValue) l;
 		DebuggerValue rhs = (DebuggerValue) r;
 		// ECMA 11.9.5
-		return new DebuggerValue(new Boolean(!ECMA.strictEquals(
+		return new DebuggerValue(Boolean.valueOf(!ECMA.strictEquals(
 				eeContext.toValue(lhs.debuggerValue),
 				eeContext.toValue(rhs.debuggerValue))));
 	}
@@ -2005,9 +2005,9 @@ public class AS3DebuggerReducer {
 		if (hookallreducercalls)
 			hookforreducercalls("transform_numeric_constant_to_constant");
 		if (numeric_constant instanceof Float) {
-			return new DebuggerValue(new Double((Float) numeric_constant));
+			return new DebuggerValue(Double.valueOf((Float) numeric_constant));
 		} else {
-			return new DebuggerValue(new Double((Double) numeric_constant));
+			return new DebuggerValue(Double.valueOf((Double) numeric_constant));
 		}
 
 	}
@@ -2025,7 +2025,7 @@ public class AS3DebuggerReducer {
 			Integer integer_constant) {
 		if (hookallreducercalls)
 			hookforreducercalls("transform_integer_constant");
-		DebuggerValue result = new DebuggerValue(new Double(integer_constant));
+		DebuggerValue result = new DebuggerValue(Double.valueOf(integer_constant));
 		return result;
 	}
 
@@ -2095,7 +2095,7 @@ public class AS3DebuggerReducer {
 				&& ((DebuggerValue) name).debuggerValue.equals("length")) //$NON-NLS-1$
 		{
 			String valuestr = contextValue.getValueAsString();
-			return new DebuggerValue(new Double(valuestr.length()));
+			return new DebuggerValue(Double.valueOf(valuestr.length()));
 		} else {
 			Object lookupResult;
 			try {
@@ -2170,25 +2170,25 @@ public class AS3DebuggerReducer {
 		case ABCConstants.OP_convert_d:
 		case ABCConstants.OP_unplus: {
 			// ECMA 11.4.6
-			return new DebuggerValue(new Double(ECMA.toNumber(
+			return new DebuggerValue(Double.valueOf(ECMA.toNumber(
 					eeContext.getSession(),
 					eeContext.toValue(arg.debuggerValue))));
 		}
 		case ABCConstants.OP_negate: {
 			// ECMA 11.4.7
-			return new DebuggerValue(new Double(-ECMA.toNumber(
+			return new DebuggerValue(Double.valueOf(-ECMA.toNumber(
 					eeContext.getSession(),
 					eeContext.toValue(arg.debuggerValue))));
 		}
 		case ABCConstants.OP_bitnot: {
 			// ECMA 11.4.8
-			return new DebuggerValue(new Double(~ECMA.toInt32(
+			return new DebuggerValue(Double.valueOf(~ECMA.toInt32(
 					eeContext.getSession(),
 					eeContext.toValue(arg.debuggerValue))));
 		}
 		case ABCConstants.OP_not: {
 			// ECMA 11.4.9
-			return new DebuggerValue(new Boolean(!ECMA.toBoolean(eeContext
+			return new DebuggerValue(Boolean.valueOf(!ECMA.toBoolean(eeContext
 					.toValue(arg.debuggerValue))));
 		}
 		default:

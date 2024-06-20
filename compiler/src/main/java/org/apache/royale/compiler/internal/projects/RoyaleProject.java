@@ -2628,14 +2628,14 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
 		String qname = cqname + ":" + def.getQualifiedName();
 		if (!apiMap.containsKey(qname))
 		{
-			apiMap.put(qname, new Integer(1));
+			apiMap.put(qname, Integer.valueOf(1));
 			return;
 		}
 		else
 		{
 			Integer counter = apiMap.get(qname);
 			int newCounter = counter.intValue() + 1;
-			apiMap.put(qname, new Integer(newCounter));
+			apiMap.put(qname, Integer.valueOf(newCounter));
 		}
 	}
 	
@@ -2653,14 +2653,14 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
 			String qname = def.getQualifiedName();
 			if (!apiMap.containsKey(qname))
 			{
-				apiMap.put(qname, new Integer(1));
+				apiMap.put(qname, Integer.valueOf(1));
 				return;
 			}
 			else
 			{
 				Integer counter = apiMap.get(qname);
 				int newCounter = counter.intValue() + 1;
-				apiMap.put(qname, new Integer(newCounter));
+				apiMap.put(qname, Integer.valueOf(newCounter));
 			}
 		}
 	}

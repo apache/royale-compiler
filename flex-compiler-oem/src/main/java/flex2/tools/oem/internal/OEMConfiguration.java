@@ -779,7 +779,7 @@ public class OEMConfiguration implements Configuration, ConfigurationConstants, 
 	{
 		if (size > 0)
 		{
-			args.put(COMPILER_FONTS_MAX_CACHED_FONTS, new Integer(size));
+			args.put(COMPILER_FONTS_MAX_CACHED_FONTS, Integer.valueOf(size));
 		}
 	}
 	
@@ -794,7 +794,7 @@ public class OEMConfiguration implements Configuration, ConfigurationConstants, 
 	{
 		if (size > 0)
 		{
-			args.put(COMPILER_FONTS_MAX_GLYPHS_PER_FACE, new Integer(size));
+			args.put(COMPILER_FONTS_MAX_GLYPHS_PER_FACE, Integer.valueOf(size));
 		}
 	}
 	
@@ -1511,8 +1511,8 @@ public class OEMConfiguration implements Configuration, ConfigurationConstants, 
 	 */
 	public void setDefaultBackgroundColor(int color)
 	{
-		args.put(DEFAULT_BACKGROUND_COLOR, new Integer(color));
-		linker_args.put(DEFAULT_BACKGROUND_COLOR, new Integer(color));
+		args.put(DEFAULT_BACKGROUND_COLOR, Integer.valueOf(color));
+		linker_args.put(DEFAULT_BACKGROUND_COLOR, Integer.valueOf(color));
 		newLinkerOptionsAfterCompile.add(DEFAULT_BACKGROUND_COLOR);
 	}
 	
@@ -1525,8 +1525,8 @@ public class OEMConfiguration implements Configuration, ConfigurationConstants, 
 	 */
 	public void setDefaultFrameRate(int rate)
 	{
-		args.put(DEFAULT_FRAME_RATE, new Integer(rate));
-		linker_args.put(DEFAULT_FRAME_RATE, new Integer(rate));
+		args.put(DEFAULT_FRAME_RATE, Integer.valueOf(rate));
+		linker_args.put(DEFAULT_FRAME_RATE, Integer.valueOf(rate));
 		newLinkerOptionsAfterCompile.add(DEFAULT_FRAME_RATE);
 	}
 	

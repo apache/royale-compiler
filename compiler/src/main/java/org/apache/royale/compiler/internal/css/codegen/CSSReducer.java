@@ -454,15 +454,15 @@ public class CSSReducer implements ICSSCodeGenResult
         }
         else if (value instanceof CSSColorPropertyValue)
         {
-            valueInstructions.addInstruction(ABCConstants.OP_pushint, new Integer(((CSSColorPropertyValue)value).getColorAsInt()));
+            valueInstructions.addInstruction(ABCConstants.OP_pushint, Integer.valueOf(((CSSColorPropertyValue)value).getColorAsInt()));
         }
         else if (value instanceof CSSRgbColorPropertyValue)
         {
-            valueInstructions.addInstruction(ABCConstants.OP_pushint, new Integer(((CSSRgbColorPropertyValue)value).getColorAsInt()));
+            valueInstructions.addInstruction(ABCConstants.OP_pushint, Integer.valueOf(((CSSRgbColorPropertyValue)value).getColorAsInt()));
         }
         else if (value instanceof CSSRgbaColorPropertyValue)
         {
-            valueInstructions.addInstruction(ABCConstants.OP_pushuint, new Long(((CSSRgbaColorPropertyValue)value).getColorAsLong()));
+            valueInstructions.addInstruction(ABCConstants.OP_pushuint, Long.valueOf(((CSSRgbaColorPropertyValue)value).getColorAsLong()));
         }
         else if (value instanceof CSSKeywordPropertyValue)
         {
@@ -481,7 +481,7 @@ public class CSSReducer implements ICSSCodeGenResult
             if (numValue.getUnit().equals("%"))
                 valueInstructions.addInstruction(ABCConstants.OP_pushstring, numValue.toString());
             else
-                valueInstructions.addInstruction(ABCConstants.OP_pushdouble, new Double(numValue.getNumber().doubleValue()));
+                valueInstructions.addInstruction(ABCConstants.OP_pushdouble, Double.valueOf(numValue.getNumber().doubleValue()));
         }
         else if (value instanceof CSSFunctionCallPropertyValue)
         {

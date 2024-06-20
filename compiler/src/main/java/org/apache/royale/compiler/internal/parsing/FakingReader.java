@@ -133,8 +133,8 @@ public class FakingReader extends Reader
 //			{
 //				// This is a valid starting character for an identifier, so
 //				// "a" is a suitable equivalent
-//				fDifficultCharacterOffsets.add(new Integer(fOffset + i - off));
-//				fDifficultCharacters.add(new Character(cbuf[i]));
+//				fDifficultCharacterOffsets.add(Integer.valueOf(fOffset + i - off));
+//				fDifficultCharacters.add(Character.valueOf(cbuf[i]));
 //				cbuf[i] = 'a';
 //			}
 //			else if (cbuf[i] != '_' &&
@@ -145,8 +145,8 @@ public class FakingReader extends Reader
 //				// This is not a valid starting character for an identifier, but
 //				// is a valid following character for an identifier, so "0" is a
 //				// suitable equivalent
-//				fDifficultCharacterOffsets.add(new Integer(fOffset + i - off));
-//				fDifficultCharacters.add(new Character(cbuf[i]));
+//				fDifficultCharacterOffsets.add(Integer.valueOf(fOffset + i - off));
+//				fDifficultCharacters.add(Character.valueOf(cbuf[i]));
 //				cbuf[i] = '0';
 //			}
 //		}

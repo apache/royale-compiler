@@ -1279,7 +1279,7 @@ public class JBurgGenerator implements JBurgTokenTypes
 
                 if ( cost_spec.getType() == LITERAL_COST_SPEC )
                 {
-                    return new Integer(costText);
+                    return Integer.valueOf(costText);
                 }
                 else if ( JBurgGenerator.this.manifestConstants.containsKey(costText) )
                 {

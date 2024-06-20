@@ -131,7 +131,7 @@ public class Report
     
     private String formatTime(long time)
     {
-        return String.format("%.3f", new Double(time / 1000.0000));
+        return String.format("%.3f", Double.valueOf(time / 1000.0000));
     }
 
     /**
@@ -238,9 +238,9 @@ public class Report
         try
         {
             summary = MessageFormat.format(TEST_INFO, new Object[]
-            { new String(suite.getName()), new Integer(suite.getTests()),
-                    new Integer(suite.getFailures()),
-                    new Integer(suite.getErrors()), new Integer(suite.getSkips()),
+            { new String(suite.getName()), Integer.valueOf(suite.getTests()),
+                    Integer.valueOf(suite.getFailures()),
+                    Integer.valueOf(suite.getErrors()), Integer.valueOf(suite.getSkips()),
                     formatTime(suite.getTime()) });
         } catch (Exception e)
         {

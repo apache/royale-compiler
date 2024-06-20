@@ -1938,7 +1938,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	    				break;
 	    		}
 	    		assert i < n;
-	    		sb.append("[" + new Integer(i).toString() + "]" );
+	    		sb.append("[" + Integer.valueOf(i).toString() + "]" );
 	    		parentNode = childNode;
 	    	}
 	    	if (isXML)

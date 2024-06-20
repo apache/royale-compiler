@@ -82,7 +82,7 @@ public class CSSArrayPropertyValueTests extends CSSPropertyValueTests {
 		assertThat("element 0" , ((CSSColorPropertyValue)elements.get(0)).getText() , is( "#FFFFFF"  ) );
 		assertThat("element 1" , ((CSSStringPropertyValue)elements.get(1)).getValue() , is( "String"  ) );
 		assertThat("element 2" , ((CSSColorPropertyValue)elements.get(2)).getText() , is( "Red"  ) );
-		assertThat("element 3" , ((CSSNumberPropertyValue)elements.get(3)).getNumber() , is( (Number) new Float(0) ) );
+		assertThat("element 3" , ((CSSNumberPropertyValue)elements.get(3)).getNumber() , is( (Number) Float.valueOf(0) ) );
 		assertThat("element 4" , ((CSSFunctionCallPropertyValue)elements.get(4)).name , is( CSSFunctionCallPropertyValue.EMBED  ) );
 		assertThat("element 5" , ((CSSKeywordPropertyValue)elements.get(5)).getKeyword() , is( "bold" ) );
 

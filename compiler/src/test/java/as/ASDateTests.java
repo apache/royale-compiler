@@ -34,8 +34,8 @@ public class ASDateTests extends ASFeatureTestsBase
     private String setTimeZone(String s)
     {
         TimeZone tz = TimeZone.getDefault();
-        System.out.println("tzoffset is " + new Integer(tz.getOffset(new Date().getTime()) / 3600000).toString());
-        String offsetString = new Integer(tz.getOffset(new Date().getTime()) / 3600000).toString();
+        System.out.println("tzoffset is " + Integer.valueOf(tz.getOffset(new Date().getTime()) / 3600000).toString());
+        String offsetString = Integer.valueOf(tz.getOffset(new Date().getTime()) / 3600000).toString();
         if (offsetString.length() == 2)
             offsetString = offsetString.substring(0,1) + 0 + offsetString.substring(1, 2);
         if(offsetString.charAt(0) != '-')
@@ -50,8 +50,8 @@ public class ASDateTests extends ASFeatureTestsBase
     private String setTimeZoneOffsetMinutes(String s)
     {
         TimeZone tz = TimeZone.getDefault();
-        System.out.println("tzoffset is " + new Integer(tz.getOffset(new Date().getTime()) / 3600000).toString());
-        String offsetString = new Integer(tz.getOffset(new Date().getTime()) / -60000).toString();
+        System.out.println("tzoffset is " + Integer.valueOf(tz.getOffset(new Date().getTime()) / 3600000).toString());
+        String offsetString = Integer.valueOf(tz.getOffset(new Date().getTime()) / -60000).toString();
         if (!hasFlashPlayerGlobal)
             offsetString = "-480";
         System.out.println("offset in minutes is " + offsetString);

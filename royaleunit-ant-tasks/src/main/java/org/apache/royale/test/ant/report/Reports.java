@@ -60,10 +60,10 @@ public class Reports extends HashMap<String, Report>
         try
         {
             summary += MessageFormat.format(TEST_INFO, new Object[] { 
-                    new Integer(runs), 
-                    new Integer(failures), 
-                    new Integer(errors),
-                    new Integer(skips),
+                    Integer.valueOf(runs), 
+                    Integer.valueOf(failures), 
+                    Integer.valueOf(errors),
+                    Integer.valueOf(skips),
                     formatTime(time)
                 });
         }
@@ -79,7 +79,7 @@ public class Reports extends HashMap<String, Report>
     
     private String formatTime(long time)
     {
-        return String.format("%.3f", new Double(time / 1000.0000));
+        return String.format("%.3f", Double.valueOf(time / 1000.0000));
     }
     
     /**

@@ -84,7 +84,7 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
         @Override
         public int compare(DependencyRecord o1, DependencyRecord o2)
         {
-            return new Integer(o1.lineNumber).compareTo(o2.lineNumber);
+            return Integer.valueOf(o1.lineNumber).compareTo(o2.lineNumber);
         }
     }
 

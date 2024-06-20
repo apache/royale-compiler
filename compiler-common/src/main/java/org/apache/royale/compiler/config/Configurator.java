@@ -2480,7 +2480,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
      */
     public void setDefaultBackgroundColor(int color)
     {
-        args.put(DEFAULT_BACKGROUND_COLOR, new Integer(color));
+        args.put(DEFAULT_BACKGROUND_COLOR, Integer.valueOf(color));
         
         isConfigurationDirty = true;
     }
@@ -2494,7 +2494,7 @@ public class Configurator implements ICompilerSettings, IConfigurator, ICompiler
      */
     public void setDefaultFrameRate(int rate)
     {
-        args.put(DEFAULT_FRAME_RATE, new Integer(rate));
+        args.put(DEFAULT_FRAME_RATE, Integer.valueOf(rate));
         
         isConfigurationDirty = true;
     }

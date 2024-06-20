@@ -175,7 +175,7 @@ public class BindingDestinationMaker
         		arrayNode.setSourcePath(parent.getSourcePath());
         		arrayNode.setColumn(parent.getColumn());
         		arrayNode.setLine(parent.getLine());
-        		NumericLiteralNode indexNode = new NumericLiteralNode(new Integer(index).toString());
+        		NumericLiteralNode indexNode = new NumericLiteralNode(Integer.valueOf(index).toString());
         		indexNode.setSourcePath(parent.getSourcePath());
         		indexNode.setColumn(parent.getColumn());
         		indexNode.setLine(parent.getLine());

@@ -402,7 +402,7 @@ public class DModule implements SourceFile
 			m_line2Offset.add(null);
 
 		// add the offset mapping
-		m_line2Offset.set(firstLine, new Integer(offset));
+		m_line2Offset.set(firstLine, Integer.valueOf(offset));
 
 		// make sure m_line2Func is big enough for the lines we're about to se
 		m_line2Func.ensureCapacity(lastLine+1);
@@ -442,8 +442,8 @@ public class DModule implements SourceFile
 		// add to our function name list
 		if (m_func2FirstLine.get(funcName) == null)
 		{
-			m_func2FirstLine.put(funcName, new Integer(firstLine));
-			m_func2LastLine.put(funcName, new Integer(lastLine));
+			m_func2FirstLine.put(funcName, Integer.valueOf(firstLine));
+			m_func2LastLine.put(funcName, Integer.valueOf(lastLine));
 		}
 	}
 

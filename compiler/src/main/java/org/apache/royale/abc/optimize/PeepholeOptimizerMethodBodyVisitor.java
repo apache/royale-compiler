@@ -715,14 +715,14 @@ public class PeepholeOptimizerMethodBodyVisitor extends DelegatingMethodBodyVisi
             case OP_pushbyte:
             {
                 // replace pushbyte, convert d with pushdouble - should be faster
-                replace(1, InstructionFactory.getInstruction(OP_pushdouble, new Double(convertByteImmediateToDouble(prev.getImmediate()))));
+                replace(1, InstructionFactory.getInstruction(OP_pushdouble, Double.valueOf(convertByteImmediateToDouble(prev.getImmediate()))));
                 break;
             }
             case OP_pushint:
             case OP_pushuint:
             {
                 // replace pushint , convert d with pushdouble - should be faster
-                replace(1, InstructionFactory.getInstruction(OP_pushdouble, new Double(((Number)prev.getOperand(0)).doubleValue())));
+                replace(1, InstructionFactory.getInstruction(OP_pushdouble, Double.valueOf(((Number)prev.getOperand(0)).doubleValue())));
                 break;
             }
             case OP_pushdouble:

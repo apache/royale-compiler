@@ -454,16 +454,16 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                     }
                     else if (val instanceof CSSColorPropertyValue)
                     {
-                        line.append(new Integer(((CSSColorPropertyValue)val).getColorAsInt()));
+                        line.append(Integer.valueOf(((CSSColorPropertyValue)val).getColorAsInt()));
                     }
                     else if (val instanceof CSSRgbColorPropertyValue)
                     {
-                        line.append(new Integer(((CSSRgbColorPropertyValue)val).getColorAsInt()));
+                        line.append(Integer.valueOf(((CSSRgbColorPropertyValue)val).getColorAsInt()));
                     }
                     else if (value instanceof CSSRgbaColorPropertyValue)
                     {
                         //todo: handle alpha in the RGBA ?
-                        line.append(new Long(((CSSRgbaColorPropertyValue)value).getColorAsLong()));
+                        line.append(Long.valueOf(((CSSRgbaColorPropertyValue)value).getColorAsLong()));
                     }
                     else if (val instanceof CSSKeywordPropertyValue)
                     {
@@ -478,7 +478,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                     }
                     else if (val instanceof CSSNumberPropertyValue)
                     {
-                        line.append(new Double(((CSSNumberPropertyValue)val).getNumber().doubleValue()));
+                        line.append(Double.valueOf(((CSSNumberPropertyValue)val).getNumber().doubleValue()));
                     }
                     else if (val instanceof CSSURLAndFormatPropertyValue)
                     {
@@ -512,16 +512,16 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                     }
                     else if (val instanceof CSSColorPropertyValue)
                     {
-                        line.append(new Integer(((CSSColorPropertyValue)val).getColorAsInt()));
+                        line.append(Integer.valueOf(((CSSColorPropertyValue)val).getColorAsInt()));
                     }
                     else if (val instanceof CSSRgbColorPropertyValue)
                     {
-                        line.append(new Integer(((CSSRgbColorPropertyValue)val).getColorAsInt()));
+                        line.append(Integer.valueOf(((CSSRgbColorPropertyValue)val).getColorAsInt()));
                     }
                     else if (val instanceof CSSRgbaColorPropertyValue)
                     {
                         //todo: handle alpha in the RGBA ?
-                        line.append(new Long(((CSSRgbaColorPropertyValue)val).getColorAsLong()));
+                        line.append(Long.valueOf(((CSSRgbaColorPropertyValue)val).getColorAsLong()));
                     }
                     else if (val instanceof CSSKeywordPropertyValue)
                     {
@@ -536,7 +536,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                     }
                     else if (val instanceof CSSNumberPropertyValue)
                     {
-                        line.append(new Double(((CSSNumberPropertyValue)val).getNumber().doubleValue()));
+                        line.append(Double.valueOf(((CSSNumberPropertyValue)val).getNumber().doubleValue()));
                     }
                     else if (val instanceof CSSURLAndFormatPropertyValue)
                     {
@@ -559,16 +559,16 @@ public class JSCSSCompilationSession extends CSSCompilationSession
             }
             else if (value instanceof CSSColorPropertyValue)
             {
-                line.append(new Integer(((CSSColorPropertyValue)value).getColorAsInt()));
+                line.append(Integer.valueOf(((CSSColorPropertyValue)value).getColorAsInt()));
             }
             else if (value instanceof CSSRgbColorPropertyValue)
             {
-                line.append(new Integer(((CSSRgbColorPropertyValue)value).getColorAsInt()));
+                line.append(Integer.valueOf(((CSSRgbColorPropertyValue)value).getColorAsInt()));
             }
             else if (value instanceof CSSRgbaColorPropertyValue)
             {
                 //todo: handle alpha in the RGBA ?
-                line.append(new Long(((CSSRgbaColorPropertyValue)value).getColorAsLong()));
+                line.append(Long.valueOf(((CSSRgbaColorPropertyValue)value).getColorAsLong()));
             }
             else if (value instanceof CSSKeywordPropertyValue)
             {
@@ -583,7 +583,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
             }
             else if (value instanceof CSSNumberPropertyValue)
             {
-                line.append(new Double(((CSSNumberPropertyValue)value).getNumber().doubleValue()));
+                line.append(Double.valueOf(((CSSNumberPropertyValue)value).getNumber().doubleValue()));
             }
             else if (value instanceof CSSFunctionCallPropertyValue)
             {

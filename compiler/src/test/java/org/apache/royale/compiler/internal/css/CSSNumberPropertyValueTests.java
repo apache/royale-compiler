@@ -56,7 +56,7 @@ public class CSSNumberPropertyValueTests extends CSSPropertyValueTests {
 		CSSNumberPropertyValue numberPropertyValue = numberProperties.get(0);
 		assertThat("numberPropertyValue.getOperator()" , numberPropertyValue.getOperator(), is( CSSModelTreeType.PROPERTY_VALUE ) );
 		assertThat("numberPropertyValue.getUnit()" , numberPropertyValue.getUnit(), is( "" ) );
-		assertThat("numberPropertyValue.getNumber()" , numberPropertyValue.getNumber(), is( (Number) new Float(10) ) );
+		assertThat("numberPropertyValue.getNumber()" , numberPropertyValue.getNumber(), is( (Number) Float.valueOf(10) ) );
 	}
 	
 	@Test
@@ -70,7 +70,7 @@ public class CSSNumberPropertyValueTests extends CSSPropertyValueTests {
 		CSSNumberPropertyValue numberPropertyValue = numberProperties.get(0);
 		assertThat("numberPropertyValue.getOperator()" , numberPropertyValue.getOperator(), is( CSSModelTreeType.PROPERTY_VALUE ) );
 		assertThat("numberPropertyValue.getUnit()" , numberPropertyValue.getUnit(), is( "px" ) );
-		assertThat("numberPropertyValue.getNumber()" , numberPropertyValue.getNumber(), is( (Number) new Float(10) ) );
+		assertThat("numberPropertyValue.getNumber()" , numberPropertyValue.getNumber(), is( (Number) Float.valueOf(10) ) );
 	}
 	
 	@Test
@@ -84,7 +84,7 @@ public class CSSNumberPropertyValueTests extends CSSPropertyValueTests {
 		CSSNumberPropertyValue numberPropertyValue = numberProperties.get(0);
 		assertThat("numberPropertyValue.getOperator()" , numberPropertyValue.getOperator(), is( CSSModelTreeType.PROPERTY_VALUE ) );
 		assertThat("numberPropertyValue.getUnit()" , numberPropertyValue.getUnit(), is( "em" ) );
-		assertThat("numberPropertyValue.getNumber()" , numberPropertyValue.getNumber(), is( (Number) new Float(10) ) );
+		assertThat("numberPropertyValue.getNumber()" , numberPropertyValue.getNumber(), is( (Number) Float.valueOf(10) ) );
 	}
 	
 	@Test
@@ -98,7 +98,7 @@ public class CSSNumberPropertyValueTests extends CSSPropertyValueTests {
 		CSSNumberPropertyValue numberPropertyValue = numberProperties.get(0);
 		assertThat("numberPropertyValue.getOperator()" , numberPropertyValue.getOperator(), is( CSSModelTreeType.PROPERTY_VALUE ) );
 		assertThat("numberPropertyValue.getUnit()" , numberPropertyValue.getUnit(), is( "%" ) );
-		assertThat("numberPropertyValue.getNumber()" , numberPropertyValue.getNumber(), is( (Number) new Float(10) ) );
+		assertThat("numberPropertyValue.getNumber()" , numberPropertyValue.getNumber(), is( (Number) Float.valueOf(10) ) );
 	}
 	
 	@Test
@@ -112,7 +112,7 @@ public class CSSNumberPropertyValueTests extends CSSPropertyValueTests {
 		CSSNumberPropertyValue numberPropertyValue = numberProperties.get(0);
 		assertThat("numberPropertyValue.getOperator()" , numberPropertyValue.getOperator(), is( CSSModelTreeType.PROPERTY_VALUE ) );
 		assertThat("numberPropertyValue.getUnit()" , numberPropertyValue.getUnit(), is( "" ) );
-		assertThat("numberPropertyValue.getNumber()" , numberPropertyValue.getNumber(), is( (Number) new Float(-10) ) );
+		assertThat("numberPropertyValue.getNumber()" , numberPropertyValue.getNumber(), is( (Number) Float.valueOf(-10) ) );
 	}
 	
 	@Test
@@ -126,7 +126,7 @@ public class CSSNumberPropertyValueTests extends CSSPropertyValueTests {
 		CSSNumberPropertyValue numberPropertyValue = numberProperties.get(0);
 		assertThat("numberPropertyValue.getOperator()" , numberPropertyValue.getOperator(), is( CSSModelTreeType.PROPERTY_VALUE ) );
 		assertThat("numberPropertyValue.getUnit()" , numberPropertyValue.getUnit(), is( "" ) );
-		assertThat("numberPropertyValue.getNumber()" , numberPropertyValue.getNumber(), is( (Number) new Float(10) ) );
+		assertThat("numberPropertyValue.getNumber()" , numberPropertyValue.getNumber(), is( (Number) Float.valueOf(10) ) );
 	}
 	
 	@Test
@@ -140,7 +140,7 @@ public class CSSNumberPropertyValueTests extends CSSPropertyValueTests {
 		CSSNumberPropertyValue numberPropertyValue = numberProperties.get(0);
 		assertThat("numberPropertyValue.getOperator()" , numberPropertyValue.getOperator(), is( CSSModelTreeType.PROPERTY_VALUE ) );
 		assertThat("numberPropertyValue.getUnit()()" , numberPropertyValue.getUnit(), is( "" ) );
-		assertThat("numberPropertyValue.getNumber()()" , numberPropertyValue.getNumber(), is( (Number) new Float(.31) ) );
+		assertThat("numberPropertyValue.getNumber()()" , numberPropertyValue.getNumber(), is( (Number) Float.valueOf(.31f) ) );
 	}
 	
 	@Test
@@ -154,7 +154,7 @@ public class CSSNumberPropertyValueTests extends CSSPropertyValueTests {
 		CSSNumberPropertyValue numberPropertyValue = numberProperties.get(0);
 		assertThat("numberPropertyValue.getOperator()" , numberPropertyValue.getOperator(), is( CSSModelTreeType.PROPERTY_VALUE ) );
 		assertThat("numberPropertyValue.getUnit()" , numberPropertyValue.getUnit(), is( "" ) );
-		assertThat("numberPropertyValue.getNumber()" , numberPropertyValue.getNumber(), is( (Number) new Float(10.31) ) );
+		assertThat("numberPropertyValue.getNumber()" , numberPropertyValue.getNumber(), is( (Number) Float.valueOf(10.31f) ) );
 	}
 	
 	@Test
@@ -168,7 +168,7 @@ public class CSSNumberPropertyValueTests extends CSSPropertyValueTests {
 		CSSNumberPropertyValue numberPropertyValue = numberProperties.get(0);
 		assertThat("numberPropertyValue.getOperator()" , numberPropertyValue.getOperator(), is( CSSModelTreeType.PROPERTY_VALUE ) );
 		assertThat("numberPropertyValue.getUnit()" , numberPropertyValue.getUnit(), is( "" ) );
-		assertThat("numberPropertyValue.getNumber()" , numberPropertyValue.getNumber(), is( (Number) new Float(-10.31) ) );
+		assertThat("numberPropertyValue.getNumber()" , numberPropertyValue.getNumber(), is( (Number) Float.valueOf(-10.31f) ) );
 	}
 	
 

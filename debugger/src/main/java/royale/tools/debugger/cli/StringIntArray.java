@@ -68,7 +68,7 @@ public class StringIntArray extends AbstractList<Object>
 		ArrayList<Integer> alist = new ArrayList<Integer>();
 		for(int i=0; i<m_size; i++)
 			if ( getString(i).startsWith(s) )
-				alist.add( new Integer(i) );
+				alist.add( Integer.valueOf(i) );
 
 		return alist;
 	}
