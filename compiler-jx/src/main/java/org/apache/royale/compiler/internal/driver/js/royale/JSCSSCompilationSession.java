@@ -430,7 +430,6 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         result.append(",\n");
         result.append("function() {");
         
-        ImmutableList<ICSSProperty> plist = rule.getProperties();
         ArrayList<String> listOfProps = new ArrayList<String>();
         for (final ICSSProperty prop : rule.getProperties())
         {
