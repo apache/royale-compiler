@@ -6593,7 +6593,7 @@ public class DebugCLI implements Runnable, SourceLocator {
 			cmd = CMD_COMMENT;
 		else {
 //			long start = System.currentTimeMillis();
-			ArrayList ar = cmdList.elementsStartingWith(input);
+			ArrayList<Integer> ar = cmdList.elementsStartingWith(input);
 //			long end = System.currentTimeMillis();
 
 			int size = ar.size();

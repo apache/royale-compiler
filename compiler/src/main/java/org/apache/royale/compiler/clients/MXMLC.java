@@ -260,7 +260,8 @@ public class MXMLC implements FlexTool
         {
             if ((CompilerDiagnosticsConstants.diagnostics & CompilerDiagnosticsConstants.COMPC_PHASES) == CompilerDiagnosticsConstants.COMPC_PHASES)
             	System.out.println("Failed with exceptions");
-            (new PrintStream(err)).println(e.getMessage());
+            PrintStream printStream = new PrintStream(err);
+            printStream.println(e.getMessage());
             exitCode = ExitCode.FAILED_WITH_EXCEPTIONS;
         }
         finally
@@ -392,7 +393,8 @@ public class MXMLC implements FlexTool
         }
         catch (Exception e)
         {
-            (new PrintStream(err)).println(e.getMessage());
+            PrintStream printStream = new PrintStream(err);
+            printStream.println(e.getMessage());
             exitCode = ExitCode.FAILED_WITH_EXCEPTIONS;
         }
         finally

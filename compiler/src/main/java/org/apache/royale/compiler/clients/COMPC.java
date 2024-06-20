@@ -47,7 +47,6 @@ import org.apache.royale.swc.io.ISWCWriter;
 import org.apache.royale.swc.io.SWCDirectoryWriter;
 import org.apache.royale.swc.io.SWCWriter;
 import org.apache.royale.swf.io.SizeReportWritingSWFWriter;
-import org.apache.flex.tools.FlexTool;
 import org.apache.royale.utils.FilenameNormalization;
 
 /**
@@ -56,7 +55,7 @@ import org.apache.royale.utils.FilenameNormalization;
  * This class is a quick start of component compiler. It depends on most of the
  * functionalities developed for mxmlc.
  */
-public class COMPC extends MXMLC implements FlexTool
+public class COMPC extends MXMLC
 {
     /**
      * Entry point for <code>compc</code> tool.

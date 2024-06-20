@@ -139,7 +139,7 @@ public class BreakAction
 		LocationCollection col = getLocations();
 		if (col != null)
 		{
-			Iterator itr = col.iterator();
+			Iterator<Location> itr = col.iterator();
 		
 			// probe all locations looking for a match
 			while(!match && itr.hasNext())
