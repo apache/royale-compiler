@@ -19,11 +19,9 @@
 
 package org.apache.royale.compiler.clients;
 
-import java.io.File;
 import java.io.OutputStream;
 import java.util.*;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.royale.compiler.clients.problems.CompilerProblemCategorizer;
 import org.apache.royale.compiler.clients.problems.ProblemPrinter;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
@@ -39,7 +37,6 @@ import org.apache.royale.compiler.config.Configurator;
 import org.apache.royale.compiler.config.ICompilerProblemSettings;
 import org.apache.royale.compiler.config.ICompilerSettingsConstants;
 import org.apache.royale.compiler.driver.js.IJSApplication;
-import org.apache.royale.compiler.exceptions.ConfigurationException.OnlyOneSource;
 import org.apache.royale.compiler.internal.config.FlashBuilderConfigurator;
 import org.apache.royale.compiler.internal.config.localization.LocalizationManager;
 import org.apache.royale.compiler.internal.definitions.DefinitionBase;
@@ -48,7 +45,6 @@ import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.projects.RoyaleProjectConfigurator;
 import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
-import org.apache.royale.compiler.internal.units.SourceCompilationUnitFactory;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.problems.ConfigurationProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
@@ -64,10 +60,6 @@ import org.apache.royale.swf.types.RGB;
 import org.apache.royale.swf.types.Rect;
 import org.apache.flex.tools.FlexTool;
 import org.apache.royale.utils.ArgumentUtil;
-import org.apache.royale.utils.FilenameNormalization;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Iterables;
 
 /**
  * @author Erik de Bruin
@@ -216,7 +208,6 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     public JSConfiguration config;
     protected Configurator projectConfigurator;
     private ConfigurationBuffer configBuffer;
-    private ICompilationUnit mainCU;
     protected ITarget target;
     protected ITargetSettings targetSettings;
     protected IJSApplication jsTarget;
@@ -446,81 +437,6 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     		}
     	}
     	return list.toArray(new String[0]);
-    }
-
-    /**
-     * Mxmlc uses target file as the main compilation unit and derive the output
-     * SWF file name from this file.
-     * 
-     * @return true if successful, false otherwise.
-     * @throws OnlyOneSource
-     * @throws InterruptedException
-     */
-    protected boolean setupTargetFile() throws InterruptedException
-    {
-        final String mainFileName = config.getTargetFile();
-
-        final String normalizedMainFileName = FilenameNormalization.normalize(mainFileName);
-
-        final SourceCompilationUnitFactory compilationUnitFactory = project.getSourceCompilationUnitFactory();
-
-        File normalizedMainFile = new File(normalizedMainFileName);
-        if (compilationUnitFactory.canCreateCompilationUnit(normalizedMainFile))
-        {
-            project.addIncludeSourceFile(normalizedMainFile);
-
-            final List<String> sourcePath = config.getCompilerSourcePath();
-            String mainQName = null;
-            if (sourcePath != null && !sourcePath.isEmpty())
-            {
-                for (String path : sourcePath)
-                {
-                    final String otherPath = new File(path).getAbsolutePath();
-                    if (mainFileName.startsWith(otherPath))
-                    {
-                        mainQName = mainFileName.substring(otherPath.length() + 1);
-                        mainQName = mainQName.replaceAll("\\\\", "/");
-                        mainQName = mainQName.replaceAll("\\/", ".");
-                        if (mainQName.endsWith(".as"))
-                            mainQName = mainQName.substring(0,
-                                    mainQName.length() - 3);
-                        break;
-                    }
-                }
-            }
-
-            if (mainQName == null)
-                mainQName = FilenameUtils.getBaseName(mainFileName);
-
-            Collection<ICompilationUnit> mainFileCompilationUnits = workspace.getCompilationUnits(
-                    normalizedMainFileName, project);
-
-            mainCU = Iterables.getOnlyElement(mainFileCompilationUnits);
-
-            config.setMainDefinition(mainQName);
-        }
-
-        Preconditions.checkNotNull(mainCU,
-                "Main compilation unit can't be null");
-
-        ITargetSettings settings = getTargetSettings();
-        if (settings != null)
-        {
-            project.setTargetSettings(settings);
-        }
-        else
-        {
-            // if getTargetSettings() returned null, then there will definitely
-            // be new config problems that weren't there after applyToProject()
-            // succeeded
-            problems.addAll(projectConfigurator.getConfigurationProblems());
-            return false;
-        }
-
-        target = project.getBackend().createTarget(project,
-                getTargetSettings(), null);
-
-        return true;
     }
 
     private ITargetSettings getTargetSettings()
