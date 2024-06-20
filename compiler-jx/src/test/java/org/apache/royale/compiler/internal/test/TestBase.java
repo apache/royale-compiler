@@ -20,7 +20,7 @@
 package org.apache.royale.compiler.internal.test;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
