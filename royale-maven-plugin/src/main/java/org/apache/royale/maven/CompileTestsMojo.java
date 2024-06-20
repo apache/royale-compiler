@@ -226,6 +226,9 @@ public class CompileTestsMojo extends BaseMojo {
         VelocityEngine velocityEngine = new VelocityEngine();
         velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
         velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+        velocityEngine.setProperty(RuntimeConstants.SPACE_GOBBLING, "bc");
+        velocityEngine.setProperty("directive.if.emptycheck", false);
+        velocityEngine.setProperty("runtime.conversion.handler", "none");
         velocityEngine.init();
 		VelocityContext context = getTestsApplicationVelocityContext(testQualifiedNames);
         File royaleUnitAppFile = new File(testGeneratedSrcDirectory, getRoyaleUnitApplicationOutputFileName());
