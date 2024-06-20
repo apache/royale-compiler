@@ -277,17 +277,17 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
         // Copy static resources to the intermediate (and release) directory.
         /////////////////////////////////////////////////////////////////////////////////
 
-        IOFileFilter pngSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
+        IOFileFilter pngSuffixFilter = FileFilterUtils.and(FileFileFilter.INSTANCE,
                 FileFilterUtils.suffixFileFilter(".png"));
-        IOFileFilter gifSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
+        IOFileFilter gifSuffixFilter = FileFilterUtils.and(FileFileFilter.INSTANCE,
                 FileFilterUtils.suffixFileFilter(".gif"));
-        IOFileFilter jpgSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
+        IOFileFilter jpgSuffixFilter = FileFilterUtils.and(FileFileFilter.INSTANCE,
                 FileFilterUtils.suffixFileFilter(".jpg"));
-        IOFileFilter jpegSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
+        IOFileFilter jpegSuffixFilter = FileFilterUtils.and(FileFileFilter.INSTANCE,
                 FileFilterUtils.suffixFileFilter(".jpeg"));
-        IOFileFilter svgSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
+        IOFileFilter svgSuffixFilter = FileFilterUtils.and(FileFileFilter.INSTANCE,
                 FileFilterUtils.suffixFileFilter(".svg"));
-        IOFileFilter jsonSuffixFilter = FileFilterUtils.and(FileFileFilter.FILE,
+        IOFileFilter jsonSuffixFilter = FileFilterUtils.and(FileFileFilter.INSTANCE,
                 FileFilterUtils.suffixFileFilter(".json"));
         IOFileFilter assetFiles = FileFilterUtils.or(pngSuffixFilter, jpgSuffixFilter, jpegSuffixFilter, svgSuffixFilter, gifSuffixFilter,
                 jsonSuffixFilter);

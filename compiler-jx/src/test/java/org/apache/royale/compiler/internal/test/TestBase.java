@@ -824,7 +824,7 @@ public class TestBase implements ITestBase
             String projectName, String mainFileName)
     {
     	String sourceFolderName = tempDir + "/" + projectName + "/src";
-        IOFileFilter asFilter = FileFilterUtils.and(FileFileFilter.FILE,
+        IOFileFilter asFilter = FileFilterUtils.and(FileFileFilter.INSTANCE,
                 FileFilterUtils.suffixFileFilter(".as"));
         File sourceFolder = new File(sourceFolderName);
         File projectFolder = new File(TestAdapterFactory.getTestAdapter().getUnitTestBaseDir(), projectFolderPath);

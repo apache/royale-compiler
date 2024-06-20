@@ -399,9 +399,9 @@ public class TestRoyaleProject extends ASTestBase
             String projectName)
     {
     	String outputFolderName = tempDir + "/" + projectName + "/bin/js-debug";
-        IOFileFilter jsFilter = FileFilterUtils.and(FileFileFilter.FILE,
+        IOFileFilter jsFilter = FileFilterUtils.and(FileFileFilter.INSTANCE,
                 FileFilterUtils.suffixFileFilter("js"));
-        IOFileFilter htmlFilter = FileFilterUtils.and(FileFileFilter.FILE,
+        IOFileFilter htmlFilter = FileFilterUtils.and(FileFileFilter.INSTANCE,
                 FileFilterUtils.suffixFileFilter("html"));
         IOFileFilter resultsFilter = FileFilterUtils.or(jsFilter, htmlFilter);
         File outputFolder = new File(outputFolderName);
