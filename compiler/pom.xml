@@ -467,7 +467,6 @@
             <include>**/*Tests.java</include>
           </includes>
           <excludes>
-            <exclude>as/**/*Tests.java</exclude>
             <exclude>f/**</exclude>
             <exclude>mxml/tags/**</exclude>
             <exclude>properties/**</exclude>
