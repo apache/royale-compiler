@@ -2048,12 +2048,7 @@ public abstract class NamespaceDefinition extends DefinitionBase implements INam
             forwardRefPred = pred;
         }
 
-        /**
-         * Gets the current set of resolved open namespaces.
-         * 
-         * @return The current set of resolved open namespaces.
-         */
-        private Set<INamespaceDefinition> getResolvedOpenNamespaces(String name)
+        private void initializeResolvedOpenNamespaces()
         {
             if (resolvedOpenNamespaces == null)
             {
@@ -2070,6 +2065,16 @@ public abstract class NamespaceDefinition extends DefinitionBase implements INam
                     ((CompilerProject)project).addGlobalUsedNamespacesToNamespaceSet(resolvedOpenNamespaces);
                 }
             }
+        }
+
+        /**
+         * Gets the current set of resolved open namespaces.
+         * 
+         * @return The current set of resolved open namespaces.
+         */
+        private Set<INamespaceDefinition> getResolvedOpenNamespaces(String name)
+        {
+            initializeResolvedOpenNamespaces();
 
             if (scope != null)
             {
@@ -2210,6 +2215,7 @@ public abstract class NamespaceDefinition extends DefinitionBase implements INam
          */
         public void addResolvedUsedNamespace(NamespaceDefinition ns)
         {
+            initializeResolvedOpenNamespaces();
             resolvedOpenNamespaces.add(ns);
         }
 
