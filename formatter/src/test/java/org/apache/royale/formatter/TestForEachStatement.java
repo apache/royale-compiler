@@ -528,4 +528,44 @@ public class TestForEachStatement extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testSwitchWithMultipleCases() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"{\n" +
+			"\tfor each (var item:Object in array) {\n" +
+			"\t\tswitch (condition) {\n" +
+			"\t\t\tcase 1:\n" +
+			"\t\t\t\tbreak;\n" +
+			"\t\t\tcase 2:\n" +
+			"\t\t\t\tbreak;\n" +
+			"\t\t}\n" +
+			"\t}\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+					"{\n" +
+					"\tfor each (var item:Object in array)\n" +
+					"\t{\n" +
+					"\t\tswitch (condition)\n" +
+					"\t\t{\n" +
+					"\t\t\tcase 1:\n" +
+					"\t\t\t\tbreak;\n" +
+					"\t\t\tcase 2:\n" +
+					"\t\t\t\tbreak;\n" +
+					"\t\t}\n" + 
+					"\t}\n" + 
+					"}",
+				// @formatter:on
+				result);
+	}
 }

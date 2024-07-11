@@ -381,9 +381,14 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 						}
 						break;
 					}
+					case ASTokenTypes.TOKEN_KEYWORD_IN: {
+						inVarOrConstDeclaration = false;
+						// needs an extra space before the token
+						requiredSpace = true;
+						break;
+					}
 					case ASTokenTypes.TOKEN_KEYWORD_AS:
 					case ASTokenTypes.TOKEN_KEYWORD_IS:
-					case ASTokenTypes.TOKEN_KEYWORD_IN:
 					case ASTokenTypes.TOKEN_RESERVED_WORD_EACH:
 					case ASTokenTypes.TOKEN_RESERVED_WORD_EXTENDS:
 					case ASTokenTypes.TOKEN_RESERVED_WORD_IMPLEMENTS:
@@ -709,6 +714,12 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 							if (controlFlowParenStack <= 0) {
 								endIndentedStatement();
 								inControlFlowStatement = false;
+								// if a variable was declared inside the
+								// parentheses, such as in a for() loop, this
+								// should already be false (if it's not, there's
+								// a bug somewhere).
+								// but this will add a little extra safety.
+								inVarOrConstDeclaration = false;
 								if (!blockStack.isEmpty()) {
 									BlockStackItem stackItem = blockStack.get(blockStack.size() - 1);
 									stackItem.controlFlowEnd = token.getEnd();
