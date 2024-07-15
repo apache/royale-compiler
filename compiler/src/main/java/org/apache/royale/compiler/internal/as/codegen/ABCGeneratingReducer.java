@@ -1401,14 +1401,20 @@ public class ABCGeneratingReducer
             if (!inlined)
             {
                 IDefinition def = target.getDefinition();
+                // if the definition is a getter, we need the setter instead
                 if (def instanceof GetterDefinition)
                 {
                     boolean isSuper = target.isSuperQualified();
                     SetterDefinition setter = (SetterDefinition)((GetterDefinition)def).
                                 resolveCorrespondingAccessor(currentScope.getProject());
-                    target = currentScope.getBinding(setter);   
-                    if (isSuper)
-                        target.setSuperQualified(true);
+                    // a setter may not exist. we don't need to report a
+                    // problem, though. that's handled elsewhere.
+                    if (setter != null)
+                    {
+                        target = currentScope.getBinding(setter);   
+                        if (isSuper)
+                            target.setSuperQualified(true);
+                    }
                 }
                 result.addAll(currentScope.findProperty(target, false));
                 result.addInstruction(OP_swap);
