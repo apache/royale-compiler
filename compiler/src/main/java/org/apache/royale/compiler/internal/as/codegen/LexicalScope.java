@@ -1189,6 +1189,10 @@ public class LexicalScope
     private Name getNameFromDefinition(IDefinition idef)
     {
         DefinitionBase def = (DefinitionBase)idef;
+        if (def == null)
+        {
+            return null;
+        }
         return def.getMName(getProject());
     }
 
