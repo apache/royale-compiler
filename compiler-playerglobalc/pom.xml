@@ -22,11 +22,11 @@
   <parent>
     <groupId>org.apache.royale.compiler</groupId>
     <artifactId>royale-compiler-parent</artifactId>
-    <version>0.9.11-SNAPSHOT</version>
+    <version>0.9.12-SNAPSHOT</version>
   </parent>
 
   <artifactId>compiler-playerglobalc</artifactId>
-  <version>0.9.11-SNAPSHOT</version>
+  <version>0.9.12-SNAPSHOT</version>
 
   <name>Apache Royale: Compiler: playerglobal.swc support</name>
   <description>The Apache Royale Compiler playerglobal/airglobal swc support</description>
@@ -63,7 +63,7 @@
     <dependency>
       <groupId>org.apache.royale.compiler</groupId>
       <artifactId>compiler-common</artifactId>
-      <version>0.9.11-SNAPSHOT</version>
+      <version>0.9.12-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
