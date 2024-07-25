@@ -125,6 +125,7 @@ public class FieldEmitter extends JSSubEmitter implements
         {
             def = enode.resolveType(getProject());
         }
+        IExpressionNode nameNode = node.getNameExpressionNode();
 
         // TODO (mschmalle)
         if (getEmitter().getDocEmitter() instanceof IJSRoyaleDocEmitter && !isComplexInitializedStatic)
@@ -159,7 +160,6 @@ public class FieldEmitter extends JSSubEmitter implements
             if (definition == null)
                 definition = ndef.getContainingScope().getDefinition();
 
-            startMapping(node.getNameExpressionNode());
             className = getEmitter().formatQualifiedName(definition.getQualifiedName());
             if (isComplexInitializedStatic)
             {
@@ -167,22 +167,40 @@ public class FieldEmitter extends JSSubEmitter implements
             }
             else
             {
-	            write(className
-	                    + ASEmitterTokens.MEMBER_ACCESS.getToken() + root);
-	            String qname = node.getName();
+                startMapping(nameNode);
+	            write(className);
+                write(ASEmitterTokens.MEMBER_ACCESS.getToken());
+                write(root);
+                endMapping(nameNode);
+                String nodeName = node.getName();
+	            String qname = nodeName;
 	            IDefinition nodeDef = node.getDefinition();
 	            if (nodeDef != null && !nodeDef.isStatic() && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
-	        			qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
+                {
+                    qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
+                }
 	    
-	            if (EmitterUtils.isCustomNamespace(node.getNamespace())) {
+	            if (EmitterUtils.isCustomNamespace(node.getNamespace()))
+                {
 	                INamespaceDecorationNode ns = ((VariableNode) node).getNamespaceNode();
 	                INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(getProject());
 	                fjs.formatQualifiedName(nsDef.getQualifiedName()); // register with used names
 	                String s = nsDef.getURI();
+                    startMapping(nameNode, node.getName());
 	                write(JSRoyaleEmitter.formatNamespacedProperty(s, qname, false));
+                    endMapping(nameNode);
 	            }
-	            else write(qname);
-	            endMapping(node.getNameExpressionNode());
+	            else
+                {
+                    String symbolName = null;
+                    if (!qname.equals(nodeName))
+                    {
+                        symbolName = nodeName;
+                    }
+                    startMapping(nameNode, symbolName);
+                    write(qname);
+                    endMapping(nameNode);
+                }
             }
         }
 
@@ -236,10 +254,10 @@ public class FieldEmitter extends JSSubEmitter implements
         			(!ndef.isStatic() && EmitterUtils.isScalar(vnode)) ||
         			isPackageOrFileMember)
 	        {
-                IExpressionNode beforeNode = node.getVariableTypeNode();
+                IExpressionNode beforeNode = enode;
                 if (beforeNode.getAbsoluteStart() == -1)
                 {
-                    beforeNode = node.getNameExpressionNode();
+                    beforeNode = nameNode;
                 }
 	            startMapping(node, beforeNode);
 	            write(ASEmitterTokens.SPACE);
@@ -371,10 +389,10 @@ public class FieldEmitter extends JSSubEmitter implements
     private void emitComplexInitializedStatic(IVariableNode node, String className, IDefinition variableTypeExprDef) {
         JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
         IExpressionNode vnode = node.getAssignedValueNode();
+        IExpressionNode nameNode = node.getNameExpressionNode();
         write(className);
         write(ASEmitterTokens.MEMBER_ACCESS.getToken());
         write(fjs.formatGetter(getFieldName(node, fjs)));
-        endMapping(node.getNameExpressionNode());
         write(ASEmitterTokens.SPACE);
         writeToken(ASEmitterTokens.EQUAL);
         write(ASEmitterTokens.FUNCTION);
@@ -385,7 +403,9 @@ public class FieldEmitter extends JSSubEmitter implements
         writeToken(ASEmitterTokens.VAR);
         writeToken("value");
         writeToken(ASEmitterTokens.EQUAL);
+        startMapping(vnode);
         write(vnodeString);
+        endMapping(vnode);
         writeNewline(ASEmitterTokens.SEMICOLON);
         write(IASLanguageConstants.Object);
         write(ASEmitterTokens.MEMBER_ACCESS);
@@ -444,10 +464,23 @@ public class FieldEmitter extends JSSubEmitter implements
         {
             ((IJSRoyaleDocEmitter) getEmitter().getDocEmitter()).emitFieldDoc(node, variableTypeExprDef, getProject());
         }
+        startMapping(node);
         write(className);
         write(ASEmitterTokens.MEMBER_ACCESS);
-        write(getFieldName(node, fjs));
+        endMapping(node);
+        String symbolName = null;
+        String nodeName = node.getName();
+        String fieldName = getFieldName(node, fjs);
+        if (!fieldName.equals(nodeName))
+        {
+            symbolName = nodeName;
+        }
+        startMapping(nameNode, symbolName);
+        write(fieldName);
+        endMapping(nameNode);
+        startMapping(node);
         write(ASEmitterTokens.SEMICOLON);
+        endMapping(node);
         writeNewline();
         writeNewline();
         write(IASLanguageConstants.Object);

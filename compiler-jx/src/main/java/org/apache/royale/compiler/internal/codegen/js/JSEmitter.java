@@ -384,29 +384,24 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
     {
         startMapping(node, node.getLine(), node.getColumn());
     }
+
+    public void startMapping(ISourceLocation node, String symbolName)
+    {
+        startMapping(node, symbolName, node.getLine(), node.getColumn());
+    }
     
     public void startMapping(ISourceLocation node, int line, int column)
     {
-        if (isBufferWrite())
-        {
-            return;
-        }
-        IEmitter parentEmitter = getParentEmitter();
-        if (parentEmitter != null && parentEmitter instanceof IMappingEmitter)
-        {
-            IMappingEmitter mappingParent = (IMappingEmitter) parentEmitter;
-            mappingParent.startMapping(node, line, column);
-            return;
-        }
-        if (lastMapping != null)
-        {
-            FilePosition sourceStartPosition = lastMapping.sourceStartPosition;
-            throw new IllegalStateException("Cannot start new mapping when another mapping is already started. "
-                    + "Previous mapping at Line " + sourceStartPosition.getLine()
-                    + " and Column " + sourceStartPosition.getColumn()
-                    + " in file " + lastMapping.sourcePath);
-        }
-        
+        startMapping(node, null, line, column);
+    }
+
+    public void startMapping(ISourceLocation node, ISourceLocation afterNode)
+    {
+        startMapping(node, afterNode.getEndLine(), afterNode.getEndColumn());
+    }
+    
+    public void startMapping(ISourceLocation node, String symbolName, int line, int column)
+    {
         String sourcePath = node.getSourcePath();
         if (sourcePath == null)
         {
@@ -419,25 +414,47 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
                 if (parentNode != null)
                 {
                     //try the parent node
-                    startMapping(parentNode, line, column);
+                    startMapping(parentNode, symbolName, line, column);
                     return;
                 }
             }
         }
 
+        startMapping(sourcePath, symbolName, line, column);
+    }
+    
+    public void startMapping(String sourcePath, String symbolName, int line, int column)
+    {
+        if (isBufferWrite())
+        {
+            return;
+        }
+
+        IEmitter parentEmitter = getParentEmitter();
+        if (parentEmitter != null && parentEmitter instanceof IMappingEmitter)
+        {
+            IMappingEmitter mappingParent = (IMappingEmitter) parentEmitter;
+            mappingParent.startMapping(sourcePath, symbolName, line, column);
+            return;
+        }
+        if (lastMapping != null)
+        {
+            FilePosition sourceStartPosition = lastMapping.sourceStartPosition;
+            throw new IllegalStateException("Cannot start new mapping when another mapping is already started. "
+                    + "Previous mapping at Line " + sourceStartPosition.getLine()
+                    + " and Column " + sourceStartPosition.getColumn()
+                    + " in file " + lastMapping.sourcePath);
+        }
+        
         //prefer forward slash
         sourcePath = sourcePath.replace('\\', '/');
 
         SourceMapMapping mapping = new SourceMapMapping();
         mapping.sourcePath = sourcePath;
+        mapping.name = symbolName;
         mapping.sourceStartPosition = new FilePosition(line, column);
         mapping.destStartPosition = new FilePosition(getCurrentLine(), getCurrentColumn());
         lastMapping = mapping;
-    }
-
-    public void startMapping(ISourceLocation node, ISourceLocation afterNode)
-    {
-        startMapping(node, afterNode.getEndLine(), afterNode.getEndColumn());
     }
 
     public void endMapping(ISourceLocation node)

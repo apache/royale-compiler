@@ -42,6 +42,12 @@ public class SourceMapTestBase extends ASTestBase
     protected void assertMapping(IASNode node, int nodeStartLine, int nodeStartColumn,
         int outStartLine, int outStartColumn, int outEndLine, int outEndColumn)
     {
+        assertMapping(node, nodeStartLine, nodeStartColumn, outStartLine, outStartColumn, outEndLine, outEndColumn, null);
+    }
+
+    protected void assertMapping(IASNode node, int nodeStartLine, int nodeStartColumn,
+        int outStartLine, int outStartColumn, int outEndLine, int outEndColumn, String symbolName)
+    {
         int sourceStartLine = nodeStartLine + node.getLine();
         int sourceStartColumn = nodeStartColumn;
         if (nodeStartLine == 0)
@@ -60,14 +66,39 @@ public class SourceMapTestBase extends ASTestBase
                     && startPosition.getLine() == outStartLine
                     && startPosition.getColumn() == outStartColumn
                     && endPosition.getLine() == outEndLine
-                    && endPosition.getColumn() == outEndColumn)
+                    && endPosition.getColumn() == outEndColumn
+                    && ((symbolName == null && mapping.name == null) || (symbolName != null && symbolName.equals(mapping.name))))
             {
                 foundMapping = true;
                 break;
             }
         }
+        // uncomment for debugging
+        // if (!foundMapping)
+        // {
+        //     System.err.println("generated code:");
+        //     System.err.println(writer.toString());
+        //     System.err.println("expected mapping:");
+        //     System.err.println("  name: " + symbolName);
+        //     System.err.println("  node: " + nodeStartLine + ", " + nodeStartColumn);
+        //     System.err.println("  source: " + sourceStartLine + ", " + sourceStartColumn);
+        //     System.err.println("  start:  " + outStartLine + ", " + outStartColumn);
+        //     System.err.println("  end:    " + outEndLine + ", " + outEndColumn);
+        //     for (int i = 0; i < mappings.size(); i++)
+        //     {
+        //         IMappingEmitter.SourceMapMapping mapping = mappings.get(i);
+        //         System.err.println("actual mapping (" + i + "):");
+        //         FilePosition sourcePosition = mapping.sourceStartPosition;
+        //         FilePosition startPosition = mapping.destStartPosition;
+        //         FilePosition endPosition = mapping.destEndPosition;
+        //         System.err.println("  name: " + mapping.name);
+        //         System.err.println("  source: " + sourcePosition.getLine() + ", " + sourcePosition.getColumn());
+        //         System.err.println("  start:  " + startPosition.getLine() + ", " + startPosition.getColumn());
+        //         System.err.println("  end:    " + endPosition.getLine() + ", " + endPosition.getColumn());
+        //     }
+        // }
         assertTrue("Mapping not found for node " + node.getNodeID() + ". Expected "
-                + "source: (" + nodeStartLine + ", " + nodeStartColumn + "), dest: (" + outStartLine + ", " + outStartColumn + ") to (" + outEndLine + ", " + outEndColumn + ")",
+                + "source: (" + nodeStartLine + ", " + nodeStartColumn + "), dest: (" + outStartLine + ", " + outStartColumn + ") to (" + outEndLine + ", " + outEndColumn + "), name: " + symbolName,
                 foundMapping);
     }
     

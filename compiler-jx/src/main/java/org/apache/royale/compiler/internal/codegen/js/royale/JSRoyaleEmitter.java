@@ -583,8 +583,6 @@ public class JSRoyaleEmitter extends JSEmitter implements IJSRoyaleEmitter
 
         if (defaults != null)
         {
-            final StringBuilder code = new StringBuilder();
-
             if (!EmitterUtils.hasBody(node))
             {
                 indentPush();
@@ -600,35 +598,41 @@ public class JSRoyaleEmitter extends JSEmitter implements IJSRoyaleEmitter
 
                 if (pnode != null)
                 {
-                    code.setLength(0);
-
                     /* x = typeof y !== 'undefined' ? y : z;\n */
-                    code.append(pnode.getName());
-                    code.append(ASEmitterTokens.SPACE.getToken());
-                    code.append(ASEmitterTokens.EQUAL.getToken());
-                    code.append(ASEmitterTokens.SPACE.getToken());
-                    code.append(ASEmitterTokens.TYPEOF.getToken());
-                    code.append(ASEmitterTokens.SPACE.getToken());
-                    code.append(pnode.getName());
-                    code.append(ASEmitterTokens.SPACE.getToken());
-                    code.append(ASEmitterTokens.STRICT_NOT_EQUAL.getToken());
-                    code.append(ASEmitterTokens.SPACE.getToken());
-                    code.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-                    code.append(ASEmitterTokens.UNDEFINED.getToken());
-                    code.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
-                    code.append(ASEmitterTokens.SPACE.getToken());
-                    code.append(ASEmitterTokens.TERNARY.getToken());
-                    code.append(ASEmitterTokens.SPACE.getToken());
-                    code.append(pnode.getName());
-                    code.append(ASEmitterTokens.SPACE.getToken());
-                    code.append(ASEmitterTokens.COLON.getToken());
-                    code.append(ASEmitterTokens.SPACE.getToken());
+                    startMapping(pnode);
+                    write(pnode.getName());
+                    write(ASEmitterTokens.SPACE.getToken());
+                    write(ASEmitterTokens.EQUAL.getToken());
+                    write(ASEmitterTokens.SPACE.getToken());
+                    write(ASEmitterTokens.TYPEOF.getToken());
+                    write(ASEmitterTokens.SPACE.getToken());
+                    write(pnode.getName());
+                    write(ASEmitterTokens.SPACE.getToken());
+                    write(ASEmitterTokens.STRICT_NOT_EQUAL.getToken());
+                    write(ASEmitterTokens.SPACE.getToken());
+                    write(ASEmitterTokens.SINGLE_QUOTE.getToken());
+                    write(ASEmitterTokens.UNDEFINED.getToken());
+                    write(ASEmitterTokens.SINGLE_QUOTE.getToken());
+                    write(ASEmitterTokens.SPACE.getToken());
+                    write(ASEmitterTokens.TERNARY.getToken());
+                    write(ASEmitterTokens.SPACE.getToken());
+                    write(pnode.getName());
+                    write(ASEmitterTokens.SPACE.getToken());
+                    write(ASEmitterTokens.COLON.getToken());
+                    write(ASEmitterTokens.SPACE.getToken());
+                    endMapping(pnode);
                     
                     IExpressionNode assignedValueNode = pnode.getAssignedValueNode();
-                    code.append(stringifyNode(assignedValueNode));
-                    code.append(ASEmitterTokens.SEMICOLON.getToken());
+                    if (assignedValueNode != null)
+                    {
+                        startMapping(assignedValueNode);
+                        write(stringifyNode(assignedValueNode));
+                        endMapping(assignedValueNode);
+                    }
 
-                    write(code.toString());
+                    startMapping(pnode);
+                    write(ASEmitterTokens.SEMICOLON.getToken());
+                    endMapping(pnode);
 
                     if (i == n - 1 && !EmitterUtils.hasBody(node))
                         indentPop();
@@ -859,6 +863,7 @@ public class JSRoyaleEmitter extends JSEmitter implements IJSRoyaleEmitter
     public void emitMemberName(IDefinitionNode node)
     {
         ICompilerProject project = getWalker().getProject();
+        IExpressionNode nameNode = node.getNameExpressionNode();
         if (node.getNodeID() == ASTNodeID.FunctionID)
         {
             FunctionNode fn = (FunctionNode)node;
@@ -868,15 +873,24 @@ public class JSRoyaleEmitter extends JSEmitter implements IJSRoyaleEmitter
                 INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
                 formatQualifiedName(nsDef.getQualifiedName()); // register with used names
                 String s = nsDef.getURI();
+                startMapping(nameNode, node.getName());
                 write(formatNamespacedProperty(s, node.getName(), true));
+                endMapping(nameNode);
                 return;
             }
         }
+        String symbolName = null;
         String qname = node.getName();
         IDefinition nodeDef = node.getDefinition();
         if (nodeDef != null && !nodeDef.isStatic() && nodeDef.isPrivate() && project.getAllowPrivateNameConflicts())
+        {
             qname = formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
+            symbolName = node.getName();
+        }
+
+        startMapping(nameNode, symbolName);
         write(qname);
+        endMapping(nameNode);
     }
 
     public static String formatNamespacedProperty(String s, String propName, boolean access) {

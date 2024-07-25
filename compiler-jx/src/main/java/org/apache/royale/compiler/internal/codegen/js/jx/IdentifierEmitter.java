@@ -102,27 +102,14 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 {
                     return;
                 }
-                IASNode prevSibling = parentNode.getChild(0);
-                if(prevSibling == node)
-                {
-                    startMapping(parentNode);
-                }
-                else
-                {
-                    startMapping(prevSibling);
-                }
+                startMapping(node);
                 write(getEmitter().formatQualifiedName(sname));
-                if(prevSibling != node)
+                if (!isCustomNamespace)
                 {
-                    endMapping(prevSibling);
-                    startMapping(parentNode, prevSibling);
-                }
-                if (!isCustomNamespace) {
                     write(ASEmitterTokens.MEMBER_ACCESS);
                     wroteMemberAccess = true;
                 }
-                
-                endMapping(parentNode);
+                endMapping(node);
             }
         }
         else if (!NativeUtils.isNative(node.getName()))
@@ -162,7 +149,9 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     wroteSelf = true;
                 }
                 else
+                {
                     write(ASEmitterTokens.THIS);
+                }
 
                 if (!isCustomNamespace) {
                     write(ASEmitterTokens.MEMBER_ACCESS);
@@ -172,7 +161,9 @@ public class IdentifierEmitter extends JSSubEmitter implements
             }
             else if (EmitterUtils.writeE4xFilterNode(getProject(), getModel(), node))
             {
+                startMapping(node);
             	write("node.");
+                endMapping(node);
             }
 
             if (generateClosure)
@@ -189,7 +180,9 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 {
             		String qname = node.getName();
                 	if (nodeDef != null && !isStatic && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+                    {
                 		qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
+                    }
             		write(qname);
                 }
 
@@ -256,55 +249,82 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     //member access expression, it shouldn't be fully qualified
                     needsFormattedName = parentMemberAccessNode.getLeftOperandNode() == node;
                 }
-                startMapping(node);
                 if (parentNodeId == ASTNodeID.MemberAccessExpressionID)
                 {
                 	if (needsFormattedName)
                 	{
+                        startMapping(node);
                 	    write(getEmitter().formatQualifiedName(qname));
+                        endMapping(node);
                 	}
                     else if (isCustomNamespace)
                     {
                     	String ns = ((INamespaceResolvedReference)(nodeDef.getNamespaceReference())).resolveAETNamespace(getProject()).getName();
+                        startMapping(node, node.getName());
                     	write(JSRoyaleEmitter.formatNamespacedProperty(ns, qname, accessWithNS));
+                        endMapping(node);
                     }
                 	else
                 	{
-                	    if (!(nodeDef.getParent() instanceof IPackageDefinition)) {
+                	    if (!(nodeDef.getParent() instanceof IPackageDefinition))
+                        {
                             qname = node.getName();
                             if (nodeDef != null && !isStatic && (nodeDef.getParent() instanceof ClassDefinition) && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
+                            {
                                 qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
+                            }
                         }
+                        startMapping(node);
                     	write(qname);
+                        endMapping(node);
                 	}
                 }
                 else if (isPackageOrFileMember)
+                {
+                    startMapping(node);
                     write(getEmitter().formatQualifiedName(qname));
+                    endMapping(node);
+                }
                 else if (nodeDef instanceof TypeDefinitionBase)
                 {
-                    if (NativeUtils.isSyntheticJSType(qname) && !(parentNode instanceof IFunctionCallNode)) {
+                    if (NativeUtils.isSyntheticJSType(qname) && !(parentNode instanceof IFunctionCallNode))
+                    {
                         getEmitter().getModel().needLanguage = true;
                         write(JSRoyaleEmitterTokens.SYNTH_TYPE);
                         write(ASEmitterTokens.PAREN_OPEN);
                         write(ASEmitterTokens.SINGLE_QUOTE);
+                        startMapping(node);
                         write(getEmitter().formatQualifiedName(qname));
+                        endMapping(node);
                         write(ASEmitterTokens.SINGLE_QUOTE);
                         write(ASEmitterTokens.PAREN_CLOSE);
                     }
-                    else write(getEmitter().formatQualifiedName(qname));
+                    else
+                    {
+                        startMapping(node);
+                        write(getEmitter().formatQualifiedName(qname));
+                        endMapping(node);
+                    }
                 }
                 else if (isCustomNamespace)
                 {
                 	String ns = ((INamespaceResolvedReference)nodeDef.getNamespaceReference()).resolveAETNamespace(getProject()).getName();
+                    startMapping(node, node.getName());
                 	write(JSRoyaleEmitter.formatNamespacedProperty(ns, qname, accessWithNS));
+                    endMapping(node);
                 }
                 else
                 {
+                    String originalSymbolName = null;
                 	if (nodeDef != null && !isStatic && (nodeDef.getParent() instanceof ClassDefinition) && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
-                		qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
+                    {
+                        qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
+                        originalSymbolName = node.getName();
+                    }
+                    startMapping(node, originalSymbolName, node.getLine(), node.getColumn());
                     write(qname);
+                    endMapping(node);
                 }
-                endMapping(node);
             }
             else if (getModel().inE4xFilter && EmitterUtils.writeE4xFilterNode(getProject(), getModel(), node) /* swapped this out to allow for deeper nesting inside the filter expression ... instead of original:grandparentNodeId == ASTNodeID.E4XFilterID*/
             		&& (!(parentNodeId == ASTNodeID.MemberAccessExpressionID

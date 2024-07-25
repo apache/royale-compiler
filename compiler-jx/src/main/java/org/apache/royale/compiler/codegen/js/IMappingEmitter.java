@@ -38,6 +38,11 @@ public interface IMappingEmitter
     void startMapping(ISourceLocation node);
 
     /**
+     * Adds a node to the source map using a custom symbol name.
+     */
+    void startMapping(ISourceLocation node, String symbolName);
+
+    /**
      * Adds a node to the source map using custom line and column values,
      * instead of the node's own line and column. Useful for starting a mapping
      * in the middle of the node.
@@ -49,6 +54,17 @@ public interface IMappingEmitter
      * node's own line and column.
      */
     void startMapping(ISourceLocation node, ISourceLocation afterNode);
+
+    /**
+     * Adds a node the the source map using a custom symbol name, and custom
+     * line and column values.
+     */
+    void startMapping(ISourceLocation node, String symbolName, int line, int column);
+
+    /**
+     * Adds to the source map, without a node.
+     */
+    void startMapping(String sourcePath, String symbolName, int line, int column);
 
     /**
      * Commits a mapping to the source map.

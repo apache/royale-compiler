@@ -205,7 +205,7 @@ public class SourceMapUtils
 		//SourceMapGeneratorV3's appendTo() that omits the last
 		//entry, for some reason
 		FilePosition newEndPosition = new FilePosition(endPosition.getLine(), endPosition.getColumn() + 1);
-		generator.addMapping(sourceName, null, sourceStartPosition, endPosition, newEndPosition);
+		generator.addMapping(sourceName, symbolName, sourceStartPosition, endPosition, newEndPosition);
 	}
 
 	private static class SourceMapEntryCounter implements SourceMapConsumerV3.EntryVisitor

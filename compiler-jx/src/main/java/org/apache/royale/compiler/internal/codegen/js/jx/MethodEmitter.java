@@ -39,6 +39,7 @@ import org.apache.royale.compiler.internal.tree.as.FunctionNode;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.as.IClassNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.utils.ASTUtil;
 
@@ -75,6 +76,8 @@ public class MethodEmitter extends JSSubEmitter implements
                                         && isConstructor
                                         && getModel().getImplicitBindableImplementation() == ImplicitBindableImplementation.EXTENDS;
 
+        IExpressionNode nameNode = fn.getNameExpressionNode();
+
         String qname = null;
         IFunctionDefinition.FunctionClassification classification = fn.getFunctionClassification();
         if(classification == IFunctionDefinition.FunctionClassification.FILE_MEMBER ||
@@ -89,7 +92,7 @@ public class MethodEmitter extends JSSubEmitter implements
         }
         else
         {
-            startMapping(node.getNameExpressionNode());
+            startMapping(nameNode);
             ITypeDefinition typeDef = EmitterUtils.getTypeDefinition(node);
             if (typeDef != null)
             {
@@ -113,11 +116,11 @@ public class MethodEmitter extends JSSubEmitter implements
                     	write(ASEmitterTokens.MEMBER_ACCESS);
                 }
             }
+            endMapping(nameNode);
             if (!isConstructor)
             {
                 fjs.emitMemberName(node);
             }
-            endMapping(node.getNameExpressionNode());
         }
         if (node.getMetaTags() != null) {
             //offset mapping by any metadata tags that will be in the first child node
