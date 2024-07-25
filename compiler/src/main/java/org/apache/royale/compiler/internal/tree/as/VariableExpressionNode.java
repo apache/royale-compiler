@@ -43,6 +43,7 @@ public class VariableExpressionNode extends ExpressionNodeBase implements IVaria
         super();
         this.variableNode = variableNode;
         variableNode.setParent(this);
+        span(variableNode);
     }
 
     /**

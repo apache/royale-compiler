@@ -1385,7 +1385,7 @@ variableDefExpression returns[NodeBase v]
 /**
  * Matches a single variable definition in a for loop.
  */
-singleVariableDefExpression[ASToken varToken, boolean isConst] returns [ExpressionNodeBase n]
+singleVariableDefExpression[IASToken varToken, boolean isConst] returns [ExpressionNodeBase n]
 {
 	n = null;
 	VariableNode variable = null;
@@ -1396,7 +1396,14 @@ singleVariableDefExpression[ASToken varToken, boolean isConst] returns [Expressi
 		{ 
 			variable = new VariableNode(varName);
 			if(varToken != null)
+			{
 				variable.setKeyword(varToken);
+				variable.startBefore(varToken);
+			}
+			else
+			{
+				variable.startBefore(varName);
+			}
 			variable.setIsConst(isConst);
 			n = new VariableExpressionNode(variable);
 		}
