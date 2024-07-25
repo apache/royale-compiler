@@ -40,6 +40,9 @@ Apache Royale Compiler 0.9.11
 - compiler: Fix missing problem for invalid `twoWay` value for `<fx:Binding>` tag.
 - compiler: Fix exception for unexpected attributes added to `<fx:Array>` and `<fx:Vector>` tags.
 - compiler: Changed to better problem message when MXML `implements` attribute is empty.
+- compiler: Fix exception when assigning to a property that has a getter, but not a setter.
+- compiler: Fix exception when working with certain namespace expressions.
+- compiler: Fix configuration problems not being reported when compc options are passed to mxmlc.
 - debugger: Fix exception when evaluating certain expressions at run-time.
 - formatter: Added `insert-new-line-else` configuration option.
 - formatter: Filtered out unnecessary compiler warnings.
@@ -54,6 +57,7 @@ Apache Royale Compiler 0.9.11
 - formatter: Fix ignored implicit semicolon being formatted as `null`.
 - formatter: Fix formatting for comment between brace and `else`.
 - formatter: Fix formatting of unary operators that (depending on context) may also be arithmetic operators.
+- formatter: Fix formatting for switch/case inside for-each or for-in loop.
 - linter: Fix implicit semicolon incorrectly detected as an empty statement that should be removed (it can't be removed).
 - linter: Fix MXML linter being incorrectly used for _.as_ files and AS3 linter being incorrectly used for _.mxml_ files.
 - Building royale-compiler now requires JDK 11 or newer.
