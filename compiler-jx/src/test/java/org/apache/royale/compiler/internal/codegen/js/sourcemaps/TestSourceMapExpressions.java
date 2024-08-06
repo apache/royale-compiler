@@ -28,15 +28,23 @@ import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
 import org.apache.royale.compiler.tree.as.IFunctionCallNode;
 import org.apache.royale.compiler.tree.as.IIterationFlowNode;
 import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.royale.compiler.tree.as.INamespaceAccessExpressionNode;
 import org.apache.royale.compiler.tree.as.IReturnNode;
 import org.apache.royale.compiler.tree.as.ITernaryOperatorNode;
 import org.apache.royale.compiler.tree.as.IThrowNode;
 import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
-
 import org.junit.Test;
 
 public class TestSourceMapExpressions extends SourceMapTestBase
 {
+    @Override
+    public void setUp()
+    {
+        super.setUp();
+
+        project.setAllowPrivateNameConflicts(true);
+    }
+
     //----------------------------------
     // Primary expression keywords
     //----------------------------------
@@ -597,6 +605,70 @@ public class TestSourceMapExpressions extends SourceMapTestBase
         assertMapping(node, 0, 4, 0, 4, 0, 5);  // c
         assertMapping(node, 0, 5, 0, 5, 0, 6);  // .
         assertMapping(node, 0, 6, 0, 6, 0, 7);  // d
+    }
+
+    @Test
+    public void testVisitMemberAccess_3()
+    {
+        IMemberAccessExpressionNode node = (IMemberAccessExpressionNode) getNode(
+                "import custom.custom_namespace;use namespace custom_namespace;public class B {custom_namespace var b:Number; public function test() { var a:B = this;a.custom_namespace::b; }}",
+                IMemberAccessExpressionNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitMemberAccessExpression(node);
+        // a.http_$$ns_apache_org$2017$custom$namespace__b
+        assertMapping(node, 0, 0, 0, 0, 0, 1);  // a
+        assertMapping(node, 0, 1, 0, 1, 0, 2);  // .
+        assertMapping(node, 0, 2, 0, 2, 0, 47, "b");  // custom_namespace::b
+    }
+
+    @Test
+    public void testVisitMemberAccess_4()
+    {
+        INamespaceAccessExpressionNode node = (INamespaceAccessExpressionNode) getNode(
+                "import custom.custom_namespace;use namespace custom_namespace;public class B {custom_namespace var b:Number; public function test() { custom_namespace::b; }}",
+                INamespaceAccessExpressionNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitNamespaceAccessExpression(node);
+        // this.http_$$ns_apache_org$2017$custom$namespace__b
+        assertMapping(node, 0, 18, 0, 0, 0, 5);  // this.
+        assertMapping(node, 0, 18, 0, 5, 0, 50, "b");  // custom_namespace::b
+    }
+
+    @Test
+    public void testVisitMemberAccess_5()
+    {
+        IMemberAccessExpressionNode node = (IMemberAccessExpressionNode) getNode(
+                "import custom.custom_namespace;use namespace custom_namespace;public class B {custom_namespace var b:Number; public function test() { this.custom_namespace::b; }}",
+                IMemberAccessExpressionNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitMemberAccessExpression(node);
+        // this.http_$$ns_apache_org$2017$custom$namespace__b
+        assertMapping(node, 0, 0, 0, 0, 0, 4);  // this
+        assertMapping(node, 0, 4, 0, 4, 0, 5);  // .
+        assertMapping(node, 0, 5, 0, 5, 0, 50, "b");  // custom_namespace::b
+    }
+
+    @Test
+    public void testVisitMemberAccess_6()
+    {
+        IMemberAccessExpressionNode node = (IMemberAccessExpressionNode) getNode(
+                "public class B {private var b:Number; public function test() { this.b; }}",
+                IMemberAccessExpressionNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitMemberAccessExpression(node);
+        // this.B_b
+        assertMapping(node, 0, 0, 0, 0, 0, 4);  // this
+        assertMapping(node, 0, 4, 0, 4, 0, 5);  // .
+        assertMapping(node, 0, 5, 0, 5, 0, 8, "b");  // B_b
+    }
+
+    @Test
+    public void testVisitMemberAccess_7()
+    {
+        IReturnNode node = (IReturnNode) getNode(
+                "public class B {private var b:Number; public function test() { return b; }}",
+                IReturnNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitReturn(node);
+        // return this.B_b
+        assertMapping(node, 0, 0, 0, 0, 0, 7);  // return
+        assertMapping(node, 0, 7, 0, 7, 0, 12);  // this.
+        assertMapping(node, 0, 7, 0, 12, 0, 15, "b");  // B_b
     }
 
     @Test

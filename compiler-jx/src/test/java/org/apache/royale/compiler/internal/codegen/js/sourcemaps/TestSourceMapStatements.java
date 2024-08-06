@@ -36,6 +36,14 @@ import org.junit.Test;
 
 public class TestSourceMapStatements extends SourceMapTestBase
 {
+    @Override
+    public void setUp()
+    {
+        super.setUp();
+
+        project.setAllowPrivateNameConflicts(true);
+    }
+    
     //----------------------------------
     // var declaration
     //----------------------------------

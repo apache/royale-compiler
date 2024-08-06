@@ -260,21 +260,27 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     else if (isCustomNamespace)
                     {
                     	String ns = ((INamespaceResolvedReference)(nodeDef.getNamespaceReference())).resolveAETNamespace(getProject()).getName();
+                        if (accessWithNS)
+                        {
+                            write(ASEmitterTokens.MEMBER_ACCESS);
+                        }
                         startMapping(node, node.getName());
-                    	write(JSRoyaleEmitter.formatNamespacedProperty(ns, qname, accessWithNS));
+                    	write(JSRoyaleEmitter.formatNamespacedProperty(ns, qname, false));
                         endMapping(node);
                     }
                 	else
                 	{
+                        String originalQname = null;
                 	    if (!(nodeDef.getParent() instanceof IPackageDefinition))
                         {
                             qname = node.getName();
                             if (nodeDef != null && !isStatic && (nodeDef.getParent() instanceof ClassDefinition) && (!(nodeDef instanceof IParameterDefinition)) && nodeDef.isPrivate() && getProject().getAllowPrivateNameConflicts())
                             {
+                                originalQname = qname;
                                 qname = getEmitter().formatPrivateName(nodeDef.getParent().getQualifiedName(), qname);
                             }
                         }
-                        startMapping(node);
+                        startMapping(node, originalQname);
                     	write(qname);
                         endMapping(node);
                 	}
@@ -309,8 +315,12 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 else if (isCustomNamespace)
                 {
                 	String ns = ((INamespaceResolvedReference)nodeDef.getNamespaceReference()).resolveAETNamespace(getProject()).getName();
+                    if (accessWithNS)
+                    {
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                    }
                     startMapping(node, node.getName());
-                	write(JSRoyaleEmitter.formatNamespacedProperty(ns, qname, accessWithNS));
+                	write(JSRoyaleEmitter.formatNamespacedProperty(ns, qname, false));
                     endMapping(node);
                 }
                 else

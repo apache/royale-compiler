@@ -26,9 +26,6 @@ import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.constants.INamespaceConstants;
 import org.apache.royale.compiler.definitions.*;
-import org.apache.royale.compiler.definitions.IDefinition;
-import org.apache.royale.compiler.definitions.INamespaceDefinition;
-import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
@@ -412,8 +409,13 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 		// output bracket access with QName
 		writeLeftSide(node, leftNode, rightNode);
 		//exception: variable member access needs to have literal output, because there is no guarantee that string access will work in release mode after renaming
-		if (((NamespaceAccessExpressionNode) rightNode).resolve(getProject()) instanceof IVariableDefinition) {
-			write(JSRoyaleEmitter.formatNamespacedProperty(d.toString(), r.getName(),true));
+		if (naen.resolve(getProject()) instanceof IVariableDefinition) {
+			startMapping(node, leftNode);
+			write(ASEmitterTokens.MEMBER_ACCESS);
+			endMapping(node);
+			startMapping(naen, r.getName());
+			write(JSRoyaleEmitter.formatNamespacedProperty(d.toString(), r.getName(), false));
+			endMapping(naen);
 		} else {
 			write(ASEmitterTokens.SQUARE_OPEN);
 			write(ASEmitterTokens.NEW);
@@ -471,7 +473,12 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 		{
 			//exception: variable member access needs to have literal output, because there is no guarantee that string access will work in release mode after renaming
 			if (naen.resolve(getProject()) instanceof IVariableDefinition) {
-				write(JSRoyaleEmitter.formatNamespacedProperty(d.toString(), r.getName(),true));
+				startMapping(node, leftNode);
+				write(ASEmitterTokens.MEMBER_ACCESS);
+				endMapping(node);
+				startMapping(naen, r.getName());
+				write(JSRoyaleEmitter.formatNamespacedProperty(d.toString(), r.getName(), false));
+				endMapping(naen);
 			} else {
 				write(ASEmitterTokens.SQUARE_OPEN);
 				write(ASEmitterTokens.NEW);

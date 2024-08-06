@@ -873,8 +873,11 @@ public class JSRoyaleEmitter extends JSEmitter implements IJSRoyaleEmitter
                 INamespaceDefinition nsDef = (INamespaceDefinition)ns.resolve(project);
                 formatQualifiedName(nsDef.getQualifiedName()); // register with used names
                 String s = nsDef.getURI();
+                startMapping(nameNode);
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                endMapping(nameNode);
                 startMapping(nameNode, node.getName());
-                write(formatNamespacedProperty(s, node.getName(), true));
+                write(formatNamespacedProperty(s, node.getName(), false));
                 endMapping(nameNode);
                 return;
             }

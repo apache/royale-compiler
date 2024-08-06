@@ -92,7 +92,6 @@ public class MethodEmitter extends JSSubEmitter implements
         }
         else
         {
-            startMapping(nameNode);
             ITypeDefinition typeDef = EmitterUtils.getTypeDefinition(node);
             if (typeDef != null)
             {
@@ -100,6 +99,7 @@ public class MethodEmitter extends JSSubEmitter implements
             }
             if (qname != null && !qname.equals(""))
             {
+                startMapping(nameNode);
                 if (isConstructor && fjs.getModel().isExterns && typeDef.getBaseName().equals(qname))
                 {
                     writeToken(ASEmitterTokens.VAR);
@@ -113,10 +113,12 @@ public class MethodEmitter extends JSSubEmitter implements
                         write(JSEmitterTokens.PROTOTYPE);
                     }
                     if (!fjs.isCustomNamespace(fn))
+                    {
                     	write(ASEmitterTokens.MEMBER_ACCESS);
+                    }
                 }
+                endMapping(nameNode);
             }
-            endMapping(nameNode);
             if (!isConstructor)
             {
                 fjs.emitMemberName(node);
