@@ -457,8 +457,8 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
             tokenizer.setPath(path);
             tokenizer.setSourcePositionAdjustment(
                     blockOpenToken.getEnd(),
-                    blockOpenToken.getLine(),
-                    blockOpenToken.getColumn());
+                    blockOpenToken.getEndLine(),
+                    blockOpenToken.getEndColumn());
 
             final IRepairingTokenBuffer buffer = new StreamingTokenBuffer(tokenizer);
             parser = new ASParser(workspace, buffer);
