@@ -986,6 +986,8 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                                 case TOKEN_LITERAL_NUMBER:
                                 case TOKEN_LITERAL_HEX_NUMBER:
                                     retVal.setEnd(nextToken.getEnd());
+                                    retVal.setEndLine(nextToken.getEndLine());
+                                    retVal.setEndColumn(nextToken.getEndColumn());
                                     final StringBuilder builder = new StringBuilder(retVal.getText());
                                     builder.append(nextToken.getText());
                                     retVal.setText(poolString(builder.toString()));
