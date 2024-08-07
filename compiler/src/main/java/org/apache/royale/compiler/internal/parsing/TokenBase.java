@@ -481,7 +481,11 @@ public abstract class TokenBase extends Token implements ICMToken, ISourceLocati
         line += lineAdjustment;
         column += columnAdjustment;
         endLine += lineAdjustment;
-        endColumn += columnAdjustment;
+        if (endLine == line)
+        {
+            // don't adjust end column if the start and end lines are different
+            endColumn += columnAdjustment;
+        }
     }
 
     /**
