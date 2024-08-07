@@ -27,7 +27,7 @@ import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
  * <p>
  * This node has no children.
  */
-public interface INumericLiteralNode
+public interface INumericLiteralNode extends IExpressionNode
 {
     /**
      * Maximum value of the AS3 <code>int</code> datatype

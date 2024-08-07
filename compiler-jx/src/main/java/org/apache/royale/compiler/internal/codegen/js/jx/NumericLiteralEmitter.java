@@ -36,8 +36,8 @@ public class NumericLiteralEmitter extends JSSubEmitter implements
     @Override
     public void emit(INumericLiteralNode node)
     {
-        startMapping((ISourceLocation) node);
+        startMapping(node);
         write(node.getNumericValue().toString());
-        endMapping((ISourceLocation) node);
+        endMapping(node);
     }
 }
