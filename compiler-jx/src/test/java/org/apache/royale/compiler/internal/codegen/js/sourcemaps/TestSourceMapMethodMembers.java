@@ -22,7 +22,6 @@ import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
 import org.apache.royale.compiler.internal.test.SourceMapTestBase;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
-import org.apache.royale.compiler.tree.as.IVariableNode;
 import org.junit.Test;
 
 public class TestSourceMapMethodMembers extends SourceMapTestBase
@@ -48,6 +47,46 @@ public class TestSourceMapMethodMembers extends SourceMapTestBase
         assertMapping(node, 0, 13, 0, 38, 0, 39); // )
         assertMapping(node, 0, 14, 0, 40, 0, 41); // {
         assertMapping(node, 0, 15, 1, 0, 1, 1);   // }
+    }
+
+    @Test
+    public void testMethod_withReturnType()
+    {
+        IFunctionNode node = getMethod("function foo():int{  return -1;}");
+        asBlockWalker.visitFunction(node);
+        ///**\n @return {number}\n */\nRoyaleTest_A.prototype.foo = function() {\n  return -1;}
+        assertMapping(node, 0, 9, 3, 0, 3, 23);  // RoyaleTest_A.prototype.
+        assertMapping(node, 0, 9, 3, 23, 3, 26); // foo
+        assertMapping(node, 0, 0, 3, 26, 3, 37); // = function
+        assertMapping(node, 0, 12, 3, 37, 3, 38); // (
+        assertMapping(node, 0, 13, 3, 38, 3, 39); // )
+        assertMapping(node, 0, 18, 3, 40, 3, 41); // {
+        assertMapping(node, 0, 21, 4, 2, 4, 9); // return
+        assertMapping(node, 0, 28, 4, 9, 4, 11); // -1
+        assertMapping(node, 0, 30, 4, 11, 4, 12); // ;
+        assertMapping(node, 0, 31, 5, 0, 5, 1);   // }
+    }
+
+    @Test
+    public void testMethod_withDefaultParameterTypeReturnType()
+    {
+        IFunctionNode node = getMethod("function foo(bar:String = \"baz\"):int{  return -1;}");
+        asBlockWalker.visitFunction(node);
+        ///**\n @param {string=} bar\n * @return {number}\n */\nRoyaleTest_A.prototype.foo = function(bar) {\n  bar = typeof bar !== 'undefined' ? bar : "baz";\nreturn -1;}
+        assertMapping(node, 0, 9, 4, 0, 4, 23);  // RoyaleTest_A.prototype.
+        assertMapping(node, 0, 9, 4, 23, 4, 26); // foo
+        assertMapping(node, 0, 0, 4, 26, 4, 37); // = function
+        assertMapping(node, 0, 12, 4, 37, 4, 38); // (
+        assertMapping(node, 0, 13, 4, 38, 4, 41); // bar
+        assertMapping(node, 0, 31, 4, 41, 4, 42); // )
+        assertMapping(node, 0, 36, 4, 43, 4, 44); // {
+        assertMapping(node, 0, 13, 5, 2, 5, 43); // bar = typeof bar !== 'undefined' ? bar : 
+        assertMapping(node, 0, 26, 5, 43, 5, 48); // "baz";
+        assertMapping(node, 0, 13, 5, 48, 5, 49); // ;
+        assertMapping(node, 0, 39, 6, 2, 6, 9); // return
+        assertMapping(node, 0, 46, 6, 9, 6, 11); // -1
+        assertMapping(node, 0, 48, 6, 11, 6, 12); // ;
+        assertMapping(node, 0, 49, 7, 0, 7, 1);   // }
     }
 
     @Test
@@ -96,6 +135,46 @@ public class TestSourceMapMethodMembers extends SourceMapTestBase
         assertMapping(node, 0, 20, 0, 28, 0, 29); // )
         assertMapping(node, 0, 21, 0, 30, 0, 31); // {
         assertMapping(node, 0, 22, 1, 0, 1, 1);   // }
+    }
+
+    @Test
+    public void testStaticMethod_withReturnType()
+    {
+        IFunctionNode node = getMethod("static function foo():int{  return -1;}");
+        asBlockWalker.visitFunction(node);
+        ///**\n @return {number}\n */\nRoyaleTest_A.foo = function() {\n  return -1;}
+        assertMapping(node, 0, 16, 3, 0, 3, 13);  // RoyaleTest_A.
+        assertMapping(node, 0, 16, 3, 13, 3, 16); // foo
+        assertMapping(node, 0, 0, 3, 16, 3, 27); // = function
+        assertMapping(node, 0, 19, 3, 27, 3, 28); // (
+        assertMapping(node, 0, 20, 3, 28, 3, 29); // )
+        assertMapping(node, 0, 25, 3, 30, 3, 31); // {
+        assertMapping(node, 0, 28, 4, 2, 4, 9); // return
+        assertMapping(node, 0, 35, 4, 9, 4, 11); // -1
+        assertMapping(node, 0, 37, 4, 11, 4, 12); // ;
+        assertMapping(node, 0, 38, 5, 0, 5, 1);   // }
+    }
+
+    @Test
+    public void testStaticMethod_withDefaultParameterTypeReturnType()
+    {
+        IFunctionNode node = getMethod("static function foo(bar:String = \"baz\"):int{  return -1;}");
+        asBlockWalker.visitFunction(node);
+        ///**\n @param {string=} bar\n * @return {number}\n */\nRoyaleTest_A.foo = function(bar) {\n  bar = typeof bar !== 'undefined' ? bar : "baz";\nreturn -1;}
+        assertMapping(node, 0, 16, 4, 0, 4, 13);  // RoyaleTest_A.
+        assertMapping(node, 0, 16, 4, 13, 4, 16); // foo
+        assertMapping(node, 0, 0, 4, 16, 4, 27); // = function
+        assertMapping(node, 0, 19, 4, 27, 4, 28); // (
+        assertMapping(node, 0, 20, 4, 28, 4, 31); // bar
+        assertMapping(node, 0, 38, 4, 31, 4, 32); // )
+        assertMapping(node, 0, 43, 4, 33, 4, 34); // {
+        assertMapping(node, 0, 20, 5, 2, 5, 43); // bar = typeof bar !== 'undefined' ? bar : 
+        assertMapping(node, 0, 33, 5, 43, 5, 48); // "baz";
+        assertMapping(node, 0, 20, 5, 48, 5, 49); // ;
+        assertMapping(node, 0, 46, 6, 2, 6, 9); // return
+        assertMapping(node, 0, 53, 6, 9, 6, 11); // -1
+        assertMapping(node, 0, 55, 6, 11, 6, 12); // ;
+        assertMapping(node, 0, 56, 7, 0, 7, 1);   // }
     }
 
     @Test
