@@ -23,7 +23,10 @@ import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IClassNode;
 import org.apache.royale.compiler.tree.as.IContainerNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.compiler.tree.as.IParameterNode;
 
 public class ParametersEmitter extends JSSubEmitter implements
@@ -37,7 +40,28 @@ public class ParametersEmitter extends JSSubEmitter implements
     @Override
     public void emit(IContainerNode node)
     {
-        startMapping(node);
+        String symbolName = null;
+        IASNode parentNode = node.getParent();
+        if (parentNode instanceof IFunctionNode)
+        {
+            // Chrome has a feature called "Friendly Call Frames" that 
+            // recognizes the original name of the function if it is included
+            // in the source map at the location of the function signature's
+            // opening "(" character
+            // reference: https://github.com/babel/babel/issues/14907
+            IFunctionNode functionNode = (IFunctionNode) parentNode;
+            String functionName = functionNode.getName();
+            if (functionName != null && functionName.length() > 0)
+            {
+                symbolName = functionName;
+                IClassNode classNode = (IClassNode) functionNode.getAncestorOfType(IClassNode.class);
+                if (classNode != null)
+                {
+                    symbolName = classNode.getShortName() + "." + symbolName;
+                }
+            }
+        }
+        startMapping(node, symbolName);
         write(ASEmitterTokens.PAREN_OPEN);
         endMapping(node);
 
