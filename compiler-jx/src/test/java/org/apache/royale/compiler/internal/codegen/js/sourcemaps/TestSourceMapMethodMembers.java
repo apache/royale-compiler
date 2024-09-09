@@ -43,7 +43,7 @@ public class TestSourceMapMethodMembers extends SourceMapTestBase
         assertMapping(node, 0, 9, 0, 0, 0, 23);  // RoyaleTest_A.prototype.
         assertMapping(node, 0, 9, 0, 23, 0, 26); // foo
         assertMapping(node, 0, 0, 0, 26, 0, 37); // = function
-        assertMapping(node, 0, 12, 0, 37, 0, 38); // (
+        assertMapping(node, 0, 12, 0, 37, 0, 38, "RoyaleTest_A.foo"); // (
         assertMapping(node, 0, 13, 0, 38, 0, 39); // )
         assertMapping(node, 0, 14, 0, 40, 0, 41); // {
         assertMapping(node, 0, 15, 1, 0, 1, 1);   // }
@@ -58,7 +58,7 @@ public class TestSourceMapMethodMembers extends SourceMapTestBase
         assertMapping(node, 0, 9, 3, 0, 3, 23);  // RoyaleTest_A.prototype.
         assertMapping(node, 0, 9, 3, 23, 3, 26); // foo
         assertMapping(node, 0, 0, 3, 26, 3, 37); // = function
-        assertMapping(node, 0, 12, 3, 37, 3, 38); // (
+        assertMapping(node, 0, 12, 3, 37, 3, 38, "RoyaleTest_A.foo"); // (
         assertMapping(node, 0, 13, 3, 38, 3, 39); // )
         assertMapping(node, 0, 18, 3, 40, 3, 41); // {
         assertMapping(node, 0, 21, 4, 2, 4, 9); // return
@@ -76,7 +76,7 @@ public class TestSourceMapMethodMembers extends SourceMapTestBase
         assertMapping(node, 0, 9, 4, 0, 4, 23);  // RoyaleTest_A.prototype.
         assertMapping(node, 0, 9, 4, 23, 4, 26); // foo
         assertMapping(node, 0, 0, 4, 26, 4, 37); // = function
-        assertMapping(node, 0, 12, 4, 37, 4, 38); // (
+        assertMapping(node, 0, 12, 4, 37, 4, 38, "RoyaleTest_A.foo"); // (
         assertMapping(node, 0, 13, 4, 38, 4, 41); // bar
         assertMapping(node, 0, 31, 4, 41, 4, 42); // )
         assertMapping(node, 0, 36, 4, 43, 4, 44); // {
@@ -98,7 +98,7 @@ public class TestSourceMapMethodMembers extends SourceMapTestBase
         assertMapping(node, 0, 17, 3, 0, 3, 23);  // RoyaleTest_A.prototype.
         assertMapping(node, 0, 17, 3, 23, 3, 39, "foo"); // RoyaleTest_A_foo
         assertMapping(node, 0, 0, 3, 39, 3, 50); // = function
-        assertMapping(node, 0, 20, 3, 50, 3, 51); // (
+        assertMapping(node, 0, 20, 3, 50, 3, 51, "RoyaleTest_A.foo"); // (
         assertMapping(node, 0, 21, 3, 51, 3, 52); // )
         assertMapping(node, 0, 22, 3, 53, 3, 54); // {
         assertMapping(node, 0, 23, 4, 0, 4, 1);   // }
@@ -116,7 +116,7 @@ public class TestSourceMapMethodMembers extends SourceMapTestBase
         assertMapping(node, 0, 26, 2, 22, 2, 23);  // .
         assertMapping(node, 0, 26, 2, 23, 2, 70, "foo"); // http_$$ns_apache_org$2017$custom$namespace__foo
         assertMapping(node, 0, 0, 2, 70, 2, 81); // = function
-        assertMapping(node, 0, 29, 2, 81, 2, 82); // (
+        assertMapping(node, 0, 29, 2, 81, 2, 82, "RoyaleTest_A.foo"); // (
         assertMapping(node, 0, 30, 2, 82, 2, 83); // )
         assertMapping(node, 0, 31, 2, 84, 2, 85); // {
         assertMapping(node, 0, 32, 3, 0, 3, 1);   // }
@@ -131,7 +131,7 @@ public class TestSourceMapMethodMembers extends SourceMapTestBase
         assertMapping(node, 0, 16, 0, 0, 0, 13);  // RoyaleTest_A.
         assertMapping(node, 0, 16, 0, 13, 0, 16); // foo
         assertMapping(node, 0, 0, 0, 16, 0, 27); // = function
-        assertMapping(node, 0, 19, 0, 27, 0, 28); // (
+        assertMapping(node, 0, 19, 0, 27, 0, 28, "RoyaleTest_A.foo"); // (
         assertMapping(node, 0, 20, 0, 28, 0, 29); // )
         assertMapping(node, 0, 21, 0, 30, 0, 31); // {
         assertMapping(node, 0, 22, 1, 0, 1, 1);   // }
@@ -146,7 +146,7 @@ public class TestSourceMapMethodMembers extends SourceMapTestBase
         assertMapping(node, 0, 16, 3, 0, 3, 13);  // RoyaleTest_A.
         assertMapping(node, 0, 16, 3, 13, 3, 16); // foo
         assertMapping(node, 0, 0, 3, 16, 3, 27); // = function
-        assertMapping(node, 0, 19, 3, 27, 3, 28); // (
+        assertMapping(node, 0, 19, 3, 27, 3, 28, "RoyaleTest_A.foo"); // (
         assertMapping(node, 0, 20, 3, 28, 3, 29); // )
         assertMapping(node, 0, 25, 3, 30, 3, 31); // {
         assertMapping(node, 0, 28, 4, 2, 4, 9); // return
@@ -164,7 +164,7 @@ public class TestSourceMapMethodMembers extends SourceMapTestBase
         assertMapping(node, 0, 16, 4, 0, 4, 13);  // RoyaleTest_A.
         assertMapping(node, 0, 16, 4, 13, 4, 16); // foo
         assertMapping(node, 0, 0, 4, 16, 4, 27); // = function
-        assertMapping(node, 0, 19, 4, 27, 4, 28); // (
+        assertMapping(node, 0, 19, 4, 27, 4, 28, "RoyaleTest_A.foo"); // (
         assertMapping(node, 0, 20, 4, 28, 4, 31); // bar
         assertMapping(node, 0, 38, 4, 31, 4, 32); // )
         assertMapping(node, 0, 43, 4, 33, 4, 34); // {
@@ -186,7 +186,7 @@ public class TestSourceMapMethodMembers extends SourceMapTestBase
         assertMapping(node, 0, 24, 3, 0, 3, 13);  // RoyaleTest_A.
         assertMapping(node, 0, 24, 3, 13, 3, 16); // foo
         assertMapping(node, 0, 0, 3, 16, 3, 27); // = function
-        assertMapping(node, 0, 27, 3, 27, 3, 28); // (
+        assertMapping(node, 0, 27, 3, 27, 3, 28, "RoyaleTest_A.foo"); // (
         assertMapping(node, 0, 28, 3, 28, 3, 29); // )
         assertMapping(node, 0, 29, 3, 30, 3, 31); // {
         assertMapping(node, 0, 30, 4, 0, 4, 1);   // }
@@ -204,7 +204,7 @@ public class TestSourceMapMethodMembers extends SourceMapTestBase
         assertMapping(node, 0, 33, 2, 12, 2, 13);  // .
         assertMapping(node, 0, 33, 2, 13, 2, 60, "foo"); // http_$$ns_apache_org$2017$custom$namespace__foo
         assertMapping(node, 0, 0, 2, 60, 2, 71); // = function
-        assertMapping(node, 0, 36, 2, 71, 2, 72); // (
+        assertMapping(node, 0, 36, 2, 71, 2, 72, "RoyaleTest_A.foo"); // (
         assertMapping(node, 0, 37, 2, 72, 2, 73); // )
         assertMapping(node, 0, 38, 2, 74, 2, 75); // {
         assertMapping(node, 0, 39, 3, 0, 3, 1);   // }
