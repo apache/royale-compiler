@@ -766,6 +766,8 @@ public class MethodBodySemanticChecker
         
         final boolean leftIsNumeric = SemanticUtils.isNumericType(left_type, project);
         final boolean rightIsNumeric = SemanticUtils.isNumericType(right_type, project);
+        final boolean leftIsNumericOrBoolean = SemanticUtils.isNumericTypeOrBoolean(left_type, project);
+        final boolean rightIsNumericOrBoolean = SemanticUtils.isNumericTypeOrBoolean(right_type, project);
         final boolean leftIsNull =  SemanticUtils.isBuiltin(left_type, BuiltinType.NULL, project);
         final boolean rightIsNull =  SemanticUtils.isBuiltin(right_type, BuiltinType.NULL, project);
         
@@ -779,8 +781,8 @@ public class MethodBodySemanticChecker
          
         boolean isBad = false;
         
-        // Numeric types can never be null
-        if ((leftIsNumeric&&rightIsNull) || (rightIsNumeric&&leftIsNull))
+        // Numeric and boolean types can never be null
+        if ((leftIsNumericOrBoolean&&rightIsNull) || (rightIsNumericOrBoolean&&leftIsNull))
         {
             isBad = true;
         }
