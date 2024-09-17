@@ -96,7 +96,11 @@
  boolean_constant=
  Op_EqualID(boolean_constant l, constant_value r) : 0
  {
-    if (r == UNDEFINED_VALUE)
+    if (r == NULL_VALUE)
+    {
+        recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, "Boolean", "null"));
+    }
+    else if (r == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
@@ -106,7 +110,11 @@
  boolean_constant=
  Op_EqualID(constant_value l, boolean_constant r) : 0
  {
-    if (l == UNDEFINED_VALUE)
+    if (l == NULL_VALUE)
+    {
+        recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, "Boolean", "null"));
+    }
+    else if (l == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
@@ -173,7 +181,11 @@
  boolean_constant=
  Op_StrictEqualID(boolean_constant l, constant_value r) : 0
  {
-    if (r == UNDEFINED_VALUE)
+    if (r == NULL_VALUE)
+    {
+        recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, "Boolean", "null"));
+    }
+    else if (r == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
@@ -183,7 +195,11 @@
  boolean_constant=
  Op_StrictEqualID(constant_value l, boolean_constant r) : 0
  {
-    if (l == UNDEFINED_VALUE)
+    if (l == NULL_VALUE)
+    {
+        recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, "Boolean", "null"));
+    }
+    else if (l == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
@@ -247,7 +263,11 @@
  boolean_constant=
  Op_NotEqualID(boolean_constant l, constant_value r) : 0
  {
-    if (r == UNDEFINED_VALUE)
+    if (r == NULL_VALUE)
+    {
+        recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, "Boolean", "null"));
+    }
+    else if (r == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
@@ -257,7 +277,11 @@
  boolean_constant=
  Op_NotEqualID(constant_value l, boolean_constant r) : 0
  {
-    if (l == UNDEFINED_VALUE)
+    if (l == NULL_VALUE)
+    {
+        recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, "Boolean", "null"));
+    }
+    else if (l == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
@@ -323,7 +347,11 @@
  boolean_constant=
  Op_StrictNotEqualID(boolean_constant l, constant_value r) : 0
  {
-    if (r == UNDEFINED_VALUE)
+    if (r == NULL_VALUE)
+    {
+        recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, "Boolean", "null"));
+    }
+    else if (r == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
@@ -333,7 +361,11 @@
  boolean_constant=
  Op_StrictNotEqualID(constant_value l, boolean_constant r) : 0
  {
-    if (l == UNDEFINED_VALUE)
+    if (l == NULL_VALUE)
+    {
+        recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, "Boolean", "null"));
+    }
+    else if (l == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
