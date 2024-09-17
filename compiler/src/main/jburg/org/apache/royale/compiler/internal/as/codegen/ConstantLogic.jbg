@@ -129,7 +129,7 @@
         String numberType = l instanceof Integer ? "int" : "Number";
         recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
     }
-    if (r == UNDEFINED_VALUE)
+    else if (r == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
@@ -144,7 +144,7 @@
         String numberType = r instanceof Integer ? "int" : "Number";
         recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
     }
-    if (l == UNDEFINED_VALUE)
+    else if (l == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
@@ -214,7 +214,7 @@
         String numberType = l instanceof Integer ? "int" : "Number";
         recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
     }
-    if (r == UNDEFINED_VALUE)
+    else if (r == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
@@ -229,7 +229,7 @@
         String numberType = r instanceof Integer ? "int" : "Number";
         recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
     }
-    if (l == UNDEFINED_VALUE)
+    else if (l == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
@@ -296,7 +296,7 @@
         String numberType = l instanceof Integer ? "int" : "Number";
         recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
     }
-    if (r == UNDEFINED_VALUE)
+    else if (r == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
@@ -311,7 +311,7 @@
         String numberType = r instanceof Integer ? "int" : "Number";
         recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
     }
-    if (l == UNDEFINED_VALUE)
+    else if (l == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
@@ -380,7 +380,7 @@
         String numberType = l instanceof Integer ? "int" : "Number";
         recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
     }
-    if (r == UNDEFINED_VALUE)
+    else if (r == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
@@ -395,7 +395,7 @@
         String numberType = r instanceof Integer ? "int" : "Number";
         recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
     }
-    if (l == UNDEFINED_VALUE)
+    else if (l == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
@@ -422,7 +422,7 @@
         String numberType = l instanceof Integer ? "int" : "Number";
         recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
     }
-    if (r == UNDEFINED_VALUE)
+    else if (r == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
@@ -437,7 +437,7 @@
         String numberType = r instanceof Integer ? "int" : "Number";
         recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
     }
-    if (l == UNDEFINED_VALUE)
+    else if (l == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
@@ -464,7 +464,7 @@
         String numberType = l instanceof Integer ? "int" : "Number";
         recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
     }
-    if (r == UNDEFINED_VALUE)
+    else if (r == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
@@ -479,7 +479,7 @@
         String numberType = r instanceof Integer ? "int" : "Number";
         recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
     }
-    if (l == UNDEFINED_VALUE)
+    else if (l == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
@@ -506,7 +506,7 @@
         String numberType = l instanceof Integer ? "int" : "Number";
         recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
     }
-    if (r == UNDEFINED_VALUE)
+    else if (r == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
@@ -521,7 +521,7 @@
         String numberType = r instanceof Integer ? "int" : "Number";
         recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
     }
-    if (l == UNDEFINED_VALUE)
+    else if (l == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
@@ -548,7 +548,7 @@
         String numberType = l instanceof Integer ? "int" : "Number";
         recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
     }
-    if (r == UNDEFINED_VALUE)
+    else if (r == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
@@ -563,7 +563,7 @@
         String numberType = r instanceof Integer ? "int" : "Number";
         recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
     }
-    if (l == UNDEFINED_VALUE)
+    else if (l == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
