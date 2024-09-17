@@ -94,6 +94,28 @@
  }
 
  boolean_constant=
+ Op_EqualID(numeric_constant l, constant_value r) : 0
+ {
+    if (r == NULL_VALUE)
+    {
+        String numberType = l instanceof Integer ? "int" : "Number";
+        recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
+    }
+     return ECMASupport.equals(l, r);
+ }
+
+ boolean_constant=
+ Op_EqualID(constant_value l, numeric_constant r) : 0
+ {
+    if (l == NULL_VALUE)
+    {
+        String numberType = r instanceof Integer ? "int" : "Number";
+        recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
+    }
+     return ECMASupport.equals(l, r);
+ }
+
+ boolean_constant=
  Op_EqualID(constant_value l, constant_value r): 0
  {
      return ECMASupport.equals(l, r);
