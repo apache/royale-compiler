@@ -205,6 +205,36 @@
  }
 
  boolean_constant=
+ Op_NotEqualID(numeric_constant l, constant_value r) : 0
+ {
+    if (r == NULL_VALUE)
+    {
+        String numberType = l instanceof Integer ? "int" : "Number";
+        recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
+    }
+    if (r == UNDEFINED_VALUE)
+    {
+        recordError(new IllogicalComparisonWithUndefinedProblem(__p));
+    }
+     return !ECMASupport.equals(l, r);
+ }
+
+ boolean_constant=
+ Op_NotEqualID(constant_value l, numeric_constant r) : 0
+ {
+    if (l == NULL_VALUE)
+    {
+        String numberType = r instanceof Integer ? "int" : "Number";
+        recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
+    }
+    if (l == UNDEFINED_VALUE)
+    {
+        recordError(new IllogicalComparisonWithUndefinedProblem(__p));
+    }
+     return !ECMASupport.equals(l, r);
+ }
+
+ boolean_constant=
  Op_NotEqualID(constant_value l, constant_value r): 0
  {
      return !ECMASupport.equals(l, r);
@@ -231,6 +261,36 @@
  }
 
  boolean_constant=
+ Op_StrictNotEqualID(numeric_constant l, constant_value r) : 0
+ {
+    if (r == NULL_VALUE)
+    {
+        String numberType = l instanceof Integer ? "int" : "Number";
+        recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
+    }
+    if (r == UNDEFINED_VALUE)
+    {
+        recordError(new IllogicalComparisonWithUndefinedProblem(__p));
+    }
+     return !ECMASupport.strictEquals(l, r);
+ }
+
+ boolean_constant=
+ Op_StrictNotEqualID(constant_value l, numeric_constant r) : 0
+ {
+    if (l == NULL_VALUE)
+    {
+        String numberType = r instanceof Integer ? "int" : "Number";
+        recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
+    }
+    if (l == UNDEFINED_VALUE)
+    {
+        recordError(new IllogicalComparisonWithUndefinedProblem(__p));
+    }
+     return !ECMASupport.strictEquals(l, r);
+ }
+
+ boolean_constant=
  Op_StrictNotEqualID(constant_value l, constant_value r): 0
  {
       return !ECMASupport.strictEquals(l, r);
@@ -240,6 +300,36 @@
  Op_LessThanID(numeric_constant l, numeric_constant r): 0
  {
       return ECMASupport.lessThan(l, r);
+ }
+
+ boolean_constant=
+ Op_LessThanID(numeric_constant l, constant_value r) : 0
+ {
+    if (r == NULL_VALUE)
+    {
+        String numberType = l instanceof Integer ? "int" : "Number";
+        recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
+    }
+    if (r == UNDEFINED_VALUE)
+    {
+        recordError(new IllogicalComparisonWithUndefinedProblem(__p));
+    }
+     return ECMASupport.lessThan(l, r);
+ }
+
+ boolean_constant=
+ Op_LessThanID(constant_value l, numeric_constant r) : 0
+ {
+    if (l == NULL_VALUE)
+    {
+        String numberType = r instanceof Integer ? "int" : "Number";
+        recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
+    }
+    if (l == UNDEFINED_VALUE)
+    {
+        recordError(new IllogicalComparisonWithUndefinedProblem(__p));
+    }
+     return ECMASupport.lessThan(l, r);
  }
 
  boolean_constant=
@@ -255,6 +345,36 @@
  }
 
  boolean_constant=
+ Op_LessThanEqualsID(numeric_constant l, constant_value r) : 0
+ {
+    if (r == NULL_VALUE)
+    {
+        String numberType = l instanceof Integer ? "int" : "Number";
+        recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
+    }
+    if (r == UNDEFINED_VALUE)
+    {
+        recordError(new IllogicalComparisonWithUndefinedProblem(__p));
+    }
+     return ECMASupport.lessThanEquals(l, r);
+ }
+
+ boolean_constant=
+ Op_LessThanEqualsID(constant_value l, numeric_constant r) : 0
+ {
+    if (l == NULL_VALUE)
+    {
+        String numberType = r instanceof Integer ? "int" : "Number";
+        recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
+    }
+    if (l == UNDEFINED_VALUE)
+    {
+        recordError(new IllogicalComparisonWithUndefinedProblem(__p));
+    }
+     return ECMASupport.lessThanEquals(l, r);
+ }
+
+ boolean_constant=
  Op_LessThanEqualsID(constant_value l, constant_value r): 0
  {
       return ECMASupport.lessThanEquals(l, r);
@@ -267,6 +387,36 @@
  }
 
  boolean_constant=
+ Op_GreaterThanID(numeric_constant l, constant_value r) : 0
+ {
+    if (r == NULL_VALUE)
+    {
+        String numberType = l instanceof Integer ? "int" : "Number";
+        recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
+    }
+    if (r == UNDEFINED_VALUE)
+    {
+        recordError(new IllogicalComparisonWithUndefinedProblem(__p));
+    }
+     return ECMASupport.greaterThan(l, r);
+ }
+
+ boolean_constant=
+ Op_GreaterThanID(constant_value l, numeric_constant r) : 0
+ {
+    if (l == NULL_VALUE)
+    {
+        String numberType = r instanceof Integer ? "int" : "Number";
+        recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
+    }
+    if (l == UNDEFINED_VALUE)
+    {
+        recordError(new IllogicalComparisonWithUndefinedProblem(__p));
+    }
+     return ECMASupport.greaterThan(l, r);
+ }
+
+ boolean_constant=
  Op_GreaterThanID(constant_value l, constant_value r): 0
  {
       return ECMASupport.greaterThan(l, r);
@@ -276,6 +426,36 @@
  Op_GreaterThanEqualsID(numeric_constant l, numeric_constant r): 0
  {
       return ECMASupport.greaterThanEquals(l, r);
+ }
+
+ boolean_constant=
+ Op_GreaterThanEqualsID(numeric_constant l, constant_value r) : 0
+ {
+    if (r == NULL_VALUE)
+    {
+        String numberType = l instanceof Integer ? "int" : "Number";
+        recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
+    }
+    if (r == UNDEFINED_VALUE)
+    {
+        recordError(new IllogicalComparisonWithUndefinedProblem(__p));
+    }
+     return ECMASupport.greaterThanEquals(l, r);
+ }
+
+ boolean_constant=
+ Op_GreaterThanEqualsID(constant_value l, numeric_constant r) : 0
+ {
+    if (l == NULL_VALUE)
+    {
+        String numberType = r instanceof Integer ? "int" : "Number";
+        recordError(new ComparisonBetweenUnrelatedTypesProblem(__p, numberType, "null"));
+    }
+    if (l == UNDEFINED_VALUE)
+    {
+        recordError(new IllogicalComparisonWithUndefinedProblem(__p));
+    }
+     return ECMASupport.greaterThanEquals(l, r);
  }
 
  boolean_constant=
