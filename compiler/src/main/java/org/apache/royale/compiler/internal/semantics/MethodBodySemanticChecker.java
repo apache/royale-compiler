@@ -2624,6 +2624,14 @@ public class MethodBodySemanticChecker
                 {
                     checkImplicitConversion(returnExpression, return_type, null);
                 }
+
+                IDefinition rightType = returnExpression.resolveType(project);
+                final boolean leftIsNumericOrBoolean = SemanticUtils.isNumericTypeOrBoolean(return_type, project);   
+                final boolean rightIsNull =  SemanticUtils.isBuiltin(rightType, BuiltinType.NULL, project);      
+                if (leftIsNumericOrBoolean && rightIsNull)
+                {
+                    addProblem(new NullUsedWhereOtherExpectedProblem(returnExpression, return_type.getBaseName()));
+                }
             }
             catch ( Exception namerezo_problem )
             {
