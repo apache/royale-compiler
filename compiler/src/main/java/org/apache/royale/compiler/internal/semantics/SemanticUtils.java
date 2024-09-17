@@ -3082,7 +3082,7 @@ public class SemanticUtils
                 case ContainerID:
                 case ConditionalID:
                     current = parent;
-                    parent  = current.getParent();
+                    parent = current.getParent();
                     break;
                 
                 case WhileLoopID:
@@ -3092,7 +3092,18 @@ public class SemanticUtils
                     return current == getNthChild(parent,1);
 
                 case IfStatementID:
-                    return current == getNthChild(parent,0);
+                    for (int i = 0; i < parent.getChildCount(); i++)
+                    {
+                        // conditions for the first if and all following else
+                        // ifs are added as children of the same parentm
+                        // so we need to check all children, and not just the
+                        // first one, like we do with while
+                        if (parent.getChild(i) == current)
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
 
                 default:
                     return false;
