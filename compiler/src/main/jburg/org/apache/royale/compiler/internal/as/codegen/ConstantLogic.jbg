@@ -104,6 +104,10 @@
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
+    else if ((r instanceof Double) && ((Double)r).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
      return ECMASupport.equals(l, r);
  }
 
@@ -117,6 +121,10 @@
     else if (l == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
+    }
+    else if ((l instanceof Double) && ((Double)l).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
     }
      return ECMASupport.equals(l, r);
  }
@@ -133,6 +141,10 @@
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
+    else if ((r instanceof Double) && ((Double)r).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
      return ECMASupport.equals(l, r);
  }
 
@@ -148,12 +160,20 @@
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
+    else if ((l instanceof Double) && ((Double)l).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
      return ECMASupport.equals(l, r);
  }
 
  boolean_constant=
  Op_EqualID(constant_value l, constant_value r): 0
  {
+    if (((l instanceof Double) && ((Double)l).isNaN()) || ((r instanceof Double) && ((Double)r).isNaN()))
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
      return ECMASupport.equals(l, r);
  }
 
@@ -189,6 +209,10 @@
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
+    else if ((r instanceof Double) && ((Double)r).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
      return ECMASupport.strictEquals(l, r);
  }
 
@@ -202,6 +226,10 @@
     else if (l == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
+    }
+    else if ((l instanceof Double) && ((Double)l).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
     }
      return ECMASupport.strictEquals(l, r);
  }
@@ -218,6 +246,10 @@
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
+    else if ((r instanceof Double) && ((Double)r).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
      return ECMASupport.strictEquals(l, r);
  }
 
@@ -233,12 +265,20 @@
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
+    else if ((l instanceof Double) && ((Double)l).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
      return ECMASupport.strictEquals(l, r);
  }
 
  boolean_constant=
  Op_StrictEqualID(constant_value l, constant_value r): 0
  {
+    if (((l instanceof Double) && ((Double)l).isNaN()) || ((r instanceof Double) && ((Double)r).isNaN()))
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
      return ECMASupport.strictEquals(l, r);
  }
 
@@ -271,6 +311,10 @@
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
+    else if ((r instanceof Double) && ((Double)r).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
      return !ECMASupport.equals(l, r);
  }
 
@@ -284,6 +328,10 @@
     else if (l == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
+    }
+    else if ((l instanceof Double) && ((Double)l).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
     }
      return !ECMASupport.equals(l, r);
  }
@@ -300,6 +348,10 @@
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
+    else if ((r instanceof Double) && ((Double)r).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
      return !ECMASupport.equals(l, r);
  }
 
@@ -315,12 +367,20 @@
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
+    else if ((l instanceof Double) && ((Double)l).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
      return !ECMASupport.equals(l, r);
  }
 
  boolean_constant=
  Op_NotEqualID(constant_value l, constant_value r): 0
  {
+    if (((l instanceof Double) && ((Double)l).isNaN()) || ((r instanceof Double) && ((Double)r).isNaN()))
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
      return !ECMASupport.equals(l, r);
  }
 
@@ -355,6 +415,10 @@
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
+    else if ((r instanceof Double) && ((Double)r).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
      return !ECMASupport.strictEquals(l, r);
  }
 
@@ -368,6 +432,10 @@
     else if (l == UNDEFINED_VALUE)
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
+    }
+    else if ((l instanceof Double) && ((Double)l).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
     }
      return !ECMASupport.strictEquals(l, r);
  }
@@ -384,6 +452,10 @@
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
+    else if ((r instanceof Double) && ((Double)r).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
      return !ECMASupport.strictEquals(l, r);
  }
 
@@ -399,12 +471,20 @@
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
+    else if ((l instanceof Double) && ((Double)l).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
      return !ECMASupport.strictEquals(l, r);
  }
 
  boolean_constant=
  Op_StrictNotEqualID(constant_value l, constant_value r): 0
  {
+    if (((l instanceof Double) && ((Double)l).isNaN()) || ((r instanceof Double) && ((Double)r).isNaN()))
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
       return !ECMASupport.strictEquals(l, r);
  }
 
@@ -426,6 +506,10 @@
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
+    else if ((r instanceof Double) && ((Double)r).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
      return ECMASupport.lessThan(l, r);
  }
 
@@ -441,12 +525,20 @@
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
+    else if ((l instanceof Double) && ((Double)l).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
      return ECMASupport.lessThan(l, r);
  }
 
  boolean_constant=
  Op_LessThanID(constant_value l, constant_value r): 0
  {
+    if (((l instanceof Double) && ((Double)l).isNaN()) || ((r instanceof Double) && ((Double)r).isNaN()))
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
       return ECMASupport.lessThan(l, r);
  }
 
@@ -468,6 +560,10 @@
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
+    else if ((r instanceof Double) && ((Double)r).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
      return ECMASupport.lessThanEquals(l, r);
  }
 
@@ -483,12 +579,20 @@
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
+    else if ((l instanceof Double) && ((Double)l).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
      return ECMASupport.lessThanEquals(l, r);
  }
 
  boolean_constant=
  Op_LessThanEqualsID(constant_value l, constant_value r): 0
  {
+    if (((l instanceof Double) && ((Double)l).isNaN()) || ((r instanceof Double) && ((Double)r).isNaN()))
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
       return ECMASupport.lessThanEquals(l, r);
  }
 
@@ -510,6 +614,10 @@
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
+    else if ((r instanceof Double) && ((Double)r).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
      return ECMASupport.greaterThan(l, r);
  }
 
@@ -525,12 +633,20 @@
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
+    else if ((l instanceof Double) && ((Double)l).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
      return ECMASupport.greaterThan(l, r);
  }
 
  boolean_constant=
  Op_GreaterThanID(constant_value l, constant_value r): 0
  {
+    if (((l instanceof Double) && ((Double)l).isNaN()) || ((r instanceof Double) && ((Double)r).isNaN()))
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
       return ECMASupport.greaterThan(l, r);
  }
 
@@ -552,6 +668,10 @@
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
+    else if ((r instanceof Double) && ((Double)r).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
      return ECMASupport.greaterThanEquals(l, r);
  }
 
@@ -567,12 +687,20 @@
     {
         recordError(new IllogicalComparisonWithUndefinedProblem(__p));
     }
+    else if ((l instanceof Double) && ((Double)l).isNaN())
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
      return ECMASupport.greaterThanEquals(l, r);
  }
 
  boolean_constant=
  Op_GreaterThanEqualsID(constant_value l, constant_value r): 0
  {
+    if (((l instanceof Double) && ((Double)l).isNaN()) || ((r instanceof Double) && ((Double)r).isNaN()))
+    {
+        recordError(new IllogicalComparionWithNaNProblem(__p));
+    }
       return ECMASupport.greaterThanEquals(l, r);
  }
 
