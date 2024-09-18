@@ -532,7 +532,7 @@ public class MethodBodySemanticChecker
         if (rightNode instanceof IExpressionNode)
         {
             IDefinition rightType = ((IExpressionNode)rightNode).resolveType(project);
-            final boolean leftIsNumericOrBoolean = SemanticUtils.isNumericTypeOrBoolean(leftType, project);   
+            final boolean leftIsNumericOrBoolean = SemanticUtils.isNumericTypeOrBoolean(leftType, project);  
             final boolean rightIsNull =  SemanticUtils.isBuiltin(rightType, BuiltinType.NULL, project);
             
             if (leftIsNumericOrBoolean && rightIsNull)
@@ -541,6 +541,15 @@ public class MethodBodySemanticChecker
                 addProblem(leftIsConstant ?
                         new IncompatibleDefaultValueOfTypeNullProblem(rightNode, leftType.getBaseName()) :
                         new NullUsedWhereOtherExpectedProblem(rightNode, leftType.getBaseName()));
+            }
+             
+            final boolean leftIsBoolean = SemanticUtils.isBuiltin(leftType, BuiltinType.BOOLEAN, project);
+            final boolean rightIsBoolean = SemanticUtils.isBuiltin(rightType, BuiltinType.BOOLEAN, project);
+            
+            if (leftIsBoolean && !rightIsBoolean)
+            {
+                String rightTypeName = rightType != null ? rightType.getBaseName() : "Non-Boolean value";
+                addProblem(new NonBooleanUsedWhereBooleanExpectedProblem(rightNode, rightTypeName));
             }
         }
     }
@@ -2633,6 +2642,15 @@ public class MethodBodySemanticChecker
                 if (leftIsNumericOrBoolean && rightIsNull)
                 {
                     addProblem(new NullUsedWhereOtherExpectedProblem(returnExpression, return_type.getBaseName()));
+                }
+             
+                final boolean leftIsBoolean = SemanticUtils.isBuiltin(return_type, BuiltinType.BOOLEAN, project);
+                final boolean rightIsBoolean = SemanticUtils.isBuiltin(rightType, BuiltinType.BOOLEAN, project);
+                
+                if (leftIsBoolean && !rightIsBoolean)
+                {
+                    String rightTypeName = rightType != null ? rightType.getBaseName() : "Non-Boolean value";
+                    addProblem(new NonBooleanUsedWhereBooleanExpectedProblem(returnExpression, rightTypeName));
                 }
             }
             catch ( Exception namerezo_problem )

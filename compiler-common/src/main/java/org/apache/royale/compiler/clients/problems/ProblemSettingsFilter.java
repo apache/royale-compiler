@@ -170,6 +170,8 @@ public class ProblemSettingsFilter implements IProblemFilter
                 ICompilerSettings.WARN_NO_TYPE_DECL);
         setShowActionScriptWarning(ThisUsedInClosureProblem.class, 
                 ICompilerSettings.WARN_THIS_WITHIN_CLOSURE);
+        setShowActionScriptWarning(NonBooleanUsedWhereBooleanExpectedProblem.class, 
+                ICompilerSettings.WARN_BAD_BOOLEAN_ASSIGNMENT);
     }
 
     /**

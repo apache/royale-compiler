@@ -3502,7 +3502,7 @@ public class Configuration
     // 'compiler.warn-bad-bool-assignment' option
     //
 
-    private boolean warn_bad_bool_assignment = true;
+    private boolean warn_bad_bool_assignment = false;
 
     public boolean warn_bad_bool_assignment()
     {
@@ -3513,10 +3513,7 @@ public class Configuration
     @Mapping({ "compiler", "warn-bad-bool-assignment" })
     public void setCompilerWarnBadBoolAssignment(ConfigurationValue cv, boolean b)
     {
-        // This option is set in royale-config.xml so only warn
-        // if the user sets a non-default value.
-        if (b != warn_bad_bool_assignment)
-            addRemovedConfigurationOptionProblem(cv);
+        warn_bad_bool_assignment = b;
     }
 
     //
