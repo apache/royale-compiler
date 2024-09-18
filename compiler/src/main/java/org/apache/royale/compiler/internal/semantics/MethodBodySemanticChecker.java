@@ -1252,12 +1252,17 @@ public class MethodBodySemanticChecker
         {
             AccessorDefinition accessorDef = (AccessorDefinition)def;
             IDefinition accessorType = accessorDef.resolveType(project);
-            if (accessorType != null && // Null here means the ANY_TYPE
-                    (accessorType.equals(project.getBuiltinType(BuiltinType.NUMBER)) ||
-                    accessorType.equals(project.getBuiltinType(BuiltinType.BOOLEAN)) ||
-                    accessorType.equals(project.getBuiltinType(BuiltinType.INT)) ||
-                    accessorType.equals(project.getBuiltinType(BuiltinType.UINT)) ||
-                    accessorType.equals(project.getBuiltinType(BuiltinType.STRING))))
+
+            if (accessorType == null || // Null here means the ANY_TYPE
+                accessorType.equals(project.getBuiltinType(BuiltinType.CLASS)) ||
+                accessorType.equals(project.getBuiltinType(BuiltinType.FUNCTION)) ||
+                accessorType.equals(project.getBuiltinType(BuiltinType.OBJECT)) ||
+                accessorType.equals(project.getBuiltinType(BuiltinType.ANY_TYPE)) ||
+                accessorType.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_CALLABLE_INSTANCES) != null)
+            {
+                // assume it can be called
+            }
+            else
             {
                 addProblem(new CallNonFunctionProblem(iNode, method_binding.getName().getBaseName()));
             }
@@ -1271,12 +1276,16 @@ public class MethodBodySemanticChecker
         {
             VariableDefinition varDef = (VariableDefinition)def;
             IDefinition varType = varDef.resolveType(project);
-            if (varType != null && // Null here means the ANY_TYPE
-                    (varType.equals(project.getBuiltinType(BuiltinType.NUMBER)) ||
-                    varType.equals(project.getBuiltinType(BuiltinType.BOOLEAN)) ||
-                    varType.equals(project.getBuiltinType(BuiltinType.INT)) ||
-                    varType.equals(project.getBuiltinType(BuiltinType.UINT)) ||
-                    varType.equals(project.getBuiltinType(BuiltinType.STRING))))
+            if (varType == null || // Null here means the ANY_TYPE
+                varType.equals(project.getBuiltinType(BuiltinType.CLASS)) ||
+                varType.equals(project.getBuiltinType(BuiltinType.FUNCTION)) ||
+                varType.equals(project.getBuiltinType(BuiltinType.OBJECT)) ||
+                varType.equals(project.getBuiltinType(BuiltinType.ANY_TYPE)) ||
+                varType.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_CALLABLE_INSTANCES) != null)
+            {
+                // assume it can be called
+            }
+            else
             {
                 addProblem(new CallNonFunctionProblem(iNode, method_binding.getName().getBaseName()));
             }

@@ -58,6 +58,7 @@ public class ExternCConfiguration extends Configuration
 
     private List<String> namedModules = new ArrayList<String>();
 
+    private List<String> callableInstances = new ArrayList<String>();
     private List<String> classToFunctions = new ArrayList<String>();
     private List<ExcludedMember> excludesClass = new ArrayList<ExcludedMember>();
     private List<ExcludedMember> excludesField = new ArrayList<ExcludedMember>();
@@ -435,6 +436,20 @@ public class ExternCConfiguration extends Configuration
     			return constant;
     	}
     	return null;
+    }
+
+    @Config(allowMultiple = true)
+    @Mapping("class-callable-instances")
+    @Arguments("class")
+    @InfiniteArguments
+    public void setClassCallableInstances(ConfigurationValue cfgval, List<String> values) throws IOException, CannotOpen
+    {
+        callableInstances.addAll(values);
+    }
+
+    public boolean classHasCallableInstances(BaseReference reference)
+    {
+        return callableInstances.contains(reference.getQualifiedName());
     }
 
 

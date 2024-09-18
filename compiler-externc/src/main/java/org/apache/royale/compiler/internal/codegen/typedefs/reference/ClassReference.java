@@ -46,6 +46,7 @@ public class ClassReference extends BaseReference
 {
     private boolean isFinal;
     private boolean isDynamic;
+    private boolean callableInstances;
     private String moduleName;
     private int enumConstantCounter = 0;
 
@@ -138,6 +139,16 @@ public class ClassReference extends BaseReference
     public void setDynamic(boolean isDynamic)
     {
         this.isDynamic = isDynamic;
+    }
+
+    public boolean hasCallableInstances()
+    {
+        return callableInstances;
+    }
+
+    public void setCallableInstances(boolean callableInstances)
+    {
+        this.callableInstances = callableInstances;
     }
 
     public boolean isFinal()
@@ -393,6 +404,12 @@ public class ClassReference extends BaseReference
             sb.append("]");
             sb.append("\n");
         }
+        if (callableInstances)
+        {
+            sb.append(indent);
+            sb.append("[RoyaleCallableInstances]\n");
+        }
+
 
         emitComment(sb);
 

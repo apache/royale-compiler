@@ -214,6 +214,9 @@ public interface IMetaAttributeConstants
     // [RoyaleAbstract]
     static final String ATTRIBUTE_ABSTRACT = "RoyaleAbstract";
 
+    // [RoyaleCallable]
+    static final String ATTRIBUTE_CALLABLE_INSTANCES = "RoyaleCallableInstances";
+
     // [RoyaleFunctionType]
     static final String ATTRIBUTE_FUNCTION_TYPE = "RoyaleFunctionType";
     static final String NAME_FUNCTION_TYPE_RETURNS = "returns";
@@ -242,6 +245,7 @@ public interface IMetaAttributeConstants
             ATTRIBUTE_EXCLUDECLASS,
             ATTRIBUTE_ABSTRACT,
             ATTRIBUTE_PRIVATE_CONSTRUCTOR,
+            ATTRIBUTE_CALLABLE_INSTANCES,
         })));
 }
 
