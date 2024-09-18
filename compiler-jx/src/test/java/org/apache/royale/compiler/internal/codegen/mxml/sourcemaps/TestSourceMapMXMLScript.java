@@ -45,7 +45,8 @@ public class TestSourceMapMXMLScript extends RoyaleSourceMapTestBase
         assertTrue(definitionName.startsWith(getClass().getSimpleName()));
         int endColumn = definitionName.length() + 14;
         ///**\n * @package\n * @type {*}\n */\nRoyaleTest_A.prototype.foo
-        assertMapping(node, 0, 4, 43, 0, 43, endColumn);  // foo
+        assertMapping(node, 0, 4, 43, 0, 43, endColumn - 3);  // RoyaleTest_A.prototype.
+        assertMapping(node, 0, 4, 43, endColumn - 3, 43, endColumn);  // foo
     }
 
     @Test
@@ -63,9 +64,10 @@ public class TestSourceMapMXMLScript extends RoyaleSourceMapTestBase
         assertTrue(definitionName.startsWith(getClass().getSimpleName()));
         int nameEndColumn = definitionName.length() + 14;
         ///**\n * @export\n * @type {*}\n */\nRoyaleTest_A.prototype.foo
-        assertMapping(node, 0, 9, 39, 0, 39, nameEndColumn);  // foo
+        assertMapping(node, 0, 9, 39, 0, 39, nameEndColumn - 3);  // RoyaleTest_A.prototype.
+        assertMapping(node, 0, 9, 39, nameEndColumn - 3, 39, nameEndColumn);  // foo
         assertMapping(node, 0, 0, 39, nameEndColumn, 39, nameEndColumn + 11);  // = function
-        assertMapping(node, 0, 12, 39, nameEndColumn + 11, 39, nameEndColumn + 12);  // (
+        assertMapping(node, 0, 12, 39, nameEndColumn + 11, 39, nameEndColumn + 12, "foo");  // (
         assertMapping(node, 0, 13, 39, nameEndColumn + 12, 39, nameEndColumn + 13);  // )
         assertMapping(node, 0, 14, 39, nameEndColumn + 14, 39, nameEndColumn + 15);  // {
         assertMapping(node, 0, 15, 40, 0, 40, 1);  // }
