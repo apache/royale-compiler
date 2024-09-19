@@ -380,6 +380,12 @@ public class FunctionDefinition extends ScopedDefinitionBase implements IFunctio
             IDefinition anyDef = base.getContainedScope().getPropertyFromDef(project, base, this.getBaseName(), new PrivatePredicate(!project.getAllowPrivateNameConflicts()), false);
             if (anyDef != null) // there might be a variable or a function in a different namespace (private vs protected)
             {
+                if (anyDef.getNamespaceReference().isLanguageNamespace() && !getNamespaceReference().isLanguageNamespace()) {
+                    return null;
+                }
+                if (!anyDef.getNamespaceReference().isLanguageNamespace() && getNamespaceReference().isLanguageNamespace()) {
+                    return null;
+                }
                 if (this instanceof IAccessorDefinition) {
                     //cover cases between getter and setter
                     boolean otherIsGetter = anyDef instanceof IGetterDefinition;
