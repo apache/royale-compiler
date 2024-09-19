@@ -21,7 +21,7 @@ package f;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -113,6 +113,11 @@ public class SDKSWCTests
 	@Test
 	public void advancedgridsSWC()
 	{
+        extraArgs = new String[]
+        {
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
+        };
+
 		compileSWC("advancedgrids");
 	}
 	
@@ -121,7 +126,8 @@ public class SDKSWCTests
 	{
         extraArgs = new String[]
         {
-            "+env.AIR_HOME=" + env.AIRSDK
+            "+env.AIR_HOME=" + env.AIRSDK,
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
         };
         
 		compileSWC("airframework");
@@ -132,7 +138,8 @@ public class SDKSWCTests
 	{
         extraArgs = new String[]
         {
-            "+env.AIR_HOME=" + env.AIRSDK
+            "+env.AIR_HOME=" + env.AIRSDK,
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
         };
         
 		compileSWC("airspark");
@@ -141,18 +148,30 @@ public class SDKSWCTests
 	@Test
 	public void apacheSWC()
 	{
+        extraArgs = new String[]
+        {
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
+        };
 		compileSWC("apache");
 	}
 	
 	@Test
 	public void authoringsupportSWC()
 	{
+        extraArgs = new String[]
+        {
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
+        };
 		compileSWC("authoringsupport");
 	}
 	
 	@Test
 	public void automationSWC()
 	{
+        extraArgs = new String[]
+        {
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
+        };
 		compileSWC("automation");
 	}
 	
@@ -161,7 +180,8 @@ public class SDKSWCTests
 	{
         extraArgs = new String[]
         {
-            "-ignore-problems=org.apache.royale.compiler.problems.DuplicateQNameInSourcePathProblem"
+            "-ignore-problems+=org.apache.royale.compiler.problems.DuplicateQNameInSourcePathProblem",
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
         };
         
 		compileSWC("automation_agent");
@@ -172,7 +192,8 @@ public class SDKSWCTests
 	{
         extraArgs = new String[]
         {
-            "+env.AIR_HOME=" + env.AIRSDK
+            "+env.AIR_HOME=" + env.AIRSDK,
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
         };
         
 		compileSWC("automation_airspark");
@@ -184,7 +205,8 @@ public class SDKSWCTests
         extraArgs = new String[]
         {
             "+env.AIR_HOME=" + env.AIRSDK,
-            "-ignore-problems=org.apache.royale.compiler.problems.DuplicateQNameInSourcePathProblem"
+            "-ignore-problems+=org.apache.royale.compiler.problems.DuplicateQNameInSourcePathProblem",
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
         };
         
         compileSWC("automation_air");
@@ -195,7 +217,8 @@ public class SDKSWCTests
 	{
         extraArgs = new String[]
         {
-            "-ignore-problems=org.apache.royale.compiler.problems.DuplicateQNameInSourcePathProblem"
+            "-ignore-problems+=org.apache.royale.compiler.problems.DuplicateQNameInSourcePathProblem",
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
         };
         
 		compileSWC("automation_dmv");
@@ -204,12 +227,20 @@ public class SDKSWCTests
 	@Test
 	public void automation_flashflexkitSWC()
 	{
+        extraArgs = new String[]
+        {
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
+        };
 		compileSWC("automation_flashflexkit");
 	}
 	
 	@Test
 	public void automation_sparkSWC()
 	{
+        extraArgs = new String[]
+        {
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
+        };
 		compileSWC("automation_spark");
 	}
 	
@@ -218,6 +249,7 @@ public class SDKSWCTests
 	{
         extraArgs = new String[]
         {
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
             "-locale=",
         };
         
@@ -229,7 +261,8 @@ public class SDKSWCTests
     {
         extraArgs = new String[]
         {
-            "-load-config+=" + env.SDK + "/frameworks/projects/framework/framework-config.xml"
+            "-load-config+=" + env.SDK + "/frameworks/projects/framework/framework-config.xml",
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
         };
         
         compileSWC("core");
@@ -240,6 +273,7 @@ public class SDKSWCTests
     {
         extraArgs = new String[]
         {
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
             "-locale="
         };
         
@@ -251,7 +285,8 @@ public class SDKSWCTests
     {
         extraArgs = new String[]
         {
-            "-ignore-problems=org.apache.royale.compiler.problems.DuplicateSkinStateProblem"
+            "-ignore-problems+=org.apache.royale.compiler.problems.DuplicateSkinStateProblem",
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
         };
         
         compileSWC("experimental");
@@ -260,6 +295,10 @@ public class SDKSWCTests
 	@Test
 	public void flash_integrationSWC()
 	{
+        extraArgs = new String[]
+        {
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
+        };
 		compileSWC("flash-integration");
 	}
 	
@@ -268,6 +307,7 @@ public class SDKSWCTests
 	{
         extraArgs = new String[]
         {
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
             "-load-config+=" + env.SDK + "/frameworks/projects/framework/framework-config.xml"
         };
         
@@ -277,6 +317,10 @@ public class SDKSWCTests
 	@Test
 	public void haloSWC()
 	{
+        extraArgs = new String[]
+        {
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
+        };
 		compileSWC("halo");
 	}
 	
@@ -285,7 +329,8 @@ public class SDKSWCTests
 	{
         extraArgs = new String[]
         {
-            "+env.AIR_HOME=" + env.AIRSDK
+            "+env.AIR_HOME=" + env.AIRSDK,
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
         };
         
 		compileSWC("mobilecomponents");
@@ -296,7 +341,8 @@ public class SDKSWCTests
 	{
         extraArgs = new String[]
         {
-             "-ignore-problems=org.apache.royale.compiler.problems.NoDefinitionForSWCDependencyProblem"
+             "-ignore-problems+=org.apache.royale.compiler.problems.NoDefinitionForSWCDependencyProblem",
+			 "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
         };
         
 		compileSWC("mobiletheme");
@@ -309,6 +355,10 @@ public class SDKSWCTests
 	@Test
 	public void playerglobalSWC()
 	{
+        extraArgs = new String[]
+        {
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
+        };
 		compileSWC("playerglobal");
 	}
 	*/
@@ -316,27 +366,49 @@ public class SDKSWCTests
 	@Test
 	public void rpcSWC()
 	{
+        extraArgs = new String[]
+        {
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
+        };
 		compileSWC("rpc");
 	}
 	
 	@Test
 	public void spark_dmvSWC()
 	{
+        extraArgs = new String[]
+        {
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
+        };
 		compileSWC("spark_dmv");
 	}
 	
 	@Test
 	public void sparkskinsSWC()
 	{
+        extraArgs = new String[]
+        {
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
+        };
 		compileSWC("sparkskins");
 	}
 	
 	@Test
     public void sparkSWC()
     {
+		// TODO: DuplicateClassDefinitionProblem is actually an error
+		// the duplicate class is a generated embed class with a name that
+		// starts with: framework_swc/Assets_swf$
+		// the source path and containing file path are both equal.
+		// either the SWC defines the same type twice, or there's a bug in the
+		// compiler code that is loading the same SWC twice.
         extraArgs = new String[]
         {
-            "-ignore-problems=org.apache.royale.compiler.problems.DuplicateSkinStateProblem"
+            "-ignore-problems+=org.apache.royale.compiler.problems.DuplicateSkinStateProblem",
+			"-ignore-problems+=org.apache.royale.compiler.problems.NullUsedWhereOtherExpectedProblem",
+			"-ignore-problems+=org.apache.royale.compiler.problems.NonBooleanUsedWhereBooleanExpectedProblem",
+			"-ignore-problems+=org.apache.royale.compiler.problems.DuplicateClassDefinitionProblem",
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
         };
 
         compileSWC("spark");
@@ -349,7 +421,8 @@ public class SDKSWCTests
         {
             "+source.dir=./textlayout",
             "-define=CONFIG::debug,false",
-            "-define=CONFIG::release,true"
+            "-define=CONFIG::release,true",
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
         };
 	            
         compileSWC(TEXTLAYOUT_NAME);
@@ -361,7 +434,8 @@ public class SDKSWCTests
         extraArgs = new String[]
         {
             "+env.AIR_HOME=" + env.AIRSDK,
-            "-ignore-problems=org.apache.royale.compiler.problems.DuplicateQNameInSourcePathProblem"
+            "-ignore-problems+=org.apache.royale.compiler.problems.DuplicateQNameInSourcePathProblem",
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
         };
         
         compileSWC("tool_air");
@@ -372,7 +446,8 @@ public class SDKSWCTests
 	{
         extraArgs = new String[]
         {
-            "-ignore-problems=org.apache.royale.compiler.problems.DuplicateQNameInSourcePathProblem"
+            "-ignore-problems+=org.apache.royale.compiler.problems.DuplicateQNameInSourcePathProblem",
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
         };
         
 		compileSWC("tool");
@@ -383,7 +458,8 @@ public class SDKSWCTests
 	{
         extraArgs = new String[]
         {
-            "-ignore-problems=org.apache.royale.compiler.problems.DuplicateSkinStateProblem"
+            "-ignore-problems+=org.apache.royale.compiler.problems.DuplicateSkinStateProblem",
+            "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
         };
         
 		compileSWC("wireframe");

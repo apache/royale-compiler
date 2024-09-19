@@ -366,7 +366,7 @@
                         compiler, and it should eventually be fixed for full
                         compatibility with the Flex SDK compiler.
                     -->
-                    <!-- <include name="f/**"/> -->
+                    <include name="f/**"/>
                     <include name="**/MXMLComponentTagTests.class"/>
                     <include name="**/MXMLComponentNodeTests.class"/>
                     <include name="**/MXMLHTTPServiceTagTests.class"/>
