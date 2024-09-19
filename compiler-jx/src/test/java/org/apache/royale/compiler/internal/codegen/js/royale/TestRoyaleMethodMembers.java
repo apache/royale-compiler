@@ -19,9 +19,16 @@
 
 package org.apache.royale.compiler.internal.codegen.js.royale;
 
+import static org.junit.Assert.assertFalse;
+
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.internal.codegen.as.TestMethodMembers;
+import org.apache.royale.compiler.internal.definitions.FunctionDefinition;
 import org.apache.royale.compiler.internal.driver.js.royale.RoyaleBackend;
+import org.apache.royale.compiler.problems.ConflictingDefinitionProblem;
+import org.apache.royale.compiler.problems.FunctionNotMarkedOverrideProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.scopes.IDefinitionSet;
 import org.apache.royale.compiler.tree.as.IClassNode;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.junit.Test;
@@ -217,6 +224,32 @@ public class TestRoyaleMethodMembers extends TestMethodMembers
         IClassNode node = (IClassNode) getNode("public abstract class A { public abstract function a(arg1:String):Object; }", IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nA = function() {\n};\n\n\n/**\n * @param {string} arg1\n * @return {Object}\n */\nA.prototype.a = function(arg1) {\n};");
+    }
+
+    @Test
+    public void testMethod_withNamespaceCustom_duplicateWithNamespacePublic()
+    {
+        IClassNode node = (IClassNode) getNode("import custom.custom_namespace;public class A { public function a():void {} custom_namespace function a():void {}; }", IClassNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nA = function() {\n};\n\n\n/**\n */\nA.prototype.a = function() {\n};\n\n\n/**\n */\nA.prototype.http_$$ns_apache_org$2017$custom$namespace__a = function() {\n};");
+
+        for (ICompilerProblem problem : project.getProblems()) {
+            assertFalse(problem instanceof FunctionNotMarkedOverrideProblem);
+            assertFalse(problem instanceof ConflictingDefinitionProblem);
+        }
+    }
+
+    @Test
+    public void testMethod_withNamespaceCustom_duplicateWithNamespacePublicInSuperClass()
+    {
+        IClassNode node = (IClassNode) getClassNode("import custom.custom_namespace;import custom.TestImplementation;public class A extends TestImplementation { custom_namespace function someFunction():void {}; }");
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n * @extends {custom.TestImplementation}\n */\nA = function() {\n  A.base(this, 'constructor');\n};\ngoog.inherits(A, custom.TestImplementation);\n\n\n/**\n */\nA.prototype.http_$$ns_apache_org$2017$custom$namespace__someFunction = function() {\n};");
+       
+        for (ICompilerProblem problem : project.getProblems()) {
+            assertFalse(problem instanceof FunctionNotMarkedOverrideProblem);
+            assertFalse(problem instanceof ConflictingDefinitionProblem);
+        }
     }
 
     @Override
