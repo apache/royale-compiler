@@ -543,12 +543,7 @@ public class MethodBodySemanticChecker
                         new NullUsedWhereOtherExpectedProblem(rightNode, leftType.getBaseName()));
             }
              
-            final boolean leftIsBoolean = SemanticUtils.isBuiltin(leftType, BuiltinType.BOOLEAN, project);
-            final boolean rightIsBoolean = SemanticUtils.isBuiltin(rightType, BuiltinType.BOOLEAN, project);
-            final boolean rightIsAny = rightType == null || SemanticUtils.isBuiltin(rightType, BuiltinType.ANY_TYPE, project);
-            
-            if (leftIsBoolean && !rightIsBoolean && !rightIsAny)
-            {
+            if (findNonBooleanAssignedToBoolean(leftType, rightNode)) {
                 String rightTypeName = rightType != null ? rightType.getBaseName() : "Non-Boolean value";
                 addProblem(new NonBooleanUsedWhereBooleanExpectedProblem(rightNode, rightTypeName));
             }
@@ -2653,13 +2648,8 @@ public class MethodBodySemanticChecker
                 {
                     addProblem(new NullUsedWhereOtherExpectedProblem(returnExpression, return_type.getBaseName()));
                 }
-             
-                final boolean leftIsBoolean = SemanticUtils.isBuiltin(return_type, BuiltinType.BOOLEAN, project);
-                final boolean rightIsBoolean = SemanticUtils.isBuiltin(rightType, BuiltinType.BOOLEAN, project);
-                final boolean rightIsAny = rightType == null || SemanticUtils.isBuiltin(rightType, BuiltinType.ANY_TYPE, project);
                 
-                if (leftIsBoolean && !rightIsBoolean && !rightIsAny)
-                {
+                if (findNonBooleanAssignedToBoolean(return_type, returnExpression)) {
                     String rightTypeName = rightType != null ? rightType.getBaseName() : "Non-Boolean value";
                     addProblem(new NonBooleanUsedWhereBooleanExpectedProblem(returnExpression, rightTypeName));
                 }
@@ -3694,6 +3684,25 @@ public class MethodBodySemanticChecker
         }
 
         return false;
+    }
+
+    private boolean findNonBooleanAssignedToBoolean(IDefinition leftType, IASNode rightNode) {
+        IDefinition rightType = ((IExpressionNode)rightNode).resolveType(project);
+        final boolean leftIsBoolean = SemanticUtils.isBuiltin(leftType, BuiltinType.BOOLEAN, project);
+        final boolean rightIsBoolean = SemanticUtils.isBuiltin(rightType, BuiltinType.BOOLEAN, project);
+        // the Flex SDK compiler allowed setting a Boolean variable to either
+        // Object or * without a warning. probably because it would add way too
+        // much noise. for instance, a logical operator like && or || is
+        // expected to result in a Boolean value. It actually doesn't and
+        // returns either the left or right value as-is, and coerces it to
+        // Boolean only when necessary, such as as part of the assignment to a
+        // Boolean variable.
+        final boolean rightIsAny = rightType == null || SemanticUtils.isBuiltin(rightType, BuiltinType.ANY_TYPE, project);
+        final boolean rightIsObject = rightType == null || SemanticUtils.isBuiltin(rightType, BuiltinType.OBJECT, project);
+        return leftIsBoolean
+                && !rightIsBoolean
+                && !rightIsAny
+                && !rightIsObject;
     }
 }
 
