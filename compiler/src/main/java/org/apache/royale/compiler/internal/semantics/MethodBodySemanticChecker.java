@@ -545,8 +545,9 @@ public class MethodBodySemanticChecker
              
             final boolean leftIsBoolean = SemanticUtils.isBuiltin(leftType, BuiltinType.BOOLEAN, project);
             final boolean rightIsBoolean = SemanticUtils.isBuiltin(rightType, BuiltinType.BOOLEAN, project);
+            final boolean rightIsAny = rightType == null || SemanticUtils.isBuiltin(rightType, BuiltinType.ANY_TYPE, project);
             
-            if (leftIsBoolean && !rightIsBoolean)
+            if (leftIsBoolean && !rightIsBoolean && !rightIsAny)
             {
                 String rightTypeName = rightType != null ? rightType.getBaseName() : "Non-Boolean value";
                 addProblem(new NonBooleanUsedWhereBooleanExpectedProblem(rightNode, rightTypeName));
@@ -2655,8 +2656,9 @@ public class MethodBodySemanticChecker
              
                 final boolean leftIsBoolean = SemanticUtils.isBuiltin(return_type, BuiltinType.BOOLEAN, project);
                 final boolean rightIsBoolean = SemanticUtils.isBuiltin(rightType, BuiltinType.BOOLEAN, project);
+                final boolean rightIsAny = rightType == null || SemanticUtils.isBuiltin(rightType, BuiltinType.ANY_TYPE, project);
                 
-                if (leftIsBoolean && !rightIsBoolean)
+                if (leftIsBoolean && !rightIsBoolean && !rightIsAny)
                 {
                     String rightTypeName = rightType != null ? rightType.getBaseName() : "Non-Boolean value";
                     addProblem(new NonBooleanUsedWhereBooleanExpectedProblem(returnExpression, rightTypeName));

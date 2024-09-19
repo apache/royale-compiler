@@ -120,7 +120,7 @@ public class ASVariableTests extends ASFeatureTestsBase
         };
         String source = getAS(imports, declarations, testCode, new String[0]);
         compileAndExpectErrors(source, false, false, false, new String[0],
-                "Call to isVertical is not a function.\n* used where a Boolean value was expected.  The expression will be type coerced to Boolean.\n");
+                "Call to isVertical is not a function.\n");
     }
 
     @Test
