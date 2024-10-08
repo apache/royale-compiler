@@ -43,6 +43,15 @@ Apache Royale Compiler 0.9.11
 - compiler: Fix exception when assigning to a property that has a getter, but not a setter.
 - compiler: Fix exception when working with certain namespace expressions.
 - compiler: Fix configuration problems not being reported when compc options are passed to mxmlc.
+- compiler: Fix source maps for fields and methods in the private namespace or custom namespaces.
+- compiler: Fixed end line and end column of numeric literal with `+` or `-` sign.
+- compiler: Fixed lines and columns of function body.
+- compiler: Added support for Friendly Call Frames in source maps.
+- compiler: Fixed missing warning for assignment in `else if` conditional.
+- compiler: Fixed missing warnings for assignment, return, and comparison of `null`, `undefined`, and `NaN` values with other values that could never possibly be compatible.
+- compiler: Fixed missing errors when calling objects as functions that can never possibly be callable.
+- compiler: Add `[RoyaleCallableInstances]` metadata to allow instances of a typedef class to be callable as functions. Used by jQuery externs.
+- compiler: Fixed incorrect conflicting definition error when a method in a language namespace (like public/protected) has the same name as a method in a custom namespace.
 - debugger: Fix exception when evaluating certain expressions at run-time.
 - formatter: Added `insert-new-line-else` configuration option.
 - formatter: Filtered out unnecessary compiler warnings.
