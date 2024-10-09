@@ -134,6 +134,7 @@ import org.apache.royale.compiler.internal.tree.as.PackageNode;
 import org.apache.royale.compiler.internal.tree.as.ParameterNode;
 import org.apache.royale.compiler.internal.tree.as.ScopedBlockNode;
 import org.apache.royale.compiler.internal.tree.as.TernaryOperatorNode;
+import org.apache.royale.compiler.internal.tree.as.UnaryOperatorAtNode;
 import org.apache.royale.compiler.internal.tree.as.VariableNode;
 import org.apache.royale.compiler.internal.tree.as.VectorLiteralNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLDocumentNode;
@@ -2233,7 +2234,17 @@ public class MethodBodySemanticChecker
             		MemberAccessExpressionNode mae = (MemberAccessExpressionNode)nameNode;
             		IExpressionNode rightNode = mae.getRightOperandNode();
             		if (rightNode.getNodeID() == ASTNodeID.IdentifierID)
+                    {
             			methodName = ((IdentifierNode)rightNode).getName();
+                    }
+                    else if (rightNode.getNodeID() == ASTNodeID.Op_AtID)
+                    {
+                        UnaryOperatorAtNode atNode = (UnaryOperatorAtNode) rightNode;
+                        if (atNode.getOperandNode().getNodeID() == ASTNodeID.IdentifierID)
+                        {
+                            methodName = "@" + ((IdentifierNode)atNode.getOperandNode()).getName();
+                        }
+                    }
             	}
                 assert methodName != null;
                 addProblem(new CallUndefinedMethodProblem( 
