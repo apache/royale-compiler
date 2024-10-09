@@ -1003,7 +1003,7 @@ public class MethodBodySemanticChecker
 
             if (ctor instanceof FunctionDefinition)
             {
-                checkFormalsVsActuals(super_node, (FunctionDefinition)ctor, args);
+                checkFormalsVsActuals(iNode, (FunctionDefinition)ctor, args);
             }
         }
     }
