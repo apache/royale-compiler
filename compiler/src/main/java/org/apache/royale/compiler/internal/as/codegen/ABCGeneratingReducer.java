@@ -4005,7 +4005,9 @@ public class ABCGeneratingReducer
 
     public InstructionList reduce_functionCallOfSuperclassMethod_to_expression(IASNode iNode, InstructionList stem, Binding method_name, Vector<InstructionList> args)
     {
+        currentScope.getMethodBodySemanticChecker().checkFunctionCall(iNode, method_name, args);
         currentScope.getMethodBodySemanticChecker().checkSuperAccess(iNode);
+
         if (method_name.getDefinition() instanceof AccessorDefinition)
         	getProblems().add(new CallNonFunctionProblem(iNode, method_name.getName().getBaseName()));
 
@@ -4025,7 +4027,9 @@ public class ABCGeneratingReducer
 
     public InstructionList reduce_functionCallOfSuperclassMethod_to_void_expression(IASNode iNode, InstructionList stem, Binding method_name, Vector<InstructionList> args)
     {
+        currentScope.getMethodBodySemanticChecker().checkFunctionCall(iNode, method_name, args);
         currentScope.getMethodBodySemanticChecker().checkSuperAccess(iNode);
+
         if (method_name.getDefinition() instanceof AccessorDefinition)
         	getProblems().add(new CallNonFunctionProblem(iNode, method_name.getName().getBaseName()));
 
