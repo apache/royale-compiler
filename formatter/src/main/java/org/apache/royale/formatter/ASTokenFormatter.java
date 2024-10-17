@@ -128,6 +128,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 		Workspace workspace = new Workspace();
 		RepairingTokenBuffer buffer = new RepairingTokenBuffer(streamingTokensList.toArray(new ASToken[0]));
 		ASParser parser = new ASParser(workspace, buffer);
+		parser.setFilename(filePath);
 		FileNode node = new FileNode(workspace);
 		try {
 			parser.file(node);

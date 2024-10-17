@@ -99,6 +99,7 @@ public class ASLinter extends BaseLinter {
 			Workspace workspace = new Workspace();
 			RepairingTokenBuffer buffer = new RepairingTokenBuffer(streamingTokensList.toArray(new ASToken[0]));
 			ASParser parser = new ASParser(workspace, buffer);
+			parser.setFilename(filePath);
 			FileNode node = new FileNode(workspace);
 			try {
 				parser.parseFile(node, EnumSet.of(PostProcessStep.CALCULATE_OFFSETS));
