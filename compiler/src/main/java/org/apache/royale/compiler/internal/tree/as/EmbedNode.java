@@ -57,7 +57,14 @@ public class EmbedNode extends ExpressionNodeBase implements IEmbedNode, IEmbedR
      */
     public EmbedNode(String containingFilePath, IMetaTagNode metaData, IFileNodeAccumulator fileNodeAccumulator)
     {
-        this.containingSourceFilename = FilenameNormalization.normalize(containingFilePath);
+        if (containingFilePath != null)
+        {
+            this.containingSourceFilename = FilenameNormalization.normalize(containingFilePath);
+        }
+        else
+        {
+            this.containingSourceFilename = null;
+        }
         this.metaData = metaData;
         assert metaData != null && metaData.getAllAttributes() != null; //can be empty array
 
