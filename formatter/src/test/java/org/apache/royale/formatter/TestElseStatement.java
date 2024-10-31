@@ -675,7 +675,7 @@ public class TestElseStatement extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testNested() {
+	public void testNestedWithParentheses() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
@@ -732,6 +732,34 @@ public class TestElseStatement extends BaseFormatterTests {
 				"\t\tstatement;\n" +
 				"\t}\n" +
 				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testNestedInIfNoParentheses() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"if (condition)\n" +
+			"\tif (condition)\n" +
+			"\t\tstatement;\n" +
+			"\telse\n" +
+			"\t\tstatement;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"if (condition)\n" +
+				"\tif (condition)\n" +
+				"\t\tstatement;\n" +
+				"\telse\n" +
+				"\t\tstatement;",
 				// @formatter:on
 				result);
 	}

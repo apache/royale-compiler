@@ -710,14 +710,12 @@ public class TestIfStatement extends BaseFormatterTests {
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
-		System.err.println("**** BEFORE");
 		String result = formatter.format("file.as",
 		// @formatter:off
 			"{if (condition1) if (condition2) {statement;}}",
 			// @formatter:on
 			problems
 		);
-		System.err.println("**** AFTER");
 		assertEquals(
 		// @formatter:off
 				"{\n" +

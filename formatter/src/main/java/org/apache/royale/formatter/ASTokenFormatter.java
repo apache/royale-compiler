@@ -591,12 +591,20 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 							// else no space
 						} else {
 							boolean checkNext = true;
+							int prevPoppedTokenType = -1;
 							while (!blockStack.isEmpty() && checkNext) {
 								checkNext = false;
 								BlockStackItem prevStackItem = blockStack.get(blockStack.size() - 1);
 								if (prevStackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_CASE
 										&& prevStackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_DEFAULT
 										&& prevStackItem.blockDepth <= 0) {
+									if (prevPoppedTokenType == ASTokenTypes.TOKEN_KEYWORD_IF && prevStackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_IF && nextTokenNotComment != null && nextTokenNotComment.getType() == ASTokenTypes.TOKEN_KEYWORD_ELSE ) {
+										// if we've already popped an if, and
+										// we encounter another if, but the next
+										// non-comment token is an else, then
+										// we don't want to pop any more ifs
+										break;
+									}
 									blockStack.remove(blockStack.size() - 1);
 									if (prevStackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_CLASS
 											&& prevStackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_INTERFACE
@@ -605,6 +613,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 										indent = decreaseIndent(indent);
 									}
 								}
+								prevPoppedTokenType = prevStackItem.token.getType();
 							}
 						}
 						if (!inControlFlowStatement) {
