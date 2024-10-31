@@ -43,4 +43,84 @@ public class TestRegExp extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testRegExpTabEscaped() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"/\\t/;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"/\\t/;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testRegExpNewLineEscaped() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"/\\n/;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"/\\n/;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testRegExpCarriageReturnEscaped() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"/\\r/;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"/\\r/;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testRegExpUnicodeEscaped() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"/\\u263a\\u2620\\u2603/;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"/\\u263a\\u2620\\u2603/;",
+				// @formatter:on
+				result);
+	}
 }

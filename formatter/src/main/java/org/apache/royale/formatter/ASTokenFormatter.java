@@ -1292,6 +1292,9 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 				case ASTokenTypes.TOKEN_LITERAL_STRING: {
 					return formatLiteralString(token, fileText);
 				}
+				case ASTokenTypes.TOKEN_LITERAL_REGEXP: {
+					return formatLiteralRegExp(token, fileText);
+				}
 				case ASTokenTypes.TOKEN_SEMICOLON: {
 					if (skipFormatting) {
 						if (token.isImplicit()) {
@@ -1401,6 +1404,24 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 
 	private String formatMultiLineComment(String comment) {
 		return comment;
+	}
+
+	private String formatLiteralRegExp(IASToken token, String fileText) {
+		int start = token.getAbsoluteStart();
+		int end = token.getAbsoluteEnd();
+		if (start != -1 && start < end && end < fileText.length()) {
+			// escape sequences are converted to real characters when the
+			// original source code is converted to to tokens
+			// the user won't be happy if their strings get changed
+			// (and, in some cases, it may become an invalid string),
+			// so grab the original string from the file
+			return fileText.substring(start, end);
+		}
+		String tokenText = token.getText();
+		if (tokenText != null) {
+			return tokenText;
+		}
+		return "";
 	}
 
 	private String formatLiteralString(IASToken token, String fileText) {
