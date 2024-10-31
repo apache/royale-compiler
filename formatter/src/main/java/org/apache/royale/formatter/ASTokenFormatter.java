@@ -401,6 +401,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					}
 					case ASTokenTypes.TOKEN_KEYWORD_AS:
 					case ASTokenTypes.TOKEN_KEYWORD_IS:
+					case ASTokenTypes.TOKEN_KEYWORD_INSTANCEOF:
 					case ASTokenTypes.TOKEN_RESERVED_WORD_EACH:
 					case ASTokenTypes.TOKEN_RESERVED_WORD_EXTENDS:
 					case ASTokenTypes.TOKEN_RESERVED_WORD_IMPLEMENTS:
