@@ -850,7 +850,9 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 								&& nextTokenNotComment.getType() == ASTokenTypes.TOKEN_KEYWORD_IF) {
 							requiredSpace = true;
 						} else {
-							blockStack.add(new BlockStackItem(token));
+							BlockStackItem stackItem = new BlockStackItem(token);
+							stackItem.controlFlow = true;
+							blockStack.add(stackItem);
 							blockOpenPending = true;
 							if (nextToken != null && nextToken.getType() == ASTokenTypes.TOKEN_SEMICOLON) {
 								blockStack.remove(blockStack.size() - 1);
@@ -862,6 +864,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 									&& !skipWhitespaceBeforeSemicolon) {
 								indent = increaseIndent(indent);
 								numRequiredNewLines = Math.max(numRequiredNewLines, 1);
+								stackItem.braces = false;
 							}
 						}
 						break;
