@@ -184,8 +184,6 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 			return parseTokens(tokens, text, filePath);
 		} catch (Exception e) {
 			if (problems != null) {
-				System.err.println(e);
-				e.printStackTrace(System.err);
 				problems.add(new UnexpectedExceptionProblem(e));
 			}
 			return text;
