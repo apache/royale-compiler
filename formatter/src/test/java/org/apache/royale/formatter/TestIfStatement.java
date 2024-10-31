@@ -704,6 +704,60 @@ public class TestIfStatement extends BaseFormatterTests {
 	}
 
 	@Test
+	public void testNestedBodiesWithMixedParentheses1() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		System.err.println("**** BEFORE");
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"{if (condition1) if (condition2) {statement;}}",
+			// @formatter:on
+			problems
+		);
+		System.err.println("**** AFTER");
+		assertEquals(
+		// @formatter:off
+				"{\n" +
+				"\tif (condition1)\n" +
+				"\t\tif (condition2)\n" +
+				"\t\t{\n" +
+				"\t\t\tstatement;\n" +
+				"\t\t}\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testNestedBodiesWithMixedParentheses2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"{if (condition1) { if (condition2) statement; }}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"{\n" +
+				"\tif (condition1)\n" +
+				"\t{\n" +
+				"\t\tif (condition2)\n" +
+				"\t\t\tstatement;\n" +
+				"\t}\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
 	public void testCollapseEmptyBlock1() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;

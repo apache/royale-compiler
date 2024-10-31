@@ -332,6 +332,19 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					}
 					case ASTokenTypes.TOKEN_BLOCK_CLOSE: {
 						boolean skipSwitchDecrease = false;
+						boolean checkNext = true;
+						while (!blockStack.isEmpty() && checkNext) {
+							BlockStackItem stackItem = blockStack.get(blockStack.size() - 1);
+							if (stackItem.controlFlow && !stackItem.braces) {
+								// this block close token applies to a block
+								// that contains nested control flow statements
+								// without braces, so remove all of them
+								blockStack.remove(blockStack.size() - 1);
+								indent = decreaseIndent(indent);
+								continue;
+							}
+							checkNext = false;
+						}
 						if (!blockStack.isEmpty()) {
 							BlockStackItem stackItem = blockStack.get(blockStack.size() - 1);
 							if (stackItem.blockDepth <= 1) {
