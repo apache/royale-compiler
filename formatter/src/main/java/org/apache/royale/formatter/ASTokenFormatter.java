@@ -181,7 +181,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 
 		List<IASToken> tokens = insertExtraAS3Tokens(repairedTokensList, text);
 		try {
-			return parseTokens(tokens, text);
+			return parseTokens(tokens, text, filePath);
 		} catch (Exception e) {
 			if (problems != null) {
 				System.err.println(e);
@@ -192,7 +192,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 		}
 	}
 
-	private String parseTokens(List<IASToken> tokens, String fileText) throws Exception {
+	private String parseTokens(List<IASToken> tokens, String fileText, String filePath) throws Exception {
 		indent = 0;
 		inCaseOrDefaultClause = false;
 		inControlFlowStatement = false;
@@ -1074,7 +1074,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 			}
 		}
 		if (blockStack.size() > 0) {
-			throw new Exception("Unexpected end of file. Blocks still considered open by formatter. This is a bug.");
+			throw new Exception("Unexpected end of file <" + filePath + ">. Blocks still considered open by formatter. This is a bug.");
 		}
 		return builder.toString();
 	}
