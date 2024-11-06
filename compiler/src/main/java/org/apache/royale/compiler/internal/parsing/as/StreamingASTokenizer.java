@@ -206,6 +206,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
 
     //last token we encountered, used for lookback
     private ASToken lastToken;
+    private ASToken lastTokenNotComment;
 
     private int offsetAdjustment; //for offset adjustment
     private int lineAdjustment = 0;
@@ -1342,6 +1343,9 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
         {
             consumeSemi = false;
             lastToken = retVal;
+            if (retVal == null || (retVal.getType() != HIDDEN_TOKEN_SINGLE_LINE_COMMENT && retVal.getType() != HIDDEN_TOKEN_MULTI_LINE_COMMENT)) {
+                lastTokenNotComment = retVal;
+            }
         }
         return null;
     }
@@ -1394,7 +1398,18 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
         }
         else
         {
-            switch (lastToken.getType())
+            ASToken lastTokenToCheck = lastToken;
+            if (lastTokenNotComment != null) 
+            {
+                switch (lastTokenToCheck.getType())
+                {
+                    case HIDDEN_TOKEN_SINGLE_LINE_COMMENT:
+                    case HIDDEN_TOKEN_MULTI_LINE_COMMENT:
+                        lastTokenToCheck = lastTokenNotComment;
+                        break;
+                }
+            }
+            switch (lastTokenToCheck.getType())
             {
                 case HIDDEN_TOKEN_SINGLE_LINE_COMMENT:
                 case HIDDEN_TOKEN_MULTI_LINE_COMMENT:
