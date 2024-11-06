@@ -136,6 +136,9 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 			parser = null;
 			problems.add(new UnexpectedExceptionProblem(e));
 			return text;
+		} finally {
+			workspace.close();
+			workspace = null;
 		}
 
 		if (tokenizer.hasTokenizationProblems()) {

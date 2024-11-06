@@ -273,6 +273,7 @@ public class FORMATTER {
 				final ProblemFormatter formatter = new WorkspaceProblemFormatter(workspace, categorizer);
 				final ProblemPrinter printer = new ProblemPrinter(formatter);
 				printer.printProblems(filteredProblems);
+				workspace.close();
 			}
 		}
 		return exitCode.getCode();
