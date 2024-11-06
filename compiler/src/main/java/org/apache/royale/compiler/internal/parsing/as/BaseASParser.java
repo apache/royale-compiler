@@ -1428,6 +1428,7 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
         }
 
         EmbedNode embedNode = new EmbedNode(getFilename(), embedMetaTags[0], fileNodeAccumulator);
+        embedNode.setSourceLocation(embedMetaTags[0]);
         variable.setAssignedValue(null, embedNode);
     }
 
