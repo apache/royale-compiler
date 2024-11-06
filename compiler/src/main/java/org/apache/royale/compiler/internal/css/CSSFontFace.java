@@ -30,6 +30,7 @@ import org.apache.royale.compiler.css.FontFaceSourceType;
 import org.apache.royale.compiler.css.ICSSFontFace;
 import org.apache.royale.compiler.css.ICSSProperty;
 import org.apache.royale.compiler.css.ICSSPropertyValue;
+import org.apache.royale.compiler.problems.CSSInvalidDescriptorValueProblem;
 import org.apache.royale.compiler.problems.CSSRequiredDescriptorProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 
@@ -123,9 +124,18 @@ public class CSSFontFace extends CSSNodeBase implements ICSSFontFace
         else
         {
             if (srcValue instanceof CSSArrayPropertyValue)
+            {
                 source = (CSSFunctionCallPropertyValue)(srcValue).getNthChild(0);
-            else
+            }
+            else if (srcValue instanceof CSSFunctionCallPropertyValue)
+            {
                 source = (CSSFunctionCallPropertyValue)srcValue;
+            }
+            else
+            {
+                source = null;
+                problems.add(new CSSInvalidDescriptorValueProblem(srcValue, "@font-face", "src", srcValue));
+            }
         }
 
         if (fontFamilyValue == null)
