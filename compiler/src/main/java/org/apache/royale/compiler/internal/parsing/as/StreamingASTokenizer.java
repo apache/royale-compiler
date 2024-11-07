@@ -206,7 +206,8 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
 
     //last token we encountered, used for lookback
     private ASToken lastToken;
-    private ASToken lastTokenNotComment;
+    private ASToken lastTokenNotRegularComment;
+    private ASToken lastTokenNotRegularCommentOrASDocComment;
 
     private int offsetAdjustment; //for offset adjustment
     private int lineAdjustment = 0;
@@ -977,7 +978,8 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                 case TOKEN_OPERATOR_MINUS:
                 case TOKEN_OPERATOR_PLUS:
                 {
-                    if (lastToken == null || !lastToken.canPreceedSignedOperator())
+                    if (lastTokenNotRegularCommentOrASDocComment == null
+                        || !lastTokenNotRegularCommentOrASDocComment.canPreceedSignedOperator())
                     {
                         final ASToken nextToken = LT(1);
                         if (nextToken != null)
@@ -1343,8 +1345,11 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
         {
             consumeSemi = false;
             lastToken = retVal;
+            if (retVal == null || (retVal.getType() != HIDDEN_TOKEN_SINGLE_LINE_COMMENT && retVal.getType() != HIDDEN_TOKEN_MULTI_LINE_COMMENT && retVal.getType() != TOKEN_ASDOC_COMMENT)) {
+                lastTokenNotRegularComment = retVal;
+            }
             if (retVal == null || (retVal.getType() != HIDDEN_TOKEN_SINGLE_LINE_COMMENT && retVal.getType() != HIDDEN_TOKEN_MULTI_LINE_COMMENT)) {
-                lastTokenNotComment = retVal;
+                lastTokenNotRegularCommentOrASDocComment = retVal;
             }
         }
         return null;
@@ -1391,28 +1396,17 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
             // The lexer is configured to not recognize metadata.
             isNextMetadata = false;
         }
-        else if (lastToken == null)
+        else if (lastToken == null || lastTokenNotRegularComment == null)
         {
             // An "[" at the beginning of a script is always a part of a metadata.
+            // allow single line and multiline comments before an "[", but fall
+            // through for asdoc comments before an "[".
             isNextMetadata = true;
         }
         else
         {
-            ASToken lastTokenToCheck = lastToken;
-            if (lastTokenNotComment != null) 
+            switch (lastToken.getType())
             {
-                switch (lastTokenToCheck.getType())
-                {
-                    case HIDDEN_TOKEN_SINGLE_LINE_COMMENT:
-                    case HIDDEN_TOKEN_MULTI_LINE_COMMENT:
-                        lastTokenToCheck = lastTokenNotComment;
-                        break;
-                }
-            }
-            switch (lastTokenToCheck.getType())
-            {
-                case HIDDEN_TOKEN_SINGLE_LINE_COMMENT:
-                case HIDDEN_TOKEN_MULTI_LINE_COMMENT:
                 case TOKEN_ASDOC_COMMENT:
                 case TOKEN_SEMICOLON:
                 case TOKEN_ATTRIBUTE:
