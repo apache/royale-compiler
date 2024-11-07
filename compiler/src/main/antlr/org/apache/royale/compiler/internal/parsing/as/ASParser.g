@@ -2415,6 +2415,7 @@ unaryExpr returns [ExpressionNodeBase n]
         (options { greedy = true; }: 
             n=propertyAccessExpression[n] 
         |   n=arguments[n] 
+		| TOKEN_ASDOC_COMMENT
         )*
     ;
     exception catch [RecognitionException ex] { handleParsingError(ex); }
