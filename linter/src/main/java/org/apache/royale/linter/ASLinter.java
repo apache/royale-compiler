@@ -106,6 +106,9 @@ public class ASLinter extends BaseLinter {
 				parser = null;
 				fileProblems.add(new UnexpectedExceptionProblem(e));
 				return;
+			} finally {
+				workspace.close();
+				workspace = null;
 			}
 
 			if (tokenizer.hasTokenizationProblems()) {

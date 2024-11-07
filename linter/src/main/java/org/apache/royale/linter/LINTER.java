@@ -128,6 +128,7 @@ public class LINTER {
 				final ProblemFormatter formatter = new WorkspaceProblemFormatter(workspace, categorizer);
 				final ProblemPrinter printer = new ProblemPrinter(formatter);
 				printer.printProblems(problemQuery.getFilteredProblems());
+				workspace.close();
 			}
 		}
 		return exitCode.getCode();
