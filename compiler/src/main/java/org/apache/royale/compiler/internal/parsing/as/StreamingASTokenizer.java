@@ -1405,7 +1405,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
         }
         else
         {
-            switch (lastToken.getType())
+            switch (lastTokenNotRegularComment.getType())
             {
                 case TOKEN_ASDOC_COMMENT:
                 case TOKEN_SEMICOLON:
