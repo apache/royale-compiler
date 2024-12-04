@@ -1345,10 +1345,10 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
         {
             consumeSemi = false;
             lastToken = retVal;
-            if (retVal == null || (retVal.getType() != HIDDEN_TOKEN_SINGLE_LINE_COMMENT && retVal.getType() != HIDDEN_TOKEN_MULTI_LINE_COMMENT && retVal.getType() != TOKEN_ASDOC_COMMENT)) {
+            if (retVal == null || (retVal.getType() != HIDDEN_TOKEN_SINGLE_LINE_COMMENT && retVal.getType() != HIDDEN_TOKEN_MULTI_LINE_COMMENT)) {
                 lastTokenNotRegularComment = retVal;
             }
-            if (retVal == null || (retVal.getType() != HIDDEN_TOKEN_SINGLE_LINE_COMMENT && retVal.getType() != HIDDEN_TOKEN_MULTI_LINE_COMMENT)) {
+            if (retVal == null || (retVal.getType() != HIDDEN_TOKEN_SINGLE_LINE_COMMENT && retVal.getType() != HIDDEN_TOKEN_MULTI_LINE_COMMENT && retVal.getType() != TOKEN_ASDOC_COMMENT)) {
                 lastTokenNotRegularCommentOrASDocComment = retVal;
             }
         }
