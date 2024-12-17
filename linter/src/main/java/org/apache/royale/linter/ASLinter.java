@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.royale.compiler.clients.problems.CompilerProblemCategorizer;
 import org.apache.royale.compiler.internal.parsing.as.ASParser;
 import org.apache.royale.compiler.internal.parsing.as.ASToken;
 import org.apache.royale.compiler.internal.parsing.as.ASTokenTypes;
@@ -40,6 +41,7 @@ import org.apache.royale.compiler.internal.tree.as.FileNode;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.parsing.IASToken;
 import org.apache.royale.compiler.problems.CannotResolveConfigExpressionProblem;
+import org.apache.royale.compiler.problems.CompilerProblemSeverity;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -118,7 +120,13 @@ public class ASLinter extends BaseLinter {
 			}
 
 			if (parser.getSyntaxProblems().size() > 0) {
+				final CompilerProblemCategorizer categorizer = new CompilerProblemCategorizer();
 				for (ICompilerProblem problem : parser.getSyntaxProblems()) {
+					CompilerProblemSeverity severity = categorizer.getProblemSeverity(problem);
+					if (!CompilerProblemSeverity.ERROR.equals(severity)) {
+						// ignore syntax warnings. not the job of the linter.
+						continue;
+					}
 					if (problem instanceof CannotResolveConfigExpressionProblem) {
 						// it's okay if config constants aren't resolved
 						// we don't need to resolve anything

@@ -258,21 +258,12 @@ public class FORMATTER {
 			System.err.println(e.getMessage());
 			exitCode = ExitCode.FAILED_WITH_EXCEPTIONS;
 		} finally {
-			final CompilerProblemCategorizer categorizer = new CompilerProblemCategorizer();
-			ArrayList<ICompilerProblem> filteredProblems = new ArrayList<ICompilerProblem>();
-			for (ICompilerProblem problem : problemQuery.getFilteredProblems()) {
-        		CompilerProblemSeverity severity = categorizer.getProblemSeverity(problem);
-				// filter out everything that isn't an error
-				if (!CompilerProblemSeverity.ERROR.equals(severity)) {
-					continue;
-				}
-				filteredProblems.add(problem);
-			}
-			if (filteredProblems.size() > 0) {
+			if (problemQuery.hasFilteredProblems()) {
 				final Workspace workspace = new Workspace();
+				final CompilerProblemCategorizer categorizer = new CompilerProblemCategorizer();
 				final ProblemFormatter formatter = new WorkspaceProblemFormatter(workspace, categorizer);
 				final ProblemPrinter printer = new ProblemPrinter(formatter);
-				printer.printProblems(filteredProblems);
+				printer.printProblems(problemQuery.getFilteredProblems());
 				workspace.close();
 			}
 		}
