@@ -25,11 +25,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.royale.compiler.clients.problems.CompilerProblemCategorizer;
+import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.internal.parsing.as.ASParser;
 import org.apache.royale.compiler.internal.parsing.as.ASToken;
 import org.apache.royale.compiler.internal.parsing.as.ASTokenTypes;
@@ -166,7 +168,7 @@ public class ASLinter extends BaseLinter {
 
 			IASToken[] allTokens = repairedTokensList.toArray(new IASToken[0]);
 			TokenQuery tokenQuery = new TokenQuery(allTokens);
-			visitNode(node, tokenQuery, fileProblems);
+			visitNode(node, tokenQuery, null, fileProblems);
 			boolean skipLinting = false;
 			for (LinterRule rule : settings.rules) {
 				Map<Integer, TokenVisitor> tokenHandlers = rule.getTokenVisitors();
@@ -199,9 +201,13 @@ public class ASLinter extends BaseLinter {
 		}
 	}
 
-	private void visitNode(IASNode node, TokenQuery tokenQuery, Collection<ICompilerProblem> problems) {
+	private void visitNode(IASNode node, TokenQuery tokenQuery, Map<IASToken, IASToken> lookupMap, Collection<ICompilerProblem> problems) {
+		if (lookupMap == null) {
+			lookupMap = new HashMap<IASToken, IASToken>();
+		}
 		ASTNodeID nodeID = node.getNodeID();
-		IASToken prevComment = tokenQuery.getCommentBefore(node);
+		IASToken firstComment = tokenQuery.getCommentBefore(node);
+		IASToken prevComment = firstComment;
 		boolean linterOn = true;
 		while (prevComment != null) {
 			String commentText = null;
@@ -210,20 +216,26 @@ public class ASLinter extends BaseLinter {
 			} else if (prevComment.getType() == ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT) {
 				commentText = prevComment.getText();
 				commentText = commentText.substring(2, commentText.length() - 2).trim();
+			}
+			if (commentText != null) {
+				if (LINTER_TAG_ON.equals(commentText)) {
+					linterOn = true;
+					break;
+				}
+				if (LINTER_TAG_OFF.equals(commentText)) {
+					linterOn = false;
+					break;
+				}
+			}
+			if (lookupMap.containsKey(prevComment)) {
+				prevComment = lookupMap.get(prevComment);
 			} else {
-				// not the type of comment that we care about
-				prevComment = tokenQuery.getCommentBefore(prevComment);
-				continue;
+				IASToken newPrevComment = tokenQuery.getCommentBefore(prevComment);
+				lookupMap.put(prevComment, newPrevComment);
+				// it's safe to skip comments that weren't linter tags
+				lookupMap.put(firstComment, newPrevComment);
+				prevComment = newPrevComment;
 			}
-			if (LINTER_TAG_ON.equals(commentText)) {
-				linterOn = true;
-				break;
-			}
-			if (LINTER_TAG_OFF.equals(commentText)) {
-				linterOn = false;
-				break;
-			}
-			prevComment = tokenQuery.getCommentBefore(prevComment);
 		}
 		if (linterOn) {
 			for (LinterRule rule : settings.rules) {
@@ -235,7 +247,7 @@ public class ASLinter extends BaseLinter {
 		}
 		for (int i = 0; i < node.getChildCount(); i++) {
 			IASNode child = node.getChild(i);
-			visitNode(child, tokenQuery, problems);
+			visitNode(child, tokenQuery, lookupMap, problems);
 		}
 	}
 
