@@ -56,12 +56,15 @@ public class TokenQuery {
 	 */
 	public IASToken[] getTokens(IASNode node, boolean skipComments, boolean skipWhitespace) {
 		List<IASToken> result = new ArrayList<>();
-		for (IASToken token : allTokens) {
-			if (token.getAbsoluteStart() < node.getAbsoluteStart()) {
-				continue;
-			}
+		int start = findNearestToken(allTokens, node);
+		int end = allTokens.length;
+		for (int i = start; i < end; i++) {
+			IASToken token = allTokens[i];
 			if (token.getAbsoluteStart() >= node.getAbsoluteEnd()) {
 				break;
+			}
+			if (token.getAbsoluteStart() < node.getAbsoluteStart()) {
+				continue;
 			}
 			if (skipComments && isComment(token)) {
 				continue;
@@ -87,20 +90,21 @@ public class TokenQuery {
 	 * to skip comment and whitespace tokens.
 	 */
 	public IASToken getTokenBefore(ISourceLocation sourceLocation, boolean skipComments, boolean skipWhitespace) {
-		IASToken result = null;
-		for (IASToken token : allTokens) {
+		int start = findNearestToken(allTokens, sourceLocation);
+		for (int i = start - 1; i >= 0; i--) {
+			IASToken token = allTokens[i];
+			if (token.getAbsoluteStart() >= sourceLocation.getAbsoluteStart()) {
+				continue;
+			}
 			if (skipComments && isComment(token)) {
 				continue;
 			}
 			if (skipWhitespace && isWhitespace(token)) {
 				continue;
 			}
-			if (token.getAbsoluteStart() >= sourceLocation.getAbsoluteStart()) {
-				return result;
-			}
-			result = token;
+			return token;
 		}
-		return result;
+		return null;
 	}
 
 	/**
@@ -116,16 +120,20 @@ public class TokenQuery {
 	 * skip comment and whitespace tokens.
 	 */
 	public IASToken getTokenAfter(ISourceLocation sourceLocation, boolean skipComments, boolean skipWhitespace) {
-		for (IASToken token : allTokens) {
-			if (token.getAbsoluteStart() >= sourceLocation.getAbsoluteEnd()) {
-				if (skipComments && isComment(token)) {
-					continue;
-				}
-				if (skipWhitespace && isWhitespace(token)) {
-					continue;
-				}
-				return token;
+		int start = findNearestToken(allTokens, sourceLocation);
+		int end = allTokens.length;
+		for (int i = start; i < end; i++) {
+			IASToken token = allTokens[i];
+			if (token.getAbsoluteStart() < sourceLocation.getAbsoluteEnd()) {
+				continue;
 			}
+			if (skipComments && isComment(token)) {
+				continue;
+			}
+			if (skipWhitespace && isWhitespace(token)) {
+				continue;
+			}
+			return token;
 		}
 		return null;
 	}
@@ -143,18 +151,11 @@ public class TokenQuery {
 	 * skip comment and whitespace tokens.
 	 */
 	public IASToken getFirstToken(IASNode node, boolean skipComments, boolean skipWhitespace) {
-		for (IASToken token : allTokens) {
-			if (token.getAbsoluteStart() >= node.getAbsoluteStart()) {
-				if (skipComments && isComment(token)) {
-					continue;
-				}
-				if (skipWhitespace && isWhitespace(token)) {
-					continue;
-				}
-				return token;
-			}
+		IASToken[] tokens = getTokens(node, skipComments, skipWhitespace);
+		if (tokens.length == 0) {
+			return null;
 		}
-		return null;
+		return tokens[0];
 	}
 
 	/**
@@ -170,21 +171,11 @@ public class TokenQuery {
 	 * skip comment and whitespace tokens.
 	 */
 	public IASToken getLastToken(IASNode node, boolean skipComments, boolean skipWhitespace) {
-		IASToken result = null;
-		for (IASToken token : allTokens) {
-			if (token.getAbsoluteStart() >= node.getAbsoluteStart()) {
-				if (skipComments && isComment(token)) {
-					continue;
-				}
-				if (skipWhitespace && isWhitespace(token)) {
-					continue;
-				}
-				result = token;
-			} else if (result != null) {
-				break;
-			}
+		IASToken[] tokens = getTokens(node, skipComments, skipWhitespace);
+		if (tokens.length == 0) {
+			return null;
 		}
-		return result;
+		return tokens[tokens.length - 1];
 	}
 
 	/**
@@ -192,16 +183,18 @@ public class TokenQuery {
 	 * start of a particular source location.
 	 */
 	public IASToken getPreviousTokenOfType(ISourceLocation before, int type) {
-		IASToken result = null;
-		for (IASToken token : allTokens) {
+		int start = findNearestToken(allTokens, before);
+		for (int i = start - 1; i >= 0; i--) {
+			IASToken token = allTokens[i];
+			if (token.getType() != type) {
+				continue;
+			}
 			if (token.getAbsoluteStart() >= before.getAbsoluteStart()) {
-				return result;
+				continue;
 			}
-			if (token.getType() == type) {
-				result = token;
-			}
+			return token;
 		}
-		return result;
+		return null;
 	}
 
 	/**
@@ -209,10 +202,17 @@ public class TokenQuery {
 	 * of a particular source location.
 	 */
 	public IASToken getNextTokenOfType(ISourceLocation after, int type) {
-		for (IASToken token : allTokens) {
-			if (token.getType() == type && token.getAbsoluteStart() >= after.getAbsoluteEnd()) {
-				return token;
+		int start = findNearestToken(allTokens, after);
+		int end = allTokens.length;
+		for (int i = start; i < end; i++) {
+			IASToken token = allTokens[i];
+			if (token.getType() != type) {
+				continue;
 			}
+			if (token.getAbsoluteStart() < after.getAbsoluteEnd()) {
+				continue;
+			}
+			return token;
 		}
 		return null;
 	}
@@ -246,16 +246,18 @@ public class TokenQuery {
 	 * source location.
 	 */
 	public IASToken getCommentBefore(ISourceLocation before) {
-		IASToken result = null;
-		for (IASToken token : allTokens) {
+		int start = findNearestToken(allTokens, before);
+		for (int i = start - 1; i >= 0; i--) {
+			IASToken token = allTokens[i];
 			if (token.getAbsoluteStart() >= before.getAbsoluteStart()) {
-				return result;
+				continue;
 			}
-			if (isComment(token)) {
-				result = token;
+			if (!isComment(token)) {
+				continue;
 			}
+			return token;
 		}
-		return result;
+		return null;
 	}
 
 	/**
@@ -263,10 +265,17 @@ public class TokenQuery {
 	 * source location.
 	 */
 	public IASToken getCommentAfter(ISourceLocation after) {
-		for (IASToken token : allTokens) {
-			if (token.getAbsoluteStart() >= after.getAbsoluteEnd() && isComment(token)) {
-				return token;
+		int start = findNearestToken(allTokens, after);
+		int end = allTokens.length;
+		for (int i = start; i < end; i++) {
+			IASToken token = allTokens[i];
+			if (!isComment(token)) {
+				continue;
 			}
+			if (token.getAbsoluteStart() < after.getAbsoluteEnd()) {
+				continue;
+			}
+			return token;
 		}
 		return null;
 	}
@@ -283,16 +292,18 @@ public class TokenQuery {
 	 * particular source location.
 	 */
 	public IASToken getWhitespaceBefore(ISourceLocation before) {
-		IASToken result = null;
-		for (IASToken token : allTokens) {
+		int start = findNearestToken(allTokens, before);
+		for (int i = start - 1; i >= 0; i--) {
+			IASToken token = allTokens[i];
 			if (token.getAbsoluteStart() >= before.getAbsoluteStart()) {
-				return result;
+				continue;
 			}
-			if (isWhitespace(token)) {
-				result = token;
+			if (!isWhitespace(token)) {
+				continue;
 			}
+			return token;
 		}
-		return result;
+		return null;
 	}
 
 	/**
@@ -300,10 +311,17 @@ public class TokenQuery {
 	 * particular source location.
 	 */
 	public IASToken getWhitespaceAfter(ISourceLocation after) {
-		for (IASToken token : allTokens) {
-			if (token.getAbsoluteStart() >= after.getAbsoluteEnd() && isWhitespace(token)) {
-				return token;
+		int start = findNearestToken(allTokens, after);
+		int end = allTokens.length;
+		for (int i = start; i < end; i++) {
+			IASToken token = allTokens[i];
+			if (!isWhitespace(token)) {
+				continue;
 			}
+			if (token.getAbsoluteStart() < after.getAbsoluteEnd()) {
+				continue;
+			}
+			return token;
 		}
 		return null;
 	}
@@ -322,5 +340,23 @@ public class TokenQuery {
 	 */
 	public IASToken getSignificantTokenAfter(ISourceLocation after) {
 		return getTokenAfter(after, true, true);
+	}
+
+	private static int findNearestToken(IASToken[] array, ISourceLocation toFind) {
+		int low = 0;
+		int high = array.length - 1;
+		int keyVal = toFind.getAbsoluteStart();
+		while (low <= high) {
+			int mid = (low + high) / 2;
+			int midVal = array[mid].getAbsoluteStart();
+			if (midVal < keyVal) {
+				low = mid + 1;
+			} else if (midVal > keyVal) {
+				high = mid - 1;
+			} else {
+				return mid;
+			}
+		}
+		return low;
 	}
 }
