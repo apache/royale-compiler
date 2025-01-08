@@ -42,6 +42,7 @@ public class FormatterUtils {
 		settings.ignoreProblems = configuration.getIgnoreParsingProblems();
 		settings.collapseEmptyBlocks = configuration.getCollapseEmptyBlocks();
 		settings.indentPackageContents = configuration.getIndentPackageContents();
+		settings.indentSwitchContents = configuration.getIndentSwitchContents();
 		settings.mxmlAlignAttributes = configuration.getMxmlAlignAttributes();
 		settings.mxmlInsertNewLineBetweenAttributes = configuration.getMxmlInsertNewLineBetweenAttributes();
 		settings.mxmlIndentCData = configuration.getMxmlIndentCData();

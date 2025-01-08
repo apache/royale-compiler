@@ -39,6 +39,7 @@ public class FormatterSettings {
 	public boolean ignoreProblems = false;
 	public boolean collapseEmptyBlocks = false;
 	public boolean indentPackageContents = true;
+	public boolean indentSwitchContents = true;
 	public boolean mxmlAlignAttributes = false;
 	public boolean mxmlInsertNewLineBetweenAttributes = false;
 	public boolean mxmlIndentCData = true;

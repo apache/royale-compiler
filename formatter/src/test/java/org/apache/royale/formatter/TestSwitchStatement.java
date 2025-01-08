@@ -30,6 +30,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -53,6 +54,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -77,6 +79,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = false;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -100,6 +103,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = false;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -122,6 +126,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -145,11 +150,41 @@ public class TestSwitchStatement extends BaseFormatterTests {
 	}
 
 	@Test
+	public void testWithCaseClauseAndStatementIndentSwitchContentsDisabled() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.indentSwitchContents = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"switch (condition)\n" +
+			"{\n" +
+			"\tcase condition:\n" +
+			"\t\tbreak;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"switch (condition)\n" +
+				"{\n" +
+				"case condition:\n" +
+				"\tbreak;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
 	public void testWithCaseClauseAndMultipleStatements() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -180,6 +215,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -210,6 +246,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = false;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -238,6 +275,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -270,6 +308,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = false;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -300,6 +339,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -337,6 +377,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = false;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -374,6 +415,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -402,6 +444,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -432,6 +475,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -462,6 +506,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = false;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -490,6 +535,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -522,6 +568,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = false;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -552,6 +599,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -589,6 +637,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = false;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -626,6 +675,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -658,6 +708,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -690,6 +741,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -724,6 +776,73 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"{\n" +
+			"\tswitch (condition)\n" +
+			"\t{\n" +
+			"\t}\n" +
+			"\tstatement;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"{\n" +
+				"\tswitch (condition)\n" +
+				"\t{\n" +
+				"\t}\n" +
+				"\tstatement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testNextIndentWithEmptyBlockIndentSwitchContentsDisabled1() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.indentSwitchContents = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"{\n" +
+			"\tswitch (condition)\n" +
+			"\t{\n" +
+			"\t\tcase condition:\n" +
+			"\t\t\tbreak;" +
+			"\t}\n" +
+			"\tstatement;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"{\n" +
+				"\tswitch (condition)\n" +
+				"\t{\n" +
+				"\tcase condition:\n" +
+				"\t\tbreak;\n" +
+				"\t}\n" +
+				"\tstatement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testNextIndentWithEmptyBlockIndentSwitchContentsDisabled2() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.indentSwitchContents = false;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -754,6 +873,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -788,6 +908,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -824,6 +945,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -862,6 +984,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -896,6 +1019,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -932,6 +1056,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -970,6 +1095,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -998,6 +1124,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -1024,6 +1151,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		settings.collapseEmptyBlocks = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
@@ -1046,6 +1174,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		settings.collapseEmptyBlocks = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
@@ -1069,6 +1198,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		settings.collapseEmptyBlocks = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
@@ -1091,6 +1221,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		settings.collapseEmptyBlocks = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
@@ -1112,6 +1243,7 @@ public class TestSwitchStatement extends BaseFormatterTests {
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentSwitchContents = true;
 		settings.collapseEmptyBlocks = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",

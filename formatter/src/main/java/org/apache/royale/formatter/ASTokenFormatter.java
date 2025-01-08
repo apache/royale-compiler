@@ -362,15 +362,23 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 								boolean oneLineBlock = prevToken != null
 										&& prevToken.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN
 										&& !(stackItem instanceof ObjectLiteralBlockStackItem);
-								boolean packageBlock = stackItem != null && stackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_PACKAGE;
-								boolean skipPackageIndent = packageBlock && !settings.indentPackageContents;
-								if (!skipPackageIndent && (!settings.collapseEmptyBlocks || !oneLineBlock)) {
+								boolean allowPackageIndent = settings.indentPackageContents
+										|| stackItem == null
+										|| stackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_PACKAGE;
+								boolean allowSwitchIndent = settings.indentSwitchContents
+										|| stackItem == null
+										|| stackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_SWITCH;
+								if ((!settings.collapseEmptyBlocks || !oneLineBlock)
+										&& allowPackageIndent
+										&& allowSwitchIndent) {
 									indent = decreaseIndent(indent);
 								}
 								if (stackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_CASE
 										|| stackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_DEFAULT) {
 									blockStack.remove(blockStack.size() - 1);
-									indent = decreaseIndent(indent);
+									if (settings.indentSwitchContents) {
+										indent = decreaseIndent(indent);
+									}
 									skipSwitchDecrease = true;
 								}
 							}
@@ -570,9 +578,17 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					if (blockOpenPending) {
 						boolean oneLineBlock = nextToken != null
 								&& nextToken.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE;
-						boolean packageBlock = !blockStack.isEmpty() && blockStack.get(blockStack.size() - 1).token.getType() == ASTokenTypes.TOKEN_KEYWORD_PACKAGE;
-						boolean skipPackageIndent = packageBlock && !settings.indentPackageContents;
-						if (settings.placeOpenBraceOnNewLine && (!settings.collapseEmptyBlocks || !oneLineBlock) && !skipPackageIndent) {
+						BlockStackItem stackItem = blockStack.isEmpty() ? null : blockStack.get(blockStack.size() - 1);
+						boolean allowPackageIndent = settings.indentPackageContents
+								|| stackItem == null
+								|| stackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_PACKAGE;
+						boolean allowSwitchIndent = settings.indentSwitchContents
+								|| stackItem == null
+								|| stackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_SWITCH;
+						if (settings.placeOpenBraceOnNewLine
+								&& (!settings.collapseEmptyBlocks || !oneLineBlock)
+								&& allowPackageIndent
+								&& allowSwitchIndent) {
 							indent = increaseIndent(indent);
 						}
 					}
@@ -661,9 +677,15 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 							}
 							boolean oneLineBlock = nextToken != null
 									&& nextToken.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE;
-							boolean packageBlock = stackItem != null && stackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_PACKAGE;
-							boolean skipPackageIndent = packageBlock && !settings.indentPackageContents;
-							if (!skipPackageIndent && (!settings.collapseEmptyBlocks || !oneLineBlock)) {
+							boolean allowPackageIndent = settings.indentPackageContents
+									|| stackItem == null
+									|| stackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_PACKAGE;
+							boolean allowSwitchIndent = settings.indentSwitchContents
+									|| stackItem == null
+									|| stackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_SWITCH;
+							if ((!settings.collapseEmptyBlocks || !oneLineBlock)
+									&& allowPackageIndent
+									&& allowSwitchIndent) {
 								if (!settings.placeOpenBraceOnNewLine) {
 									indent = increaseIndent(indent);
 								}

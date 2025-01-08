@@ -501,6 +501,24 @@ public class Configuration {
     }
 
     //
+    // 'indent-switch-contents' option
+    //
+
+    private boolean indentSwitchContents = true;
+
+    public boolean getIndentSwitchContents()
+    {
+        return indentSwitchContents;
+    }
+
+    @Config
+    @Mapping("indent-switch-contents")
+    public void setIndentSwitchContents(ConfigurationValue cv, boolean b)
+    {
+        this.indentSwitchContents = b;
+    }
+
+    //
     // 'tab-size' option
     //
 
