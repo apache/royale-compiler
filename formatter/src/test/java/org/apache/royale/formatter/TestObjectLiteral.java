@@ -235,4 +235,44 @@ public class TestObjectLiteral extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testWithCommentBeforeInitializer() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"var obj:Object=/* comment */{one: 123.4, two: \"hello world\"};",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"var obj:Object = /* comment */ {one: 123.4, two: \"hello world\"};",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testWithCommentInsideInitializer() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"var obj:Object = {one: 123.4/* comment */,/* another */two: \"hello world\"};",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"var obj:Object = {one: 123.4 /* comment */, /* another */ two: \"hello world\"};",
+				// @formatter:on
+				result);
+	}
 }

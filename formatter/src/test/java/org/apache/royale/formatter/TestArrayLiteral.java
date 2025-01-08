@@ -283,4 +283,44 @@ public class TestArrayLiteral extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testWithCommentBeforeInitializer() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"var array:Array=/* comment */[123.4, 567.8, 901.2];",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"var array:Array = /* comment */ [123.4, 567.8, 901.2];",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testWithCommentInsideInitializer() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceBeforeAndAfterBinaryOperators = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"var array:Array = [123.4/* comment */,567.8,/* another */901.2];",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"var array:Array = [123.4 /* comment */, 567.8, /* another */ 901.2];",
+				// @formatter:on
+				result);
+	}
 }
