@@ -565,7 +565,6 @@ public class Configuration {
         return mxmlAlignAttributes;
     }
 
-    @Config(advanced = true)
     @Mapping("mxml-align-attributes")
     public void setMxmlAlignAttributes(ConfigurationValue cv, boolean b)
     {
@@ -583,7 +582,6 @@ public class Configuration {
         return mxmlInsertNewLineBetweenAttributes;
     }
 
-    @Config(advanced = true)
     @Mapping("mxml-insert-new-line-attributes")
     public void setMxmlInsertNewLineBetweenAttributes(ConfigurationValue cv, boolean b)
     {
