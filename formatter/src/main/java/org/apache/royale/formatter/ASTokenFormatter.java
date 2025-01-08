@@ -362,7 +362,9 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 								boolean oneLineBlock = prevToken != null
 										&& prevToken.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN
 										&& !(stackItem instanceof ObjectLiteralBlockStackItem);
-								if (!settings.collapseEmptyBlocks || !oneLineBlock) {
+								boolean packageBlock = stackItem != null && stackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_PACKAGE;
+								boolean skipPackageIndent = packageBlock && !settings.indentPackageContents;
+								if (!skipPackageIndent && (!settings.collapseEmptyBlocks || !oneLineBlock)) {
 									indent = decreaseIndent(indent);
 								}
 								if (stackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_CASE
@@ -568,7 +570,9 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					if (blockOpenPending) {
 						boolean oneLineBlock = nextToken != null
 								&& nextToken.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE;
-						if (settings.placeOpenBraceOnNewLine && (!settings.collapseEmptyBlocks || !oneLineBlock)) {
+						boolean packageBlock = !blockStack.isEmpty() && blockStack.get(blockStack.size() - 1).token.getType() == ASTokenTypes.TOKEN_KEYWORD_PACKAGE;
+						boolean skipPackageIndent = packageBlock && !settings.indentPackageContents;
+						if (settings.placeOpenBraceOnNewLine && (!settings.collapseEmptyBlocks || !oneLineBlock) && !skipPackageIndent) {
 							indent = increaseIndent(indent);
 						}
 					}
@@ -650,13 +654,16 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 						}
 						if (blockOpenPending) {
 							blockOpenPending = false;
+							BlockStackItem stackItem = null;
 							if (!blockStack.isEmpty()) {
-								BlockStackItem stackItem = blockStack.get(blockStack.size() - 1);
+								stackItem = blockStack.get(blockStack.size() - 1);
 								stackItem.blockDepth++;
 							}
 							boolean oneLineBlock = nextToken != null
 									&& nextToken.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE;
-							if (!settings.collapseEmptyBlocks || !oneLineBlock) {
+							boolean packageBlock = stackItem != null && stackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_PACKAGE;
+							boolean skipPackageIndent = packageBlock && !settings.indentPackageContents;
+							if (!skipPackageIndent && (!settings.collapseEmptyBlocks || !oneLineBlock)) {
 								if (!settings.placeOpenBraceOnNewLine) {
 									indent = increaseIndent(indent);
 								}

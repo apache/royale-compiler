@@ -117,11 +117,12 @@ public class TestPackageDeclaration extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testPlaceOpenBraceOnNewLineWithStatement1() {
+	public void testPlaceOpenBraceOnNewLineWithStatement1IndentPackageContentsEnabled() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentPackageContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -142,11 +143,38 @@ public class TestPackageDeclaration extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testPlaceOpenBraceOnNewLineWithStatement2() {
+	public void testPlaceOpenBraceOnNewLineWithStatement1IndentPackageContentsDisabled() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
 		settings.insertSpaces = false;
+		settings.indentPackageContents = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"package {\n" +
+			"\tstatement;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"package\n" +
+				"{\n" +
+				"statement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testPlaceOpenBraceOnNewLineWithStatement2IndentPackageContentsEnabled() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.indentPackageContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -168,11 +196,39 @@ public class TestPackageDeclaration extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testDisablePlaceOpenBraceOnNewLineWithStatement1() {
+	public void testPlaceOpenBraceOnNewLineWithStatement2IndentPackageContentsDisabled() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		settings.indentPackageContents = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"package\n" +
+			"{\n" +
+			"\tstatement;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"package\n" +
+				"{\n" +
+				"statement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testDisablePlaceOpenBraceOnNewLineWithStatement1IndentPackageContentsEnabled() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = false;
 		settings.insertSpaces = false;
+		settings.indentPackageContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -193,11 +249,38 @@ public class TestPackageDeclaration extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testDisablePlaceOpenBraceOnNewLineWithStatement2() {
+	public void testDisablePlaceOpenBraceOnNewLineWithStatement1IndentPackageContentsDisabled() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = false;
 		settings.insertSpaces = false;
+		settings.indentPackageContents = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"package\n" +
+			"{\n" +
+			"\tstatement;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"package {\n" +
+				"statement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testDisablePlaceOpenBraceOnNewLineWithStatement2IndentPackageContentsEnabled() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		settings.indentPackageContents = true;
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
@@ -211,6 +294,31 @@ public class TestPackageDeclaration extends BaseFormatterTests {
 		// @formatter:off
 				"package {\n" +
 				"\tstatement;\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testDisablePlaceOpenBraceOnNewLineWithStatement2IndentPackageContentsDisabled() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = false;
+		settings.insertSpaces = false;
+		settings.indentPackageContents = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"package {\n" +
+			"\tstatement;\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"package {\n" +
+				"statement;\n" +
 				"}",
 				// @formatter:on
 				result);

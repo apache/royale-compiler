@@ -483,6 +483,24 @@ public class Configuration {
     }
 
     //
+    // 'indent-package-contents' option
+    //
+
+    private boolean indentPackageContents = true;
+
+    public boolean getIndentPackageContents()
+    {
+        return indentPackageContents;
+    }
+
+    @Config
+    @Mapping("indent-package-contents")
+    public void setIndentPackageContents(ConfigurationValue cv, boolean b)
+    {
+        this.indentPackageContents = b;
+    }
+
+    //
     // 'tab-size' option
     //
 

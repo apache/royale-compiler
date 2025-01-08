@@ -41,6 +41,7 @@ public class FormatterUtils {
 		settings.semicolons = Semicolons.valueOf(configuration.getSemicolons().toUpperCase());
 		settings.ignoreProblems = configuration.getIgnoreParsingProblems();
 		settings.collapseEmptyBlocks = configuration.getCollapseEmptyBlocks();
+		settings.indentPackageContents = configuration.getIndentPackageContents();
 		settings.mxmlAlignAttributes = configuration.getMxmlAlignAttributes();
 		settings.mxmlInsertNewLineBetweenAttributes = configuration.getMxmlInsertNewLineBetweenAttributes();
 		settings.mxmlIndentCData = configuration.getMxmlIndentCData();

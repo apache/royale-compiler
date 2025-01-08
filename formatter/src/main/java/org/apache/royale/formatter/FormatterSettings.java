@@ -38,6 +38,7 @@ public class FormatterSettings {
 	public Semicolons semicolons = Semicolons.INSERT;
 	public boolean ignoreProblems = false;
 	public boolean collapseEmptyBlocks = false;
+	public boolean indentPackageContents = true;
 	public boolean mxmlAlignAttributes = false;
 	public boolean mxmlInsertNewLineBetweenAttributes = false;
 	public boolean mxmlIndentCData = true;
