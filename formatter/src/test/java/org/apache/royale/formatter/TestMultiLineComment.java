@@ -25,7 +25,47 @@ import org.junit.Test;
 
 public class TestMultiLineComment extends BaseFormatterTests {
 	@Test
-	public void testAtEndOfStatement() {
+	public void testAtStartOfStatement() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"/* this is a comment */statement;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"/* this is a comment */ statement;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testAtEndOfStatementBeforeSemicolon() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"statement/* this is a comment */;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"statement /* this is a comment */;",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testAfterStatementAndSemicolon() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
 		settings.placeOpenBraceOnNewLine = true;
@@ -40,6 +80,26 @@ public class TestMultiLineComment extends BaseFormatterTests {
 		assertEquals(
 		// @formatter:off
 				"statement; /* this is a comment */",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testBeforeVariableInitializer() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"var myVar:Number=/* this is a comment */123.4;",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"var myVar:Number = /* this is a comment */ 123.4;",
 				// @formatter:on
 				result);
 	}

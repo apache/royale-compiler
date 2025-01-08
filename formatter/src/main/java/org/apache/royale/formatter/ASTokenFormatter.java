@@ -1071,8 +1071,8 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 						if (!skipWhitespaceBeforeSemicolon) {
 							if (nextTokenOrExtra != null && nextTokenOrExtra.getType() == TOKEN_TYPE_EXTRA) {
 								numRequiredNewLines = Math.max(0, countNewLinesInExtra(nextTokenOrExtra));
-								requiredSpace = true;
 							}
+							requiredSpace = true;
 						}
 						break;
 					}
