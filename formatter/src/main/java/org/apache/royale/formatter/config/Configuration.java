@@ -588,6 +588,23 @@ public class Configuration {
         this.mxmlInsertNewLineBetweenAttributes = b;
     }
 
+    //
+    // 'mxml-indent-cdata' option
+    //
+
+    private boolean mxmlIndentCData = true;
+
+    public boolean getMxmlIndentCData()
+    {
+        return mxmlIndentCData;
+    }
+
+    @Mapping("mxml-indent-cdata")
+    public void setMxmlIndentCData(ConfigurationValue cv, boolean b)
+    {
+        this.mxmlIndentCData = b;
+    }
+
     /**
      * 
      * @param path A path to resolve.

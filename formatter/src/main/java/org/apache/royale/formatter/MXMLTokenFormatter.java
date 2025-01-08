@@ -369,7 +369,7 @@ public class MXMLTokenFormatter extends BaseTokenFormatter {
 		}
 		if (formattedScriptText.length() > 0) {
 			String[] formattedLines = formattedScriptText.split("\n");
-			String lineIndent = requireCdata ? (indent + indent + indent) : (indent + indent);
+			String lineIndent = (requireCdata && settings.mxmlIndentCData) ? (indent + indent + indent) : (indent + indent);
 			for (int i = 0; i < formattedLines.length; i++) {
 				formattedLines[i] = lineIndent + formattedLines[i];
 			}
@@ -381,7 +381,10 @@ public class MXMLTokenFormatter extends BaseTokenFormatter {
 		builder.append(">\n");
 		if (requireCdata) {
 			builder.append(indent);
-			builder.append(indent);
+			if (settings.mxmlIndentCData)
+			{
+				builder.append(indent);
+			}
 			builder.append("<![CDATA[\n");
 		}
 		if (formattedScriptText.length() > 0) {
@@ -390,7 +393,10 @@ public class MXMLTokenFormatter extends BaseTokenFormatter {
 		}
 		if (requireCdata) {
 			builder.append(indent);
-			builder.append(indent);
+			if (settings.mxmlIndentCData)
+			{
+				builder.append(indent);
+			}
 			builder.append("]]>\n");
 		}
 		builder.append(indent);

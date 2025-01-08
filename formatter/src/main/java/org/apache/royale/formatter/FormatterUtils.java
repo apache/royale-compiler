@@ -43,6 +43,7 @@ public class FormatterUtils {
 		settings.collapseEmptyBlocks = configuration.getCollapseEmptyBlocks();
 		settings.mxmlAlignAttributes = configuration.getMxmlAlignAttributes();
 		settings.mxmlInsertNewLineBetweenAttributes = configuration.getMxmlInsertNewLineBetweenAttributes();
+		settings.mxmlIndentCData = configuration.getMxmlIndentCData();
 		return settings;
 	}
 }

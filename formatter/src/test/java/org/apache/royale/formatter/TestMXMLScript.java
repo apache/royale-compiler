@@ -25,9 +25,10 @@ import org.junit.Test;
 
 public class TestMXMLScript extends BaseFormatterTests {
 	@Test
-	public void testEmptyScriptNoCdata() {
+	public void testEmptyScriptNoCDataIndentCDataEnabled() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaces = false;
+		settings.mxmlIndentCData = true;
 		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
 		String result = formatter.format("file.mxml",
 		// @formatter:off
@@ -51,9 +52,37 @@ public class TestMXMLScript extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testEmptyScriptNoCdataNoWhitespace() {
+	public void testEmptyScriptNoCDataIndentCDataDisabled() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaces = false;
+		settings.mxmlIndentCData = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
+		// @formatter:off
+			"<s:Application>\n" +
+			"<fx:Script>\n" +
+			"</fx:Script>\n" +
+			"</s:Application>",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"<s:Application>\n" +
+				"\t<fx:Script>\n" +
+				"\t<![CDATA[\n" +
+				"\t]]>\n" +
+				"\t</fx:Script>\n" +
+				"</s:Application>",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testEmptyScriptNoCDataNoWhitespaceIndentCDataEnabled() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		settings.mxmlIndentCData = true;
 		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
 		String result = formatter.format("file.mxml",
 		// @formatter:off
@@ -76,9 +105,36 @@ public class TestMXMLScript extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testEmptyScriptWithCdata() {
+	public void testEmptyScriptNoCDataNoWhitespaceIndentCDataDisabled() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaces = false;
+		settings.mxmlIndentCData = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
+		// @formatter:off
+			"<s:Application>\n" +
+			"<fx:Script></fx:Script>\n" +
+			"</s:Application>",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"<s:Application>\n" +
+				"\t<fx:Script>\n" +
+				"\t<![CDATA[\n" +
+				"\t]]>\n" +
+				"\t</fx:Script>\n" +
+				"</s:Application>",
+				// @formatter:on
+				result);
+	}
+
+	@Test
+	public void testEmptyScriptWithCDataIndentCDataEnabled() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		settings.mxmlIndentCData = true;
 		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
 		String result = formatter.format("file.mxml",
 		// @formatter:off
@@ -104,9 +160,10 @@ public class TestMXMLScript extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testEmptyScriptWithCdataNoWhitespace() {
+	public void testEmptyScriptWithCDataNoWhitespaceIndentCDataDisabled() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaces = false;
+		settings.mxmlIndentCData = false;
 		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
 		String result = formatter.format("file.mxml",
 		// @formatter:off
@@ -120,8 +177,8 @@ public class TestMXMLScript extends BaseFormatterTests {
 		// @formatter:off
 				"<s:Application>\n" +
 				"\t<fx:Script>\n" +
-				"\t\t<![CDATA[\n" +
-				"\t\t]]>\n" +
+				"\t<![CDATA[\n" +
+				"\t]]>\n" +
 				"\t</fx:Script>\n" +
 				"</s:Application>",
 				// @formatter:on
@@ -129,9 +186,10 @@ public class TestMXMLScript extends BaseFormatterTests {
 	}
 
 	@Test
-	public void testScriptWithActionScript() {
+	public void testScriptWithActionScriptIndentCDataEnabled() {
 		FormatterSettings settings = new FormatterSettings();
 		settings.insertSpaces = false;
+		settings.mxmlIndentCData = true;
 		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
 		String result = formatter.format("file.mxml",
 		// @formatter:off
@@ -157,5 +215,35 @@ public class TestMXMLScript extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
-	
+
+	@Test
+	public void testScriptWithActionScriptIndentCDataDisabled() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaces = false;
+		settings.mxmlIndentCData = false;
+		MXMLTokenFormatter formatter = new MXMLTokenFormatter(settings);
+		String result = formatter.format("file.mxml",
+		// @formatter:off
+			"<s:Application>\n" +
+			"<fx:Script>\n" +
+			"<![CDATA[\n" +
+			"public var a: Number=123.4;\n" +
+			"]]>\n" +
+			"</fx:Script>\n" +
+			"</s:Application>",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"<s:Application>\n" +
+				"\t<fx:Script>\n" +
+				"\t<![CDATA[\n" +
+				"\t\tpublic var a:Number = 123.4;\n" +
+				"\t]]>\n" +
+				"\t</fx:Script>\n" +
+				"</s:Application>",
+				// @formatter:on
+				result);
+	}
 }

@@ -40,4 +40,5 @@ public class FormatterSettings {
 	public boolean collapseEmptyBlocks = false;
 	public boolean mxmlAlignAttributes = false;
 	public boolean mxmlInsertNewLineBetweenAttributes = false;
+	public boolean mxmlIndentCData = true;
 }
