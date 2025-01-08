@@ -291,9 +291,10 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 			nextToken = getNextTokenByOffset(tokens, i, 1, true, false);
 			nextTokenNotComment = getNextTokenByOffset(tokens, i, 1, true, true);
 
-			boolean skipWhitespaceBeforeSemicolonOrComma = nextToken == null
+			boolean skipWhitespaceBeforeNextSignificantToken = nextToken == null
 					|| nextToken.getType() == ASTokenTypes.TOKEN_SEMICOLON
-					|| nextToken.getType() == ASTokenTypes.TOKEN_COMMA;
+					|| nextToken.getType() == ASTokenTypes.TOKEN_COMMA
+					|| nextToken.getType() == ASTokenTypes.TOKEN_COLON;
 
 			// characters that must appear before the token
 			if (token instanceof MetaDataPayloadToken) {
@@ -472,7 +473,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 						boolean isAnyType = checkTokenBeforeAnyType(prevTokenNotComment);
 						boolean isAnyVectorType = checkTokensForAnyVectorType(prevTokenNotComment, nextTokenNotComment);
 						if (!isAnyType && !isAnyVectorType && settings.insertSpaceBeforeAndAfterBinaryOperators
-								&& !skipWhitespaceBeforeSemicolonOrComma) {
+								&& !skipWhitespaceBeforeNextSignificantToken) {
 							requiredSpace = true;
 						}
 						break;
@@ -762,11 +763,11 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 								blockOpenPending = true;
 								if (nextToken != null && nextToken.getType() == ASTokenTypes.TOKEN_SEMICOLON) {
 									blockStack.remove(blockStack.size() - 1);
-									if (!skipWhitespaceBeforeSemicolonOrComma) {
+									if (!skipWhitespaceBeforeNextSignificantToken) {
 										numRequiredNewLines = Math.max(numRequiredNewLines, 1);
 									}
 								} else if (nextTokenNotComment != null && nextTokenNotComment.getType() != ASTokenTypes.TOKEN_BLOCK_OPEN
-										&& !skipWhitespaceBeforeSemicolonOrComma) {
+										&& !skipWhitespaceBeforeNextSignificantToken) {
 									indent = increaseIndent(indent);
 									BlockStackItem stackItem = blockStack.get(blockStack.size() - 1);
 									stackItem.braces = false;
@@ -794,7 +795,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					case ASTokenTypes.TOKEN_KEYWORD_CONTINUE:
 					case ASTokenTypes.TOKEN_KEYWORD_BREAK:
 					case ASTokenTypes.TOKEN_KEYWORD_RETURN: {
-						if (!skipWhitespaceBeforeSemicolonOrComma) {
+						if (!skipWhitespaceBeforeNextSignificantToken) {
 							requiredSpace = true;
 						}
 						break;
@@ -844,7 +845,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 						stackItem.controlFlow = true;
 						blockStack.add(stackItem);
 						if (settings.insertSpaceAfterKeywordsInControlFlowStatements
-								&& !skipWhitespaceBeforeSemicolonOrComma) {
+								&& !skipWhitespaceBeforeNextSignificantToken) {
 							requiredSpace = true;
 						}
 						break;
@@ -853,7 +854,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 						inControlFlowStatement = true;
 						blockStack.add(new SwitchBlockStackItem(token));
 						if (settings.insertSpaceAfterKeywordsInControlFlowStatements
-								&& !skipWhitespaceBeforeSemicolonOrComma) {
+								&& !skipWhitespaceBeforeNextSignificantToken) {
 							requiredSpace = true;
 						}
 						break;
@@ -861,7 +862,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					case ASTokenTypes.TOKEN_KEYWORD_TRY:
 					case ASTokenTypes.TOKEN_KEYWORD_FINALLY: {
 						blockStack.add(new BlockStackItem(token));
-						if (!skipWhitespaceBeforeSemicolonOrComma) {
+						if (!skipWhitespaceBeforeNextSignificantToken) {
 							requiredSpace = true;
 						}
 						blockOpenPending = true;
@@ -878,12 +879,12 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 							blockOpenPending = true;
 							if (nextToken != null && nextToken.getType() == ASTokenTypes.TOKEN_SEMICOLON) {
 								blockStack.remove(blockStack.size() - 1);
-								if (!skipWhitespaceBeforeSemicolonOrComma) {
+								if (!skipWhitespaceBeforeNextSignificantToken) {
 									numRequiredNewLines = Math.max(numRequiredNewLines, 1);
 								}
 							} else if (nextToken != null && nextToken.getType() != ASTokenTypes.TOKEN_BLOCK_OPEN
 									&& nextToken.getType() != ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
-									&& !skipWhitespaceBeforeSemicolonOrComma) {
+									&& !skipWhitespaceBeforeNextSignificantToken) {
 								indent = increaseIndent(indent);
 								numRequiredNewLines = Math.max(numRequiredNewLines, 1);
 								stackItem.braces = false;
@@ -896,12 +897,12 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 						blockOpenPending = true;
 						if (nextToken != null && nextToken.getType() == ASTokenTypes.TOKEN_SEMICOLON) {
 							blockStack.remove(blockStack.size() - 1);
-							if (!skipWhitespaceBeforeSemicolonOrComma) {
+							if (!skipWhitespaceBeforeNextSignificantToken) {
 								numRequiredNewLines = Math.max(numRequiredNewLines, 1);
 							}
 						} else if (nextToken != null && nextToken.getType() != ASTokenTypes.TOKEN_BLOCK_OPEN
 								&& nextToken.getType() != ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
-								&& !skipWhitespaceBeforeSemicolonOrComma) {
+								&& !skipWhitespaceBeforeNextSignificantToken) {
 							indent = increaseIndent(indent);
 							numRequiredNewLines = Math.max(numRequiredNewLines, 1);
 						}
@@ -946,13 +947,13 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 						break;
 					}
 					case ASTokenTypes.TOKEN_KEYWORD_CASE: {
-						if (!skipWhitespaceBeforeSemicolonOrComma) {
+						if (!skipWhitespaceBeforeNextSignificantToken) {
 							requiredSpace = true;
 						}
 						break;
 					}
 					case ASTokenTypes.TOKEN_KEYWORD_DEFAULT: {
-						if (!inCaseOrDefaultClause && !skipWhitespaceBeforeSemicolonOrComma) {
+						if (!inCaseOrDefaultClause && !skipWhitespaceBeforeNextSignificantToken) {
 							requiredSpace = true;
 						}
 						break;
@@ -983,7 +984,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					case ASTokenTypes.TOKEN_MODIFIER_STATIC:
 					case ASTokenTypes.TOKEN_MODIFIER_VIRTUAL:
 					case ASTokenTypes.TOKEN_NAMESPACE_ANNOTATION: {
-						if (!skipWhitespaceBeforeSemicolonOrComma) {
+						if (!skipWhitespaceBeforeNextSignificantToken) {
 							requiredSpace = true;
 						}
 						break;
@@ -1022,7 +1023,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					case ASTokenTypes.TOKEN_OPERATOR_BITWISE_XOR_ASSIGNMENT:
 					case ASTokenTypes.TOKEN_OPERATOR_LOGICAL_AND_ASSIGNMENT:
 					case ASTokenTypes.TOKEN_OPERATOR_LOGICAL_OR_ASSIGNMENT: {
-						if (settings.insertSpaceBeforeAndAfterBinaryOperators && !skipWhitespaceBeforeSemicolonOrComma) {
+						if (settings.insertSpaceBeforeAndAfterBinaryOperators && !skipWhitespaceBeforeNextSignificantToken) {
 							requiredSpace = true;
 						}
 						break;
@@ -1031,7 +1032,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 						boolean isAnyType = checkTokenBeforeAnyType(prevTokenNotComment);
 						boolean isAnyVectorType = checkTokensForAnyVectorType(prevTokenNotComment, nextTokenNotComment);
 						if (!isAnyType && !isAnyVectorType && settings.insertSpaceBeforeAndAfterBinaryOperators
-								&& !skipWhitespaceBeforeSemicolonOrComma) {
+								&& !skipWhitespaceBeforeNextSignificantToken) {
 							requiredSpace = true;
 						}
 						break;
@@ -1040,7 +1041,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					case ASTokenTypes.TOKEN_OPERATOR_MINUS: {
 						boolean isUnary = checkTokenBeforePossibleUnaryOperator(prevTokenNotComment);
 						if (!isUnary && settings.insertSpaceBeforeAndAfterBinaryOperators
-								&& !skipWhitespaceBeforeSemicolonOrComma) {
+								&& !skipWhitespaceBeforeNextSignificantToken) {
 							requiredSpace = true;
 						}
 						break;
@@ -1049,7 +1050,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 						if (varOrConstChainLevel == blockStack.size()) {
 							inVarOrConstDeclaration = true;
 						}
-						if (settings.insertSpaceAfterCommaDelimiter && !skipWhitespaceBeforeSemicolonOrComma) {
+						if (settings.insertSpaceAfterCommaDelimiter && !skipWhitespaceBeforeNextSignificantToken) {
 							requiredSpace = true;
 						}
 						break;
@@ -1069,7 +1070,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					}
 					case ASTokenTypes.TOKEN_ASDOC_COMMENT:
 					case ASTokenTypes.HIDDEN_TOKEN_MULTI_LINE_COMMENT: {
-						if (!skipWhitespaceBeforeSemicolonOrComma) {
+						if (!skipWhitespaceBeforeNextSignificantToken) {
 							if (nextTokenOrExtra != null && nextTokenOrExtra.getType() == TOKEN_TYPE_EXTRA) {
 								numRequiredNewLines = Math.max(0, countNewLinesInExtra(nextTokenOrExtra));
 							}

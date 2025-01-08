@@ -265,13 +265,13 @@ public class TestObjectLiteral extends BaseFormatterTests {
 		ASTokenFormatter formatter = new ASTokenFormatter(settings);
 		String result = formatter.format("file.as",
 		// @formatter:off
-			"var obj:Object = {one: 123.4/* comment */,/* another */two: \"hello world\"};",
+			"var obj:Object = {one:123.4/* comment */,/* another */two:\"hello world\",three/* more */:false};",
 			// @formatter:on
 			problems
 		);
 		assertEquals(
 		// @formatter:off
-				"var obj:Object = {one: 123.4 /* comment */, /* another */ two: \"hello world\"};",
+				"var obj:Object = {one: 123.4 /* comment */, /* another */ two: \"hello world\", three /* more */: false};",
 				// @formatter:on
 				result);
 	}
