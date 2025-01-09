@@ -342,7 +342,6 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 						break;
 					}
 					case ASTokenTypes.TOKEN_BLOCK_CLOSE: {
-						boolean skipSwitchDecrease = false;
 						boolean checkNext = true;
 						while (!blockStack.isEmpty() && checkNext) {
 							BlockStackItem stackItem = blockStack.get(blockStack.size() - 1);
@@ -363,27 +362,31 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 										&& prevToken.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN
 										&& !(stackItem instanceof ObjectLiteralBlockStackItem);
 								boolean allowPackageIndent = settings.indentPackageContents
-										|| stackItem == null
 										|| stackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_PACKAGE;
 								boolean allowSwitchIndent = settings.indentSwitchContents
-										|| stackItem == null
 										|| stackItem.token.getType() != ASTokenTypes.TOKEN_KEYWORD_SWITCH;
+								boolean allowCaseOrDefaultIndent = !(stackItem instanceof CaseOrDefaultBlockStackItem)
+										|| ((CaseOrDefaultBlockStackItem) stackItem).containsOnlyBlock;
 								if ((!settings.collapseEmptyBlocks || !oneLineBlock)
 										&& allowPackageIndent
-										&& allowSwitchIndent) {
+										&& allowSwitchIndent
+										&& allowCaseOrDefaultIndent) {
 									indent = decreaseIndent(indent);
 								}
-								if (stackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_CASE
-										|| stackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_DEFAULT) {
-									blockStack.remove(blockStack.size() - 1);
-									if (settings.indentSwitchContents) {
-										indent = decreaseIndent(indent);
+								if (stackItem instanceof CaseOrDefaultBlockStackItem)
+								{
+									CaseOrDefaultBlockStackItem caseOrDefaultStackItem = (CaseOrDefaultBlockStackItem) stackItem;
+									if (!caseOrDefaultStackItem.containsOnlyBlock) {
+										blockStack.remove(blockStack.size() - 1);
+										if (settings.indentSwitchContents) {
+											indent = decreaseIndent(indent);
+										}
 									}
-									skipSwitchDecrease = true;
 								}
 							}
 						}
-						if (!skipSwitchDecrease && !blockStack.isEmpty()) {
+						// check again because case/default might have been removed
+						if (!blockStack.isEmpty()) {
 							BlockStackItem stackItem = blockStack.get(blockStack.size() - 1);
 							if (stackItem.token.getType() == ASTokenTypes.TOKEN_KEYWORD_SWITCH) {
 								SwitchBlockStackItem switchStackItem = (SwitchBlockStackItem) stackItem;
@@ -537,7 +540,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 								switchStackItem.clauseCount++;
 								inCaseOrDefaultClause = true;
 								numRequiredNewLines = Math.max(numRequiredNewLines, 1);
-								blockStack.add(new BlockStackItem(token));
+								blockStack.add(new CaseOrDefaultBlockStackItem(token));
 							}
 						}
 						break;
@@ -947,19 +950,24 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 								caseOrDefaultBlockOpenPending = true;
 								boolean nextIsBlock = nextTokenNotComment != null
 										&& nextTokenNotComment.getType() == ASTokenTypes.TOKEN_BLOCK_OPEN;
+								boolean caseOrDefaultContainsOnlyBlock = false;
 								if (nextIsBlock) {
 									IASToken afterBlockClose = findTokenAfterBlock(nextTokenNotComment, tokens);
-									if (afterBlockClose != null) {
-										if (afterBlockClose.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE
-												|| afterBlockClose.getType() == ASTokenTypes.TOKEN_KEYWORD_CASE
-												|| afterBlockClose.getType() == ASTokenTypes.TOKEN_KEYWORD_DEFAULT) {
+									BlockStackItem stackItem = !blockStack.isEmpty() ? blockStack.get(blockStack.size() - 1) : null;
+									if (stackItem instanceof CaseOrDefaultBlockStackItem) {
+										CaseOrDefaultBlockStackItem caseOrDefaultStackItem = (CaseOrDefaultBlockStackItem) stackItem;
+										caseOrDefaultContainsOnlyBlock = afterBlockClose != null
+												&& (afterBlockClose.getType() == ASTokenTypes.TOKEN_BLOCK_CLOSE
+														|| afterBlockClose.getType() == ASTokenTypes.TOKEN_KEYWORD_CASE
+														|| afterBlockClose.getType() == ASTokenTypes.TOKEN_KEYWORD_DEFAULT);
+										caseOrDefaultStackItem.containsOnlyBlock = caseOrDefaultContainsOnlyBlock;
+										if (caseOrDefaultContainsOnlyBlock) {
 											blockOpenPending = true;
-											requiredSpace = true;
-											blockStack.remove(blockStack.size() - 1);
 										}
+										requiredSpace = true;
 									}
 								}
-								if (!nextIsBlock || !blockOpenPending) {
+								if (!caseOrDefaultContainsOnlyBlock || !blockOpenPending) {
 									indent = increaseIndent(indent);
 									if (nextToken != null && (nextToken
 											.getType() == ASTokenTypes.HIDDEN_TOKEN_SINGLE_LINE_COMMENT
@@ -1738,5 +1746,13 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 		}
 
 		public int clauseCount = 0;
+	}
+
+	private static class CaseOrDefaultBlockStackItem extends BlockStackItem {
+		public CaseOrDefaultBlockStackItem(IASToken token) {
+			super(token);
+		}
+
+		public boolean containsOnlyBlock = false;
 	}
 }

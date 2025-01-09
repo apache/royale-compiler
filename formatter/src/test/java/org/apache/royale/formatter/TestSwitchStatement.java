@@ -1258,4 +1258,42 @@ public class TestSwitchStatement extends BaseFormatterTests {
 				// @formatter:on
 				result);
 	}
+
+	@Test
+	public void testWithCaseClauseAndBlockEndingWithNestedBlock() {
+		FormatterSettings settings = new FormatterSettings();
+		settings.insertSpaceAfterKeywordsInControlFlowStatements = true;
+		settings.placeOpenBraceOnNewLine = true;
+		settings.insertSpaces = false;
+		ASTokenFormatter formatter = new ASTokenFormatter(settings);
+		String result = formatter.format("file.as",
+		// @formatter:off
+			"switch (condition)\n" +
+			"{\n" +
+			"\tcase clause:\n" +
+			"\t{\n" +
+			"\t\tif (condition)\n" +
+			"\t\t{\n" +
+			"\t\t\tstatement;\n" +
+			"\t\t}\n" +
+			"\t}\n" +
+			"}",
+			// @formatter:on
+			problems
+		);
+		assertEquals(
+		// @formatter:off
+				"switch (condition)\n" +
+				"{\n" +
+				"\tcase clause:\n" +
+				"\t{\n" +
+				"\t\tif (condition)\n" +
+				"\t\t{\n" +
+				"\t\t\tstatement;\n" +
+				"\t\t}\n" +
+				"\t}\n" +
+				"}",
+				// @formatter:on
+				result);
+	}
 }
