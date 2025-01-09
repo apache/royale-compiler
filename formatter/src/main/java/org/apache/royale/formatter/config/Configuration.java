@@ -601,6 +601,7 @@ public class Configuration {
         return mxmlAlignAttributes;
     }
 
+    @Config
     @Mapping("mxml-align-attributes")
     public void setMxmlAlignAttributes(ConfigurationValue cv, boolean b)
     {
@@ -618,6 +619,7 @@ public class Configuration {
         return mxmlInsertNewLineBetweenAttributes;
     }
 
+    @Config
     @Mapping("mxml-insert-new-line-attributes")
     public void setMxmlInsertNewLineBetweenAttributes(ConfigurationValue cv, boolean b)
     {
@@ -635,6 +637,7 @@ public class Configuration {
         return mxmlIndentCData;
     }
 
+    @Config
     @Mapping("mxml-indent-cdata")
     public void setMxmlIndentCData(ConfigurationValue cv, boolean b)
     {
