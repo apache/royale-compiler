@@ -1031,11 +1031,17 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
         htmlFile.append("\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">\n");
         htmlFile.append("\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n");
         
-        // if release version want to call minified css file, while in debug the non minified one
-        if (type.equals("release")) {
-            htmlFile.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"").append(projectName).append(".min.css\">\n");
-        } else {
-            htmlFile.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"").append(projectName).append(".css\">\n");
+        if (project.needCSS)
+        {
+            // if release version want to call minified css file, while in debug the non minified one
+            if (type.equals("release"))
+            {
+                htmlFile.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"").append(projectName).append(".min.css\">\n");
+            }
+            else
+            {
+                htmlFile.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"").append(projectName).append(".css\">\n");
+            }
         }
 
         htmlFile.append(getTemplateAdditionalHTML(additionalHTML));
