@@ -34,6 +34,7 @@ import org.apache.royale.compiler.config.ConfigurationValue;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
 import org.apache.royale.compiler.internal.config.annotations.Arguments;
 import org.apache.royale.compiler.internal.config.annotations.Config;
+import org.apache.royale.compiler.internal.config.annotations.DefaultArgumentValue;
 import org.apache.royale.compiler.internal.config.annotations.RoyaleOnly;
 import org.apache.royale.compiler.internal.config.annotations.InfiniteArguments;
 import org.apache.royale.compiler.internal.config.annotations.Mapping;
@@ -376,6 +377,7 @@ public class JSGoogCompcConfiguration extends JSConfiguration
     @Config(advanced = true)
     @Mapping("html-output-filename")
     @Arguments("filename")
+    @DefaultArgumentValue("")
     public void setHtmlOutputFileName(ConfigurationValue cv, String filename)
     {
         this.htmlOutputFileName = filename;

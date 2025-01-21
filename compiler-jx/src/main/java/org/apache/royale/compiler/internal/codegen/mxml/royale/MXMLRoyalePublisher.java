@@ -894,6 +894,13 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
             return;
         }
 
+        String htmlOutputFileName = googConfiguration.getHtmlOutputFileName();
+        if (htmlOutputFileName.length() == 0)
+        {
+            // output file name has been intentionally cleared by the user
+            return;
+        }
+
         String input = readCode(template);
         ITargetAttributes ta = project.computeTargetAttributes();
         Float width = null;
@@ -936,7 +943,7 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
         String templateBody = getTemplateBody("release".equals(type) ? projectName : mainClassQName);
         result = result.replaceAll("\\$\\{body\\}", safeReplacement(templateBody));
 
-		writeFile(new File(targetDir, googConfiguration.getHtmlOutputFileName()), result, false);
+		writeFile(new File(targetDir, htmlOutputFileName), result, false);
 	}
 
     protected String getTemplateAdditionalHTML(List<String> additionalHTML)
@@ -986,6 +993,13 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
     protected void writeHTML(String type, String projectName, String mainClassQName, File targetDir, String deps, List<String> additionalHTML)
             throws IOException
     {
+        String htmlOutputFileName = googConfiguration.getHtmlOutputFileName();
+        if (htmlOutputFileName.length() == 0)
+        {
+            // output file name has been intentionally cleared by the user
+            return;
+        }
+
         StringBuilder htmlFile = new StringBuilder();
         htmlFile.append("<!DOCTYPE html>\n");
         htmlFile.append("<html>\n");
@@ -1011,7 +1025,7 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
         htmlFile.append("</body>\n");
         htmlFile.append("</html>");
 
-        writeFile(new File(targetDir, googConfiguration.getHtmlOutputFileName()), htmlFile.toString(), false);
+        writeFile(new File(targetDir, htmlOutputFileName), htmlFile.toString(), false);
     }
 
     private void writeCSS(String projectName, File targetDir, Boolean minify) throws IOException
