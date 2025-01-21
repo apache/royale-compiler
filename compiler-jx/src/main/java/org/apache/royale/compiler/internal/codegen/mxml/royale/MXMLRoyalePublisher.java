@@ -47,6 +47,7 @@ import org.apache.royale.compiler.internal.graph.GoogDepsWriter;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
 import org.apache.royale.compiler.internal.targets.ITargetAttributes;
+import org.apache.royale.compiler.problems.HTMLTemplateFileNotFoundProblem;
 import org.apache.royale.compiler.utils.JSClosureCompilerWrapper;
 import org.apache.royale.swc.ISWC;
 import org.apache.royale.swc.ISWCFileEntry;
@@ -561,7 +562,7 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
 	        // Create the index.html for the debug-js version.
 	        if (!((JSGoogConfiguration)configuration).getSkipTranspile()) {
 	            if (template != null) {
-	                writeTemplate(template, "intermediate", projectName, mainClassQName, intermediateDir, depsFileData, wrappedScript);
+	                writeTemplate(template, "intermediate", projectName, mainClassQName, intermediateDir, depsFileData, wrappedScript, problems);
 	            } else {
 	                writeHTML("intermediate", projectName, mainClassQName, intermediateDir, depsFileData, wrappedScript);
 	            }
@@ -569,7 +570,7 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
 	        // Create the index.html for the release-js version.
 	        if (configuration.release()) {
 	            if (template != null) {
-	                writeTemplate(template, "release", projectName, mainClassQName, releaseDir, depsFileData, wrappedScript);
+	                writeTemplate(template, "release", projectName, mainClassQName, releaseDir, depsFileData, wrappedScript, problems);
 	            } else {
 	                writeHTML("release", projectName, mainClassQName, releaseDir, null, wrappedScript);
 	            }
@@ -882,12 +883,15 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
         return source!=null ? Matcher.quoteReplacement(source) : "";
     }
 
-    protected void writeTemplate(File template, String type, String projectName, String mainClassQName, File targetDir, String deps, List<String> additionalHTML)
+    protected void writeTemplate(File template, String type, String projectName, String mainClassQName,
+            File targetDir, String deps, List<String> additionalHTML, ProblemQuery problems)
     		throws IOException
 	{
 	    // Check if the template exists.
-	    if(!template.exists()) {
-	        throw new IOException("Template specified by 'html-template' does not exist: " + template.getPath());
+	    if(!template.exists() || template.isDirectory())
+        {
+            problems.add(new HTMLTemplateFileNotFoundProblem(template.getPath()));
+            return;
         }
 
         String input = readCode(template);
