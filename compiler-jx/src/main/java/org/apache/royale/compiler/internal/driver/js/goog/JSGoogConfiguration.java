@@ -343,6 +343,7 @@ public class JSGoogConfiguration extends JSConfiguration
     	jsOutputOptimizations.addAll(value);
     }
 
+    //
     // 'html-template' option
     //
 
@@ -365,6 +366,7 @@ public class JSGoogConfiguration extends JSConfiguration
         this.htmlTemplateFileName = getOutputPath(cv, filename);
     }
 
+    //
     // 'html-output-filename' option
     //
 
@@ -943,6 +945,7 @@ public class JSGoogConfiguration extends JSConfiguration
     	warnPublicVars = value;
     }
 
+    //
     // 'externs-report' option
     //
 
