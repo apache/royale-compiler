@@ -19,10 +19,6 @@
 
 package org.apache.royale.compiler.internal.codegen.js.jsc;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyalePublisher;
@@ -59,21 +55,5 @@ public class JSCPublisher extends MXMLRoyalePublisher
         bodyHTML.append("();\n");
         bodyHTML.append("\t</script>\n");
         return bodyHTML.toString();
-    }
-
-    @Override
-    protected void writeHTML(String type, String projectName, String mainClassQName, File targetDir,
-                             String deps, List<String> additionalHTML) throws IOException
-    {
-        if ("intermediate".equals(type))
-        {
-            StringBuilder depsFile = new StringBuilder();
-            depsFile.append(deps);
-            depsFile.append("goog.require(\"");
-            depsFile.append(projectName);
-            depsFile.append("\");\n");
-            writeFile(new File(targetDir, projectName + "-dependencies.js"), depsFile.toString(), false);
-        }
-        //don't call super.writeHTML() because asjsc defaults to no HTML
     }
 }

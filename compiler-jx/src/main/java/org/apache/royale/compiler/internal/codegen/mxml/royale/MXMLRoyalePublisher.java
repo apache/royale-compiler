@@ -897,7 +897,19 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
         String htmlOutputFileName = googConfiguration.getHtmlOutputFileName();
         if (htmlOutputFileName.length() == 0)
         {
-            // output file name has been intentionally cleared by the user
+            // output file name has been intentionally cleared by the user.
+            // debug builds still need their dependencies, though, so place
+            // then in a ProjectName-dependencies.js file that can be included
+            // manually by the user.
+            if ("intermediate".equals(type))
+            {
+                StringBuilder depsFile = new StringBuilder();
+                depsFile.append(deps);
+                depsFile.append("goog.require(\"");
+                depsFile.append(projectName);
+                depsFile.append("\");\n");
+                writeFile(new File(targetDir, projectName + "-dependencies.js"), depsFile.toString(), false);
+            }
             return;
         }
 
@@ -996,7 +1008,19 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
         String htmlOutputFileName = googConfiguration.getHtmlOutputFileName();
         if (htmlOutputFileName.length() == 0)
         {
-            // output file name has been intentionally cleared by the user
+            // output file name has been intentionally cleared by the user.
+            // debug builds still need their dependencies, though, so place
+            // then in a ProjectName-dependencies.js file that can be included
+            // manually by the user.
+            if ("intermediate".equals(type))
+            {
+                StringBuilder depsFile = new StringBuilder();
+                depsFile.append(deps);
+                depsFile.append("goog.require(\"");
+                depsFile.append(projectName);
+                depsFile.append("\");\n");
+                writeFile(new File(targetDir, projectName + "-dependencies.js"), depsFile.toString(), false);
+            }
             return;
         }
 
