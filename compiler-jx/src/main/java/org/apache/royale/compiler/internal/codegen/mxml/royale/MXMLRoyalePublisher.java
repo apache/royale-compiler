@@ -556,9 +556,12 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
         {
 	        File template = ((JSGoogConfiguration)configuration).getHtmlTemplate();
 			List<String> wrappedScript = new ArrayList<String>();
-			wrappedScript.add("<script type=\"text/javascript\">");
-			wrappedScript.addAll(additionalHTML);
-			wrappedScript.add("</script>");
+            if (additionalHTML.size() > 0)
+            {
+                wrappedScript.add("<script type=\"text/javascript\">");
+                wrappedScript.addAll(additionalHTML);
+                wrappedScript.add("</script>");
+            }
 	        // Create the index.html for the debug-js version.
 	        if (!((JSGoogConfiguration)configuration).getSkipTranspile()) {
 	            if (template != null) {
