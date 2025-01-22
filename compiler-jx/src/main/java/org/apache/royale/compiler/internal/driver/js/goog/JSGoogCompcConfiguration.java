@@ -22,6 +22,7 @@ package org.apache.royale.compiler.internal.driver.js.goog;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -537,6 +538,36 @@ public class JSGoogCompcConfiguration extends JSConfiguration
             throws ConfigurationException
     {
         jsSetterPrefix = value;
+    }
+
+    //
+    // 'js-include-script'
+    //
+
+    protected List<String> jsIncludeScript = new ArrayList<String>();
+
+    public List<String> getJSIncludeScript()
+    {   
+        return jsIncludeScript;
+    }
+
+    @Config(allowMultiple = true)
+    @Mapping("js-include-script")
+    @Arguments(Arguments.PATH_ELEMENT)
+    @InfiniteArguments
+    public void setJSIncludeScript(ConfigurationValue cv, List<String> value)
+            throws ConfigurationException
+    {
+        jsIncludeScript.addAll(value);
+        for (String current : value)
+        {
+            String name = "js/scripts/" + Paths.get(current).getFileName().toString();
+            if (includeFilesNamePath.containsKey(name))
+            {
+                throw new ConfigurationException.RedundantFile(name, cv.getVar(), cv.getSource(), cv.getLine());
+            }
+            includeFilesNamePath.put(name, current);
+        }
     }
 
 }

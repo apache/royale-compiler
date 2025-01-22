@@ -47,6 +47,7 @@ import org.apache.royale.compiler.internal.graph.GoogDepsWriter;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
 import org.apache.royale.compiler.internal.targets.ITargetAttributes;
+import org.apache.royale.compiler.problems.FileNotFoundProblem;
 import org.apache.royale.compiler.problems.HTMLTemplateFileNotFoundProblem;
 import org.apache.royale.compiler.utils.JSClosureCompilerWrapper;
 import org.apache.royale.swc.ISWC;
@@ -57,6 +58,7 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -567,7 +569,7 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
 	            if (template != null) {
 	                writeTemplate(template, "intermediate", projectName, mainClassQName, intermediateDir, depsFileData, wrappedScript, problems);
 	            } else {
-	                writeHTML("intermediate", projectName, mainClassQName, intermediateDir, depsFileData, wrappedScript);
+	                writeHTML("intermediate", projectName, mainClassQName, intermediateDir, depsFileData, wrappedScript, problems);
 	            }
 	        }
 	        // Create the index.html for the release-js version.
@@ -575,7 +577,7 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
 	            if (template != null) {
 	                writeTemplate(template, "release", projectName, mainClassQName, releaseDir, depsFileData, wrappedScript, problems);
 	            } else {
-	                writeHTML("release", projectName, mainClassQName, releaseDir, null, wrappedScript);
+	                writeHTML("release", projectName, mainClassQName, releaseDir, null, wrappedScript, problems);
 	            }
 	        }
         }        
@@ -952,7 +954,7 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
 
         StringBuilder addHTML = new StringBuilder();
         addHTML.append(getTemplateAdditionalHTML(additionalHTML));
-		addHTML.append(getTemplateDependencies(type, projectName, mainClassQName, deps));
+		addHTML.append(getTemplateDependencies(type, projectName, mainClassQName, deps, problems));
         result = result.replaceAll("\\$\\{head\\}", safeReplacement(addHTML.toString()));
 
         String templateBody = getTemplateBody("release".equals(type) ? projectName : mainClassQName);
@@ -971,9 +973,85 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
         return htmlFile.toString();
     }
 
-    protected String getTemplateDependencies(String type, String projectName, String mainClassQName, String deps)
+    protected String getTemplateDependencies(String type, String projectName, String mainClassQName,
+            String deps, ProblemQuery problems)
     {
         StringBuilder depsHTML = new StringBuilder();
+        for (ISWC swc : project.getLibraries())
+        {
+            for (String key : swc.getFiles().keySet())
+            {
+                if (key.startsWith("js/scripts") || key.startsWith("js\\scripts"))
+                {
+                    String scriptPath = Paths.get("js").relativize(Paths.get(key)).toString();
+                    depsHTML.append("\t<script type=\"text/javascript\" src=\"");
+                    depsHTML.append(scriptPath);
+                    depsHTML.append("\"></script>\n");
+
+                    ISWCFileEntry swcFileEntry = swc.getFile(key);
+                    try
+                    {
+                        InputStream is = swcFileEntry.createInputStream();
+                        int n = is.available();
+                        int total = 0;
+                        byte[] data = new byte[n];
+                        while (total < n)
+                        {
+                            total += is.read(data, total, n - total);
+                        }
+                        if ("intermediate".equals(type))
+                        {
+                            final File intermediateDir = outputFolder;
+                            FileUtils.writeByteArrayToFile(new File(intermediateDir, scriptPath), data);
+                        }
+                        else
+                        {
+                            final File releaseDir = new File(outputParentFolder, ROYALE_RELEASE_DIR_NAME);
+                            FileUtils.writeByteArrayToFile(new File(releaseDir, scriptPath), data);
+                        }
+                    }
+                    catch (IOException e)
+                    {
+                        throw new RuntimeException("Unable to copy script file: " + key + " from library: " + swc.getSWCFile().getAbsolutePath());
+                    }
+                }
+            }
+        }
+
+        for (String script : googConfiguration.getJSIncludeScript())
+        {
+            String scriptPath = Paths.get(script).getFileName().toString();
+            depsHTML.append("\t<script type=\"text/javascript\" src=\"scripts/");
+            depsHTML.append(scriptPath);
+            depsHTML.append("\"></script>\n");
+
+            File scriptFile = new File(script);
+            if (scriptFile.exists() && !scriptFile.isDirectory())
+            {
+                try
+                {
+                    if ("intermediate".equals(type))
+                    {
+                        final File intermediateDir = outputFolder;
+                        FileUtils.copyFile(scriptFile, new File(intermediateDir, "scripts" + File.separator + scriptPath));
+                    }
+                    else
+                    {
+                        final File releaseDir = new File(outputParentFolder, ROYALE_RELEASE_DIR_NAME);
+                        FileUtils.copyFile(scriptFile, new File(releaseDir, "scripts" + File.separator + scriptPath));
+                    }
+                }
+                catch (IOException e)
+                {
+                    throw new RuntimeException("Unable to copy script file: " + scriptFile.getAbsolutePath());
+                }
+            }
+            else
+            {
+                problems.add(new FileNotFoundProblem(script));
+            }
+        }
+
         if ("intermediate".equals(type))
         {
             depsHTML.append("\t<script type=\"text/javascript\" src=\"./library/closure/goog/base.js\"></script>\n");
@@ -1005,7 +1083,8 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
         return bodyHTML.toString();
     }
 
-    protected void writeHTML(String type, String projectName, String mainClassQName, File targetDir, String deps, List<String> additionalHTML)
+    protected void writeHTML(String type, String projectName, String mainClassQName, File targetDir,
+        String deps, List<String> additionalHTML, ProblemQuery problems)
             throws IOException
     {
         String htmlOutputFileName = googConfiguration.getHtmlOutputFileName();
@@ -1048,7 +1127,7 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
         }
 
         htmlFile.append(getTemplateAdditionalHTML(additionalHTML));
-        htmlFile.append(getTemplateDependencies(type, projectName, mainClassQName, deps));
+        htmlFile.append(getTemplateDependencies(type, projectName, mainClassQName, deps, problems));
 
         htmlFile.append("</head>\n");
         htmlFile.append("<body>\n");

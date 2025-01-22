@@ -19,6 +19,7 @@
 
 package org.apache.royale.compiler.internal.codegen.js.node;
 
+import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.internal.codegen.js.jsc.JSCPublisher;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
@@ -37,7 +38,8 @@ public class NodePublisher extends JSCPublisher
     }
 
     @Override
-    protected String getTemplateDependencies(String type, String projectName, String mainClassQName, String deps)
+    protected String getTemplateDependencies(String type, String projectName, String mainClassQName,
+            String deps, ProblemQuery problems)
     {
         StringBuilder depsJS = new StringBuilder();
         if ("intermediate".equals(type))
@@ -82,10 +84,10 @@ public class NodePublisher extends JSCPublisher
 
     @Override
     protected void writeHTML(String type, String projectName, String mainClassQName, File targetDir,
-                             String deps, List<String> additionalHTML) throws IOException
+                             String deps, List<String> additionalHTML, ProblemQuery problems) throws IOException
     {
         StringBuilder contents = new StringBuilder();
-        contents.append(getTemplateDependencies(type, projectName, mainClassQName, deps));
+        contents.append(getTemplateDependencies(type, projectName, mainClassQName, deps, problems));
         contents.append(getTemplateBody(mainClassQName));
         writeFile(new File(targetDir, "index.js"), contents.toString(), false);
     }
