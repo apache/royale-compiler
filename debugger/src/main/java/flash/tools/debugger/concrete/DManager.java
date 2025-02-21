@@ -1839,7 +1839,7 @@ public class DManager implements DProtocolNotifierIF, SourceLocator {
 					// notify if its newly created
 					if (justCreated)
 						addEvent(new SwfLoadedEvent(id, (int) index, path, url,
-								host, port, swfSize));
+								host, port, swfSize, targetIsolate));
 				} else {
 					// note our state before marking it
 					boolean alreadyUnloaded = info.isUnloaded();
@@ -1850,7 +1850,7 @@ public class DManager implements DProtocolNotifierIF, SourceLocator {
 					// notify if this information is new.
 					if (!alreadyUnloaded)
 						addEvent(new SwfUnloadedEvent(info.getId(),
-								info.getPath(), (int) index));
+								info.getPath(), (int) index, targetIsolate));
 				}
 				// System.out.println("[SWFLOAD] Loaded "+path+", size="+swfSize+", scripts="+scriptCount);
 			}

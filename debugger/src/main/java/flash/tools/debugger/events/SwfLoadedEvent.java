@@ -17,6 +17,8 @@
 
 package flash.tools.debugger.events;
 
+import flash.tools.debugger.Isolate;
+
 /**
  * This event is fired when the player has completed the loading of 
  * the specified SWF.
@@ -44,7 +46,15 @@ public class SwfLoadedEvent extends DebugEvent
 	/** name of host in which the SWF was loaded */
 	public String host;
 
+	/** the isolate identifier where the SWF was unloaded */
+	public int			isolateId;
+
 	public SwfLoadedEvent(long sId, int sIndex, String sPath, String sUrl, String sHost, long sPort, long sSwfSize)
+	{
+		this(sId, sIndex, sPath, sUrl, sHost, sPort, sSwfSize, Isolate.DEFAULT_ID);
+	}
+
+	public SwfLoadedEvent(long sId, int sIndex, String sPath, String sUrl, String sHost, long sPort, long sSwfSize, int sIsolateId)
 	{
 		id = sId;
 		index = sIndex;
@@ -53,5 +63,6 @@ public class SwfLoadedEvent extends DebugEvent
 		path = sPath;
 		url = sUrl;
 		host = sHost;
+		isolateId = sIsolateId;
 	}
 }

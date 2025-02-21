@@ -17,6 +17,8 @@
 
 package flash.tools.debugger.events;
 
+import flash.tools.debugger.Isolate;
+
 /**
  * This event is fired when the player has unloaded a swf
  */
@@ -31,10 +33,19 @@ public class SwfUnloadedEvent extends DebugEvent
 	/** full path name for the SWF */
 	public String		path;
 
+	/** the isolate identifier where the SWF was unloaded */
+	public int			isolateId;
+
 	public SwfUnloadedEvent(long sId, String sPath, int sIndex)
+	{
+		this(sId, sPath, sIndex, Isolate.DEFAULT_ID);
+	}
+
+	public SwfUnloadedEvent(long sId, String sPath, int sIndex, int sIsolateId)
 	{
 		id = sId;
 		index = sIndex;
 		path = sPath;
+		isolateId = sIsolateId;
 	}
 }
