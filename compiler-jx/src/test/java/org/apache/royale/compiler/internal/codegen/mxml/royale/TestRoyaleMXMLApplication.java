@@ -3872,6 +3872,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"goog.require('org.apache.royale.events.Event');\n" +
         		"goog.require('org.apache.royale.html.DropDownList');\n" +
         		"goog.require('org.apache.royale.core.ClassFactory');\n" +
+        		"goog.require('org.apache.royale.utils.Language');\n" +
         		"\n" +
         		"\n" +
         		"\n" +
@@ -4030,7 +4031,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
         		"goog.require('org.apache.royale.core.Application');\n" +
         		"goog.require('org.apache.royale.charts.beads.DataTipBead');\n" +
-//        		"goog.require('org.apache.royale.utils.Language');\n" + // in real compiles this will be output, but not in tests
+        		"goog.require('org.apache.royale.utils.Language');\n" +
         		"\n" +
         		"\n" +
         		"\n" +
@@ -4152,7 +4153,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
         		"goog.require('org.apache.royale.core.Application');\n" +
         		"goog.require('org.apache.royale.charts.beads.DataTipBead');\n" +
-//        		"goog.require('org.apache.royale.utils.Language');\n" + // in real compiles this will be output, but not in tests
+        		"goog.require('org.apache.royale.utils.Language');\n" +
         		"\n" +
         		"\n" +
         		"\n" +
@@ -4396,7 +4397,7 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
         		"\n" +
         		"goog.require('org.apache.royale.core.Application');\n" +
         		"goog.require('org.apache.royale.charts.beads.DataTipBead');\n" +
-//        		"goog.require('org.apache.royale.utils.Language');\n" + // in real compiles this will be output, but not in tests
+        		"goog.require('org.apache.royale.utils.Language');\n" +
         		"\n" +
         		"\n" +
         		"\n" +
