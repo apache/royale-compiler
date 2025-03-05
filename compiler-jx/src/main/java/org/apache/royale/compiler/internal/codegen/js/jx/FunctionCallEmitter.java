@@ -122,7 +122,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                             if (wrapResolve) {
                                 ((RoyaleJSProject) getProject()).needLanguage = true;
                                 getModel().needLanguage = true;
-                                write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+                                write(fjs.formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()));
                                 write(ASEmitterTokens.MEMBER_ACCESS);
                                 write("resolveUncertain");
                                 write(ASEmitterTokens.PAREN_OPEN);
@@ -154,7 +154,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     } else {
                         //no 'new' output in this case, just coercion, so map from the start of 'new'
                         startMapping(node);
-                        write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+                        write(fjs.formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()));
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         write(JSRoyaleEmitterTokens.SYNTH_VECTOR);
                         write(ASEmitterTokens.PAREN_OPEN);
@@ -246,7 +246,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                         if (project instanceof RoyaleJSProject)
                             ((RoyaleJSProject) project).needLanguage = true;
                         getEmitter().getModel().needLanguage = true;
-                        write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+                        write(fjs.formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()));
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         if (isInt)
                             write(JSRoyaleEmitterTokens.UNDERSCORE);
@@ -339,7 +339,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                             if (getProject() instanceof RoyaleJSProject)
                                 ((RoyaleJSProject) getProject()).needLanguage = true;
                             getEmitter().getModel().needLanguage = true;
-                            write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+                            write(fjs.formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()));
                             write(ASEmitterTokens.MEMBER_ACCESS);
                             startMapping(node.getNameNode());
                             write("arrayAsVector");
@@ -420,7 +420,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                             ((RoyaleJSProject) project).needLanguage = true;
                         getEmitter().getModel().needLanguage = true;
                         startMapping(node.getNameNode());
-                        write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+                        write(fjs.formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()));
                         write(ASEmitterTokens.MEMBER_ACCESS);
                         if (isInt)
                             write(JSRoyaleEmitterTokens.UNDERSCORE);
@@ -436,7 +436,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                             if (project instanceof RoyaleJSProject)
                                 ((RoyaleJSProject) project).needLanguage = true;
                             getEmitter().getModel().needLanguage = true;
-                            write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+                            write(fjs.formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()));
                             write(ASEmitterTokens.MEMBER_ACCESS);
                             write("sortOn");
                             IContainerNode newArgs = EmitterUtils.insertArgumentsBefore(node.getArgumentsNode(), cnode);
@@ -471,7 +471,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                                         if (project instanceof RoyaleJSProject)
                                             ((RoyaleJSProject) project).needLanguage = true;
                                         getEmitter().getModel().needLanguage = true;
-                                        write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+                                        write(fjs.formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()));
                                         write(ASEmitterTokens.MEMBER_ACCESS);
                                         write("sort(");
                                         // can't use parameter emitter because the parameter types would be for
@@ -612,7 +612,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                             } else {
                     	        //default Vector implementation
                                 startMapping(node.getNameNode());
-                                write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+                                write(fjs.formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()));
                                 write(ASEmitterTokens.MEMBER_ACCESS);
                                 write(JSRoyaleEmitterTokens.SYNTH_VECTOR);
                                 write(ASEmitterTokens.PAREN_OPEN);
@@ -667,7 +667,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                                 wrapResolve = true;
                                 ((RoyaleJSProject) getProject()).needLanguage = true;
                                 getModel().needLanguage = true;
-                                write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+                                write(fjs.formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()));
                                 write(ASEmitterTokens.MEMBER_ACCESS);
                                 write("resolveUncertain");
                                 write(ASEmitterTokens.PAREN_OPEN);

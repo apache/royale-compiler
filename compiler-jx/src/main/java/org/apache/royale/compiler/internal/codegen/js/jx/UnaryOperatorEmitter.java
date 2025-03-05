@@ -23,6 +23,7 @@ import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
+import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
@@ -43,7 +44,7 @@ public class UnaryOperatorEmitter extends JSSubEmitter implements
 
     @Override
     public void emit(IUnaryOperatorNode node)
-    {
+    {   
         if (ASNodeUtils.hasParenOpen(node))
             write(ASEmitterTokens.PAREN_OPEN);
         
@@ -64,7 +65,9 @@ public class UnaryOperatorEmitter extends JSSubEmitter implements
                 ((RoyaleJSProject)getProject()).needLanguage = true;
             }
             getModel().needLanguage = true;
-            String synthTagName = JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()
+            // TODO (mschmalle) will remove this cast as more things get abstracted
+            JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
+            String synthTagName = fjs.formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken())
                     + ASEmitterTokens.MEMBER_ACCESS.getToken()
                     + JSRoyaleEmitterTokens.ROYALE_SYNTH_TAG_FIELD_NAME.getToken();
             LiteralNode synthType = new LiteralNode(ILiteralNode.LiteralType.STRING, synthTagName);

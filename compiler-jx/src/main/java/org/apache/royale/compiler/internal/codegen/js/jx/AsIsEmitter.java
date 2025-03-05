@@ -50,6 +50,9 @@ public class AsIsEmitter extends JSSubEmitter
     public void emitIsAs(IExpressionNode node, IExpressionNode left, IExpressionNode right,
                          ASTNodeID id, boolean coercion)
     {
+        // TODO (mschmalle) will remove this cast as more things get abstracted
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
+
         // project is null in unit tests
         //IDefinition dnode = project != null ? (right).resolve(project) : null;
         IDefinition dnode = getProject() != null ? (right)
@@ -157,7 +160,7 @@ public class AsIsEmitter extends JSSubEmitter
         {
             startMapping(node);
         }
-        write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+        write(fjs.formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()));
         write(ASEmitterTokens.MEMBER_ACCESS);
 
         if (id == ASTNodeID.Op_IsID)
@@ -188,13 +191,13 @@ public class AsIsEmitter extends JSSubEmitter
                 String langMethod;
                 String synthName;
                 if (NativeUtils.isVector(dnode.getQualifiedName()) && dnode instanceof IAppliedVectorDefinition) {
-                    langMethod = JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()
+                    langMethod = fjs.formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken())
                             + ASEmitterTokens.MEMBER_ACCESS.getToken()
                             + JSRoyaleEmitterTokens.SYNTH_VECTOR.getToken();
                     synthName = getEmitter().formatQualifiedName(((IAppliedVectorDefinition) dnode).resolveElementType(project).getQualifiedName());
                 } else {
                     //non-vector, e.g. int/uint
-                    langMethod = JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()
+                    langMethod = fjs.formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken())
                             + ASEmitterTokens.MEMBER_ACCESS.getToken()
                             + JSRoyaleEmitterTokens.SYNTH_TYPE.getToken();
                     synthName = getEmitter().formatQualifiedName(dnode.getQualifiedName());

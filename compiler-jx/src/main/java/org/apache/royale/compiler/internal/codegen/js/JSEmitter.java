@@ -742,7 +742,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
                 endMapping(assignedNode);
             } else {
                 startMapping(assignedNode);
-                write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+                write(formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()));
                 write(ASEmitterTokens.MEMBER_ACCESS);
                 write(JSRoyaleEmitterTokens.SYNTH_VECTOR);
                 write(ASEmitterTokens.PAREN_OPEN);
@@ -764,7 +764,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
                 && project instanceof RoyaleJSProject
                 && ((RoyaleJSProject)project).config.getJsVectorEmulationClass() == null   ){
             startMapping(assignedNode);
-            write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+            write(formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()));
             write(ASEmitterTokens.MEMBER_ACCESS);
             write(JSRoyaleEmitterTokens.SYNTH_VECTOR);
             write(ASEmitterTokens.PAREN_OPEN);
@@ -890,7 +890,7 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
             if (needsCoercion) {
                 //add a comment tag leader, so implicit casts are identifiable in the output
                 coercionStart = "/* implicit cast */ "
-                        + JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()
+                        + formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken())
                         + ASEmitterTokens.MEMBER_ACCESS.getToken()
                         + ASEmitterTokens.AS.getToken()
                         + ASEmitterTokens.PAREN_OPEN.getToken();
@@ -899,12 +899,12 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
                     String synthCall;
                     String synthethicType;
                     if (NativeUtils.isVector(coercionTypeString)) {
-                        synthCall = JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()
+                        synthCall = formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken())
                                 + ASEmitterTokens.MEMBER_ACCESS.getToken()
                                 + JSRoyaleEmitterTokens.SYNTH_VECTOR.getToken();
                         synthethicType = formatQualifiedName(coercionTypeString.substring(8, coercionTypeString.length() -1));
                     } else {
-                        synthCall = JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()
+                        synthCall = formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken())
                                 + ASEmitterTokens.MEMBER_ACCESS.getToken()
                                 + JSRoyaleEmitterTokens.SYNTH_TYPE.getToken();
                         synthethicType = coercionTypeString;

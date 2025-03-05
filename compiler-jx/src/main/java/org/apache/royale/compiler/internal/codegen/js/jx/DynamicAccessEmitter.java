@@ -125,7 +125,7 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
 							((RoyaleJSProject) getProject()).needLanguage = true;
 							getWalker().walk(leftOperandNode);
 							write(ASEmitterTokens.SQUARE_OPEN);
-							write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+							write(fjs.formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()));
 							write(ASEmitterTokens.MEMBER_ACCESS);
 							write(JSRoyaleEmitterTokens.VECTOR_INDEX_CHECK_METHOD_NAME);
 							write(ASEmitterTokens.SQUARE_CLOSE);

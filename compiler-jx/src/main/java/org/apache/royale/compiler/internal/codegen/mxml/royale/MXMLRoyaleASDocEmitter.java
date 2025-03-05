@@ -679,7 +679,7 @@ public class MXMLRoyaleASDocEmitter extends MXMLEmitter implements
         handler.isProperty = true;
         handler.name = "handlerFunction";
         handler.parent = setEvent;
-        handler.value = JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()
+        handler.value = formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken())
                 + ASEmitterTokens.MEMBER_ACCESS.getToken()
                 + JSRoyaleEmitterTokens.CLOSURE_FUNCTION_NAME.getToken()
                 + ASEmitterTokens.PAREN_OPEN.getToken()

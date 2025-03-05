@@ -958,7 +958,7 @@ public class JSRoyaleEmitter extends JSEmitter implements IJSRoyaleEmitter
                 || name.equals(IASLanguageConstants.uint))
             result = IASLanguageConstants.Number;
         else if (name.equals(IASLanguageConstants.Vector) || name.equals("__AS3__.vec.Vector")) {
-            result = JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()
+            result = formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken())
                     + ASEmitterTokens.MEMBER_ACCESS.getToken()
                     + JSRoyaleEmitterTokens.VECTOR.getToken();
         }
@@ -1467,7 +1467,7 @@ public class JSRoyaleEmitter extends JSEmitter implements IJSRoyaleEmitter
         if (project instanceof RoyaleJSProject)
         	((RoyaleJSProject)project).needLanguage = true;
         getModel().needLanguage = true;
-        write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+        write(formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()));
         write(ASEmitterTokens.MEMBER_ACCESS);
         write(JSRoyaleEmitterTokens.CLOSURE_FUNCTION_NAME);
         write(ASEmitterTokens.PAREN_OPEN);
@@ -1881,7 +1881,7 @@ public class JSRoyaleEmitter extends JSEmitter implements IJSRoyaleEmitter
         if (node instanceof TypedExpressionNode) {
             startMapping(node);
             write(ASEmitterTokens.PAREN_OPEN);
-            write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+            write(formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()));
             write(ASEmitterTokens.MEMBER_ACCESS);
             write(JSRoyaleEmitterTokens.SYNTH_VECTOR);
             write(ASEmitterTokens.PAREN_OPEN);

@@ -678,6 +678,9 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 
     private void super_emitBinaryOperator(IBinaryOperatorNode node, boolean isAssignment)
     {
+        // TODO (mschmalle) will remove this cast as more things get abstracted
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
+
         if (ASNodeUtils.hasParenOpen(node))
             write(ASEmitterTokens.PAREN_OPEN);
 
@@ -725,7 +728,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 				//the dynamic access field name is a constant on Language, so it can be different/shorter in release build
 				getWalker().walk(((MemberAccessExpressionNode) node.getLeftOperandNode()).getLeftOperandNode());
 				write(ASEmitterTokens.SQUARE_OPEN);
-				write(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken());
+                write(fjs.formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()));
 				write(ASEmitterTokens.MEMBER_ACCESS);
 				write(JSRoyaleEmitterTokens.ROYALE_SYNTH_TAG_FIELD_NAME);
 				write(ASEmitterTokens.SQUARE_CLOSE);
