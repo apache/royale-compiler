@@ -23,6 +23,7 @@ package org.apache.royale.compiler.internal.codegen.mxml.royale;
 import java.io.FilterWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -72,7 +73,7 @@ public class MXMLRoyaleASDocEmitter extends MXMLEmitter implements
     //private ArrayList<MXMLStyleSpecifier> styles;
     private IClassDefinition classDefinition;
     private IClassDefinition documentDefinition;
-    private ArrayList<String> usedNames = new ArrayList<String>();
+    private Set<String> usedNames = new HashSet<String>();
     
     private int eventCounter;
     private int idCounter;
@@ -1225,8 +1226,10 @@ public class MXMLRoyaleASDocEmitter extends MXMLEmitter implements
     	if (subDocumentNames.contains(name))
     		return documentDefinition.getQualifiedName() + "." + name;
         if (NativeUtils.isJSNative(name)) return name;
-		if (useName && !usedNames.contains(name))
+		if (useName)
+        {
 			usedNames.add(name);
+        }
      	return name;
     }
 

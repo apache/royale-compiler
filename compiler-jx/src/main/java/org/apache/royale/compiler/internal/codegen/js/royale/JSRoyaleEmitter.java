@@ -144,8 +144,8 @@ public class JSRoyaleEmitter extends JSEmitter implements IJSRoyaleEmitter
     private ObjectDefinePropertyEmitter objectDefinePropertyEmitter;
     private DefinePropertyFunctionEmitter definePropertyFunctionEmitter;
 
-    public ArrayList<String> usedNames = new ArrayList<String>();
-    public ArrayList<String> staticUsedNames = new ArrayList<String>();
+    public Set<String> usedNames = new HashSet<String>();
+    public Set<String> staticUsedNames = new HashSet<String>();
     private boolean needNamespace;
     
     private Set<IFunctionNode> emittingHoistedNodes = new HashSet<IFunctionNode>();
@@ -201,13 +201,6 @@ public class JSRoyaleEmitter extends JSEmitter implements IJSRoyaleEmitter
                         foundNamespace = true;
                     }
 	    			sawRequires = true;
-	    			/*
-	    			if (!usedNames.contains(s))
-                    {
-                        removeLineFromMappings(i);
-                        continue;
-                    }
-                    */
 	    		}
 	    		else if (sawRequires || i == len - 1)
                 {
@@ -808,8 +801,7 @@ public class JSRoyaleEmitter extends JSEmitter implements IJSRoyaleEmitter
         write(IASLanguageConstants.Namespace);
         endMapping(node);
         write(ASEmitterTokens.PAREN_OPEN);
-        if (!staticUsedNames.contains(IASLanguageConstants.Namespace))
-        	staticUsedNames.add(IASLanguageConstants.Namespace);
+        staticUsedNames.add(IASLanguageConstants.Namespace);
         IExpressionNode uriNode = node.getNamespaceURINode();
         if (uriNode == null)
         {
@@ -934,14 +926,18 @@ public class JSRoyaleEmitter extends JSEmitter implements IJSRoyaleEmitter
     	else if (!isDoc)
     	{
         	if (getModel().inStaticInitializer)
-        		if (!staticUsedNames.contains(name) && !NativeUtils.isJSNative(name)
+            {
+        		if (!NativeUtils.isJSNative(name)
         				&& isGoogProvided(name) && (getModel().getCurrentClass() == null || !getModel().getCurrentClass().getQualifiedName().equals(name))
         				&& (getModel().primaryDefinitionQName == null
         					|| !getModel().primaryDefinitionQName.equals(name)))
         			staticUsedNames.add(name);
+            }
     		
-    		if (!usedNames.contains(name) && isGoogProvided(name))
+    		if (isGoogProvided(name))
+            {
     			usedNames.add(name);
+            }
     	}
         return name;
     }
@@ -1900,8 +1896,7 @@ public class JSRoyaleEmitter extends JSEmitter implements IJSRoyaleEmitter
         }
         if (getModel().inStaticInitializer)
         {
-        	if (!staticUsedNames.contains(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()))
-        		staticUsedNames.add(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken());
+            staticUsedNames.add(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken());
         }
         if (project instanceof RoyaleJSProject)
         	((RoyaleJSProject)project).needLanguage = true;
@@ -1914,8 +1909,7 @@ public class JSRoyaleEmitter extends JSEmitter implements IJSRoyaleEmitter
         super.emitAssignmentCoercion(assignedNode, definition);
         if (getModel().inStaticInitializer)
         {
-        	if (!staticUsedNames.contains(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()))
-        		staticUsedNames.add(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken());
+            staticUsedNames.add(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken());
         }
 
     }

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -131,8 +132,8 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     //private ArrayList<MXMLStyleSpecifier> styles;
     private IClassDefinition classDefinition;
     private IClassDefinition documentDefinition;
-    private ArrayList<String> usedNames = new ArrayList<String>();
-    private ArrayList<String> staticUsedNames = new ArrayList<String>();
+    private Set<String> usedNames = new HashSet<String>();
+    private Set<String> staticUsedNames = new HashSet<String>();
     private ArrayList<IMXMLMetadataNode> metadataNodes = new ArrayList<IMXMLMetadataNode>();
     // separately track all fx:Declarations that are primitive types (fx:String, fx:Array)
     private ArrayList<IMXMLInstanceNode> primitiveDeclarationNodes = new ArrayList<IMXMLInstanceNode>();
@@ -187,11 +188,11 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     public String postProcess(String output)
     {
         IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker()).getASEmitter();
-        ArrayList<String> asEmitterUsedNames = ((JSRoyaleEmitter)asEmitter).usedNames;
+        Set<String> asEmitterUsedNames = ((JSRoyaleEmitter)asEmitter).usedNames;
         JSRoyaleEmitter fjs = (JSRoyaleEmitter)asEmitter;
 
         String currentClassName = fjs.getModel().getCurrentClass().getQualifiedName();
-        ArrayList<String> removals = new ArrayList<String>();
+        Set<String> removals = new HashSet<String>();
         for (String usedName : asEmitterUsedNames) {
             //remove any internal component that has been registered with the other emitter's usedNames
             if (usedName.startsWith(currentClassName+".") && subDocumentNames.contains(usedName.substring(currentClassName.length()+1))) {
@@ -210,8 +211,8 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         }
         usedNames.addAll(asEmitterUsedNames);
         
-        ArrayList<String> asStaticEmitterUsedNames = ((JSRoyaleEmitter)asEmitter).staticUsedNames;
-        removals = new ArrayList<String>();
+        Set<String> asStaticEmitterUsedNames = ((JSRoyaleEmitter)asEmitter).staticUsedNames;
+        removals = new HashSet<String>();
         for (String usedName : asStaticEmitterUsedNames) {
             //remove any internal component that has been registered with the other emitter's usedNames
             if (usedName.startsWith(currentClassName+".") && subDocumentNames.contains(usedName.substring(currentClassName.length()+1))) {
@@ -281,7 +282,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	    	            royaleProject = (RoyaleJSProject) project;
 
 	    			stillSearching = false;
-                    for (String usedName :usedNames) {
+                    for (String usedName : usedNames) {
                         if (!foundRequires.contains(usedName)) {
                             if (usedName.equals(classDefinition.getQualifiedName())) continue;
                             if (((JSRoyaleEmitter) asEmitter).getModel().isInternalClass(usedName)) continue;
@@ -640,8 +641,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         }
 		if (staticUsedNames.size() > 0)
 		{
-			if (staticUsedNames.size() > 1 ||
-					!staticUsedNames.get(0).equals(currentClassName))
+			if (staticUsedNames.size() > 1 || !staticUsedNames.contains(currentClassName))
 			{
 				StringBuilder sb = new StringBuilder();
 				sb.append(JSGoogEmitterTokens.ROYALE_STATIC_DEPENDENCY_LIST.getToken());
@@ -1627,10 +1627,8 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                     write(ASEmitterTokens.DOUBLE_QUOTE);
                     write(qname);
                     write(ASEmitterTokens.DOUBLE_QUOTE);
-	                if (!usedNames.contains(qname))
-	                	usedNames.add(qname);
-	                if (!staticUsedNames.contains(qname))
-	                	staticUsedNames.add(qname);
+                    usedNames.add(qname);
+                    staticUsedNames.add(qname);
                     StringBuilder objString = null;
                     if (useMxmlReflectObjectProperty)
                     {
@@ -3461,8 +3459,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             //we need to add EventDispatcher
             if (deps.indexOf(BindableEmitter.DISPATCHER_CLASS_QNAME) == -1)
                 deps.add(BindableEmitter.DISPATCHER_CLASS_QNAME);
-            if (usedNames.indexOf(BindableEmitter.DISPATCHER_CLASS_QNAME) == -1)
-                usedNames.add(BindableEmitter.DISPATCHER_CLASS_QNAME);
+            usedNames.add(BindableEmitter.DISPATCHER_CLASS_QNAME);
         }
 
         if (interfaceList != null)
@@ -3526,7 +3523,14 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             if (project instanceof RoyaleJSProject)
             {
             	if (((RoyaleJSProject)project).needLanguage)
-            		emitHeaderLine(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken());
+                {
+                    String formatted = JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken();
+                    if (writtenInstances.indexOf(formatted) == -1)
+                    {
+            		    emitHeaderLine(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken());
+                        writtenInstances.add(formatted);
+                    }
+                }
             }
         }
 
@@ -3654,13 +3658,13 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         if (NativeUtils.isJSNative(name)) return name;
         if (inStaticInitializer)
         {
-            if (!staticUsedNames.contains(name) && !NativeUtils.isJSNative(name) && isGoogProvided(name))
+            if (!NativeUtils.isJSNative(name) && isGoogProvided(name))
             {
                 staticUsedNames.add(name);
             }
         }
 
-        if (useName && !usedNames.contains(name) && isGoogProvided(name))
+        if (useName && isGoogProvided(name))
         {
             usedNames.add(name);
         }
