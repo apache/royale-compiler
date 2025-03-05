@@ -731,6 +731,11 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 				write(ASEmitterTokens.SQUARE_CLOSE);
 				write(ASEmitterTokens.MEMBER_ACCESS);
 				getWalker().walk(((MemberAccessExpressionNode) node.getLeftOperandNode()).getRightOperandNode());
+				if (getProject() instanceof RoyaleJSProject)
+				{
+					((RoyaleJSProject)getProject()).needLanguage = true;
+				}
+				getModel().needLanguage = true;
 			}
 			else if (isAssignment && node.getLeftOperandNode() instanceof NamespaceAccessExpressionNode)
 			{

@@ -2829,6 +2829,14 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         			eventHandler + ASEmitterTokens.SINGLE_QUOTE.getToken() +
         		ASEmitterTokens.PAREN_CLOSE.getToken();
         setEvent.propertySpecifiers.add(handler);
+
+        JSRoyaleEmitter fjs = (JSRoyaleEmitter) ((IMXMLBlockWalker) getMXMLWalker())
+                .getASEmitter();
+        fjs.getModel().needLanguage = true;
+        if (project instanceof RoyaleJSProject)
+        {
+            ((RoyaleJSProject)project).needLanguage = true;
+        }
     }
 
     public void emitInstanceOverride(IMXMLInstanceNode instanceNode, IMXMLStateNode state)

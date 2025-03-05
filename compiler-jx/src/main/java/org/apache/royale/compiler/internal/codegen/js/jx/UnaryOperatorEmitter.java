@@ -25,6 +25,7 @@ import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
 import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
@@ -58,7 +59,11 @@ public class UnaryOperatorEmitter extends JSSubEmitter implements
         ) {
             //support for output of alternate length setter, example: vectorInst.length++ as vectorInst['_synthType'].length++
             //likewise for pre/post increment/decrement
-            
+            if (getProject() instanceof RoyaleJSProject)
+            {
+                ((RoyaleJSProject)getProject()).needLanguage = true;
+            }
+            getModel().needLanguage = true;
             String synthTagName = JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken() + JSRoyaleEmitterTokens.ROYALE_SYNTH_TAG_FIELD_NAME.getToken();
             LiteralNode synthType = new LiteralNode(ILiteralNode.LiteralType.STRING, synthTagName);
             synthType.setSynthetic(true);

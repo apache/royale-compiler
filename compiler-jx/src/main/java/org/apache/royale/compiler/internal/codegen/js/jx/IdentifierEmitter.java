@@ -295,6 +295,10 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 {
                     if (NativeUtils.isSyntheticJSType(qname) && !(parentNode instanceof IFunctionCallNode))
                     {
+                        if (project instanceof RoyaleJSProject)
+                        {
+                            ((RoyaleJSProject)project).needLanguage = true;
+                        }
                         getEmitter().getModel().needLanguage = true;
                         write(JSRoyaleEmitterTokens.SYNTH_TYPE);
                         write(ASEmitterTokens.PAREN_OPEN);
