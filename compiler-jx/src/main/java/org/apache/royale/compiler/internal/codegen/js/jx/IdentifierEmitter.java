@@ -300,6 +300,8 @@ public class IdentifierEmitter extends JSSubEmitter implements
                             ((RoyaleJSProject)project).needLanguage = true;
                         }
                         getEmitter().getModel().needLanguage = true;
+                        write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
                         write(JSRoyaleEmitterTokens.SYNTH_TYPE);
                         write(ASEmitterTokens.PAREN_OPEN);
                         write(ASEmitterTokens.SINGLE_QUOTE);

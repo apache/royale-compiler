@@ -64,7 +64,9 @@ public class UnaryOperatorEmitter extends JSSubEmitter implements
                 ((RoyaleJSProject)getProject()).needLanguage = true;
             }
             getModel().needLanguage = true;
-            String synthTagName = JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken() + ASEmitterTokens.MEMBER_ACCESS.getToken() + JSRoyaleEmitterTokens.ROYALE_SYNTH_TAG_FIELD_NAME.getToken();
+            String synthTagName = JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()
+                    + ASEmitterTokens.MEMBER_ACCESS.getToken()
+                    + JSRoyaleEmitterTokens.ROYALE_SYNTH_TAG_FIELD_NAME.getToken();
             LiteralNode synthType = new LiteralNode(ILiteralNode.LiteralType.STRING, synthTagName);
             synthType.setSynthetic(true);
             DynamicAccessNode patchedVectorReference = new DynamicAccessNode(((ExpressionNodeBase)((MemberAccessExpressionNode) node.getOperandNode()).getLeftOperandNode()));

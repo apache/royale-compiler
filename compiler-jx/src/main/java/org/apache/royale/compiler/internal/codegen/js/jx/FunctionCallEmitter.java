@@ -154,6 +154,8 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     } else {
                         //no 'new' output in this case, just coercion, so map from the start of 'new'
                         startMapping(node);
+                        write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
                         write(JSRoyaleEmitterTokens.SYNTH_VECTOR);
                         write(ASEmitterTokens.PAREN_OPEN);
                         write(ASEmitterTokens.SINGLE_QUOTE);
@@ -610,6 +612,8 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                             } else {
                     	        //default Vector implementation
                                 startMapping(node.getNameNode());
+                                write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+                                write(ASEmitterTokens.MEMBER_ACCESS);
                                 write(JSRoyaleEmitterTokens.SYNTH_VECTOR);
                                 write(ASEmitterTokens.PAREN_OPEN);
                                 write(ASEmitterTokens.SINGLE_QUOTE);

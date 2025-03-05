@@ -185,14 +185,18 @@ public class AsIsEmitter extends JSSubEmitter
         {
             startMapping(right);
             if (NativeUtils.isSyntheticJSType(dnode.getQualifiedName())) {
-                JSRoyaleEmitterTokens langMethod;
+                String langMethod;
                 String synthName;
                 if (NativeUtils.isVector(dnode.getQualifiedName()) && dnode instanceof IAppliedVectorDefinition) {
-                    langMethod = JSRoyaleEmitterTokens.SYNTH_VECTOR;
+                    langMethod = JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()
+                            + ASEmitterTokens.MEMBER_ACCESS.getToken()
+                            + JSRoyaleEmitterTokens.SYNTH_VECTOR.getToken();
                     synthName = getEmitter().formatQualifiedName(((IAppliedVectorDefinition) dnode).resolveElementType(project).getQualifiedName());
                 } else {
                     //non-vector, e.g. int/uint
-                    langMethod = JSRoyaleEmitterTokens.SYNTH_TYPE;
+                    langMethod = JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()
+                            + ASEmitterTokens.MEMBER_ACCESS.getToken()
+                            + JSRoyaleEmitterTokens.SYNTH_TYPE.getToken();
                     synthName = getEmitter().formatQualifiedName(dnode.getQualifiedName());
                 }
                 write(langMethod);

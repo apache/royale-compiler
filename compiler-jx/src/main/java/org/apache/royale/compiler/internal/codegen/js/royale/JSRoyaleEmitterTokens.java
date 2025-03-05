@@ -67,15 +67,15 @@ public enum JSRoyaleEmitterTokens implements IEmitterTokens
     GETTER_PREFIX("get__"),
     SETTER_PREFIX("set__"),
     BINDABLE_PREFIX("bindable__"),
-    CLOSURE_FUNCTION_NAME(LANGUAGE_QNAME.getToken() +".closure"),
+    CLOSURE_FUNCTION_NAME("closure"),
     SKIP_AS_COERCIONS("skipAsCoercions"),
     SKIP_FUNCTION_COERCIONS("skipFunctionCoercions"),
     JSX("JSX"),
     JS_UNSAFE_INLINE_FUNCTION_NAME("jsUnsafeNativeInline"),
-    VECTOR(LANGUAGE_QNAME.getToken() + ".Vector"),
-    SYNTH_TYPE(LANGUAGE_QNAME.getToken() + ".synthType"),
-    SYNTH_VECTOR(LANGUAGE_QNAME.getToken() + ".synthVector"),
-    VECTOR_INDEX_CHECK_METHOD_NAME(LANGUAGE_QNAME.getToken() + ".CHECK_INDEX"),
+    VECTOR("Vector"),
+    SYNTH_TYPE("synthType"),
+    SYNTH_VECTOR("synthVector"),
+    VECTOR_INDEX_CHECK_METHOD_NAME("CHECK_INDEX"),
     ;
 
     private String token;

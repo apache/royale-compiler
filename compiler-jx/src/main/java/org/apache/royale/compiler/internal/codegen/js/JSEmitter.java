@@ -742,6 +742,8 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
                 endMapping(assignedNode);
             } else {
                 startMapping(assignedNode);
+                write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+                write(ASEmitterTokens.MEMBER_ACCESS);
                 write(JSRoyaleEmitterTokens.SYNTH_VECTOR);
                 write(ASEmitterTokens.PAREN_OPEN);
                 write(ASEmitterTokens.SINGLE_QUOTE);
@@ -762,6 +764,8 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
                 && project instanceof RoyaleJSProject
                 && ((RoyaleJSProject)project).config.getJsVectorEmulationClass() == null   ){
             startMapping(assignedNode);
+            write(JSRoyaleEmitterTokens.LANGUAGE_QNAME);
+            write(ASEmitterTokens.MEMBER_ACCESS);
             write(JSRoyaleEmitterTokens.SYNTH_VECTOR);
             write(ASEmitterTokens.PAREN_OPEN);
             //null to signify not a valid constructor
@@ -895,10 +899,14 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
                     String synthCall;
                     String synthethicType;
                     if (NativeUtils.isVector(coercionTypeString)) {
-                        synthCall = JSRoyaleEmitterTokens.SYNTH_VECTOR.getToken();
+                        synthCall = JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()
+                                + ASEmitterTokens.MEMBER_ACCESS.getToken()
+                                + JSRoyaleEmitterTokens.SYNTH_VECTOR.getToken();
                         synthethicType = formatQualifiedName(coercionTypeString.substring(8, coercionTypeString.length() -1));
                     } else {
-                        synthCall = JSRoyaleEmitterTokens.SYNTH_TYPE.getToken();
+                        synthCall = JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()
+                                + ASEmitterTokens.MEMBER_ACCESS.getToken()
+                                + JSRoyaleEmitterTokens.SYNTH_TYPE.getToken();
                         synthethicType = coercionTypeString;
                     }
                     coercionTypeString = synthCall
