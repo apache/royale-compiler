@@ -70,6 +70,9 @@ public class UnaryOperatorEmitter extends JSSubEmitter implements
             String synthTagName = fjs.formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken())
                     + ASEmitterTokens.MEMBER_ACCESS.getToken()
                     + JSRoyaleEmitterTokens.ROYALE_SYNTH_TAG_FIELD_NAME.getToken();
+            // this is hacky. we want to emit member access, but we're creating
+            // a string literal without quotes. we should create the appropriate
+            // member access node instead. -JT
             LiteralNode synthType = new LiteralNode(ILiteralNode.LiteralType.STRING, synthTagName);
             synthType.setSynthetic(true);
             DynamicAccessNode patchedVectorReference = new DynamicAccessNode(((ExpressionNodeBase)((MemberAccessExpressionNode) node.getOperandNode()).getLeftOperandNode()));
