@@ -1088,7 +1088,7 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
         for (String script : googConfiguration.getJSIncludeScript())
         {
             String scriptOutputPath = Paths.get("scripts").resolve(Paths.get(script).getFileName()).toString();
-            depsHTML.append("\t<script type=\"text/javascript\" src=\"scripts/");
+            depsHTML.append("\t<script type=\"text/javascript\" src=\"");
             depsHTML.append(scriptOutputPath);
             depsHTML.append("\"></script>\n");
 
