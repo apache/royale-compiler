@@ -1073,4 +1073,25 @@ public class JSGoogConfiguration extends JSConfiguration
         jsIncludeScript.addAll(value);
     }
 
+    //
+    // 'js-include-css'
+    //
+
+    protected List<String> jsIncludeCss = new ArrayList<String>();
+
+    public List<String> getJSIncludeCss()
+    {   
+        return jsIncludeCss;
+    }
+
+    @Config(allowMultiple = true)
+    @Mapping("js-include-css")
+    @Arguments(Arguments.PATH_ELEMENT)
+    @InfiniteArguments
+    public void setJSIncludeCss(ConfigurationValue cv, List<String> value)
+            throws ConfigurationException
+    {
+        jsIncludeCss.addAll(value);
+    }
+
 }

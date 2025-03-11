@@ -570,4 +570,34 @@ public class JSGoogCompcConfiguration extends JSConfiguration
         }
     }
 
+    //
+    // 'js-include-css'
+    //
+
+    protected List<String> jsIncludeCss = new ArrayList<String>();
+
+    public List<String> getJSIncludeCss()
+    {   
+        return jsIncludeCss;
+    }
+
+    @Config(allowMultiple = true)
+    @Mapping("js-include-css")
+    @Arguments(Arguments.PATH_ELEMENT)
+    @InfiniteArguments
+    public void setJSIncludeCss(ConfigurationValue cv, List<String> value)
+            throws ConfigurationException
+    {
+        jsIncludeCss.addAll(value);
+        for (String current : value)
+        {
+            String name = "js/css/" + Paths.get(current).getFileName().toString();
+            if (includeFilesNamePath.containsKey(name))
+            {
+                throw new ConfigurationException.RedundantFile(name, cv.getVar(), cv.getSource(), cv.getLine());
+            }
+            includeFilesNamePath.put(name, current);
+        }
+    }
+
 }

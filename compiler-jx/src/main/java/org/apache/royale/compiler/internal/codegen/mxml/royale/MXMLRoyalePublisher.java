@@ -973,10 +973,102 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
         return htmlFile.toString();
     }
 
+    private void copyIncludeFileFromSwcToOutput(String type, ISWC swc, String swcFileKey, String fileOutputPath, ProblemQuery problems)
+    {
+        ISWCFileEntry swcFileEntry = swc.getFile(swcFileKey);
+        try
+        {
+            InputStream is = swcFileEntry.createInputStream();
+            int n = is.available();
+            int total = 0;
+            byte[] data = new byte[n];
+            while (total < n)
+            {
+                total += is.read(data, total, n - total);
+            }
+            if ("intermediate".equals(type))
+            {
+                final File intermediateDir = outputFolder;
+                FileUtils.writeByteArrayToFile(new File(intermediateDir, fileOutputPath), data);
+            }
+            else
+            {
+                final File releaseDir = new File(outputParentFolder, ROYALE_RELEASE_DIR_NAME);
+                FileUtils.writeByteArrayToFile(new File(releaseDir, fileOutputPath), data);
+            }
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Unable to copy file: " + swcFileKey + " from library: " + swc.getSWCFile().getAbsolutePath());
+        }
+    }
+
+    private void copyIncludeFileToOutput(String type, String originFilePath, String targetOutputPath, ProblemQuery problems)
+    {
+        File scriptFile = new File(originFilePath);
+        if (scriptFile.exists() && !scriptFile.isDirectory())
+        {
+            try
+            {
+                if ("intermediate".equals(type))
+                {
+                    final File intermediateDir = outputFolder;
+                    FileUtils.copyFile(scriptFile, new File(intermediateDir, targetOutputPath));
+                }
+                else
+                {
+                    final File releaseDir = new File(outputParentFolder, ROYALE_RELEASE_DIR_NAME);
+                    FileUtils.copyFile(scriptFile, new File(releaseDir, targetOutputPath));
+                }
+            }
+            catch (IOException e)
+            {
+                throw new RuntimeException("Unable to copy script file: " + scriptFile.getAbsolutePath());
+            }
+        }
+        else
+        {
+            problems.add(new FileNotFoundProblem(originFilePath));
+        }
+    }
+
     protected String getTemplateDependencies(String type, String projectName, String mainClassQName,
             String deps, ProblemQuery problems)
     {
         StringBuilder depsHTML = new StringBuilder();
+
+        // included CSS appears before included JS scripts
+        // included CSS from SWC libraries appears before included CSS from the app
+        for (ISWC swc : project.getLibraries())
+        {
+            for (String key : swc.getFiles().keySet())
+            {
+                if (key.startsWith("js/css") || key.startsWith("js\\css"))
+                {
+                    String cssPath = Paths.get("js").relativize(Paths.get(key)).toString();
+
+                    depsHTML.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"");
+                    depsHTML.append(cssPath);
+                    depsHTML.append("\">\n");
+
+                    copyIncludeFileFromSwcToOutput(type, swc, key, cssPath, problems);
+                }
+            }
+        }
+
+        for (String css : googConfiguration.getJSIncludeCss())
+        {
+            String cssOutputPath = Paths.get("css").resolve(Paths.get(css).getFileName()).toString();
+            depsHTML.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"");
+            depsHTML.append(cssOutputPath);
+            depsHTML.append("\">\n");
+
+            copyIncludeFileToOutput(type, css, cssOutputPath, problems);
+        }
+
+        // included JS scripts appear after included CSS
+        // included JS scripts from SWC libraries appear before included JS
+        // scripts from the app
         for (ISWC swc : project.getLibraries())
         {
             for (String key : swc.getFiles().keySet())
@@ -988,68 +1080,19 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
                     depsHTML.append(scriptPath);
                     depsHTML.append("\"></script>\n");
 
-                    ISWCFileEntry swcFileEntry = swc.getFile(key);
-                    try
-                    {
-                        InputStream is = swcFileEntry.createInputStream();
-                        int n = is.available();
-                        int total = 0;
-                        byte[] data = new byte[n];
-                        while (total < n)
-                        {
-                            total += is.read(data, total, n - total);
-                        }
-                        if ("intermediate".equals(type))
-                        {
-                            final File intermediateDir = outputFolder;
-                            FileUtils.writeByteArrayToFile(new File(intermediateDir, scriptPath), data);
-                        }
-                        else
-                        {
-                            final File releaseDir = new File(outputParentFolder, ROYALE_RELEASE_DIR_NAME);
-                            FileUtils.writeByteArrayToFile(new File(releaseDir, scriptPath), data);
-                        }
-                    }
-                    catch (IOException e)
-                    {
-                        throw new RuntimeException("Unable to copy script file: " + key + " from library: " + swc.getSWCFile().getAbsolutePath());
-                    }
+                    copyIncludeFileFromSwcToOutput(type, swc, key, scriptPath, problems);
                 }
             }
         }
 
         for (String script : googConfiguration.getJSIncludeScript())
         {
-            String scriptPath = Paths.get(script).getFileName().toString();
+            String scriptOutputPath = Paths.get("scripts").resolve(Paths.get(script).getFileName()).toString();
             depsHTML.append("\t<script type=\"text/javascript\" src=\"scripts/");
-            depsHTML.append(scriptPath);
+            depsHTML.append(scriptOutputPath);
             depsHTML.append("\"></script>\n");
 
-            File scriptFile = new File(script);
-            if (scriptFile.exists() && !scriptFile.isDirectory())
-            {
-                try
-                {
-                    if ("intermediate".equals(type))
-                    {
-                        final File intermediateDir = outputFolder;
-                        FileUtils.copyFile(scriptFile, new File(intermediateDir, "scripts" + File.separator + scriptPath));
-                    }
-                    else
-                    {
-                        final File releaseDir = new File(outputParentFolder, ROYALE_RELEASE_DIR_NAME);
-                        FileUtils.copyFile(scriptFile, new File(releaseDir, "scripts" + File.separator + scriptPath));
-                    }
-                }
-                catch (IOException e)
-                {
-                    throw new RuntimeException("Unable to copy script file: " + scriptFile.getAbsolutePath());
-                }
-            }
-            else
-            {
-                problems.add(new FileNotFoundProblem(script));
-            }
+            copyIncludeFileToOutput(type, script, scriptOutputPath, problems);
         }
 
         if ("intermediate".equals(type))
