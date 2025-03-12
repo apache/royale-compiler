@@ -1070,7 +1070,11 @@ public class JSGoogConfiguration extends JSConfiguration
     public void setJSIncludeScript(ConfigurationValue cv, List<String> value)
             throws ConfigurationException
     {
-        jsIncludeScript.addAll(value);
+        for (String current : value)
+        {
+            String path = resolvePathStrict(current, cv);
+            jsIncludeScript.add(path);
+        }
     }
 
     //
@@ -1091,7 +1095,11 @@ public class JSGoogConfiguration extends JSConfiguration
     public void setJSIncludeCss(ConfigurationValue cv, List<String> value)
             throws ConfigurationException
     {
-        jsIncludeCss.addAll(value);
+        for (String current : value)
+        {
+            String path = resolvePathStrict(current, cv);
+            jsIncludeCss.add(path);
+        }
     }
 
 }

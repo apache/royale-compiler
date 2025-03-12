@@ -558,7 +558,6 @@ public class JSGoogCompcConfiguration extends JSConfiguration
     public void setJSIncludeScript(ConfigurationValue cv, List<String> value)
             throws ConfigurationException
     {
-        jsIncludeScript.addAll(value);
         for (String current : value)
         {
             String name = "js/scripts/" + Paths.get(current).getFileName().toString();
@@ -566,7 +565,9 @@ public class JSGoogCompcConfiguration extends JSConfiguration
             {
                 throw new ConfigurationException.RedundantFile(name, cv.getVar(), cv.getSource(), cv.getLine());
             }
-            includeFilesNamePath.put(name, current);
+            String path = resolvePathStrict(current, cv);
+            includeFilesNamePath.put(name, path);
+            jsIncludeScript.add(path);
         }
     }
 
@@ -588,7 +589,6 @@ public class JSGoogCompcConfiguration extends JSConfiguration
     public void setJSIncludeCss(ConfigurationValue cv, List<String> value)
             throws ConfigurationException
     {
-        jsIncludeCss.addAll(value);
         for (String current : value)
         {
             String name = "js/css/" + Paths.get(current).getFileName().toString();
@@ -596,7 +596,9 @@ public class JSGoogCompcConfiguration extends JSConfiguration
             {
                 throw new ConfigurationException.RedundantFile(name, cv.getVar(), cv.getSource(), cv.getLine());
             }
-            includeFilesNamePath.put(name, current);
+            String path = resolvePathStrict(current, cv);
+            includeFilesNamePath.put(name, path);
+            jsIncludeCss.add(path);
         }
     }
 
