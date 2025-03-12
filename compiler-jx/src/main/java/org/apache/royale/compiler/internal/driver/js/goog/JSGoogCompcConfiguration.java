@@ -602,4 +602,35 @@ public class JSGoogCompcConfiguration extends JSConfiguration
         }
     }
 
+    //
+    // 'js-include-css'
+    //
+
+    protected List<String> jsIncludeAsset = new ArrayList<String>();
+
+    public List<String> getJSIncludeAsset()
+    {   
+        return jsIncludeAsset;
+    }
+
+    @Config(allowMultiple = true)
+    @Mapping("js-include-asset")
+    @Arguments(Arguments.PATH_ELEMENT)
+    @InfiniteArguments
+    public void setJSIncludeAsset(ConfigurationValue cv, List<String> value)
+            throws ConfigurationException
+    {
+        for (String current : value)
+        {
+            String name = "js/assets/" + Paths.get(current).getFileName().toString();
+            if (includeFilesNamePath.containsKey(name))
+            {
+                throw new ConfigurationException.RedundantFile(name, cv.getVar(), cv.getSource(), cv.getLine());
+            }
+            String path = resolvePathStrict(current, cv);
+            includeFilesNamePath.put(name, path);
+            jsIncludeAsset.add(path);
+        }
+    }
+
 }

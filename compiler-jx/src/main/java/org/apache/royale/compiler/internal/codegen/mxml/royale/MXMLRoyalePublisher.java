@@ -1037,6 +1037,25 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
     {
         StringBuilder depsHTML = new StringBuilder();
 
+        // files included with -js-include-asset are copied to the "assets"
+        // sub-directory of the output directory.
+        for (ISWC swc : project.getLibraries())
+        {
+            for (String key : swc.getFiles().keySet())
+            {
+                if (key.startsWith("js/assets") || key.startsWith("js\\assets"))
+                {
+                    String assetPath = Paths.get("js").relativize(Paths.get(key)).toString();
+                    copyIncludeFileFromSwcToOutput(type, swc, key, assetPath, problems);
+                }
+            }
+        }
+        for (String asset : googConfiguration.getJSIncludeAsset())
+        {
+            String assetOutputPath = Paths.get("assets").resolve(Paths.get(asset).getFileName()).toString();
+            copyIncludeFileToOutput(type, asset, assetOutputPath, problems);
+        }
+
         // included CSS appears before included JS scripts
         // included CSS from SWC libraries appears before included CSS from the app
         for (ISWC swc : project.getLibraries())

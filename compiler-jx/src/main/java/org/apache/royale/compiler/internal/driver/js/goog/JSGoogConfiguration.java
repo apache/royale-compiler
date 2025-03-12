@@ -1102,4 +1102,29 @@ public class JSGoogConfiguration extends JSConfiguration
         }
     }
 
+    //
+    // 'js-include-asset'
+    //
+
+    protected List<String> jsIncludeAsset = new ArrayList<String>();
+
+    public List<String> getJSIncludeAsset()
+    {   
+        return jsIncludeAsset;
+    }
+
+    @Config(allowMultiple = true)
+    @Mapping("js-include-asset")
+    @Arguments(Arguments.PATH_ELEMENT)
+    @InfiniteArguments
+    public void setJSIncludeAsset(ConfigurationValue cv, List<String> value)
+            throws ConfigurationException
+    {
+        for (String current : value)
+        {
+            String path = resolvePathStrict(current, cv);
+            jsIncludeAsset.add(path);
+        }
+    }
+
 }
