@@ -283,6 +283,12 @@ public class TestBase implements ITestBase
     	int c = code.indexOf("\n\n\n/**\n * Metadata");
     	if (c != -1)
     		return code.substring(0, c);
+        c = code.indexOf("\n\n/**\n * Metadata");
+        if (c != -1)
+            return code.substring(0, c);
+        c = code.indexOf("\n/**\n * Metadata");
+        if (c != -1)
+            return code.substring(0, c);
     	return code;
     }
 

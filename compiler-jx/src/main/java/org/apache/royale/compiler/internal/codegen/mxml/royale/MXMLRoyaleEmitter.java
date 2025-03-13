@@ -3888,7 +3888,19 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	if (value instanceof String)
     	{
     		String s = (String)value;
-    		s = StringEscapeUtils.escapeJavaScript(s);
+
+            // most backslashes in the value need to be be escaped
+            // for example: we don't want "\" + "n" to be treated as a new line,
+            // so it should become "\" + "\" + "n" instead. to insert a new line
+            // in MXML, use &#xA; instead.
+            // Unicode escape sequences are allowed, though.
+            s = s.replaceAll("\\\\(?!u)", Matcher.quoteReplacement("\\\\"));
+
+            // the string will be wrapped with single quotes, so escape all
+            // existing single quotes found within the string
+            s = s.replace(ASEmitterTokens.SINGLE_QUOTE.getToken(),
+                    "\\" + ASEmitterTokens.SINGLE_QUOTE.getToken());
+
     		return "'" + s + "'";
     	}
     	return "";
