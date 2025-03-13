@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
 import java.util.Set;
 import java.util.Stack;
 
@@ -3330,18 +3331,21 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         String s = node.getValue().toString();
         if (ps.valueNeedsQuotes)
         {
-            // all backslashes in the value need to be be escaped
+            // most backslashes in the value need to be be escaped
             // for example: we don't want "\" + "n" to be treated as a new line,
             // so it should become "\" + "\" + "n" instead. to insert a new line
             // in MXML, use &#xA; instead.
-            s = s.replace("\\", "\\\\");
+            // Unicode escape sequences are allowed, though.
+            s = s.replaceAll("\\\\(?!u)", Matcher.quoteReplacement("\\\\"));
 
             // the string will be wrapped with single quotes, so escape all
             // existing single quotes found within the string
             s = s.replace(ASEmitterTokens.SINGLE_QUOTE.getToken(),
                     "\\" + ASEmitterTokens.SINGLE_QUOTE.getToken());
         }
+        s = s.replace("\b", "\\b");
         s = s.replace("\t", "\\t");
+        s = s.replace("\f", "\\f");
         s = s.replace("\r", "\\r");
         s = s.replace("\n", "\\n");
         ps.value += s;
