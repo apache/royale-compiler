@@ -199,10 +199,16 @@ public class MethodReference extends MemberReference
         String returnString = transformReturnString();
         if (!returnString.equals("void"))
         {
-        	if (returnString.equals("Number"))
+        	if (returnString.equals("Boolean"))
+        		returns = "return false;";
+            else if (returnString.equals("int"))
+                returns = "return 0;";
+        	else if (returnString.equals("Number"))
         		returns = "return 0;";
         	else if (returnString.equals("String"))
         		returns = "return '';";
+            else if (returnString.equals("uint"))
+                returns = "return 0;";
         	else
         		returns = " return null;";
         }

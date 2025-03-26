@@ -145,12 +145,28 @@ public class FieldReference extends MemberReference
 
         String staticValue = (isStatic) ? "static " : "";
         String isPublic = isInterface ? "" : "public ";
-        String getBody = isInterface ? "" : "{ return null; }";
         String setBody = isInterface ? "" : "{}";
 
         String type = toTypeString();
         if (type.contains("|") || type.contains("?"))
             type = "*";
+
+        String getBody = "";
+        if (!isInterface)
+        {
+        	if (type.equals("Boolean"))
+                getBody = "{ return false; }";
+            else if (type.equals("int"))
+                getBody = "{ return 0; }";
+        	else if (type.equals("Number"))
+                getBody = "{ return 0; }";
+        	else if (type.equals("String"))
+                getBody = "{ return null; }";
+            else if (type.equals("uint"))
+                getBody = "{ return 0; }";
+            else
+                getBody = "{ return null; }";
+        }
 
         if (outputJS)
         {
