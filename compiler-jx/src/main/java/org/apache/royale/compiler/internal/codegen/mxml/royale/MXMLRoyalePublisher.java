@@ -47,8 +47,10 @@ import org.apache.royale.compiler.internal.graph.GoogDepsWriter;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
 import org.apache.royale.compiler.internal.targets.ITargetAttributes;
+import org.apache.royale.compiler.internal.units.SWCCompilationUnit;
 import org.apache.royale.compiler.problems.FileNotFoundProblem;
 import org.apache.royale.compiler.problems.HTMLTemplateFileNotFoundProblem;
+import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.compiler.utils.JSClosureCompilerWrapper;
 import org.apache.royale.swc.ISWC;
 import org.apache.royale.swc.ISWCFileEntry;
@@ -1037,9 +1039,26 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
     {
         StringBuilder depsHTML = new StringBuilder();
 
+        // don't copy scripts/css/assets from a SWC unless we're using at least
+        // one compilation unit from it.
+        // we may have SWCs on the library-path that aren't actually used, and
+        // we don't want to copy anything from those SWCs.
+        Set<ISWC> reachableSWCs = new HashSet<ISWC>();
+        List<ICompilationUnit> reachableUnits = project.getReachableCompilationUnitsInSWFOrder(Arrays.asList(project.mainCU));
+        for (ICompilationUnit unit : reachableUnits)
+        {
+            if (!(unit instanceof SWCCompilationUnit))
+            {
+                continue;
+            }
+            SWCCompilationUnit swcUnit = (SWCCompilationUnit) unit;
+            ISWC swc = swcUnit.getSWC();
+            reachableSWCs.add(swc);
+        }
+
         // files included with -js-include-asset are copied to the "assets"
         // sub-directory of the output directory.
-        for (ISWC swc : project.getLibraries())
+        for (ISWC swc : reachableSWCs)
         {
             for (String key : swc.getFiles().keySet())
             {
@@ -1058,7 +1077,7 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
 
         // included CSS appears before included JS scripts
         // included CSS from SWC libraries appears before included CSS from the app
-        for (ISWC swc : project.getLibraries())
+        for (ISWC swc : reachableSWCs)
         {
             for (String key : swc.getFiles().keySet())
             {
@@ -1088,7 +1107,7 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
         // included JS scripts appear after included CSS
         // included JS scripts from SWC libraries appear before included JS
         // scripts from the app
-        for (ISWC swc : project.getLibraries())
+        for (ISWC swc : reachableSWCs)
         {
             for (String key : swc.getFiles().keySet())
             {
