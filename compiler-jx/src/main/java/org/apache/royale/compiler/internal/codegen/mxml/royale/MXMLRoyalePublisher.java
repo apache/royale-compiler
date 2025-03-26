@@ -558,6 +558,8 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
         }
         else
         {
+            project.needCSS = gdw.needCSS;
+
 	        File template = ((JSGoogConfiguration)configuration).getHtmlTemplate();
 			List<String> wrappedScript = new ArrayList<String>();
             if (additionalHTML.size() > 0)
