@@ -1058,6 +1058,18 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
             reachableSWCs.add(swc);
         }
 
+        final ISWCManager swcManager = project.getWorkspace().getSWCManager();
+        List<IFileSpecification> themes = project.getThemeFiles();
+        for (final IFileSpecification themeFile : themes)
+        {
+            final String extension = FilenameUtils.getExtension(themeFile.getPath());
+            if ("swc".equalsIgnoreCase(extension))
+            {
+                final ISWC swc = swcManager.get(new File(themeFile.getPath()));
+                reachableSWCs.add(swc);
+            }
+        }
+
         // files included with -js-include-asset are copied to the "assets"
         // sub-directory of the output directory.
         for (ISWC swc : reachableSWCs)
