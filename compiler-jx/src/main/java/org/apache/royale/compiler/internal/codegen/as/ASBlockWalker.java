@@ -81,6 +81,7 @@ import org.apache.royale.compiler.tree.as.IWithNode;
 import org.apache.royale.compiler.tree.metadata.IMetaTagNode;
 import org.apache.royale.compiler.tree.metadata.IMetaTagsNode;
 import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.requests.ISyntaxTreeRequestResult;
 import org.apache.royale.compiler.utils.DefinitionUtils;
 import org.apache.royale.compiler.visitor.IASNodeStrategy;
 import org.apache.royale.compiler.visitor.as.IASBlockVisitor;
@@ -178,7 +179,16 @@ public class ASBlockWalker implements IASBlockVisitor, IASBlockWalker
         IFileNode node = null;
         try
         {
-            node = (IFileNode) unit.getSyntaxTreeRequest().get().getAST();
+            ISyntaxTreeRequestResult requestResult = unit.getSyntaxTreeRequest().get();
+            node = (IFileNode) requestResult.getAST();
+            if (node == null)
+            {
+                for (ICompilerProblem problem : requestResult.getProblems())
+                {
+                    errors.add(problem);
+                }
+                return;
+            }
         }
         catch (InterruptedException e)
         {
