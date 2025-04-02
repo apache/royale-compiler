@@ -133,7 +133,8 @@ public class ASCompilationUnit extends CompilationUnitBase
         private final HardToWeakRef<IASNode> astRef;
         private final ImmutableSet<String> includedFiles;
         private final long lastModified;
-        private final ICompilerProblem[] problems;
+        private ICompilerProblem[] problems;
+        private boolean addedSyntaxTreeRequestProblems = false;
 
         @Override
         public ICompilerProblem[] getProblems()
@@ -162,14 +163,30 @@ public class ASCompilationUnit extends CompilationUnitBase
             // If our owning compilation unit has been gc'd
             // then we are just a stale result object.  Just bail.
             if (owner == null)
+            {
                 return null;
+            }
             // The reference to our owner is still good.
             // Use compare and set to atomically update our
             // owner's reference to us.  We don't care if it
             // ends up being null or a pointing to someone else.
             owner.syntaxTreeRequest.compareAndSet(syntaxTreeRequest, null);
             // Now ask our owner for the syntax tree.
-            return owner.getSyntaxTreeRequest().get().getAST();
+            ISyntaxTreeRequestResult requestResult = owner.getSyntaxTreeRequest().get();
+            IASNode ownerAST = requestResult.getAST();
+            if (ownerAST == null)
+            {
+                if (!addedSyntaxTreeRequestProblems)
+                {
+                    addedSyntaxTreeRequestProblems = true;
+                    ICompilerProblem[] requestProblems = requestResult.getProblems();
+                    ICompilerProblem[] newProblems = new ICompilerProblem[problems.length + requestProblems.length];
+                    System.arraycopy(problems, 0, newProblems, 0, problems.length);
+                    System.arraycopy(requestProblems, 0, newProblems, problems.length, requestProblems.length);
+                    this.problems = newProblems;
+                }
+            }
+            return ownerAST;
         }
         
         /**
