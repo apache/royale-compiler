@@ -281,7 +281,12 @@ public class CSSManager implements ICSSManager
                     for (String fileName : fileNames)
                     {
                     	String suffix = FilenameUtils.getExtension(fileName);
-                    	if ("css".equalsIgnoreCase(suffix) && !fileName.contains("default"))
+                    	if ("css".equalsIgnoreCase(suffix)
+                                && !fileName.contains("default")
+                                // ignore .css files bundled with -js-include-css
+                                // because they are simply added as <link> tags in HTML
+                                && !fileName.startsWith("js/css/")
+                                && !fileName.startsWith("js\\css\\"))
                     	{
                             final CacheStoreKeyBase key = CSSDocumentCache.createKey(swc, fileName);
                             final ICSSDocument extracss = cssCache.get(key);
