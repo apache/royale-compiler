@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.codegen.as.IASWriter;
@@ -40,16 +41,16 @@ import org.apache.royale.compiler.exceptions.ConfigurationException.IOError;
 import org.apache.royale.compiler.exceptions.ConfigurationException.MustSpecifyTarget;
 import org.apache.royale.compiler.internal.driver.as.ASBackend;
 import org.apache.royale.compiler.internal.driver.js.goog.ASDocConfiguration;
+import org.apache.royale.compiler.internal.driver.mxml.jsc.MXMLJSCJSSWCBackend;
 import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleASDocBackend;
 import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleASDocDITABackend;
 import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleBackend;
-import org.apache.royale.compiler.internal.driver.mxml.jsc.MXMLJSCJSSWCBackend;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.RoyaleASDocProject;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
-import org.apache.royale.compiler.internal.targets.RoyaleSWCTarget;
 import org.apache.royale.compiler.internal.targets.JSTarget;
+import org.apache.royale.compiler.internal.targets.RoyaleSWCTarget;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.InternalCompilerProblem;
@@ -260,8 +261,9 @@ public class ASDOCJSC extends MXMLJSCRoyale
                 Set<String> externs = config.getExterns();
                 List<String> excludeClasses = ((ASDocConfiguration)config).getExcludeClasses();
                 List<String> excludeSources = ((ASDocConfiguration)config).getExcludeSources();
-                Collection<ICompilationUnit> roots = ((RoyaleSWCTarget)target).getReachableCompilationUnits(errors);
+                Collection<ICompilationUnit> roots = ((RoyaleSWCTarget)target).getReachableCompilationUnits(problems.getProblems());
                 Collection<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(roots);
+                System.gc();
                 for (final ICompilationUnit cu : reachableCompilationUnits)
                 {
                     ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();
@@ -269,13 +271,13 @@ public class ASDOCJSC extends MXMLJSCRoyale
                     if (cuType == ICompilationUnit.UnitType.AS_UNIT
                             || cuType == ICompilationUnit.UnitType.MXML_UNIT)
                     {
-                    	String symbol = cu.getQualifiedNames().get(0);
-                    	if (externs.contains(symbol)) continue;
-                    	if (excludeClasses.contains(symbol)) continue;
-                    	String sourceFile = cu.getAbsoluteFilename();
-                    	sourceFile = sourceFile.replace("\\", "/");
-                    	if (excludeSources.contains(sourceFile)) continue;                    		
-                    	
+                        String symbol = cu.getQualifiedNames().get(0);
+                        if (externs.contains(symbol)) continue;
+                        if (excludeClasses.contains(symbol)) continue;
+                        String sourceFile = cu.getAbsoluteFilename();
+                        sourceFile = sourceFile.replace("\\", "/");
+                        if (excludeSources.contains(sourceFile)) continue;                    		
+                        
                         final File outputClassFile = getOutputClassFile(
                                 cu.getQualifiedNames().get(0), outputFolder);
 
@@ -290,16 +292,15 @@ public class ASDOCJSC extends MXMLJSCRoyale
                         if (cuType == ICompilationUnit.UnitType.AS_UNIT)
                         {
                             writer = project.getBackend().createWriter(project,
-                                    (List<ICompilerProblem>) errors, unit,
+                                    problems.getProblems(), unit,
                                     false);
                         }
                         else
                         {
                             writer = project.getBackend().createMXMLWriter(
-                                    project, (List<ICompilerProblem>) errors,
+                                    project, problems.getProblems(),
                                     unit, false);
                         }
-                        problems.addAll(errors);
                         BufferedOutputStream out = new BufferedOutputStream(
                                 new FileOutputStream(outputClassFile));
                         writer.writeTo(out);
@@ -313,6 +314,15 @@ public class ASDOCJSC extends MXMLJSCRoyale
                 emitter.outputIndex(outputFolder, (RoyaleASDocProject)project);
                 emitter.outputClasses(outputFolder, (RoyaleASDocProject)project);
                 emitter.outputTags(outputFolder, (RoyaleASDocProject)project);
+                
+                if (!config.getCreateTargetWithErrors())
+                {
+                	errors.clear();
+                	warnings.clear();
+                    problems.getErrorsAndWarnings(errors, warnings);
+                    if (errors.size() > 0)
+                        return false;
+                }
             }
         }
         catch (Exception e)
