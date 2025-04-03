@@ -263,7 +263,6 @@ public class ASDOCJSC extends MXMLJSCRoyale
                 List<String> excludeSources = ((ASDocConfiguration)config).getExcludeSources();
                 Collection<ICompilationUnit> roots = ((RoyaleSWCTarget)target).getReachableCompilationUnits(problems.getProblems());
                 Collection<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(roots);
-                System.gc();
                 for (final ICompilationUnit cu : reachableCompilationUnits)
                 {
                     ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();
