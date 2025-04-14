@@ -48,7 +48,8 @@
 
     <target name="compile" depends="generate-burm" description="compile">
         <mkdir dir="${basedir.bin}" />
-        <javac includes="**/*.java" classpathref="classpath" destdir="${basedir.bin}">
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" includes="**/*.java" classpathref="classpath" destdir="${basedir.bin}"
+            source="${javac.src}" target="${javac.src}">
             <src path="${basedir.generated.src}" />
             <src path="${basedir.src}" />
         </javac>
