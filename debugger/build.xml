@@ -20,13 +20,28 @@
 <project basedir="." default="jar" name="org.apache.royale.fdb" >
 	<property file="build.properties" />
     <property file="../build.properties" />
+
 	<!-- label is set by CruiseControl script based on P4 label incrementer -->
 	<condition property="build.number" value="${label}" else="0">
 	     <isset property="label" />
 	</condition>
+
 	<path id="classpath">
-			<fileset dir="${compiler.generated.lib}" includes="${jar.dependencies}" />
+        <fileset dir="${compiler.generated.lib}" includes="${jar.dependencies}" />
     </path>
+
+    <target name="compile" depends="generate-burm" description="compile">
+        <mkdir dir="${basedir.bin}" />
+        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" includes="**/*.java" classpathref="classpath" destdir="${basedir.bin}"
+            source="${javac.src}" target="${javac.src}">
+            <src path="${basedir.generated.src}" />
+            <src path="${basedir.src}" />
+        </javac>
+        <echo file="${basedir.bin}/flex/tools/debugger/cli/version.properties" append="false">build=${build.number.date}</echo>
+        <copy todir="${basedir.bin}">
+            <fileset dir="${basedir.src}/../resources" includes="**/*.txt, **/*.properties" />
+        </copy>
+    </target>
 
     <target name="jar" depends="compile">
         <mkdir dir="${dist}" />
@@ -45,23 +60,10 @@
             </manifest>
         </jar>
     </target>
-
-    <target name="compile" depends="generate-burm" description="compile">
-        <mkdir dir="${basedir.bin}" />
-        <javac debug="${javac.debug}" deprecation="${javac.deprecation}" includes="**/*.java" classpathref="classpath" destdir="${basedir.bin}"
-            source="${javac.src}" target="${javac.src}">
-            <src path="${basedir.generated.src}" />
-            <src path="${basedir.src}" />
-        </javac>
-        <echo file="${basedir.bin}/flex/tools/debugger/cli/version.properties" append="false">build=${build.number.date}</echo>
-        <copy todir="${basedir.bin}">
-            <fileset dir="${basedir.src}/../resources" includes="**/*.txt, **/*.properties" />
-        </copy>
-    </target>
     
     <target name="generate-burm">
-                <ant antfile="jburg-gen.xml" target="main" />
-            </target>
+        <ant antfile="jburg-gen.xml" target="main" />
+    </target>
 
     <target name="clean" description="clean">
         <echo message="Cleaning out dist dir: ${dist}" />
