@@ -342,7 +342,7 @@ public class DebugCLI implements Runnable, SourceLocator {
 	/* class's static init */
 	static {
 		// set up for localizing messages
-		m_localizationManager.addLocalizer(new DebuggerLocalizer("flex.tools.debugger.cli.fdb.")); //$NON-NLS-1$
+		m_localizationManager.addLocalizer(new DebuggerLocalizer("royale.tools.debugger.cli.fdb.")); //$NON-NLS-1$
 	}
 
 	public static void main(String[] args) {
