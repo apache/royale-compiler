@@ -37,6 +37,10 @@
             <src path="${basedir.generated.src}" />
             <src path="${basedir.src}" />
         </javac>
+        <tstamp>
+            <!-- if this property hasn't been set yet, do it now -->
+            <format property="build.number.date" pattern="yyyyMMdd" />
+        </tstamp>
         <echo file="${basedir.bin}/flex/tools/debugger/cli/version.properties" append="false">build=${build.number.date}</echo>
         <copy todir="${basedir.bin}">
             <fileset dir="${basedir.src}/../resources" includes="**/*.txt, **/*.properties" />
