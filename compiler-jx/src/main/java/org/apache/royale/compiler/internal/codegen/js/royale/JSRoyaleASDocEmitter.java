@@ -117,11 +117,8 @@ public class JSRoyaleASDocEmitter extends JSRoyaleEmitter implements IJSRoyaleAS
         write(formatQualifiedName(node.getQualifiedName()));
         writeNewline("\"");
         indentPush();
-        if (asDoc != null)
-        {
-            writeNewline(",");
-        	writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
-        }
+		writeNewline(",");
+		writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
         indentPop();
         writeNewline("}");
     }
@@ -251,49 +248,34 @@ public class JSRoyaleASDocEmitter extends JSRoyaleEmitter implements IJSRoyaleAS
         else
         	write(formatQualifiedName(node.getBaseClassName()));
         writeNewline("\"");
-        if (asDoc != null)
-        {
-            writeNewline(",");
-        	writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
-        }
+		writeNewline(",");
+		writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
         final IDefinitionNode[] members = node.getAllMemberNodes();
-        if (members.length > 0)
-        {
-        	writeNewline(",");
-        	writeNewline("\"members\": [");
-        	indentPush();
-        	indentPush();
-        }
+		writeNewline(",");
+		writeNewline("\"members\": [");
+		indentPush();
+		indentPush();
         firstMember = true;
         for (IDefinitionNode mnode : members)
         {
         	getWalker().walk(mnode);
         }
-        if (members.length > 0)
-        {
-            indentPop();
-            indentPop();
-        	writeNewline("]");
-        }
+		indentPop();
+		indentPop();
+		writeNewline("]");
         IMetaTagNode[] metas = node.getMetaTagNodesByName("Event");
-        if (metas.length > 0)
-        {
-        	writeNewline(",");
-        	writeNewline("\"events\": [");
-        	indentPush();
-        	indentPush();
-        }
+		writeNewline(",");
+		writeNewline("\"events\": [");
+		indentPush();
+		indentPush();
         firstMember = true;
         for (IMetaTagNode mnode : metas)
         {
         	writeEventTagNode(mnode);
         }
-        if (metas.length > 0)
-        {
-            indentPop();
-            indentPop();
-        	writeNewline("]");
-        }
+		indentPop();
+		indentPop();
+		writeNewline("]");
         
         indentPop();
         writeNewline("}");
@@ -317,43 +299,31 @@ public class JSRoyaleASDocEmitter extends JSRoyaleEmitter implements IJSRoyaleAS
         write(formatQualifiedName(node.getQualifiedName()));
         write("\"");
         IExpressionNode bases[] = node.getExtendedInterfaceNodes();
-        if (bases.length > 0)
-        {
-            writeNewline(",");
-            writeNewline("\"baseInterfaceNames\": [");
-            boolean firstBase = true;
-            int n = bases.length;
-	        for (int i = 0; i < n; i++)
-	        {
-	        	if (!firstBase)
-	        		writeNewline(", ");
-	        	firstBase = false;
-	        	IDefinition baseDef = bases[i].resolve(getWalker().getProject());
-	        	write("\"" + formatQualifiedName(baseDef.getQualifiedName()) + "\"");
-	        }
-        	writeNewline("]");
-        }
+		writeNewline(",");
+		writeNewline("\"baseInterfaceNames\": [");
+		boolean firstBase = true;
+		int n = bases.length;
+		for (int i = 0; i < n; i++)
+		{
+			if (!firstBase)
+				writeNewline(", ");
+			firstBase = false;
+			IDefinition baseDef = bases[i].resolve(getWalker().getProject());
+			write("\"" + formatQualifiedName(baseDef.getQualifiedName()) + "\"");
+		}
+		writeNewline("]");
         indentPush();
-        if (asDoc != null)
-        {
-        	writeNewline(",");
-        	writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
-        }
+		writeNewline(",");
+		writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
         final IDefinitionNode[] members = node.getAllMemberDefinitionNodes();
-        if (members.length > 0)
-        {
-        	writeNewline(",");
-        	writeNewline("\"members\": [");
-        }
+		writeNewline(",");
+		writeNewline("\"members\": [");
         firstMember = true;
         for (IDefinitionNode mnode : members)
         {
         	getWalker().walk(mnode);
         }
-        if (members.length > 0)
-        {
-        	writeNewline("]");
-        }
+		writeNewline("]");
         indentPop();
         writeNewline("}");
         addToIndex(node.getDefinition(), asDoc);
@@ -405,11 +375,8 @@ public class JSRoyaleASDocEmitter extends JSRoyaleEmitter implements IJSRoyaleAS
         writeNewline("\",");
         writeDefinitionAttributes(def);
         indentPush();
-        if (asDoc != null)
-        {
-            writeNewline(",");
-        	writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
-        }
+		writeNewline(",");
+		writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
         indentPop();
         write("}");
         addToIndex(node.getDefinition(), asDoc);
@@ -451,11 +418,8 @@ public class JSRoyaleASDocEmitter extends JSRoyaleEmitter implements IJSRoyaleAS
         writeNewline("\",");
         writeDefinitionAttributes(def);
         indentPush();
-        if (asDoc != null)
-        {
-            writeNewline(",");
-        	writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
-        }
+		writeNewline(",");
+		writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
         indentPop();
         write("}");
         addToIndex(node.getDefinition(), asDoc);
@@ -481,11 +445,8 @@ public class JSRoyaleASDocEmitter extends JSRoyaleEmitter implements IJSRoyaleAS
         writeNewline("\",");
         writeDefinitionAttributes(node.getDefinition());
         indentPush();
-        if (asDoc != null)
-        {
-            writeNewline(",");
-        	writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
-        }
+		writeNewline(",");
+		writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
         indentPop();
         write("}");
         addToIndex(node.getDefinition(), asDoc);
@@ -508,11 +469,8 @@ public class JSRoyaleASDocEmitter extends JSRoyaleEmitter implements IJSRoyaleAS
         writeNewline("\",");
         writeDefinitionAttributes(node.getDefinition());
         indentPush();
-        if (asDoc != null)
-        {
-            writeNewline(",");
-        	writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
-        }
+		writeNewline(",");
+		writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
         indentPop();
         write("}");
         addToIndex(node.getDefinition(), asDoc);
@@ -555,11 +513,8 @@ public class JSRoyaleASDocEmitter extends JSRoyaleEmitter implements IJSRoyaleAS
         writeNewline("\",");
         writeDefinitionAttributes(def);
         indentPush();
-        if (asDoc != null)
-        {
-            writeNewline(",");
-        	writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
-        }
+		writeNewline(",");
+		writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
         indentPop();
         write("}");
         addToIndex(node.getDefinition(), asDoc);
@@ -584,11 +539,8 @@ public class JSRoyaleASDocEmitter extends JSRoyaleEmitter implements IJSRoyaleAS
         writeDefinitionAttributes(node.getDefinition());
         indentPush();
         writeNewline(",");
-        if (asDoc != null)
-        {
-        	writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
-            writeNewline(",");
-        }
+		writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
+		writeNewline(",");
         write("  \"return\": \"");
         if (node.getReturnType().equals("void"))
 		{
@@ -630,21 +582,24 @@ public class JSRoyaleASDocEmitter extends JSRoyaleEmitter implements IJSRoyaleAS
     public void writeASDoc(ASDocComment asDoc, RoyaleASDocProject project)
     {
     	List<String> tagList = project.tags;
-    	asDoc.compile();
+		if (asDoc != null)
+		{
+    		asDoc.compile();
+		}
         write("  \"description\": \"");
-        String d = asDoc.getDescription();
+        String d = asDoc != null ? asDoc.getDescription() : "";
 		d = d.replace("\t", " ");
 		d = d.replace("\\\"", "&quot;");
 		d = d.replace("\\", "\\\\");
     	write(d);
 		write("\"");
-    	Map<String, List<IASDocTag>> tags = asDoc.getTags();
+    	Map<String, List<IASDocTag>> tags = asDoc != null ? asDoc.getTags() : null;
+		writeNewline(",");
+		writeNewline("\"tags\": [");
+		indentPush();
+		indentPush();
     	if (tags != null)
     	{
-    		writeNewline(",");
-    		writeNewline("\"tags\": [");
-    		indentPush();
-    		indentPush();
     		boolean firstTag = true;
     		Set<String> tagNames = tags.keySet();
     		for (String tagName : tagNames)
@@ -682,10 +637,10 @@ public class JSRoyaleASDocEmitter extends JSRoyaleEmitter implements IJSRoyaleAS
         		indentPop();
         		indentPop();
     		}
-    		write("  ]");
-    		indentPop();
-    		indentPop();
-    	}
+		}
+		write("  ]");
+		indentPop();
+		indentPop();
     }
            
     public void writeDefinitionAttributes(IDefinition def)
@@ -799,11 +754,8 @@ public class JSRoyaleASDocEmitter extends JSRoyaleEmitter implements IJSRoyaleAS
         write(evt.getValue("type"));
         writeNewline("\"");
         indentPush();
-        if (asDoc != null)
-        {
-            writeNewline(",");
-        	writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
-        }
+		writeNewline(",");
+		writeASDoc(asDoc, (RoyaleASDocProject)getWalker().getProject());
         indentPop();
         write("}");
         addToIndex(evt.getDefinition(), asDoc);
