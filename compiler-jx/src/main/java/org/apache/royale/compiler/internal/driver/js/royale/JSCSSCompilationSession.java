@@ -137,7 +137,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         result.append(fontFace.getFontStyle() + ";\n");
         result.append("    ");
         result.append("font-weight: ");
-        result.append(fontFace.getFontStyle() + ";\n");
+        result.append(fontFace.getFontWeight() + ";\n");
         result.append("    ");
         ArrayList<ICSSPropertyValue> sources = fontFace.getSources();
         for (ICSSPropertyValue src : sources)
