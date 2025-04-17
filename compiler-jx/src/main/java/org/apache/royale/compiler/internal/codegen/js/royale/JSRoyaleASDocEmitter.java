@@ -626,10 +626,31 @@ public class JSRoyaleASDocEmitter extends JSRoyaleEmitter implements IJSRoyaleAS
     					firstOne = false;
     					write("\"");
     					d = value.getDescription().trim();
-    					d = d.replace("\t", " ");
-    					d = d.replace("\\\"", "&quot;");
+
+						// escape all backslashes first because we might add
+						// more backslashes when we escape other stuff
+						// and we don't want to double escape those backslashes
     					d = d.replace("\\", "\\\\");
-    					write(d);
+
+						// we're wrapping the string with double quotes, so
+						// escape any double quotes that will appear inside them
+    					d = d.replace("\"", "\\\"");
+    					
+						// collapse tabs to spaces
+						d = d.replace("\t", " ");
+
+						// convert all other types of new lines to \n for consistency
+    					d = d.replace("\r\n", "\n");
+    					d = d.replace("\r", "\n");
+
+						// then escape all new lines
+    					d = d.replace("\n", "\\n");
+
+						// these characters don't make sense, so remove them
+						d = d.replace("\b", "");
+    					d = d.replace("\f", "");
+
+						write(d);
     					write("\"");
     				}
     			}
