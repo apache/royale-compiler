@@ -154,7 +154,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
      */
     protected String getProgramName()
     {
-        return "mxmljsc";
+        return "mxmlc";
     }
 
     @Override

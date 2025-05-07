@@ -493,7 +493,7 @@ public class ASDOCJSC extends MXMLJSCRoyale
 
     protected String getProgramName()
     {
-        return "compc";
+        return "asdoc";
     }
 
     protected boolean isCompc()
