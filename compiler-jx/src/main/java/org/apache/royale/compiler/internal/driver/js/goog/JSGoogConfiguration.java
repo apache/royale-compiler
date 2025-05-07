@@ -87,7 +87,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return closureLib;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("closure-lib")
     public void setClosureLib(ConfigurationValue cv, String value)
             throws ConfigurationException
@@ -147,7 +147,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return marmotinni;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("marmotinni")
     public void setMarmotinni(ConfigurationValue cv, String value)
             throws ConfigurationException
@@ -280,7 +280,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return skipTranspile;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("skip-transpile")
     public void setSkipTranspile(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -423,7 +423,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return exportPublicSymbols;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("export-public-symbols")
     public void setExportPublicSymbols(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -442,7 +442,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return exportProtectedSymbols;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("export-protected-symbols")
     public void setExportProtectedSymbols(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -461,7 +461,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return exportInternalSymbols;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("export-internal-symbols")
     public void setExportInternalSymbols(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -480,7 +480,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return preventRenameMxmlSymbolReferences;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("prevent-rename-mxml-symbol-references")
     public void setPreventRenameMxmlSymbolReferences(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -499,7 +499,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return preventRenamePublicSymbols;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("prevent-rename-public-symbols")
     public void setPreventRenamePublicSymbols(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -518,7 +518,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return preventRenamePublicInstanceMethods;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("prevent-rename-public-instance-methods")
     public void setPreventRenamePublicInstanceMethods(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -537,7 +537,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return preventRenamePublicStaticMethods;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("prevent-rename-public-static-methods")
     public void setPreventRenamePublicStaticMethods(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -556,7 +556,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return preventRenamePublicInstanceVariables;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("prevent-rename-public-instance-variables")
     public void setPreventRenamePublicInstanceVariables(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -575,7 +575,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return preventRenamePublicStaticVariables;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("prevent-rename-public-static-variables")
     public void setPreventRenamePublicStaticVariables(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -594,7 +594,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return preventRenamePublicInstanceAccessors;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("prevent-rename-public-instance-accessors")
     public void setPreventRenamePublicInstanceAccessors(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -613,7 +613,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return preventRenamePublicStaticAccessors;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("prevent-rename-public-static-accessors")
     public void setPreventRenamePublicStaticAccessors(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -632,7 +632,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return preventRenameProtectedSymbols;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("prevent-rename-protected-symbols")
     public void setPreventRenameProtectedSymbols(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -651,7 +651,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return preventRenameProtectedInstanceMethods;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("prevent-rename-protected-instance-methods")
     public void setPreventRenameProtectedInstanceMethods(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -670,7 +670,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return preventRenameProtectedStaticMethods;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("prevent-rename-protected-static-methods")
     public void setPreventRenameProtectedStaticMethods(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -689,7 +689,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return preventRenameProtectedInstanceVariables;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("prevent-rename-protected-instance-variables")
     public void setPreventRenameProtectedInstanceVariables(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -708,7 +708,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return preventRenameProtectedStaticVariables;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("prevent-rename-protected-static-variables")
     public void setPreventRenameProtectedStaticVariables(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -727,7 +727,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return preventRenameProtectedInstanceAccessors;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("prevent-rename-protected-instance-accessors")
     public void setPreventRenameProtectedInstanceAccessors(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -746,7 +746,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return preventRenameProtectedStaticAccessors;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("prevent-rename-protected-static-accessors")
     public void setPreventRenameProtectedStaticAccessors(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -765,7 +765,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return preventRenameInternalSymbols;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("prevent-rename-internal-symbols")
     public void setPreventRenameInternalSymbols(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -784,7 +784,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return preventRenameInternalInstanceMethods;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("prevent-rename-internal-instance-methods")
     public void setPreventRenameInternalInstanceMethods(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -803,7 +803,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return preventRenameInternalStaticMethods;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("prevent-rename-internal-static-methods")
     public void setPreventRenameInternalStaticMethods(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -822,7 +822,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return preventRenameInternalInstanceVariables;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("prevent-rename-internal-instance-variables")
     public void setPreventRenameInternalInstanceVariables(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -841,7 +841,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return preventRenameInternalStaticVariables;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("prevent-rename-internal-static-variables")
     public void setPreventRenameInternalStaticVariables(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -860,7 +860,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return preventRenameInternalInstanceAccessors;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("prevent-rename-internal-instance-accessors")
     public void setPreventRenameInternalInstanceAccessors(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -879,7 +879,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return preventRenameInternalStaticAccessors;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("prevent-rename-internal-static-accessors")
     public void setPreventRenameInternalStaticAccessors(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -918,7 +918,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return mxmlReflectObjectProperty;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("mxml-reflect-object-property")
     public void setMxmlReflectObjectProperty(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -1006,7 +1006,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return inlineConstants;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("inline-constants")
     public void setInlineConstants(ConfigurationValue cv, boolean value)
             throws ConfigurationException
@@ -1025,7 +1025,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return jsGetterPrefix;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("js-getter-prefix")
     public void setJsGetterPrefix(ConfigurationValue cv, String value)
             throws ConfigurationException
@@ -1044,7 +1044,7 @@ public class JSGoogConfiguration extends JSConfiguration
         return jsSetterPrefix;
     }
 
-    @Config
+    @Config(advanced = true)
     @Mapping("js-setter-prefix")
     public void setJsSetterPrefix(ConfigurationValue cv, String value)
             throws ConfigurationException

@@ -105,7 +105,7 @@ public class JSConfiguration extends Configuration
 
     // NOTE: js-output-type was replaced by targets
 
-    @Config
+    @Config(advanced = true)
     @Mapping("js-output-type")
     public void setJSOutputType(ConfigurationValue cv, String value)
             throws ConfigurationException
