@@ -1165,7 +1165,7 @@ public class MXMLC implements FlexTool
     protected String getStartMessage()
     {
         // This message should not be localized.
-        String message = "Apache Royale MXML and ActionScript Compiler (mxmlc)" + NEWLINE +
+        String message = "Apache Royale MXML and ActionScript Compiler (" + getProgramName() + ")" + NEWLINE +
             VersionInfo.buildMessage() + NEWLINE;
         return message;
     }

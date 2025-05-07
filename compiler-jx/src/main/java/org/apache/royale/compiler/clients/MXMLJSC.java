@@ -595,7 +595,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
     protected String getStartMessage()
     {
         // This message should not be localized.
-        String message = "Apache Royale MXML and ActionScript Compiler (mxmlc)" + NEWLINE +
+        String message = "Apache Royale MXML and ActionScript Compiler (" + getProgramName() + ")" + NEWLINE +
             VersionInfo.buildMessage() + NEWLINE;
         return message;
     }
