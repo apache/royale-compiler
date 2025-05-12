@@ -30,7 +30,7 @@ import static org.apache.royale.compiler.internal.css.CSSStringPropertyValue.str
 public final class CSSUnresolvedClassReferenceProblem extends CSSProblem
 {
     public static final String DESCRIPTION =
-        "${qname} is not defined.";
+        "'${qname}' is not defined.";
 
     public static final int errorCode = 1328;
     /**
