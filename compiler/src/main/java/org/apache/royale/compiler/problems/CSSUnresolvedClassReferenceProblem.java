@@ -20,6 +20,7 @@
 package org.apache.royale.compiler.problems;
 
 import org.apache.royale.compiler.internal.css.CSSFunctionCallPropertyValue;
+import org.apache.royale.compiler.internal.css.CSSStringPropertyValue;
 
 import static org.apache.royale.compiler.internal.css.CSSStringPropertyValue.stripQuotes;
 
@@ -38,7 +39,15 @@ public final class CSSUnresolvedClassReferenceProblem extends CSSProblem
     public CSSUnresolvedClassReferenceProblem(CSSFunctionCallPropertyValue classReference)
     {
         super(classReference);
-        qname = stripQuotes(classReference.rawArguments);
+        
+        if (CSSStringPropertyValue.isQuoted(classReference.rawArguments))
+        {
+            qname = stripQuotes(classReference.rawArguments);
+        }
+        else
+        {
+            qname = classReference.rawArguments;
+        }
     }
 
     public final String qname;
