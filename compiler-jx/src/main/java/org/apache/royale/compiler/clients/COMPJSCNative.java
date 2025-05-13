@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
@@ -56,6 +57,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.royale.compiler.clients.MXMLJSC.JSTargetType;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.codegen.js.IJSWriter;
+import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.driver.IBackend;
 import org.apache.royale.compiler.driver.js.IJSApplication;
 import org.apache.royale.compiler.exceptions.ConfigurationException;
@@ -65,12 +69,14 @@ import org.apache.royale.compiler.internal.driver.mxml.jsc.MXMLJSCJSSWCBackend;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
 import org.apache.royale.compiler.internal.targets.RoyaleSWCTarget;
 import org.apache.royale.compiler.internal.units.SWCCompilationUnit;
 import org.apache.royale.compiler.internal.watcher.WatchThread;
 import org.apache.royale.compiler.internal.watcher.WatchThread.IWatchWriter;
 import org.apache.royale.compiler.internal.targets.JSTarget;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.problems.FileNotFoundProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.InternalCompilerProblem;
 import org.apache.royale.compiler.problems.LibraryNotFoundProblem;
@@ -420,6 +426,9 @@ public class COMPJSCNative extends MXMLJSCNative
                         processSourceMap(sourceMapTemp, baos, outputClassFile, symbol);
                         writeFileToZip(zipOutputStream, sourceMapFilePath, baos, fileList);
                     }
+
+                    writeJSIncludesForCompilationUnitToZip(cu, zipOutputStream, fileList);
+
                     writer.close();
                 }
             }
@@ -500,6 +509,125 @@ public class COMPJSCNative extends MXMLJSCNative
             newSWCFile.renameTo(swcFile);
         }
         return true;
+    }
+
+    private void writeJSIncludesForCompilationUnitToZip(ICompilationUnit cu, ZipOutputStream zipOutputStream, StringBuilder fileList) throws IOException
+    {
+        for (IDefinition def : cu.getDefinitionPromises())
+        {
+            if (def instanceof DefinitionPromise)
+            {
+                def = ((DefinitionPromise) def).getActualDefinition();
+            }
+            for (IMetaTag metaTag : def.getMetaTagsByName("JSIncludeScript"))
+            {
+                for (IMetaTagAttribute metaAttr : metaTag.getAllAttributes())
+                {
+                    String key = metaAttr.getKey();
+                    if ("source".equals(key) || key == null)
+                    {
+                        String includePath = metaAttr.getValue();
+                        
+                        File includedFile = new File(includePath);
+                        if (!includedFile.isAbsolute())
+                        {
+                            File basePath = new File(def.getContainingFilePath()).getParentFile();
+                            includedFile = new File(basePath, includePath);   
+                        }
+
+                        if (includedFile.exists() && !includedFile.isDirectory())
+                        {
+                            String includedFilePath = "js/scripts-meta/" + includedFile.getName();
+                            if (config.isVerbose())
+                            {
+                                System.out.println("Writing file: " + includedFilePath);
+                            }
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            byte[] includedFileBytes = Files.readAllBytes(includedFile.toPath());
+                            baos.write(includedFileBytes);
+                            writeFileToZip(zipOutputStream, includedFilePath, baos, fileList);
+                        }
+                        else
+                        {
+                            problems.add(new FileNotFoundProblem(metaTag, includePath));
+                        }
+                        break;
+                    }
+                }
+            }
+            for (IMetaTag metaTag : def.getMetaTagsByName("JSIncludeCSS"))
+            {
+                for (IMetaTagAttribute metaAttr : metaTag.getAllAttributes())
+                {
+                    String key = metaAttr.getKey();
+                    if ("source".equals(key) || key == null)
+                    {
+                        String includePath = metaAttr.getValue();
+                        
+                        File includedFile = new File(includePath);
+                        if (!includedFile.isAbsolute())
+                        {
+                            File basePath = new File(def.getContainingFilePath()).getParentFile();
+                            includedFile = new File(basePath, includePath);   
+                        }
+
+                        if (includedFile.exists() && !includedFile.isDirectory())
+                        {
+                            String includedFilePath = "js/css-meta/" + includedFile.getName();
+                            if (config.isVerbose())
+                            {
+                                System.out.println("Writing file: " + includedFilePath);
+                            }
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            byte[] includedFileBytes = Files.readAllBytes(includedFile.toPath());
+                            baos.write(includedFileBytes);
+                            writeFileToZip(zipOutputStream, includedFilePath, baos, fileList);
+                        }
+                        else
+                        {
+                            problems.add(new FileNotFoundProblem(metaTag, includePath));
+                        }
+                        break;
+                    }
+                }
+            }
+            for (IMetaTag metaTag : def.getMetaTagsByName("JSIncludeAsset"))
+            {
+                for (IMetaTagAttribute metaAttr : metaTag.getAllAttributes())
+                {
+                    String key = metaAttr.getKey();
+                    if ("source".equals(key) || key == null)
+                    {
+                        String includePath = metaAttr.getValue();
+                        
+                        File includedFile = new File(includePath);
+                        if (!includedFile.isAbsolute())
+                        {
+                            File basePath = new File(def.getContainingFilePath()).getParentFile();
+                            includedFile = new File(basePath, includePath);   
+                        }
+
+                        if (includedFile.exists() && !includedFile.isDirectory())
+                        {
+                            String includedFilePath = "js/assets-meta/" + includedFile.getName();
+                            if (config.isVerbose())
+                            {
+                                System.out.println("Writing file: " + includedFilePath);
+                            }
+                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            byte[] includedFileBytes = Files.readAllBytes(includedFile.toPath());
+                            baos.write(includedFileBytes);
+                            writeFileToZip(zipOutputStream, includedFilePath, baos, fileList);
+                        }
+                        else
+                        {
+                            problems.add(new FileNotFoundProblem(metaTag, includePath));
+                        }
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     private void processSourceMap(ByteArrayOutputStream sourceMapTemp, ByteArrayOutputStream baos, File outputClassFile, String symbol)

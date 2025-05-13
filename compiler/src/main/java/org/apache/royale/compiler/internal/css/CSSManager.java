@@ -284,9 +284,12 @@ public class CSSManager implements ICSSManager
                     	if ("css".equalsIgnoreCase(suffix)
                                 && !fileName.contains("default")
                                 // ignore .css files bundled with -js-include-css
-                                // because they are simply added as <link> tags in HTML
+                                // or with [JSIncludeCSS] because they are
+                                // separately added as <link> tags in HTML
                                 && !fileName.startsWith("js/css/")
-                                && !fileName.startsWith("js\\css\\"))
+                                && !fileName.startsWith("js\\css\\")
+                                && !fileName.startsWith("js/css-meta/")
+                                && !fileName.startsWith("js\\css-meta\\"))
                     	{
                             final CacheStoreKeyBase key = CSSDocumentCache.createKey(swc, fileName);
                             final ICSSDocument extracss = cssCache.get(key);

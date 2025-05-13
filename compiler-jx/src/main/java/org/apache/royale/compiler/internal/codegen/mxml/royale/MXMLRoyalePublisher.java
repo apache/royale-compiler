@@ -30,11 +30,13 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.codegen.js.royale.IJSRoyalePublisher;
+import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.css.ICSSPropertyValue;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.codegen.js.JSPublisher;
 import org.apache.royale.compiler.internal.codegen.js.goog.JarSourceFile;
@@ -48,8 +50,11 @@ import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.scopes.ASProjectScope.DefinitionPromise;
 import org.apache.royale.compiler.internal.targets.ITargetAttributes;
 import org.apache.royale.compiler.internal.units.SWCCompilationUnit;
+import org.apache.royale.compiler.problems.FileInLibraryNotFoundProblem;
 import org.apache.royale.compiler.problems.FileNotFoundProblem;
 import org.apache.royale.compiler.problems.HTMLTemplateFileNotFoundProblem;
+import org.apache.royale.compiler.problems.JSIncludeMetaTagNoSourceAttributeProblem;
+import org.apache.royale.compiler.problems.JSIncludeMetaTagUnknownAttributeProblem;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.compiler.utils.JSClosureCompilerWrapper;
 import org.apache.royale.swc.ISWC;
@@ -980,6 +985,11 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
     private void copyIncludeFileFromSwcToOutput(String type, ISWC swc, String swcFileKey, String fileOutputPath, ProblemQuery problems)
     {
         ISWCFileEntry swcFileEntry = swc.getFile(swcFileKey);
+        if (swcFileEntry == null)
+        {
+            problems.add(new FileInLibraryNotFoundProblem(swcFileKey, swc.getSWCFile().getAbsolutePath()));
+            return;
+        }
         try
         {
             InputStream is = swcFileEntry.createInputStream();
@@ -1007,32 +1017,88 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
         }
     }
 
-    private void copyIncludeFileToOutput(String type, String originFilePath, String targetOutputPath, ProblemQuery problems)
+    private void handleJSIncludeAssetFromSWC(String type, String swcFileEntryKey, ISWC swc, StringBuilder depsHTML, ProblemQuery problems)
     {
-        File scriptFile = new File(originFilePath);
-        if (scriptFile.exists() && !scriptFile.isDirectory())
+        String assetOutputPath = Paths.get("assets").resolve(Paths.get(swcFileEntryKey).getFileName()).toString();
+        copyIncludeFileFromSwcToOutput(type, swc, swcFileEntryKey, assetOutputPath, problems);
+    }
+
+    private void handleJSIncludeAsset(String type, File includedAssetFile, StringBuilder depsHTML, ISourceLocation sourceLocation, ProblemQuery problems)
+    {
+        String assetOutputPath = Paths.get("assets").resolve(includedAssetFile.getName()).toString();
+        copyIncludeFileToOutput(type, includedAssetFile, assetOutputPath, null, problems);
+    }
+
+    private void handleJSIncludeScriptFromSWC(String type, String swcFileEntryKey, ISWC swc, StringBuilder depsHTML, ProblemQuery problems)
+    {
+        String scriptOutputPath = Paths.get("scripts").resolve(Paths.get(swcFileEntryKey).getFileName()).toString();
+        depsHTML.append("\t<script type=\"text/javascript\" src=\"");
+        depsHTML.append(scriptOutputPath);
+        depsHTML.append("\"></script>\n");
+
+        copyIncludeFileFromSwcToOutput(type, swc, swcFileEntryKey, scriptOutputPath, problems);
+    }
+
+    private void handleJSIncludeScript(String type, File includedScriptFile, StringBuilder depsHTML, ISourceLocation sourceLocation, ProblemQuery problems)
+    {
+        String scriptOutputPath = Paths.get("scripts").resolve(includedScriptFile.getName()).toString();
+        depsHTML.append("\t<script type=\"text/javascript\" src=\"");
+        depsHTML.append(scriptOutputPath);
+        depsHTML.append("\"></script>\n");
+
+        copyIncludeFileToOutput(type, includedScriptFile, scriptOutputPath, null, problems);
+    }
+
+    private void handleJSIncludeCSSFromSWC(String type, String swcFileEntryKey, ISWC swc, StringBuilder depsHTML, ProblemQuery problems)
+    {
+        String cssOutputPath = Paths.get("css").resolve(Paths.get(swcFileEntryKey).getFileName()).toString();
+
+        depsHTML.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"");
+        depsHTML.append(cssOutputPath);
+        depsHTML.append("\">\n");
+
+        copyIncludeFileFromSwcToOutput(type, swc, swcFileEntryKey, cssOutputPath, problems);
+    }
+
+    private void handleJSIncludeCSS(String type, File includedCSSFile, StringBuilder depsHTML, ISourceLocation sourceLocation, ProblemQuery problems)
+    {
+        String cssOutputPath = Paths.get("css").resolve(includedCSSFile.getName()).toString();
+        depsHTML.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"");
+        depsHTML.append(cssOutputPath);
+        depsHTML.append("\">\n");
+
+        copyIncludeFileToOutput(type, includedCSSFile, cssOutputPath, sourceLocation, problems);
+    }
+
+    private void copyIncludeFileToOutput(String type, File originFile, String targetOutputPath, ISourceLocation sourceLocation, ProblemQuery problems)
+    {
+        if (originFile.exists() && !originFile.isDirectory())
         {
             try
             {
                 if ("intermediate".equals(type))
                 {
                     final File intermediateDir = outputFolder;
-                    FileUtils.copyFile(scriptFile, new File(intermediateDir, targetOutputPath));
+                    FileUtils.copyFile(originFile, new File(intermediateDir, targetOutputPath));
                 }
                 else
                 {
                     final File releaseDir = new File(outputParentFolder, ROYALE_RELEASE_DIR_NAME);
-                    FileUtils.copyFile(scriptFile, new File(releaseDir, targetOutputPath));
+                    FileUtils.copyFile(originFile, new File(releaseDir, targetOutputPath));
                 }
             }
             catch (IOException e)
             {
-                throw new RuntimeException("Unable to copy script file: " + scriptFile.getAbsolutePath());
+                throw new RuntimeException("Unable to copy script file: " + originFile.getAbsolutePath());
             }
+        }
+        else if (sourceLocation != null)
+        {
+            problems.add(new FileNotFoundProblem(sourceLocation, originFile.getPath()));
         }
         else
         {
-            problems.add(new FileNotFoundProblem(originFilePath));
+            problems.add(new FileNotFoundProblem(originFile.getPath()));
         }
     }
 
@@ -1049,7 +1115,161 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
         List<ICompilationUnit> reachableUnits = project.getReachableCompilationUnitsInSWFOrder(Arrays.asList(project.mainCU));
         for (ICompilationUnit unit : reachableUnits)
         {
-            if (!(unit instanceof SWCCompilationUnit))
+            boolean isSWCUnit = unit instanceof SWCCompilationUnit;
+            for (IDefinition def : unit.getDefinitionPromises())
+            {
+                if (def instanceof DefinitionPromise)
+                {
+                    def = ((DefinitionPromise) def).getActualDefinition();
+                    for (IMetaTag metaTag : def.getMetaTagsByName("JSIncludeScript"))
+                    {
+                        boolean foundSource = false;
+                        for (IMetaTagAttribute metaAttr : metaTag.getAllAttributes())
+                        {
+                            String key = metaAttr.getKey();
+                            if ("source".equals(key) || key == null)
+                            {
+                                foundSource = true;
+
+                                String includePath = metaAttr.getValue();
+                                if (isSWCUnit)
+                                {
+                                    SWCCompilationUnit swcUnit = (SWCCompilationUnit) unit;
+                                    ISWC swc = swcUnit.getSWC();
+                                    String fileName = new File(includePath).getName();
+                                    String swcFileEntryPath = "js\\scripts-meta\\" + fileName;
+                                    ISWCFileEntry swcFileEntry = swc.getFile(swcFileEntryPath);
+                                    if (swcFileEntry == null)
+                                    {
+                                        swcFileEntryPath = "js/scripts-meta/" + fileName;
+                                        swcFileEntry = swc.getFile(swcFileEntryPath);
+                                    }
+                                    handleJSIncludeScriptFromSWC(type, swcFileEntryPath, swc, depsHTML, problems);
+                                }
+                                else
+                                {
+                                    File includedFile = new File(includePath);
+                                    if (!includedFile.isAbsolute())
+                                    {
+                                        File basePath = new File(def.getContainingFilePath()).getParentFile();
+                                        includedFile = new File(basePath, includePath);   
+                                    }
+
+                                    handleJSIncludeScript(type, includedFile, depsHTML, null, problems);
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                problems.add(new JSIncludeMetaTagUnknownAttributeProblem(metaTag, key));
+                            }
+                        }
+                        if (!foundSource)
+                        {
+                            problems.add(new JSIncludeMetaTagNoSourceAttributeProblem(metaTag));
+                        }
+                    }
+                    for (IMetaTag metaTag : def.getMetaTagsByName("JSIncludeCSS"))
+                    {
+                        boolean foundSource = false;
+                        for (IMetaTagAttribute metaAttr : metaTag.getAllAttributes())
+                        {
+                            String key = metaAttr.getKey();
+                            if ("source".equals(key) || key == null)
+                            {
+                                foundSource = true;
+
+                                String includePath = metaAttr.getValue();
+                                
+                                if (isSWCUnit)
+                                {
+                                    SWCCompilationUnit swcUnit = (SWCCompilationUnit) unit;
+                                    ISWC swc = swcUnit.getSWC();
+                                    String fileName = new File(includePath).getName();
+                                    String swcFileEntryPath = "js\\css-meta\\" + fileName;
+                                    ISWCFileEntry swcFileEntry = swc.getFile(swcFileEntryPath);
+                                    if (swcFileEntry == null)
+                                    {
+                                        swcFileEntryPath = "js/css-meta/" + fileName;
+                                        swcFileEntry = swc.getFile(swcFileEntryPath);
+                                    }
+                                    handleJSIncludeCSSFromSWC(type, swcFileEntryPath, swc, depsHTML, problems);
+                                }
+                                else
+                                {
+                                    File includedFile = new File(includePath);
+                                    if (!includedFile.isAbsolute())
+                                    {
+                                        File basePath = new File(def.getContainingFilePath()).getParentFile();
+                                        includedFile = new File(basePath, includePath);   
+                                    }
+
+                                    handleJSIncludeCSS(type, includedFile, depsHTML, metaTag, problems);
+                                }
+                            }
+                            else
+                            {
+                                problems.add(new JSIncludeMetaTagUnknownAttributeProblem(metaTag, key));
+                            }
+                        }
+                        if (!foundSource)
+                        {
+                            problems.add(new JSIncludeMetaTagNoSourceAttributeProblem(metaTag));
+                        }
+                    }
+                    for (IMetaTag metaTag : def.getMetaTagsByName("JSIncludeAsset"))
+                    {
+                        boolean foundSource = false;
+                        for (IMetaTagAttribute metaAttr : metaTag.getAllAttributes())
+                        {
+                            String key = metaAttr.getKey();
+                            if ("source".equals(key) || key == null)
+                            {
+                                foundSource = true;
+
+                                String includePath = metaAttr.getValue();
+                                
+                                if (isSWCUnit)
+                                {
+                                    SWCCompilationUnit swcUnit = (SWCCompilationUnit) unit;
+                                    ISWC swc = swcUnit.getSWC();
+                                    String fileName = new File(includePath).getName();
+                                    String swcFileEntryPath = "js\\assets-meta\\" + fileName;
+                                    ISWCFileEntry swcFileEntry = swc.getFile(swcFileEntryPath);
+                                    if (swcFileEntry == null)
+                                    {
+                                        swcFileEntryPath = "js/assets-meta/" + fileName;
+                                        swcFileEntry = swc.getFile(swcFileEntryPath);
+                                    }
+                                    handleJSIncludeAssetFromSWC(type, swcFileEntryPath, swc, depsHTML, problems);
+                                }
+                                else
+                                {
+                                    File includedFile = new File(includePath);
+                                    if (!includedFile.isAbsolute())
+                                    {
+                                        File basePath = new File(def.getContainingFilePath()).getParentFile();
+                                        includedFile = new File(basePath, includePath);   
+                                    }
+
+                                    handleJSIncludeAsset(type, includedFile, depsHTML, metaTag, problems);
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                problems.add(new JSIncludeMetaTagUnknownAttributeProblem(metaTag, key));
+                            }
+                        }
+                        if (!foundSource)
+                        {
+                            problems.add(new JSIncludeMetaTagNoSourceAttributeProblem(metaTag));
+                        }
+                    }
+                }
+            }
+
+            if (!isSWCUnit)
             {
                 continue;
             }
@@ -1076,17 +1296,15 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
         {
             for (String key : swc.getFiles().keySet())
             {
-                if (key.startsWith("js/assets") || key.startsWith("js\\assets"))
+                if (key.startsWith("js/assets/") || key.startsWith("js\\assets\\"))
                 {
-                    String assetPath = Paths.get("js").relativize(Paths.get(key)).toString();
-                    copyIncludeFileFromSwcToOutput(type, swc, key, assetPath, problems);
+                    handleJSIncludeAssetFromSWC(type, key, swc, depsHTML, problems);
                 }
             }
         }
         for (String asset : googConfiguration.getJSIncludeAsset())
         {
-            String assetOutputPath = Paths.get("assets").resolve(Paths.get(asset).getFileName()).toString();
-            copyIncludeFileToOutput(type, asset, assetOutputPath, problems);
+            handleJSIncludeAsset(type, new File(asset), depsHTML, null, problems);
         }
 
         // included CSS appears before included JS scripts
@@ -1095,27 +1313,16 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
         {
             for (String key : swc.getFiles().keySet())
             {
-                if (key.startsWith("js/css") || key.startsWith("js\\css"))
+                if (key.startsWith("js/css/") || key.startsWith("js\\css\\"))
                 {
-                    String cssPath = Paths.get("js").relativize(Paths.get(key)).toString();
-
-                    depsHTML.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"");
-                    depsHTML.append(cssPath);
-                    depsHTML.append("\">\n");
-
-                    copyIncludeFileFromSwcToOutput(type, swc, key, cssPath, problems);
+                    handleJSIncludeCSSFromSWC(type, key, swc, depsHTML, problems);
                 }
             }
         }
 
         for (String css : googConfiguration.getJSIncludeCss())
         {
-            String cssOutputPath = Paths.get("css").resolve(Paths.get(css).getFileName()).toString();
-            depsHTML.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"");
-            depsHTML.append(cssOutputPath);
-            depsHTML.append("\">\n");
-
-            copyIncludeFileToOutput(type, css, cssOutputPath, problems);
+            handleJSIncludeCSS(type, new File(css), depsHTML, null, problems);
         }
 
         // included JS scripts appear after included CSS
@@ -1125,26 +1332,16 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
         {
             for (String key : swc.getFiles().keySet())
             {
-                if (key.startsWith("js/scripts") || key.startsWith("js\\scripts"))
+                if (key.startsWith("js/scripts/") || key.startsWith("js\\scripts\\"))
                 {
-                    String scriptPath = Paths.get("js").relativize(Paths.get(key)).toString();
-                    depsHTML.append("\t<script type=\"text/javascript\" src=\"");
-                    depsHTML.append(scriptPath);
-                    depsHTML.append("\"></script>\n");
-
-                    copyIncludeFileFromSwcToOutput(type, swc, key, scriptPath, problems);
+                    handleJSIncludeScriptFromSWC(type, key, swc, depsHTML, problems);
                 }
             }
         }
 
         for (String script : googConfiguration.getJSIncludeScript())
         {
-            String scriptOutputPath = Paths.get("scripts").resolve(Paths.get(script).getFileName()).toString();
-            depsHTML.append("\t<script type=\"text/javascript\" src=\"");
-            depsHTML.append(scriptOutputPath);
-            depsHTML.append("\"></script>\n");
-
-            copyIncludeFileToOutput(type, script, scriptOutputPath, problems);
+            handleJSIncludeScript(type, new File(script), depsHTML, null, problems);
         }
 
         if ("intermediate".equals(type))
