@@ -186,4 +186,9 @@ public class TernaryOperatorNode extends BinaryOperatorNodeBase implements ITern
     {
         return conditionalNode;
     }
+
+    protected void setConditionalNode(ExpressionNodeBase node)
+    {
+        conditionalNode = node;
+    }
 }

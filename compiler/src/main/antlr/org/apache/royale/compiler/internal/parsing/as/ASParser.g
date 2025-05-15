@@ -3117,7 +3117,7 @@ propertyAccessExpression [ExpressionNodeBase l] returns [ExpressionNodeBase n]
         { n = new MemberAccessExpressionNode(l, op, r); }
     |   TOKEN_OPERATOR_DESCENDANT_ACCESS r=accessPart
         { n = new MemberAccessExpressionNode(l, op, r); }
-    |   TOKEN_OPERATOR_NULL_CONDITIONAL_ACCESS r=accessPart
+    |   TOKEN_OPERATOR_NULL_CONDITIONAL_ACCESS r=nullConditionalAccessPart
         {
 			n = transformNullConditional(l, op, r);
 		}
@@ -3170,6 +3170,24 @@ nsAccessPart returns [ExpressionNodeBase n]
 	|   n=xmlAttributeName 
 	|   n=parenExpression 
 	|   n=runtimeName
+	;
+	exception catch [RecognitionException ex] { n = handleMissingIdentifier(ex);  }
+	
+/**
+ * Matches parts after the ?. in a null conditional access expression.
+ */
+nullConditionalAccessPart returns [ExpressionNodeBase n]
+{
+    n = null; 
+}
+	:	(
+			n=nameExpression
+			(
+					n=arguments[n]
+				| 	n=bracketExpression[n]
+				|	n=propertyAccessExpression[n]
+			)?
+		)
 	;
 	exception catch [RecognitionException ex] { n = handleMissingIdentifier(ex);  }
 	

@@ -81,10 +81,12 @@ import org.apache.royale.compiler.internal.tree.as.ClassNode;
 import org.apache.royale.compiler.internal.tree.as.ConfigConstNode;
 import org.apache.royale.compiler.internal.tree.as.ConfigExpressionNode;
 import org.apache.royale.compiler.internal.tree.as.ContainerNode;
+import org.apache.royale.compiler.internal.tree.as.DynamicAccessNode;
 import org.apache.royale.compiler.internal.tree.as.EmbedNode;
 import org.apache.royale.compiler.internal.tree.as.ExpressionNodeBase;
 import org.apache.royale.compiler.internal.tree.as.FileNode;
 import org.apache.royale.compiler.internal.tree.as.FullNameNode;
+import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.royale.compiler.internal.tree.as.FunctionNode;
 import org.apache.royale.compiler.internal.tree.as.FunctionObjectNode;
 import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
@@ -3146,74 +3148,145 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
         return ternaryNode;
     }
 
-    private class NullConditionalTernaryOperatorNode extends TernaryOperatorNode
+    private static class NullConditionalTernaryOperatorNode extends TernaryOperatorNode
     {
-        public NullConditionalTernaryOperatorNode(IASToken op, ExpressionNodeBase conditionalNode, ExpressionNodeBase leftOperandNode, ExpressionNodeBase rightOperandNode)
+        private ExpressionNodeBase originalLeftOperandNode;
+        private ExpressionNodeBase originalRightOperandNode;
+        private ASToken originalOperator;
+        private Collection<ICompilerProblem> problems;
+
+        public NullConditionalTernaryOperatorNode(ExpressionNodeBase leftOperandNode, ASToken operator, ExpressionNodeBase rightOperandNode, Collection<ICompilerProblem> problems)
         {
-            super(op, conditionalNode, leftOperandNode, rightOperandNode);
+            super(new ASToken(ASTokenTypes.TOKEN_OPERATOR_TERNARY, -1, -1, -1, -1, "?"),
+                generateConditionalNode(leftOperandNode),
+                generateLeftResultNode(),
+                generateRightResultNode(leftOperandNode, operator, rightOperandNode, problems));
+            setHasParenthesis(true);
+            originalLeftOperandNode = leftOperandNode;
+            originalRightOperandNode = rightOperandNode;
+            originalOperator = operator;
+            this.problems = problems;
         }
-    }
 
-    private final NullConditionalTernaryOperatorNode nestNullConditional(NullConditionalTernaryOperatorNode l, ASToken op, ExpressionNodeBase r)
-    {
-        // we'll keep using this for the outer condition
-        ExpressionNodeBase prevConditionNode = (ExpressionNodeBase) l.getConditionalNode();
-        // this is the expression where we know everything's not null
-        ExpressionNodeBase prevRightNode = (ExpressionNodeBase) l.getRightOperandNode();
-
-        ASToken innerConditionEqualToken = new ASToken(ASTokenTypes.TOKEN_OPERATOR_EQUAL, -1, -1, -1, -1, "==");
-        ASToken innerConditionNullToken = new ASToken(ASTokenTypes.TOKEN_KEYWORD_NULL, -1, -1, -1, -1, "null");
-        LiteralNode innerConditionNullNode = new LiteralNode(innerConditionNullToken, LiteralType.NULL);
-        BinaryOperatorEqualNode innerConditionNode = new BinaryOperatorEqualNode(innerConditionEqualToken, prevRightNode, innerConditionNullNode);
-
-        NullConditionalTernaryOperatorNode innerTernaryNode = null;
-        if (prevRightNode instanceof NullConditionalTernaryOperatorNode)
+        private static ExpressionNodeBase generateConditionalNode(ExpressionNodeBase leftOperandNode)
         {
-            // recursively convert nested null conditionals
-            innerTernaryNode = nestNullConditional((NullConditionalTernaryOperatorNode) prevRightNode, op, r);
-        }
-        else
-        {
-            ASToken memberAccessOperator = new ASToken(ASTokenTypes.TOKEN_OPERATOR_MEMBER_ACCESS, op.getStart(), op.getEnd(), op.getLine(), op.getColumn(), ".");
-            MemberAccessExpressionNode memberAccessNode = new MemberAccessExpressionNode(prevRightNode, memberAccessOperator, r);
+            ASToken conditionEqualToken = new ASToken(ASTokenTypes.TOKEN_OPERATOR_EQUAL, -1, -1, -1, -1, "==");
+            ASToken conditionNullToken = new ASToken(ASTokenTypes.TOKEN_KEYWORD_NULL, -1, -1, -1, -1, "null");
+            LiteralNode conditionNullNode = new LiteralNode(conditionNullToken, LiteralType.NULL);
+            return new BinaryOperatorEqualNode(conditionEqualToken, leftOperandNode, conditionNullNode);
+        } 
 
-            ASToken ternaryOperator = new ASToken(ASTokenTypes.TOKEN_OPERATOR_TERNARY, -1, -1, -1, -1, "?");
-            ASToken innerResultNullToken = new ASToken(ASTokenTypes.TOKEN_KEYWORD_NULL, -1, -1, -1, -1, "null");
-            LiteralNode innerResultNullNode = new LiteralNode(innerResultNullToken, LiteralType.NULL);
-            innerTernaryNode = new NullConditionalTernaryOperatorNode(ternaryOperator, innerConditionNode, innerResultNullNode, memberAccessNode);
-            innerTernaryNode.setHasParenthesis(true);
+        private static ExpressionNodeBase generateLeftResultNode()
+        {
+            ASToken resultNullToken = new ASToken(ASTokenTypes.TOKEN_KEYWORD_NULL, -1, -1, -1, -1, "null");
+            return new LiteralNode(resultNullToken, LiteralType.NULL);
         }
-        
-        ExpressionNodeBase outerResultCondition = prevConditionNode;
-        ASToken outerTernaryOperator = new ASToken(ASTokenTypes.TOKEN_OPERATOR_TERNARY, -1, -1, -1, -1, "?");
-        ASToken outerResultNullToken = new ASToken(ASTokenTypes.TOKEN_KEYWORD_NULL, -1, -1, -1, -1, "null");
-        LiteralNode outerResultNullNode = new LiteralNode(outerResultNullToken, LiteralType.NULL);
-        NullConditionalTernaryOperatorNode outerTernaryNode = new NullConditionalTernaryOperatorNode(outerTernaryOperator, outerResultCondition, outerResultNullNode, innerTernaryNode);
-        outerTernaryNode.setHasParenthesis(true);
-        return outerTernaryNode;
+
+        private static ExpressionNodeBase generateRightResultNode(ExpressionNodeBase l, ASToken op, ExpressionNodeBase r, Collection<ICompilerProblem> problems)
+        {
+            if (r instanceof NullConditionalTernaryOperatorNode)
+            {
+                NullConditionalTernaryOperatorNode rightNullConditional = (NullConditionalTernaryOperatorNode) r;
+
+                ExpressionNodeBase oldNullConditionalLeft = rightNullConditional.getNullConditionalLeftOperandNode();
+                ExpressionNodeBase memberAccessRight = oldNullConditionalLeft;
+                if (oldNullConditionalLeft instanceof MemberAccessExpressionNode)
+                {
+                    // replace the entire left side, but keeping the right side
+                    MemberAccessExpressionNode oldLeftMemberAccess = (MemberAccessExpressionNode) oldNullConditionalLeft;
+                    memberAccessRight = (ExpressionNodeBase) oldLeftMemberAccess.getRightOperandNode();
+                }
+                ASToken memberAccessOperator = new ASToken(ASTokenTypes.TOKEN_OPERATOR_MEMBER_ACCESS, op.getStart(), op.getEnd(), op.getLine(), op.getColumn(), ".");
+                MemberAccessExpressionNode memberAccessNode = new MemberAccessExpressionNode(l, memberAccessOperator, memberAccessRight);                
+                rightNullConditional.setNullConditionalLeftOperandNode(memberAccessNode);
+
+                return rightNullConditional;
+            }
+
+            FunctionCallNode originalFunctionCallNode = null;
+            DynamicAccessNode originalDynamicAccessNode = null;
+            MemberAccessExpressionNode originalMemberAccessNode = null;
+            ExpressionNodeBase memberAccessRight = r;
+            if (r instanceof FunctionCallNode)
+            {
+                originalFunctionCallNode = (FunctionCallNode) r;
+                memberAccessRight = (ExpressionNodeBase) originalFunctionCallNode.getNameNode();
+            }
+            else if (r instanceof DynamicAccessNode)
+            {
+                originalDynamicAccessNode = (DynamicAccessNode) r;
+                memberAccessRight = (ExpressionNodeBase) originalDynamicAccessNode.getLeftOperandNode();
+            }
+            else if (r instanceof MemberAccessExpressionNode)
+            {
+                originalMemberAccessNode = (MemberAccessExpressionNode) r;
+                memberAccessRight = (ExpressionNodeBase) originalMemberAccessNode.getLeftOperandNode();
+            }
+            else if (!(r instanceof IIdentifierNode))
+            {
+                problems.add(new SyntaxProblem(r, r.getNodeKind()));
+                return null;
+            }
+
+            MemberAccessExpressionNode memberAccessNode = null;
+            if (memberAccessRight != null)
+            {
+                ASToken memberAccessOperator = new ASToken(ASTokenTypes.TOKEN_OPERATOR_MEMBER_ACCESS, op.getStart(), op.getEnd(), op.getLine(), op.getColumn(), ".");
+                memberAccessNode = new MemberAccessExpressionNode(l, memberAccessOperator, memberAccessRight);
+            }
+
+            if (originalFunctionCallNode != null)
+            {
+                FunctionCallNode newFunctionCallNode = new FunctionCallNode(memberAccessNode);
+                ContainerNode argumentsNode = newFunctionCallNode.getArgumentsNode();
+                for (IExpressionNode argNode : originalFunctionCallNode.getArgumentNodes())
+                {
+                    argumentsNode.addItem((ExpressionNodeBase) argNode);
+                }
+                return newFunctionCallNode;
+            }
+            else if (originalDynamicAccessNode != null)
+            {
+                DynamicAccessNode newDynamicAccessNode = new DynamicAccessNode(memberAccessNode);
+                newDynamicAccessNode.setRightOperandNode((ExpressionNodeBase) originalDynamicAccessNode.getRightOperandNode());
+                return newDynamicAccessNode;
+            }
+            else if (originalMemberAccessNode != null)
+            {
+                ASToken memberAccessOperator = null;
+                if (originalMemberAccessNode.getOperator() == OperatorType.DESCENDANT_ACCESS)
+                {
+                    memberAccessOperator = new ASToken(ASTokenTypes.TOKEN_OPERATOR_DESCENDANT_ACCESS, op.getStart(), op.getEnd(), op.getLine(), op.getColumn(), "..");
+                }
+                else
+                {
+                    memberAccessOperator = new ASToken(ASTokenTypes.TOKEN_OPERATOR_MEMBER_ACCESS, op.getStart(), op.getEnd(), op.getLine(), op.getColumn(), ".");
+                }
+                MemberAccessExpressionNode newMemberAccessNode = new MemberAccessExpressionNode(memberAccessNode, memberAccessOperator, (ExpressionNodeBase) originalMemberAccessNode.getRightOperandNode());
+                return newMemberAccessNode;
+            }
+            else if (memberAccessNode != null)
+            {
+                return memberAccessNode;
+            }
+            return r;
+        }
+
+        public ExpressionNodeBase getNullConditionalLeftOperandNode()
+        {
+            return originalLeftOperandNode;
+        }
+
+        public void setNullConditionalLeftOperandNode(ExpressionNodeBase node)
+        {
+            originalLeftOperandNode = node;
+            setConditionalNode(generateConditionalNode(originalLeftOperandNode));
+            setRightOperandNode(generateRightResultNode(originalLeftOperandNode, originalOperator, originalRightOperandNode, problems));
+        }
     }
 
     protected final ExpressionNodeBase transformNullConditional(ExpressionNodeBase l, ASToken op, ExpressionNodeBase r)
     {
-        if (l instanceof NullConditionalTernaryOperatorNode)
-        {
-            return nestNullConditional((NullConditionalTernaryOperatorNode) l, op, r);
-        }
-
-        ASToken conditionEqualToken = new ASToken(ASTokenTypes.TOKEN_OPERATOR_EQUAL, -1, -1, -1, -1, "==");
-        ASToken conditionNullToken = new ASToken(ASTokenTypes.TOKEN_KEYWORD_NULL, -1, -1, -1, -1, "null");
-        LiteralNode conditionNullNode = new LiteralNode(conditionNullToken, LiteralType.NULL);
-        BinaryOperatorEqualNode conditionNode = new BinaryOperatorEqualNode(conditionEqualToken, l, conditionNullNode);
-
-        ASToken memberAccessOperator = new ASToken(ASTokenTypes.TOKEN_OPERATOR_MEMBER_ACCESS, op.getStart(), op.getEnd(), op.getLine(), op.getColumn(), ".");
-        MemberAccessExpressionNode memberAccessNode = new MemberAccessExpressionNode(l, memberAccessOperator, r);
-
-        ASToken ternaryOperator = new ASToken(ASTokenTypes.TOKEN_OPERATOR_TERNARY, -1, -1, -1, -1, "?");
-        ASToken resultNullToken = new ASToken(ASTokenTypes.TOKEN_KEYWORD_NULL, -1, -1, -1, -1, "null");
-        LiteralNode resultNullNode = new LiteralNode(resultNullToken, LiteralType.NULL);
-        NullConditionalTernaryOperatorNode ternaryNode = new NullConditionalTernaryOperatorNode(ternaryOperator, conditionNode, resultNullNode, memberAccessNode);
-        ternaryNode.setHasParenthesis(true);
-
-        return ternaryNode;
+        return new NullConditionalTernaryOperatorNode(l, op, r, getSyntaxProblems());
     }
 }
