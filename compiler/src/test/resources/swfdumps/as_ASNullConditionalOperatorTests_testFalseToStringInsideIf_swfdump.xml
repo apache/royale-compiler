@@ -19,14 +19,14 @@
 -->
 <!-- Parsing swf file:/Users/joshtynjala/Development/apache/royale-compiler/compiler/target/junit-temp/%0.swf -->
 <swf xmlns="http://macromedia/2003/swfx" version="14" framerate="24.0" size="10000x7500" compressed="true" >
-  <!-- framecount=1 length=948 -->
+  <!-- framecount=1 length=841 -->
   <FileAttributes useDirectBlit="false" useGPU="false" hasMetadata="true" actionScript3="true" suppressCrossDomainCaching="false" swfRelativeUrls="false" useNetwork="true"/>
   <Metadata>
         <![CDATA[<?xml version="1.0" ?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <rdf:Description xmlns:dc="http://purl.org/dc/elements/1.1" xmlns:asc="http://ns.adobe.com/asc/2012">
         <dc:format>application/x-shockwave-flash</dc:format>
-        <asc:compiler name="Apache Royale Compiler" version="0.9.10" build="0"/>
+        <asc:compiler name="Apache Royale Compiler" version="0.9.13" build="0"/>
     </rdf:Description>
 </rdf:RDF>
 ]]>
@@ -67,34 +67,42 @@ public class %0 extends Object
     //  max_regs     4            
     //  scope_depth  0            
     //  max_scope    1            
-    //  code_length  32           
+    //  code_length  38           
     bb0
       succs=[bb1,bb2]
-      0      getlocal0             
-      1      pushscope             
-      2      newobject          0  
-      3      coerce     Object     
-      4      setlocal2             
-      5      getlocal2             
-      6      pushnull              
-      7      ifne       bb2        
+      0      getlocal0         
+      1      pushscope         
+      2      pushfalse         
+      3      setlocal2         
+      4      pushfalse         
+      5      setlocal3         
+      6      getlocal2         
+      7      pushnull          
+      8      ifne       bb2    
     bb1
       succs=[bb3]
-      8      pushnull         
-      9      jump      bb3    
+      9       pushnull         
+      10      jump      bb3    
     bb2
       succs=[bb3]
-      10      getlocal2                                                                                                                                                                                      
-      11      getproperty  {private, %0, %0, Object, , , private, http://adobe.com/AS3/2006/builtin, }::a    
+      11      getlocal2         
+      12      callproperty      
     bb3
+      succs=[bb4,bb5]
+      13      pushnull           
+      14      ifstrictne  bb5    
+    bb4
+      succs=[bb5]
+      15      pushtrue       
+      16      setlocal3      
+    bb5
       succs=[]
-      12      setlocal3                             
-      13      findpropstrict  assertEqual           
-      14      pushstring      "null conditional"    
-      15      getlocal3                             
-      16      pushundefined                         
-      17      callpropvoid                          
-      18      returnvoid                            
+      17      findpropstrict  assertEqual           
+      18      pushstring      "null conditional"    
+      19      getlocal3                             
+      20      pushfalse                             
+      21      callpropvoid                          
+      22      returnvoid                            
   }
 
   private function assertEqual(String,*,*):void

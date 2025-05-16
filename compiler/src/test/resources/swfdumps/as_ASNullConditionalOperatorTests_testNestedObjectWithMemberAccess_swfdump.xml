@@ -19,14 +19,14 @@
 -->
 <!-- Parsing swf file:/Users/joshtynjala/Development/apache/royale-compiler/compiler/target/junit-temp/%0.swf -->
 <swf xmlns="http://macromedia/2003/swfx" version="14" framerate="24.0" size="10000x7500" compressed="true" >
-  <!-- framecount=1 length=840 -->
+  <!-- framecount=1 length=958 -->
   <FileAttributes useDirectBlit="false" useGPU="false" hasMetadata="true" actionScript3="true" suppressCrossDomainCaching="false" swfRelativeUrls="false" useNetwork="true"/>
   <Metadata>
         <![CDATA[<?xml version="1.0" ?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <rdf:Description xmlns:dc="http://purl.org/dc/elements/1.1" xmlns:asc="http://ns.adobe.com/asc/2012">
         <dc:format>application/x-shockwave-flash</dc:format>
-        <asc:compiler name="Apache Royale Compiler" version="0.9.10" build="0"/>
+        <asc:compiler name="Apache Royale Compiler" version="0.9.13" build="0"/>
     </rdf:Description>
 </rdf:RDF>
 ]]>
@@ -44,12 +44,12 @@ public class %0 extends Object
   public function %0():*
   {
     //  derivedName  %0  
-    //  method_info  3                                                   
-    //  max_stack    1                                                   
-    //  max_regs     1                                                   
-    //  scope_depth  0                                                   
-    //  max_scope    1                                                   
-    //  code_length  6                                                   
+    //  method_info  3                                                 
+    //  max_stack    1                                                 
+    //  max_regs     1                                                 
+    //  scope_depth  0                                                 
+    //  max_scope    1                                                 
+    //  code_length  6                                                 
     bb0
       succs=[]
       0      getlocal0            
@@ -67,35 +67,39 @@ public class %0 extends Object
     //  max_regs     4            
     //  scope_depth  0            
     //  max_scope    1            
-    //  code_length  33           
+    //  code_length  43           
     bb0
       succs=[bb1,bb2]
-      0      getlocal0         
-      1      pushscope         
-      2      pushnan           
-      3      setlocal2         
-      4      getlocal2         
-      5      pushnull          
-      6      ifne       bb2    
+      0       getlocal0              
+      1       pushscope              
+      2       pushstring  "a"        
+      3       pushstring  "b"        
+      4       pushbyte            2  
+      5       newobject           1  
+      6       newobject           1  
+      7       coerce      Object     
+      8       setlocal2              
+      9       getlocal2              
+      10      pushnull               
+      11      ifne        bb2        
     bb1
       succs=[bb3]
-      7      pushnull         
-      8      jump      bb3    
+      12      pushnull         
+      13      jump      bb3    
     bb2
       succs=[bb3]
-      9       getlocal2                
-      10      getproperty  toString    
+      14      getlocal2                                                                                                                                                                                  
+      15      getproperty  {private, %0, %0, Object, , , private, http://adobe.com/AS3/2006/builtin, }::a    
+      16      getproperty  {private, %0, %0, Object, , , private, http://adobe.com/AS3/2006/builtin, }::b    
     bb3
       succs=[]
-      11      getlocal0                              
-      12      call                                0  
-      13      setlocal3                              
-      14      findpropstrict  assertEqual            
-      15      pushstring      "null conditional"     
-      16      getlocal3                              
-      17      pushstring      "NaN"                  
-      18      callpropvoid                           
-      19      returnvoid                             
+      17      setlocal3                              
+      18      findpropstrict  assertEqual            
+      19      pushstring      "null conditional"     
+      20      getlocal3                              
+      21      pushbyte                            2  
+      22      callpropvoid                           
+      23      returnvoid                             
   }
 
   private function assertEqual(String,*,*):void
@@ -138,16 +142,16 @@ function script0$init():*
   //  code_length  14    
   bb0
     succs=[]
-    0      getlocal0                                                              
-    1      pushscope                                                              
-    2      getscopeobject                                                      0  
-    3      getlex          Object                                                 
-    4      dup                                                                    
-    5      pushscope                                                              
-    6      newclass                                                               
-    7      popscope                                                               
+    0      getlocal0                                                            
+    1      pushscope                                                            
+    2      getscopeobject                                                    0  
+    3      getlex          Object                                               
+    4      dup                                                                  
+    5      pushscope                                                            
+    6      newclass                                                             
+    7      popscope                                                             
     8      initproperty    %0     
-    9      returnvoid                                                             
+    9      returnvoid                                                           
 }
 
   </DoABC>

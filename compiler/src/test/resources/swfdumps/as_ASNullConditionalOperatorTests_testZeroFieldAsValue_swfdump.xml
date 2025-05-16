@@ -19,14 +19,14 @@
 -->
 <!-- Parsing swf file:/Users/joshtynjala/Development/apache/royale-compiler/compiler/target/junit-temp/%0.swf -->
 <swf xmlns="http://macromedia/2003/swfx" version="14" framerate="24.0" size="10000x7500" compressed="true" >
-  <!-- framecount=1 length=961 -->
+  <!-- framecount=1 length=953 -->
   <FileAttributes useDirectBlit="false" useGPU="false" hasMetadata="true" actionScript3="true" suppressCrossDomainCaching="false" swfRelativeUrls="false" useNetwork="true"/>
   <Metadata>
         <![CDATA[<?xml version="1.0" ?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <rdf:Description xmlns:dc="http://purl.org/dc/elements/1.1" xmlns:asc="http://ns.adobe.com/asc/2012">
         <dc:format>application/x-shockwave-flash</dc:format>
-        <asc:compiler name="Apache Royale Compiler" version="0.9.10" build="0"/>
+        <asc:compiler name="Apache Royale Compiler" version="0.9.13" build="0"/>
     </rdf:Description>
 </rdf:RDF>
 ]]>
@@ -73,7 +73,7 @@ public class %0 extends Object
       0      getlocal0              
       1      pushscope              
       2      pushstring  "a"        
-      3      pushdouble             
+      3      pushbyte            0  
       4      newobject           1  
       5      coerce      Object     
       6      setlocal2              
@@ -90,13 +90,13 @@ public class %0 extends Object
       13      getproperty  {private, %0, %0, Object, , , private, http://adobe.com/AS3/2006/builtin, }::a    
     bb3
       succs=[]
-      14      setlocal3                             
-      15      findpropstrict  assertEqual           
-      16      pushstring      "null conditional"    
-      17      getlocal3                             
-      18      pushdouble                            
-      19      callpropvoid                          
-      20      returnvoid                            
+      14      setlocal3                              
+      15      findpropstrict  assertEqual            
+      16      pushstring      "null conditional"     
+      17      getlocal3                              
+      18      pushbyte                            0  
+      19      callpropvoid                           
+      20      returnvoid                             
   }
 
   private function assertEqual(String,*,*):void

@@ -19,14 +19,14 @@
 -->
 <!-- Parsing swf file:/Users/joshtynjala/Development/apache/royale-compiler/compiler/target/junit-temp/%0.swf -->
 <swf xmlns="http://macromedia/2003/swfx" version="14" framerate="24.0" size="10000x7500" compressed="true" >
-  <!-- framecount=1 length=847 -->
+  <!-- framecount=1 length=983 -->
   <FileAttributes useDirectBlit="false" useGPU="false" hasMetadata="true" actionScript3="true" suppressCrossDomainCaching="false" swfRelativeUrls="false" useNetwork="true"/>
   <Metadata>
         <![CDATA[<?xml version="1.0" ?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <rdf:Description xmlns:dc="http://purl.org/dc/elements/1.1" xmlns:asc="http://ns.adobe.com/asc/2012">
         <dc:format>application/x-shockwave-flash</dc:format>
-        <asc:compiler name="Apache Royale Compiler" version="0.9.10" build="0"/>
+        <asc:compiler name="Apache Royale Compiler" version="0.9.13" build="0"/>
     </rdf:Description>
 </rdf:RDF>
 ]]>
@@ -67,35 +67,47 @@ public class %0 extends Object
     //  max_regs     4            
     //  scope_depth  0            
     //  max_scope    1            
-    //  code_length  34           
+    //  code_length  53           
     bb0
       succs=[bb1,bb2]
-      0      getlocal0          
-      1      pushscope          
-      2      pushdouble         
-      3      setlocal2          
-      4      getlocal2          
-      5      pushnull           
-      6      ifne        bb2    
+      0      getlocal0              
+      1      pushscope              
+      2      pushstring  "a"        
+      3      pushbyte            0  
+      4      newobject           1  
+      5      coerce      Object     
+      6      setlocal2              
+      7      getlocal2              
+      8      pushnull               
+      9      ifne        bb2        
     bb1
-      succs=[bb3]
-      7      pushnull         
-      8      jump      bb3    
+      succs=[bb5]
+      10      pushnull         
+      11      jump      bb5    
     bb2
-      succs=[bb3]
-      9       getlocal2                
-      10      getproperty  toString    
+      succs=[bb3,bb4]
+      12      getlocal2                                                                                                                                                                                      
+      13      getproperty  {private, %0, %0, Object, , , private, http://adobe.com/AS3/2006/builtin, }::a    
+      14      pushnull                                                                                                                                                                                       
+      15      ifne         bb4                                                                                                                                                                               
     bb3
+      succs=[bb5]
+      16      pushnull         
+      17      jump      bb5    
+    bb4
+      succs=[bb5]
+      18      getlocal2                                                                                                                                                                                       
+      19      getproperty   {private, %0, %0, Object, , , private, http://adobe.com/AS3/2006/builtin, }::a    
+      20      callproperty                                                                                                                                                                                    
+    bb5
       succs=[]
-      11      getlocal0                              
-      12      call                                0  
-      13      setlocal3                              
-      14      findpropstrict  assertEqual            
-      15      pushstring      "null conditional"     
-      16      getlocal3                              
-      17      pushstring      "0"                    
-      18      callpropvoid                           
-      19      returnvoid                             
+      21      setlocal3                             
+      22      findpropstrict  assertEqual           
+      23      pushstring      "null conditional"    
+      24      getlocal3                             
+      25      pushstring      "0"                   
+      26      callpropvoid                          
+      27      returnvoid                            
   }
 
   private function assertEqual(String,*,*):void

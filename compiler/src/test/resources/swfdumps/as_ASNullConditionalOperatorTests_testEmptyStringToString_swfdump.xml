@@ -19,14 +19,14 @@
 -->
 <!-- Parsing swf file:/Users/joshtynjala/Development/apache/royale-compiler/compiler/target/junit-temp/%0.swf -->
 <swf xmlns="http://macromedia/2003/swfx" version="14" framerate="24.0" size="10000x7500" compressed="true" >
-  <!-- framecount=1 length=948 -->
+  <!-- framecount=1 length=834 -->
   <FileAttributes useDirectBlit="false" useGPU="false" hasMetadata="true" actionScript3="true" suppressCrossDomainCaching="false" swfRelativeUrls="false" useNetwork="true"/>
   <Metadata>
         <![CDATA[<?xml version="1.0" ?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <rdf:Description xmlns:dc="http://purl.org/dc/elements/1.1" xmlns:asc="http://ns.adobe.com/asc/2012">
         <dc:format>application/x-shockwave-flash</dc:format>
-        <asc:compiler name="Apache Royale Compiler" version="0.9.10" build="0"/>
+        <asc:compiler name="Apache Royale Compiler" version="0.9.13" build="0"/>
     </rdf:Description>
 </rdf:RDF>
 ]]>
@@ -67,32 +67,32 @@ public class %0 extends Object
     //  max_regs     4            
     //  scope_depth  0            
     //  max_scope    1            
-    //  code_length  31           
+    //  code_length  33           
     bb0
       succs=[bb1,bb2]
-      0      getlocal0            
-      1      pushscope            
-      2      pushnull             
-      3      coerce     Object    
-      4      setlocal2            
-      5      getlocal2            
-      6      pushnull             
-      7      ifne       bb2       
+      0      getlocal0          
+      1      pushscope          
+      2      pushstring  ""     
+      3      coerce_s           
+      4      setlocal2          
+      5      getlocal2          
+      6      pushnull           
+      7      ifne        bb2    
     bb1
       succs=[bb3]
       8      pushnull         
       9      jump      bb3    
     bb2
       succs=[bb3]
-      10      getlocal2                                                                                                                                                                                        
-      11      getproperty  {private, %0, %0, Object, , , private, http://adobe.com/AS3/2006/builtin, }::field    
+      10      getlocal2         
+      11      callproperty      
     bb3
       succs=[]
       12      setlocal3                             
       13      findpropstrict  assertEqual           
       14      pushstring      "null conditional"    
       15      getlocal3                             
-      16      pushnull                              
+      16      pushstring      ""                    
       17      callpropvoid                          
       18      returnvoid                            
   }
