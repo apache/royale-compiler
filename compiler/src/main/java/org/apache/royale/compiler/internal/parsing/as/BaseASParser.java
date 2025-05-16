@@ -3148,6 +3148,16 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
         return ternaryNode;
     }
 
+    /**
+     * The null conditional operator is rewritten as a ternary operator, in
+     * order to support SWF without adding new bytecode.
+     * 
+     * Normal member access nodes include the following name only. Other actions
+     * that follow, like method calls or dynamic access, are performed on the
+     * overall member access node. However, with the null conditional node,
+     * it needs to include all of those following actions so that they won't be
+     * performed on null.
+     */
     private static class NullConditionalTernaryOperatorNode extends TernaryOperatorNode
     {
         private ExpressionNodeBase originalLeftOperandNode;
@@ -3198,7 +3208,7 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
                 }
                 ASToken memberAccessOperator = new ASToken(ASTokenTypes.TOKEN_OPERATOR_MEMBER_ACCESS, op.getStart(), op.getEnd(), op.getLine(), op.getColumn(), ".");
                 MemberAccessExpressionNode memberAccessNode = new MemberAccessExpressionNode(l, memberAccessOperator, memberAccessRight);                
-                rightNullConditional.setNullConditionalLeftOperandNode(memberAccessNode);
+                rightNullConditional.setNullConditionalLeftOperandNode(rewriteMemberAccess(memberAccessNode));
 
                 return rightNullConditional;
             }
@@ -3228,16 +3238,17 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
                 return null;
             }
 
-            MemberAccessExpressionNode memberAccessNode = null;
+            ExpressionNodeBase expressionNode = null;
             if (memberAccessRight != null)
             {
                 ASToken memberAccessOperator = new ASToken(ASTokenTypes.TOKEN_OPERATOR_MEMBER_ACCESS, op.getStart(), op.getEnd(), op.getLine(), op.getColumn(), ".");
-                memberAccessNode = new MemberAccessExpressionNode(l, memberAccessOperator, memberAccessRight);
+                MemberAccessExpressionNode memberAccessNode = new MemberAccessExpressionNode(l, memberAccessOperator, memberAccessRight);
+                expressionNode = rewriteMemberAccess(memberAccessNode);
             }
 
             if (originalFunctionCallNode != null)
             {
-                FunctionCallNode newFunctionCallNode = new FunctionCallNode(memberAccessNode);
+                FunctionCallNode newFunctionCallNode = new FunctionCallNode(expressionNode);
                 ContainerNode argumentsNode = newFunctionCallNode.getArgumentsNode();
                 for (IExpressionNode argNode : originalFunctionCallNode.getArgumentNodes())
                 {
@@ -3247,27 +3258,19 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
             }
             else if (originalDynamicAccessNode != null)
             {
-                DynamicAccessNode newDynamicAccessNode = new DynamicAccessNode(memberAccessNode);
+                DynamicAccessNode newDynamicAccessNode = new DynamicAccessNode(expressionNode);
                 newDynamicAccessNode.setRightOperandNode((ExpressionNodeBase) originalDynamicAccessNode.getRightOperandNode());
                 return newDynamicAccessNode;
             }
             else if (originalMemberAccessNode != null)
             {
-                ASToken memberAccessOperator = null;
-                if (originalMemberAccessNode.getOperator() == OperatorType.DESCENDANT_ACCESS)
-                {
-                    memberAccessOperator = new ASToken(ASTokenTypes.TOKEN_OPERATOR_DESCENDANT_ACCESS, op.getStart(), op.getEnd(), op.getLine(), op.getColumn(), "..");
-                }
-                else
-                {
-                    memberAccessOperator = new ASToken(ASTokenTypes.TOKEN_OPERATOR_MEMBER_ACCESS, op.getStart(), op.getEnd(), op.getLine(), op.getColumn(), ".");
-                }
-                MemberAccessExpressionNode newMemberAccessNode = new MemberAccessExpressionNode(memberAccessNode, memberAccessOperator, (ExpressionNodeBase) originalMemberAccessNode.getRightOperandNode());
-                return newMemberAccessNode;
+                ASToken memberAccessOperator = copyMemberAccessOperator(originalMemberAccessNode, op);
+                MemberAccessExpressionNode newMemberAccessNode = new MemberAccessExpressionNode(expressionNode, memberAccessOperator, (ExpressionNodeBase) originalMemberAccessNode.getRightOperandNode());
+                return rewriteMemberAccess(newMemberAccessNode);
             }
-            else if (memberAccessNode != null)
+            else if (expressionNode != null)
             {
-                return memberAccessNode;
+                return expressionNode;
             }
             return r;
         }
@@ -3282,6 +3285,69 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
             originalLeftOperandNode = node;
             setConditionalNode(generateConditionalNode(originalLeftOperandNode));
             setRightOperandNode(generateRightResultNode(originalLeftOperandNode, originalOperator, originalRightOperandNode, problems));
+        }
+
+        private static ASToken copyMemberAccessOperator(MemberAccessExpressionNode m, ISourceLocation sourceLocation)
+        {
+            if (m.getOperator() == OperatorType.DESCENDANT_ACCESS)
+            {
+                return new ASToken(ASTokenTypes.TOKEN_OPERATOR_DESCENDANT_ACCESS, sourceLocation.getStart(), sourceLocation.getEnd(), sourceLocation.getLine(), sourceLocation.getColumn(), "..");
+            }
+            return new ASToken(ASTokenTypes.TOKEN_OPERATOR_MEMBER_ACCESS, sourceLocation.getStart(), sourceLocation.getEnd(), sourceLocation.getLine(), sourceLocation.getColumn(), ".");
+        }
+
+        /**
+         * When rewriting as a ternary operator node, moving around child nodes
+         * may result in an invalid tree that can't be compiled. The correct
+         * nodes will all exist, but their ordering needs to cleaned up. In
+         * other words, while it is invalid, the ways that it is invalid is
+         * predictable. This method cleans up the ordering of those nodes, so
+         * that we end up with a valid tree.
+         * 
+         * 1. The right side of member access should usually be an identifier.
+         * 2. If the right side of member access is another member access, shift
+         *    the right side's members to the left, except for the final one.
+         * 3. If the right side of member access is dynamic access or a method
+         *    call, the dynamic access or method call needs to move to the
+         *    outside, and the member access will move inside. Basically, they
+         *    should swap places.
+         */
+        private static ExpressionNodeBase rewriteMemberAccess(MemberAccessExpressionNode m)
+        {
+            ExpressionNodeBase leftOperand = (ExpressionNodeBase) m.getLeftOperandNode();
+            ExpressionNodeBase rightOperand = (ExpressionNodeBase) m.getRightOperandNode();
+            if (rightOperand instanceof DynamicAccessNode)
+            {
+                DynamicAccessNode rightOperandDynamicAccess = (DynamicAccessNode) rightOperand;
+                ASToken op = new ASToken(ASTokenTypes.TOKEN_OPERATOR_MEMBER_ACCESS, -1, -1, -1, -1, ".");
+                MemberAccessExpressionNode innerMemberAccess = new MemberAccessExpressionNode(leftOperand, op, (ExpressionNodeBase) rightOperandDynamicAccess.getLeftOperandNode());
+                DynamicAccessNode newDynamicAccess = new DynamicAccessNode(rewriteMemberAccess(innerMemberAccess));
+                newDynamicAccess.setRightOperandNode((ExpressionNodeBase) rightOperandDynamicAccess.getRightOperandNode());
+                return newDynamicAccess;
+            }
+            else if (rightOperand instanceof MemberAccessExpressionNode)
+            {
+                MemberAccessExpressionNode rightOperandMemberAccess = (MemberAccessExpressionNode) rightOperand;
+                ASToken op = copyMemberAccessOperator(rightOperandMemberAccess, rightOperandMemberAccess);
+                MemberAccessExpressionNode innerMemberAccess = new MemberAccessExpressionNode(leftOperand, op, (ExpressionNodeBase) rightOperandMemberAccess.getLeftOperandNode());
+                ExpressionNodeBase innerExpression = rewriteMemberAccess(innerMemberAccess);
+                MemberAccessExpressionNode result = new MemberAccessExpressionNode(innerExpression, op, (ExpressionNodeBase) rightOperandMemberAccess.getRightOperandNode());
+                return rewriteMemberAccess(result);
+            }
+            else if (rightOperand instanceof FunctionCallNode)
+            {
+                FunctionCallNode rightOperandFunctionCall = (FunctionCallNode) rightOperand;
+                ASToken op = new ASToken(ASTokenTypes.TOKEN_OPERATOR_MEMBER_ACCESS, -1, -1, -1, -1, ".");
+                MemberAccessExpressionNode innerMemberAccess = new MemberAccessExpressionNode(leftOperand, op, rightOperandFunctionCall.getNameNode());
+                FunctionCallNode newFunctionCall = new FunctionCallNode(rewriteMemberAccess(innerMemberAccess));
+                ContainerNode argumentsNode = newFunctionCall.getArgumentsNode();
+                for (IExpressionNode argNode : rightOperandFunctionCall.getArgumentNodes())
+                {
+                    argumentsNode.addItem((ExpressionNodeBase) argNode);
+                }
+                return newFunctionCall;
+            }
+            return m;
         }
     }
 

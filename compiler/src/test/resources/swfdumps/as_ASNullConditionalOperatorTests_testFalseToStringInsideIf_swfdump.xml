@@ -19,7 +19,7 @@
 -->
 <!-- Parsing swf file:/Users/joshtynjala/Development/apache/royale-compiler/compiler/target/junit-temp/%0.swf -->
 <swf xmlns="http://macromedia/2003/swfx" version="14" framerate="24.0" size="10000x7500" compressed="true" >
-  <!-- framecount=1 length=841 -->
+  <!-- framecount=1 length=839 -->
   <FileAttributes useDirectBlit="false" useGPU="false" hasMetadata="true" actionScript3="true" suppressCrossDomainCaching="false" swfRelativeUrls="false" useNetwork="true"/>
   <Metadata>
         <![CDATA[<?xml version="1.0" ?>
@@ -44,12 +44,12 @@ public class %0 extends Object
   public function %0():*
   {
     //  derivedName  %0  
-    //  method_info  3                                                   
-    //  max_stack    1                                                   
-    //  max_regs     1                                                   
-    //  scope_depth  0                                                   
-    //  max_scope    1                                                   
-    //  code_length  6                                                   
+    //  method_info  3                                                  
+    //  max_stack    1                                                  
+    //  max_regs     1                                                  
+    //  scope_depth  0                                                  
+    //  max_scope    1                                                  
+    //  code_length  6                                                  
     bb0
       succs=[]
       0      getlocal0            
@@ -145,16 +145,16 @@ function script0$init():*
   //  code_length  14    
   bb0
     succs=[]
-    0      getlocal0                                                              
-    1      pushscope                                                              
-    2      getscopeobject                                                      0  
-    3      getlex          Object                                                 
-    4      dup                                                                    
-    5      pushscope                                                              
-    6      newclass                                                               
-    7      popscope                                                               
+    0      getlocal0                                                             
+    1      pushscope                                                             
+    2      getscopeobject                                                     0  
+    3      getlex          Object                                                
+    4      dup                                                                   
+    5      pushscope                                                             
+    6      newclass                                                              
+    7      popscope                                                              
     8      initproperty    %0     
-    9      returnvoid                                                             
+    9      returnvoid                                                            
 }
 
   </DoABC>

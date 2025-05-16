@@ -26,118 +26,118 @@ import org.junit.Test;
 
 public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
 {
-	@Test
+    @Test
     public void testInvalidSyntaxBeforeDynamicAccess()
     {
         String[] testCode = new String[]
         {
             "var o:Object = {};",
             // the ?. operator before [] square brackets is not valid syntax
-			"var result:* = o?.a?.[0];",
+            "var result:* = o?.a?.[0];",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
         compileAndExpectErrors(source, false, false, false, new String[0], "'[' is not allowed here\n");
     }
 
-	@Test
+    @Test
     public void testInvalidSyntaxBeforeFunctionCall()
     {
         String[] testCode = new String[]
         {
             "var o:Object = {};",
             // the ?. operator before () parentheses is not valid syntax
-			"var result:* = o?.a?.toString?.();",
+            "var result:* = o?.a?.toString?.();",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
         compileAndExpectErrors(source, false, false, false, new String[0], "'(' is not allowed here\n");
     }
 
-	// null is considered nullish
+    // null is considered nullish
     @Test
     public void testNullToString()
     {
         String[] testCode = new String[]
         {
             "var o:Object = null;",
-			"var result:* = o?.toString();",
-			"assertEqual('null conditional', result, null);",
+            "var result:* = o?.toString();",
+            "assertEqual('null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
         compileAndRun(source);
     }
 
-	// undefined is considered nullish
-	@Test
+    // undefined is considered nullish
+    @Test
     public void testUndefinedToString()
     {
         String[] testCode = new String[]
         {
             "var o:* = undefined;",
-			"var result:* = o?.toString();",
-			"assertEqual('null conditional', result, null);",
+            "var result:* = o?.toString();",
+            "assertEqual('null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
         compileAndRun(source);
     }
 
-	// false is considered falsy, but not nullish
-	@Test
+    // false is considered falsy, but not nullish
+    @Test
     public void testFalseToString()
     {
         String[] testCode = new String[]
         {
             "var b:Boolean = false;",
-			"var result:* = b?.toString();",
-			"assertEqual('null conditional', result, 'false');",
+            "var result:* = b?.toString();",
+            "assertEqual('null conditional', result, 'false');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
         compileAndRun(source);
     }
 
-	// NaN is considered falsy, but not nullish
-	@Test
+    // NaN is considered falsy, but not nullish
+    @Test
     public void testNaNToString()
     {
         String[] testCode = new String[]
         {
             "var n:Number = NaN;",
-			"var result:* = n?.toString();",
-			"assertEqual('null conditional', result, 'NaN');",
+            "var result:* = n?.toString();",
+            "assertEqual('null conditional', result, 'NaN');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
         compileAndRun(source);
     }
 
-	// 0 is considered falsy, but not nullish
-	@Test
+    // 0 is considered falsy, but not nullish
+    @Test
     public void testZeroToString()
     {
         String[] testCode = new String[]
         {
             "var n:Number = 0;",
-			"var result:* = n?.toString();",
-			"assertEqual('null conditional', result, '0');",
+            "var result:* = n?.toString();",
+            "assertEqual('null conditional', result, '0');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
         compileAndRun(source);
     }
 
-	// empty string is considered falsy, but not nullish
-	@Test
+    // empty string is considered falsy, but not nullish
+    @Test
     public void testEmptyStringToString()
     {
         String[] testCode = new String[]
         {
             "var s:String = '';",
-			"var result:* = s?.toString();",
-			"assertEqual('null conditional', result, '');",
+            "var result:* = s?.toString();",
+            "assertEqual('null conditional', result, '');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -150,8 +150,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {};",
-			"var result:* = o?.toString();",
-			"assertEqual('null conditional', result, '[object Object]');",
+            "var result:* = o?.toString();",
+            "assertEqual('null conditional', result, '[object Object]');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -164,8 +164,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: null};",
-			"var result:* = o?.a?.toString();",
-			"assertEqual('null conditional', result, null);",
+            "var result:* = o?.a?.toString();",
+            "assertEqual('null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -178,8 +178,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {};",
-			"var result:* = o?.a?.toString();",
-			"assertEqual('null conditional', result, null);",
+            "var result:* = o?.a?.toString();",
+            "assertEqual('null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -192,176 +192,220 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: undefined};",
-			"var result:* = o?.a?.toString();",
-			"assertEqual('null conditional', result, null);",
+            "var result:* = o?.a?.toString();",
+            "assertEqual('null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
         compileAndRun(source);
     }
 
-	@Test
+    @Test
     public void testNestedFalseToString()
     {
         String[] testCode = new String[]
         {
             "var o:Object = {a: false};",
-			"var result:* = o?.a?.toString();",
-			"assertEqual('null conditional', result, 'false');",
+            "var result:* = o?.a?.toString();",
+            "assertEqual('null conditional', result, 'false');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
         compileAndRun(source);
     }
 
-	@Test
+    @Test
     public void testNestedZeroToString()
     {
         String[] testCode = new String[]
         {
             "var o:Object = {a: 0};",
-			"var result:* = o?.a?.toString();",
-			"assertEqual('null conditional', result, '0');",
+            "var result:* = o?.a?.toString();",
+            "assertEqual('null conditional', result, '0');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
         compileAndRun(source);
     }
 
-	@Test
+    @Test
+    public void testNestedObjectToString()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = {a: {}};",
+            "var result:* = o?.a?.toString();",
+            "assertEqual('null conditional', result, '[object Object]');",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
     public void testNullFieldAsValue()
     {
         String[] testCode = new String[]
         {
             "var o:Object = {a: null};",
-			"var result:* = o?.a;",
-			"assertEqual('null conditional', result, null);",
+            "var result:* = o?.a;",
+            "assertEqual('null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
         compileAndRun(source);
     }
 
-	@Test
+    @Test
     public void testImplicitUndefinedFieldAsValue()
     {
         String[] testCode = new String[]
         {
             "var o:Object = {};",
-			"var result:* = o?.a;",
-			"assertEqual('null conditional', result, undefined);",
+            "var result:* = o?.a;",
+            "assertEqual('null conditional', result, undefined);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
         compileAndRun(source);
     }
 
-	@Test
+    @Test
     public void testExplicitUndefinedFieldAsValue()
     {
         String[] testCode = new String[]
         {
             "var o:Object = {a: undefined};",
-			"var result:* = o?.a;",
-			"assertEqual('null conditional', result, undefined);",
+            "var result:* = o?.a;",
+            "assertEqual('null conditional', result, undefined);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
         compileAndRun(source);
     }
 
-	@Test
+    @Test
     public void testFalseFieldAsValue()
     {
         String[] testCode = new String[]
         {
             "var o:Object = {a: false};",
-			"var result:* = o?.a;",
-			"assertEqual('null conditional', result, false);",
+            "var result:* = o?.a;",
+            "assertEqual('null conditional', result, false);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
         compileAndRun(source);
     }
 
-	@Test
+    @Test
     public void testZeroFieldAsValue()
     {
         String[] testCode = new String[]
         {
             "var o:Object = {a: 0};",
-			"var result:* = o?.a;",
-			"assertEqual('null conditional', result, 0);",
+            "var result:* = o?.a;",
+            "assertEqual('null conditional', result, 0);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
         compileAndRun(source);
     }
 
-	@Test
+    @Test
+    public void testObjectFieldAsValue()
+    {
+        String[] testCode = new String[]
+        {
+            "var expected:Object = {};",
+            "var o:Object = {a: expected};",
+            "var result:* = o?.a;",
+            "assertEqual('null conditional', result, expected);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
     public void testNestedNullFieldAsValue()
     {
         String[] testCode = new String[]
         {
             "var o:Object = {a: {b: null}};",
-			"var result:* = o?.a?.b;",
-			"assertEqual('null conditional', result, null);",
+            "var result:* = o?.a?.b;",
+            "assertEqual('null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
         compileAndRun(source);
     }
 
-	@Test
+    @Test
     public void testNestedImplicitUndefinedFieldAsValue()
     {
         String[] testCode = new String[]
         {
             "var o:Object = {a: {}};",
-			"var result:* = o?.a?.b;",
-			"assertEqual('null conditional', result, undefined);",
+            "var result:* = o?.a?.b;",
+            "assertEqual('null conditional', result, undefined);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
         compileAndRun(source);
     }
 
-	@Test
+    @Test
     public void testNestedExplicitUndefinedFieldAsValue()
     {
         String[] testCode = new String[]
         {
             "var o:Object = {a: {b: undefined}};",
-			"var result:* = o?.a?.b;",
-			"assertEqual('null conditional', result, undefined);",
+            "var result:* = o?.a?.b;",
+            "assertEqual('null conditional', result, undefined);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
         compileAndRun(source);
     }
 
-	@Test
+    @Test
     public void testNestedFalseFieldAsValue()
     {
         String[] testCode = new String[]
         {
             "var o:Object = {a: {b: false}};",
-			"var result:* = o?.a?.b;",
-			"assertEqual('null conditional', result, false);",
+            "var result:* = o?.a?.b;",
+            "assertEqual('null conditional', result, false);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
         compileAndRun(source);
     }
 
-	@Test
+    @Test
     public void testNestedZeroFieldAsValue()
     {
         String[] testCode = new String[]
         {
             "var o:Object = {a: {b: 0}};",
-			"var result:* = o?.a?.b;",
-			"assertEqual('null conditional', result, 0);",
+            "var result:* = o?.a?.b;",
+            "assertEqual('null conditional', result, 0);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testNestedObjectFieldAsValue()
+    {
+        String[] testCode = new String[]
+        {
+            "var expected:Object = {};",
+            "var o:Object = {a: {b: expected}};",
+            "var result:* = o?.a?.b;",
+            "assertEqual('null conditional', result, expected);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -374,8 +418,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = null;",
-			"var result:* = o?.hasOwnProperty('a');",
-			"assertEqual('null conditional', result, null);",
+            "var result:* = o?.hasOwnProperty('a');",
+            "assertEqual('null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -388,8 +432,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:* = undefined;",
-			"var result:* = o?.hasOwnProperty('a');",
-			"assertEqual('null conditional', result, null);",
+            "var result:* = o?.hasOwnProperty('a');",
+            "assertEqual('null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -402,8 +446,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var b:Boolean = false;",
-			"var result:* = b?.hasOwnProperty('xyz');",
-			"assertEqual('null conditional', result, false);",
+            "var result:* = b?.hasOwnProperty('xyz');",
+            "assertEqual('null conditional', result, false);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -416,8 +460,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var n:Number = 0;",
-			"var result:* = n?.hasOwnProperty('xyz');",
-			"assertEqual('null conditional', result, false);",
+            "var result:* = n?.hasOwnProperty('xyz');",
+            "assertEqual('null conditional', result, false);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -430,8 +474,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: 123};",
-			"var result:* = o?.hasOwnProperty('a');",
-			"assertEqual('null conditional', result, true);",
+            "var result:* = o?.hasOwnProperty('a');",
+            "assertEqual('null conditional', result, true);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -444,8 +488,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = null;",
-			"var result:* = o?.a['b'];",
-			"assertEqual('null conditional', result, null);",
+            "var result:* = o?.a['b'];",
+            "assertEqual('null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -458,8 +502,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:* = undefined;",
-			"var result:* = o?.a['b'];",
-			"assertEqual('null conditional', result, null);",
+            "var result:* = o?.a['b'];",
+            "assertEqual('null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -472,8 +516,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: {}};",
-			"var result:* = o?.a['b'];",
-			"assertEqual('null conditional', result, undefined);",
+            "var result:* = o?.a['b'];",
+            "assertEqual('null conditional', result, undefined);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -486,8 +530,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: {b: 2}};",
-			"var result:* = o?.a['b'];",
-			"assertEqual('null conditional', result, 2);",
+            "var result:* = o?.a['b'];",
+            "assertEqual('null conditional', result, 2);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -500,8 +544,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = null;",
-			"var result:* = o?.a.b;",
-			"assertEqual('null conditional', result, null);",
+            "var result:* = o?.a.b;",
+            "assertEqual('null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -514,8 +558,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:* = undefined;",
-			"var result:* = o?.a.b;",
-			"assertEqual('null conditional', result, null);",
+            "var result:* = o?.a.b;",
+            "assertEqual('null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -528,8 +572,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: {}};",
-			"var result:* = o?.a.b;",
-			"assertEqual('null conditional', result, undefined);",
+            "var result:* = o?.a.b;",
+            "assertEqual('null conditional', result, undefined);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -542,96 +586,96 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: {b: 2}};",
-			"var result:* = o?.a.b;",
-			"assertEqual('null conditional', result, 2);",
+            "var result:* = o?.a.b;",
+            "assertEqual('null conditional', result, 2);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
         compileAndRun(source);
     }
 
-	@Test
+    @Test
     public void testDeepNesting()
     {
         String[] testCode = new String[]
         {
             "var o:* = {a: {b: {c: {d1: undefined, d2: null, d3: 0, d4: false}}}};",
-			"assertEqual('null conditional', o?.a?.b?.c?.d1, undefined);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d2, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d3, 0);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d4, false);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d1?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d2?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d3?.toString(), '0');",
-			"assertEqual('null conditional', o?.a?.b?.c?.d4?.toString(), 'false');",
-			"assertEqual('null conditional', o?.a?.b?.c?.d1?.e, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d2?.e, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d1, undefined);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d2, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d3, 0);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d4, false);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d1?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d2?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d3?.toString(), '0');",
+            "assertEqual('null conditional', o?.a?.b?.c?.d4?.toString(), 'false');",
+            "assertEqual('null conditional', o?.a?.b?.c?.d1?.e, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d2?.e, null);",
             "o = {a: {b: {c: {}}}};",
-			"assertEqual('null conditional', o?.a?.b?.c?.d1, undefined);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d2, undefined);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d3, undefined);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d4, undefined);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d1?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d2?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d3?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d4?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d1?.e, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d2?.e, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d1, undefined);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d2, undefined);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d3, undefined);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d4, undefined);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d1?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d2?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d3?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d4?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d1?.e, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d2?.e, null);",
             "o = {a: {b: {}}};",
-			"assertEqual('null conditional', o?.a?.b?.c?.d1, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d2, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d3, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d4, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d1?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d2?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d3?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d4?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d1?.e, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d2?.e, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d1, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d2, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d3, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d4, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d1?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d2?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d3?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d4?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d1?.e, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d2?.e, null);",
             "o = {a: {}};",
-			"assertEqual('null conditional', o?.a?.b?.c?.d1, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d2, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d3, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d4, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d1?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d2?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d3?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d4?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d1?.e, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d2?.e, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d1, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d2, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d3, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d4, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d1?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d2?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d3?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d4?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d1?.e, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d2?.e, null);",
             "o = {};",
-			"assertEqual('null conditional', o?.a?.b?.c?.d1, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d2, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d3, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d4, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d1?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d2?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d3?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d4?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d1?.e, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d2?.e, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d1, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d2, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d3, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d4, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d1?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d2?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d3?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d4?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d1?.e, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d2?.e, null);",
             "o = null;",
-			"assertEqual('null conditional', o?.a?.b?.c?.d1, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d2, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d3, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d4, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d1?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d2?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d3?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d4?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d1?.e, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d2?.e, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d1, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d2, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d3, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d4, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d1?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d2?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d3?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d4?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d1?.e, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d2?.e, null);",
             "o = undefined;",
-			"assertEqual('null conditional', o?.a?.b?.c?.d1, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d2, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d3, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d4, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d1?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d2?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d3?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d4?.toString(), null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d1?.e, null);",
-			"assertEqual('null conditional', o?.a?.b?.c?.d2?.e, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d1, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d2, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d3, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d4, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d1?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d2?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d3?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d4?.toString(), null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d1?.e, null);",
+            "assertEqual('null conditional', o?.a?.b?.c?.d2?.e, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -648,7 +692,7 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
             "if (o?.toString() === null) {",
             "  result = true;",
             "}",
-			"assertEqual('null conditional', result, true);",
+            "assertEqual('null conditional', result, true);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -665,7 +709,7 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
             "if (o?.toString() === null) {",
             "  result = true;",
             "}",
-			"assertEqual('null conditional', result, true);",
+            "assertEqual('null conditional', result, true);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -682,7 +726,7 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
             "if (b?.toString() === null) {",
             "  result = true;",
             "}",
-			"assertEqual('null conditional', result, false);",
+            "assertEqual('null conditional', result, false);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -699,7 +743,7 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
             "if (n?.toString() === null) {",
             "  result = true;",
             "}",
-			"assertEqual('null conditional', result, false);",
+            "assertEqual('null conditional', result, false);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -716,7 +760,511 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
             "if (o?.toString() === null) {",
             "  result = true;",
             "}",
-			"assertEqual('null conditional', result, false);",
+            "assertEqual('null conditional', result, false);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testNullNestedMethodCall()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = null;",
+            "var result:* = o?.hasOwnProperty('a')?.toString();",
+            "assertEqual('null conditional', result, null);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testUndefinedNestedMethodCall()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:* = undefined;",
+            "var result:* = o?.hasOwnProperty('a')?.toString();",
+            "assertEqual('null conditional', result, null);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testFalseNestedMethodCall()
+    {
+        String[] testCode = new String[]
+        {
+            "var b:Boolean = false;",
+            "var result:* = b?.hasOwnProperty('a')?.toString();",
+            "assertEqual('null conditional', result, 'false');",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testZeroNestedMethodCall()
+    {
+        String[] testCode = new String[]
+        {
+            "var n:Number = 0;",
+            "var result:* = n?.hasOwnProperty('a')?.toString();",
+            "assertEqual('null conditional', result, 'false');",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testObjectNestedMethodCall()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = {a: 123};",
+            "var result:* = o?.hasOwnProperty('a')?.toString();",
+            "assertEqual('null conditional', result, 'true');",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testNullWithDoubleNormalMemberAccess()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = null;",
+            "var result:* = o?.a.b.c;",
+            "assertEqual('null conditional', result, null);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testUndefinedWithDoubleNormalMemberAccess()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:* = undefined;",
+            "var result:* = o?.a.b.c;",
+            "assertEqual('null conditional', result, null);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testObjectWithDoubleNormalMemberAccess()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = {a: {b: {c: 123}}};",
+            "var result:* = o?.a.b.c;",
+            "assertEqual('null conditional', result, 123);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testNullThenNormalMemberAccessThenMethodCall()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = null;",
+            "var result:* = o?.a.toString();",
+            "assertEqual('null conditional', result, null);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testUndefinedThenNormalMemberAccessThenMethodCall()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:* = undefined;",
+            "var result:* = o?.a.toString();",
+            "assertEqual('null conditional', result, null);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testObjectThenNormalMemberAccessThenMethodCall()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = {a: {}};",
+            "var result:* = o?.a.toString();",
+            "assertEqual('null conditional', result, '[object Object]');",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testNullThenNormalMemberAccessThenDynamicAccess()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = null;",
+            "var result:* = o?.a.b['c'];",
+            "assertEqual('null conditional', result, null);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testUndefinedThenNormalMemberAccessThenDynamicAccess()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:* = undefined;",
+            "var result:* = o?.a.b['c'];",
+            "assertEqual('null conditional', result, null);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testObjectThenNormalMemberAccessThenDynamicAccess()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = {a: {b: {c: 123}}};",
+            "var result:* = o?.a.b['c'];",
+            "assertEqual('null conditional', result, 123);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testNullFieldToStringWithNormalMemberAccessBefore()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = {a: null};",
+            "var result:* = o.a?.toString();",
+            "assertEqual('null conditional', result, null);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testImplicitUndefinedFieldToStringWithNormalMemberAccessBefore()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = {};",
+            "var result:* = o.a?.toString();",
+            "assertEqual('null conditional', result, null);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testExplicitUndefinedFieldToStringWithNormalMemberAccessBefore()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = {a: undefined};",
+            "var result:* = o.a?.toString();",
+            "assertEqual('null conditional', result, null);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testFalseFieldToStringWithNormalMemberAccessBefore()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = {a: false};",
+            "var result:* = o.a?.toString();",
+            "assertEqual('null conditional', result, 'false');",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testZeroFieldToStringWithNormalMemberAccessBefore()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = {a: 0};",
+            "var result:* = o.a?.toString();",
+            "assertEqual('null conditional', result, '0');",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testObjectFieldToStringWithNormalMemberAccessBefore()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = {a: {}};",
+            "var result:* = o.a?.toString();",
+            "assertEqual('null conditional', result, '[object Object]');",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testNullWithDoubleDynamicAccess()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = null;",
+            "var result:* = o?.a['b']['c'];",
+            "assertEqual('null conditional', result, null);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testUndefinedWithDoubleDynamicAccess()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:* = undefined;",
+            "var result:* = o?.a['b']['c'];",
+            "assertEqual('null conditional', result, null);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testObjectWithDoubleDynamicAccess()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = {a: {b: {c: 123}}};",
+            "var result:* = o?.a['b']['c'];",
+            "assertEqual('null conditional', result, 123);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testNullDoubleMethodCall()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = null;",
+            "var result:* = o?.hasOwnProperty('a').toString();",
+            "assertEqual('null conditional', result, null);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testUndefinedDoubleMethodCall()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:* = undefined;",
+            "var result:* = o?.hasOwnProperty('a').toString();",
+            "assertEqual('null conditional', result, null);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testFalseDoubleMethodCall()
+    {
+        String[] testCode = new String[]
+        {
+            "var b:Boolean = false;",
+            "var result:* = b?.hasOwnProperty('a').toString();",
+            "assertEqual('null conditional', result, 'false');",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testZeroDoubleMethodCall()
+    {
+        String[] testCode = new String[]
+        {
+            "var n:Number = 0;",
+            "var result:* = n?.hasOwnProperty('a').toString();",
+            "assertEqual('null conditional', result, 'false');",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testObjectDoubleMethodCall()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = {a: 123};",
+            "var result:* = o?.hasOwnProperty('a').toString();",
+            "assertEqual('null conditional', result, 'true');",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testNullWithDynamicAccessAndMethodCall()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = null;",
+            "var result:* = o?.a['b'].toString();",
+            "assertEqual('null conditional', result, null);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testUndefinedWithDynamicAccessAndMethodCall()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:* = undefined;",
+            "var result:* = o?.a['b'].toString();",
+            "assertEqual('null conditional', result, null);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testObjectWithDynamicAccessAndMethodCall()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = {a: {b: 123}};",
+            "var result:* = o?.a['b'].toString();",
+            "assertEqual('null conditional', result, '123');",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testNullWithMethodCallAndDynamicAccess()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = null;",
+            "var result:* = o?.toString()['length'];",
+            "assertEqual('null conditional', result, null);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testUndefinedWithMethodCallAndDynamicAccess()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:* = undefined;",
+            "var result:* = o?.toString()['length'];",
+            "assertEqual('null conditional', result, null);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testFalseWithMethodCallAndDynamicAccess()
+    {
+        String[] testCode = new String[]
+        {
+            "var b:Boolean = false;",
+            "var result:* = b?.toString()['length'];",
+            "assertEqual('null conditional', result, 5);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testZeroWithMethodCallAndDynamicAccess()
+    {
+        String[] testCode = new String[]
+        {
+            "var n:Number = 0;",
+            "var result:* = n?.toString()['length'];",
+            "assertEqual('null conditional', result, 1);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testObjectWithMethodCallAndDynamicAccess()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = {};",
+            "var result:* = o?.toString()['length'];",
+            "assertEqual('null conditional', result, '[object Object]'.length);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 

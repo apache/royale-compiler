@@ -3184,9 +3184,8 @@ nullConditionalAccessPart returns [ExpressionNodeBase n]
 			n=nameExpression
 			(
 					n=arguments[n]
-				| 	n=bracketExpression[n]
 				|	n=propertyAccessExpression[n]
-			)?
+			)*
 		)
 	;
 	exception catch [RecognitionException ex] { n = handleMissingIdentifier(ex);  }
