@@ -271,6 +271,7 @@ public class RoyaleProjectConfigurator extends Configurator
             project.setAllowImportAliases(configuration.getCompilerAllowImportAliases());
             project.setAllowAbstractClasses(configuration.getCompilerAllowAbstractClasses());
             project.setAllowPrivateConstructors(configuration.getCompilerAllowPrivateConstructors());
+            project.setAllowArrowFunctions(configuration.getCompilerAllowArrowFunctions());
             project.setAllowStrictFunctionTypes(configuration.getAllowStrictFunctionTypes());
 
             project.setStrictIdentifierNames(configuration.getCompilerStrictIdentifierNames());

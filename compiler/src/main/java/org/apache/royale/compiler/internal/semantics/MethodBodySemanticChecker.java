@@ -1111,7 +1111,9 @@ public class MethodBodySemanticChecker
         {
             FunctionNode func = (FunctionNode)iNode;
 
-            if (SemanticUtils.isFunctionClosure(func))
+            if (project.getAllowArrowFunctions()
+                    && !func.isArrowFunction()
+                    && SemanticUtils.isFunctionClosure(func))
             {
                 for (IASNode thisNode : findThisIdentifierNodes(func))
                 {
@@ -1358,6 +1360,15 @@ public class MethodBodySemanticChecker
         SemanticUtils.checkReturnValueHasNoTypeDeclaration(this.currentScope, iNode, def);
         SemanticUtils.checkParametersHaveNoTypeDeclaration(this.currentScope, iNode, def);
         SemanticUtils.checkParametersHaveUniqueNames(this.currentScope, iNode, def);
+
+        if (!project.getAllowArrowFunctions())
+        {
+            if (iNode.isArrowFunction())
+            {
+                //arrow functions need to be enabled
+                addProblem(new SyntaxProblem(iNode, "=>"));
+            }
+        }
         
         if (SemanticUtils.isInFunction(iNode))
         {

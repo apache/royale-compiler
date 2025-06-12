@@ -61,7 +61,8 @@ public interface IASToken extends ICMToken, ISourceLocation
         DEFAULT_XML_STATEMENT,
         UNKNOWN,
         INCLUDE,
-        VERBATIM_STRING
+        VERBATIM_STRING,
+        ARROW
     }
 
     /**

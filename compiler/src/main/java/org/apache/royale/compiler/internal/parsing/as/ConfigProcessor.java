@@ -178,6 +178,12 @@ public class ConfigProcessor
         }
 
         @Override
+        public boolean getAllowArrowFunctions() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
         public boolean getAllowStrictFunctionTypes() {
             // TODO Auto-generated method stub
             return false;

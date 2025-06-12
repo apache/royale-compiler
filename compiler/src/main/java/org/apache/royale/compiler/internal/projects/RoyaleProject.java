@@ -2526,6 +2526,21 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     	allowPrivateConstructors = allow;
     }
 
+    private boolean allowArrowFunctions = false;
+    
+    /**
+     * Indicates if => arrow functions are allowed.
+     */
+    @Override
+    public boolean getAllowArrowFunctions()
+    {
+    	return allowArrowFunctions;
+    }
+    public void setAllowArrowFunctions(boolean allow)
+    {
+    	allowArrowFunctions = allow;
+    }
+
     private boolean allowStrictFunctionTypes = false;
     
     /**

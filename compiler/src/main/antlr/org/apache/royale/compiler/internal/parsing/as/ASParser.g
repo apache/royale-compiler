@@ -41,6 +41,7 @@ import org.apache.royale.compiler.asdoc.IASParserASDocDelegate;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.*;
+import org.apache.royale.compiler.internal.tree.as.parts.FunctionContentsPart;
 
 }
 
@@ -363,7 +364,7 @@ configConditionOfDefinition returns [boolean result]
 groupDirectiveWithConfigVariable [ContainerNode c, int endToken]
 {
     boolean b;
-    ConfigConditionBlockNode block;
+    ConfigConditionBlockNode block = null;
     final Token lt = LT(1);
 }
     :   b=configCondition   
@@ -987,7 +988,108 @@ classOrInterfaceBlock[BlockNode b]
 			endContainerAtError(ex, b); 
 		}
 	}
-	
+
+/**
+ * Matches an arrow function (=>) with parenthesis, which may contain zero or
+ * more parameters and an optional return type.
+ */
+arrowFunctionExpression returns [ExpressionNodeBase n]
+{ 
+	n = null; 
+	FunctionObjectNode funcObj = null;
+	IdentifierNode paramId = null;
+	BlockNode b = null; 
+	IdentifierNode functionName = null;
+	FunctionContentsPart contentsPart = new FunctionContentsPart();
+	FunctionNode f = null;
+	ContainerNode params = null;
+	ExpressionNodeBase body = null;
+}
+ 	:   (
+			paramId=identifier
+			{
+				functionName = new IdentifierNode("");
+				functionName.startAfter(paramId);
+				functionName.endAfter(paramId);
+				functionName.setSourcePath(paramId.getSourcePath());
+
+				contentsPart = new FunctionContentsPart();
+				params = contentsPart.getParametersNode();
+				params.startBefore(paramId);
+				params.addItem(new ParameterNode(paramId));
+				f = new FunctionNode(functionName, contentsPart);
+				f.startBefore(paramId);
+				f.setArrowFunction(true);
+			}
+		|   (
+				lpT:TOKEN_PAREN_OPEN
+				{
+					functionName = IdentifierNode.createEmptyIdentifierNodeAfterToken(lpT);
+					contentsPart = new FunctionContentsPart();
+					f = new FunctionNode(functionName, contentsPart);
+					f.startBefore(lpT);
+					f.setArrowFunction(true);
+					params = contentsPart.getParametersNode();
+					params.startBefore(lpT);
+				}
+				formalParameters[params]
+				rpT:TOKEN_PAREN_CLOSE
+				{ params.endAfter(rpT); }
+				(resultType[f])?
+			)
+		)
+		arrowT:TOKEN_ARROW 
+		{
+			IASNode prevNode = f.getReturnTypeNode();
+			if (prevNode == null)
+			{
+				prevNode = params;
+			}
+			if (arrowT.getLine() != prevNode.getEndLine())
+			{
+				reportUnexpectedTokenProblem((ASToken)arrowT);
+			}
+
+			ASToken funcKeywordToken = new ASToken(TOKEN_KEYWORD_FUNCTION, -1, -1, -1, -1, "function");
+			KeywordNode funcKeywordNode = new KeywordNode(funcKeywordToken);
+			funcKeywordNode.startBefore(arrowT);
+			funcKeywordNode.endAfter(arrowT);
+			contentsPart.setKeywordNode(funcKeywordNode);
+			funcObj = new FunctionObjectNode(f);
+			funcObj.startBefore(lpT);
+			n = funcObj;
+			b = f.getScopedNode();
+		}
+
+		// non-optional function body
+		(
+			(
+				// with braces
+				lbT:TOKEN_BLOCK_OPEN
+				{ b.startAfter(lbT);}
+				functionBlock[f, (ASToken)lbT]
+				{
+					f.endAfter(b);
+					funcObj.endAfter(b);
+				}
+			)
+		|	body=expression
+			{
+				// without braces
+    			b.setContainerType(IContainerNode.ContainerType.BRACES);
+				ReturnNode r = new ReturnNode((IASToken)arrowT);
+				r.setStatementExpression(body);
+				b.addItem(r);
+				f.endAfter(b);
+				funcObj.endAfter(b);
+			}
+		)
+		{ n=bindArrowFunction(funcObj, (ASToken)arrowT); }
+ 	;
+ 	exception catch [RecognitionException ex] {
+		handleParsingError(ex);
+	}
+
 /**
  * Matches an anonymous function (function closure).
  */
@@ -1096,6 +1198,8 @@ functionDefinition[ContainerNode c, INamespaceDecorationNode namespace, List<Mod
 {  
 	IdentifierNode name=null; 
     disableSemicolonInsertion();
+	FunctionNode n = null;
+	ContainerNode parameters = null;
 }
 	:   (   functionT:TOKEN_KEYWORD_FUNCTION 
 	
@@ -1115,7 +1219,6 @@ functionDefinition[ContainerNode c, INamespaceDecorationNode namespace, List<Mod
 			exception catch [RecognitionException ex] { name = handleMissingIdentifier(ex); }
 		)
 		{
-			final FunctionNode n ;
 			if (getT != null)
 				n = new GetterNode((ASToken)functionT, (ASToken)getT, name);
 			else if (setT != null)
@@ -1130,7 +1233,7 @@ functionDefinition[ContainerNode c, INamespaceDecorationNode namespace, List<Mod
 		// function signature:
 		lpT:TOKEN_PAREN_OPEN
 		{
-			final ContainerNode parameters = n.getParametersContainerNode();
+			parameters = n.getParametersContainerNode();
 			parameters.startBefore(lpT);
  		}
      	formalParameters[parameters]	
@@ -2038,6 +2141,7 @@ restrictedName returns [ExpressionNodeBase nameExpression]
  	IdentifierNode placeHolderRightNode = null;
     ASToken opToken = null;
     ExpressionNodeBase part = null;
+	ExpressionNodeBase nameLeft = null;
 }
     :   nameExpression=restrictedNamePart
     	
@@ -2055,7 +2159,7 @@ restrictedName returns [ExpressionNodeBase nameExpression]
                 // FullNameNode.
                 placeHolderRightNode = IdentifierNode.createEmptyIdentifierNodeAfterToken(opToken);
                 
-                final ExpressionNodeBase nameLeft = nameExpression;
+                nameLeft = nameExpression;
             }
             (   TOKEN_OPERATOR_MEMBER_ACCESS 
                 { nameExpression = new FullNameNode(nameLeft, opToken, placeHolderRightNode); } 
@@ -2965,6 +3069,7 @@ lhsExpr returns [ExpressionNodeBase n]
 	n = null;
 }
     :   (   n=newExpression 
+        |   { isArrowFunction() }? n=arrowFunctionExpression
         |   n=parenExpression 
         |   n=nameExpression 
         |   n=primaryExpression 

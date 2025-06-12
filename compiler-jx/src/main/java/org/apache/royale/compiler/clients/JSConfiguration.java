@@ -70,6 +70,7 @@ public class JSConfiguration extends Configuration
         setCompilerAllowImportAliases(null, true);
         setCompilerStrictIdentifierNames(null, false);
         setCompilerStrictFlexCSS(null, false);
+        setCompilerAllowArrowFunctions(null, true);
     }
 
     //

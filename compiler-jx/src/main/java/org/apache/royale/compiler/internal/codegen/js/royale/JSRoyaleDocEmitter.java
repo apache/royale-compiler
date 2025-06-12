@@ -401,6 +401,14 @@ public class JSRoyaleDocEmitter extends JSDocEmitter implements IJSRoyaleDocEmit
             	{
 	                // @return
 	                String returnType = node.getReturnType();
+                    if (node.isArrowFunction() && (returnType == null || returnType.isEmpty()))
+                    {
+                        ITypeDefinition resolvedTypeDef = SemanticUtils.resolveArrowFunctionInferredReturnType(node, project);
+                        if (resolvedTypeDef != null)
+                        {
+                            returnType = resolvedTypeDef.getQualifiedName();
+                        }
+                    }
                     if (project.getInferTypes() && (returnType == null || returnType.isEmpty()))
                     {
                         ITypeDefinition resolvedTypeDef = SemanticUtils.resolveFunctionInferredReturnType(node, project);
@@ -770,6 +778,14 @@ public class JSRoyaleDocEmitter extends JSDocEmitter implements IJSRoyaleDocEmit
     public void emitReturn(IFunctionNode node, String packageName, ICompilerProject project)
     {
         String rtype = node.getReturnType();
+        if (node.isArrowFunction() && (rtype == null || rtype.isEmpty()))
+        {
+            ITypeDefinition resolvedTypeDef = SemanticUtils.resolveArrowFunctionInferredReturnType(node, project);
+            if (resolvedTypeDef != null)
+            {
+                rtype = resolvedTypeDef.getQualifiedName();
+            }
+        }
         if (project.getInferTypes() && (rtype == null || rtype.isEmpty()))
         {
             ITypeDefinition resolvedTypeDef = SemanticUtils.resolveFunctionInferredReturnType(node, project);

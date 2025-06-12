@@ -986,6 +986,8 @@ public class ASToken extends TokenBase implements IASToken, ASTokenTypes
                 return ASTokenKind.OPERATOR;
             case TOKEN_KEYWORD_INCLUDE:
                 return ASTokenKind.INCLUDE;
+            case TOKEN_ARROW:
+                return ASTokenKind.ARROW;
             default:
                 if (isKeywordOrContextualReservedWord())
                     return ASTokenKind.KEYWORD;

@@ -94,6 +94,7 @@ import org.apache.royale.compiler.internal.tree.as.LiteralNode;
 import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.royale.compiler.internal.tree.as.NamespaceNode;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
+import org.apache.royale.compiler.internal.tree.as.ScopedBlockNode;
 import org.apache.royale.compiler.internal.tree.as.TypedExpressionNode;
 import org.apache.royale.compiler.internal.tree.as.UnaryOperatorAtNode;
 import org.apache.royale.compiler.internal.tree.as.UnaryOperatorNodeBase;
@@ -2831,11 +2832,20 @@ public class SemanticUtils
         if (node.getStart() == node.getEnd())
             return;
         
+        ICompilerProject project = scope.getProject();
+
         IExpressionNode returnType = node.getReturnTypeNode();
         ITypeDefinition inferredReturnTypeDef = null;
-        if (scope.getProject().getInferTypes() && returnType == null && func != null)
+        if (returnType == null && func != null)
         {
-            inferredReturnTypeDef = SemanticUtils.resolveFunctionInferredReturnType(node, scope.getProject());
+            if (node.isArrowFunction())
+            {
+                inferredReturnTypeDef = SemanticUtils.resolveArrowFunctionInferredReturnType(node, project);
+            }
+            if (project.getInferTypes() && inferredReturnTypeDef == null)
+            {
+                inferredReturnTypeDef = SemanticUtils.resolveFunctionInferredReturnType(node, project);
+            }
         }
         
         // check for return type declaration
@@ -3424,6 +3434,33 @@ public class SemanticUtils
             return null;
         }
         return resolvedType;
+    }
+
+    /**
+     * Infers the return type from an arrow function without braces. If the
+     * function has braces, returns null.
+     */
+    public static ITypeDefinition resolveArrowFunctionInferredReturnType(IFunctionNode iNode, ICompilerProject project)
+    {
+        if (!iNode.isArrowFunction())
+        {
+            return null;
+        }
+        IScopedNode scopedNode = iNode.getScopedNode();
+        if (scopedNode instanceof ScopedBlockNode)
+        {
+            ScopedBlockNode scopedBlockNode = (ScopedBlockNode) scopedNode;
+            if (scopedBlockNode.getChildCount() == 1)
+            {
+                IASNode childNode = scopedBlockNode.getChild(0);
+                if (childNode instanceof IReturnNode)
+                {
+                    IReturnNode returnNode = (IReturnNode) childNode;
+                    return returnNode.resolveType(project);
+                }
+            }
+        }
+        return null;
     }
 
     public static ITypeDefinition resolveFunctionInferredReturnType(IFunctionNode iNode, ICompilerProject project)

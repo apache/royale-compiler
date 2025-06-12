@@ -37,6 +37,7 @@ import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.definitions.references.IReference;
 import org.apache.royale.compiler.definitions.references.ReferenceFactory;
 import org.apache.royale.compiler.internal.definitions.metadata.MetaTag;
+import org.apache.royale.compiler.internal.definitions.references.ResolvedReference;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.problems.ConflictingDefinitionProblem;
@@ -196,18 +197,25 @@ public class FunctionDefinition extends ScopedDefinitionBase implements IFunctio
                 return null;
         }
 
-        if (project.getInferTypes() && getReturnTypeReference() == null)
+        IReference returnTypeReference = getReturnTypeReference();
+        if (returnTypeReference == null)
         {
             IFunctionNode funcNode = (IFunctionNode) getNode();
-            if (funcNode != null)
+            ITypeDefinition inferredReturnType = null;
+            if (funcNode.isArrowFunction())
             {
-                ITypeDefinition inferredReturnType = SemanticUtils.resolveFunctionInferredReturnType(funcNode, project);
-                if (inferredReturnType != null)
-                {
-                    setReturnTypeReference(ReferenceFactory.resolvedReference(inferredReturnType));
-                    DependencyType dt = DependencyType.SIGNATURE;
-                    return resolveType(returnTypeReference, project, dt);
-                }
+                inferredReturnType = SemanticUtils.resolveArrowFunctionInferredReturnType(funcNode, project);
+            }
+            if (project.getInferTypes() && inferredReturnType == null)
+            {
+                inferredReturnType = SemanticUtils.resolveFunctionInferredReturnType(funcNode, project);
+            }
+            if (inferredReturnType != null)
+            {
+                IReference resolvedRef = ReferenceFactory.resolvedReference(inferredReturnType);
+                setReturnTypeReference(ReferenceFactory.resolvedReference(inferredReturnType));
+                DependencyType dt = DependencyType.SIGNATURE;
+                return resolveType(resolvedRef, project, dt);
             }
         }
 

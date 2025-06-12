@@ -128,6 +128,13 @@ public interface IFunctionNode extends IScopedDefinitionNode, IDocumentableDefin
     boolean isCastFunction();
 
     /**
+     * Is this an arrow function?
+     * 
+     * @return true if the member is an arrow function
+     */
+    boolean isArrowFunction();
+
+    /**
      * Get the classification for this function (local, argument, class member,
      * etc)
      * 

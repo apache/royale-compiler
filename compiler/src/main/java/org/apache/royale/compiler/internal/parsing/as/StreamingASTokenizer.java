@@ -1209,6 +1209,7 @@ public class StreamingASTokenizer implements ASTokenTypes, IASTokenizer, Closeab
                 case TOKEN_BLOCK_OPEN:
                 case TOKEN_BLOCK_CLOSE:
                 case TOKEN_KEYWORD_FUNCTION:
+                case TOKEN_ARROW:
                     return retVal;
                 case HIDDEN_TOKEN_MULTI_LINE_COMMENT:
                 case HIDDEN_TOKEN_SINGLE_LINE_COMMENT:

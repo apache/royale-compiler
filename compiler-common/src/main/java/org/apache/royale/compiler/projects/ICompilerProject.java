@@ -283,6 +283,11 @@ public interface ICompilerProject
      boolean getAllowPrivateConstructors();
      
      /**
+      * @return True if => arrow functions are allowed.
+      */
+     boolean getAllowArrowFunctions();
+     
+     /**
       * @return True if strict function types are allowed and enforced.
       */
      boolean getAllowStrictFunctionTypes();

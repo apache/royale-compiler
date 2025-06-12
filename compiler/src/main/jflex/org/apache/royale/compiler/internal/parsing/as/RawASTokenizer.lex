@@ -472,6 +472,12 @@ REGEX_CLASS="[" ({REGEX_ESCAPE}|[^\n\r\]\\])* "]"
 	return buildToken(TOKEN_TYPED_COLLECTION_OPEN, ".<");
 }
 
+// Arrow functions
+<YYINITIAL> "=>"
+{
+	return buildToken(TOKEN_ARROW, "=>");
+}
+
 //
 // Other operators
 //

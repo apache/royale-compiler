@@ -1594,6 +1594,28 @@ public class Configuration
     }
 
     //
+    // 'compiler.allow-arrow-functions' option
+    //
+
+    private boolean allowArrowFunctions = false;
+
+    public boolean getCompilerAllowArrowFunctions()
+    {
+        return allowArrowFunctions;
+    }
+
+    /**
+     * Whether the compiler will allow => arrow functions.
+     */
+    @Config
+    @Mapping({ "compiler", "allow-arrow-functions" })
+    @RoyaleOnly
+    public void setCompilerAllowArrowFunctions(ConfigurationValue cv, boolean allow)
+    {
+        this.allowArrowFunctions = allow;
+    }
+
+    //
     // 'compiler.strict-flex-css' option
     //
 

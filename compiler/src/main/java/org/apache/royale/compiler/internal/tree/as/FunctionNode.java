@@ -174,6 +174,8 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
      * function yet (if a parent function even exists in the first place) -JT
      */
     private boolean isRemembered = false;
+
+    private boolean arrowFunction = false;
     
     //
     // NodeBase overrides
@@ -584,6 +586,17 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
         }
         
         return false;
+    }
+
+    @Override
+    public boolean isArrowFunction()
+    {
+        return arrowFunction;
+    }
+
+    public void setArrowFunction(boolean isArrow)
+    {
+        arrowFunction = isArrow;
     }
     
     @Override
