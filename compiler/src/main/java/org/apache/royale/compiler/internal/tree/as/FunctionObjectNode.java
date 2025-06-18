@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.semantics.PostProcessStep;
@@ -110,6 +111,16 @@ public class FunctionObjectNode extends ExpressionNodeBase implements IFunctionO
     //
     // ExpressionNodeBase overrides
     //
+
+    @Override
+    public IDefinition resolve(ICompilerProject project)
+    {
+        if (functionNode != null)
+        {
+            return functionNode.getDefinition();
+        }
+        return null;
+    }
 
     @Override
     public ITypeDefinition resolveType(ICompilerProject project)
