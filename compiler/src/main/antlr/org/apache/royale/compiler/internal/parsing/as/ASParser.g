@@ -3222,10 +3222,7 @@ propertyAccessExpression [ExpressionNodeBase l] returns [ExpressionNodeBase n]
         { n = new MemberAccessExpressionNode(l, op, r); }
     |   TOKEN_OPERATOR_DESCENDANT_ACCESS r=accessPart
         { n = new MemberAccessExpressionNode(l, op, r); }
-    |   TOKEN_OPERATOR_NULL_CONDITIONAL_ACCESS r=nullConditionalAccessPart
-        {
-			n = transformNullConditional(l, op, r);
-		}
+    |   TOKEN_OPERATOR_NULL_CONDITIONAL_ACCESS n=nullConditionalExpression[l, op]
     |   TOKEN_OPERATOR_NS_QUALIFIER r=nsAccessPart
         { if (l instanceof NamespaceIdentifierNode)
           {
@@ -3278,6 +3275,35 @@ nsAccessPart returns [ExpressionNodeBase n]
 	;
 	exception catch [RecognitionException ex] { n = handleMissingIdentifier(ex);  }
 	
+/**
+ * Matches a ?. null conditional expression.
+ */
+nullConditionalExpression [ExpressionNodeBase l, ASToken op] returns [ExpressionNodeBase n]
+{
+	n = null;
+    ExpressionNodeBase r = null;
+	DynamicAccessNode d = null;
+}
+	: 	r=nullConditionalAccessPart
+        {
+			n = transformNullConditional(l, op, r);
+		}
+	|   (
+			d=bracketExpression[l]
+			{
+				n = (ExpressionNodeBase) d.getRightOperandNode();
+			}
+			(
+					n=arguments[n]
+				|	n=propertyAccessExpression[n]
+			)*
+		)
+		{
+			n = transformNullConditionalDynamicAccess(l, op, d, n);
+		}
+	;
+	exception catch [RecognitionException ex] { n = handleMissingIdentifier(ex);  }
+
 /**
  * Matches parts after the ?. in a null conditional access expression.
  */

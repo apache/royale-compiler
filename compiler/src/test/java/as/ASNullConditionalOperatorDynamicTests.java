@@ -24,21 +24,8 @@ import java.io.File;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
+public class ASNullConditionalOperatorDynamicTests extends ASFeatureTestsBase
 {
-    @Test
-    public void testInvalidSyntaxBeforeFunctionCall()
-    {
-        String[] testCode = new String[]
-        {
-            "var o:Object = {};",
-            // the ?. operator before () parentheses is not valid syntax
-            "var result:* = o?.a?.toString?.();",
-        };
-        String source = getAS(new String[0], new String[0], testCode, new String[0]);
-
-        compileAndExpectErrors(source, false, false, false, new String[0], "'(' is not allowed here\n");
-    }
 
     // null is considered nullish
     @Test
@@ -47,8 +34,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = null;",
-            "var result:* = o?.toString();",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['toString']();",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -62,8 +49,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:* = undefined;",
-            "var result:* = o?.toString();",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['toString']();",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -77,8 +64,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var b:Boolean = false;",
-            "var result:* = b?.toString();",
-            "assertEqual('null conditional', result, 'false');",
+            "var result:* = b?.['toString']();",
+            "assertEqual('dynamic null conditional', result, 'false');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -92,8 +79,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var n:Number = NaN;",
-            "var result:* = n?.toString();",
-            "assertEqual('null conditional', result, 'NaN');",
+            "var result:* = n?.['toString']();",
+            "assertEqual('dynamic null conditional', result, 'NaN');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -107,8 +94,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var n:Number = 0;",
-            "var result:* = n?.toString();",
-            "assertEqual('null conditional', result, '0');",
+            "var result:* = n?.['toString']();",
+            "assertEqual('dynamic null conditional', result, '0');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -122,8 +109,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var s:String = '';",
-            "var result:* = s?.toString();",
-            "assertEqual('null conditional', result, '');",
+            "var result:* = s?.['toString']();",
+            "assertEqual('dynamic null conditional', result, '');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -136,8 +123,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {};",
-            "var result:* = o?.toString();",
-            "assertEqual('null conditional', result, '[object Object]');",
+            "var result:* = o?.['toString']();",
+            "assertEqual('dynamic null conditional', result, '[object Object]');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -150,8 +137,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: null};",
-            "var result:* = o?.a?.toString();",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['a']?.['toString']();",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -164,8 +151,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {};",
-            "var result:* = o?.a?.toString();",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['a']?.['toString']();",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -178,8 +165,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: undefined};",
-            "var result:* = o?.a?.toString();",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['a']?.['toString']();",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -192,8 +179,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: false};",
-            "var result:* = o?.a?.toString();",
-            "assertEqual('null conditional', result, 'false');",
+            "var result:* = o?.['a']?.['toString']();",
+            "assertEqual('dynamic null conditional', result, 'false');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -206,8 +193,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: 0};",
-            "var result:* = o?.a?.toString();",
-            "assertEqual('null conditional', result, '0');",
+            "var result:* = o?.['a']?.['toString']();",
+            "assertEqual('dynamic null conditional', result, '0');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -220,8 +207,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: {}};",
-            "var result:* = o?.a?.toString();",
-            "assertEqual('null conditional', result, '[object Object]');",
+            "var result:* = o?.['a']?.['toString']();",
+            "assertEqual('dynamic null conditional', result, '[object Object]');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -234,8 +221,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: null};",
-            "var result:* = o?.a;",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['a'];",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -248,8 +235,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {};",
-            "var result:* = o?.a;",
-            "assertEqual('null conditional', result, undefined);",
+            "var result:* = o?.['a'];",
+            "assertEqual('dynamic null conditional', result, undefined);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -262,8 +249,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: undefined};",
-            "var result:* = o?.a;",
-            "assertEqual('null conditional', result, undefined);",
+            "var result:* = o?.['a'];",
+            "assertEqual('dynamic null conditional', result, undefined);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -276,8 +263,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: false};",
-            "var result:* = o?.a;",
-            "assertEqual('null conditional', result, false);",
+            "var result:* = o?.['a'];",
+            "assertEqual('dynamic null conditional', result, false);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -290,8 +277,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: 0};",
-            "var result:* = o?.a;",
-            "assertEqual('null conditional', result, 0);",
+            "var result:* = o?.['a'];",
+            "assertEqual('dynamic null conditional', result, 0);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -305,8 +292,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         {
             "var expected:Object = {};",
             "var o:Object = {a: expected};",
-            "var result:* = o?.a;",
-            "assertEqual('null conditional', result, expected);",
+            "var result:* = o?.['a'];",
+            "assertEqual('dynamic null conditional', result, expected);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -319,8 +306,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: {b: null}};",
-            "var result:* = o?.a?.b;",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['a']?.['b'];",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -333,8 +320,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: {}};",
-            "var result:* = o?.a?.b;",
-            "assertEqual('null conditional', result, undefined);",
+            "var result:* = o?.['a']?.['b'];",
+            "assertEqual('dynamic null conditional', result, undefined);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -347,8 +334,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: {b: undefined}};",
-            "var result:* = o?.a?.b;",
-            "assertEqual('null conditional', result, undefined);",
+            "var result:* = o?.['a']?.['b'];",
+            "assertEqual('dynamic null conditional', result, undefined);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -361,8 +348,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: {b: false}};",
-            "var result:* = o?.a?.b;",
-            "assertEqual('null conditional', result, false);",
+            "var result:* = o?.['a']?.['b'];",
+            "assertEqual('dynamic null conditional', result, false);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -375,8 +362,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: {b: 0}};",
-            "var result:* = o?.a?.b;",
-            "assertEqual('null conditional', result, 0);",
+            "var result:* = o?.['a']?.['b'];",
+            "assertEqual('dynamic null conditional', result, 0);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -390,8 +377,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         {
             "var expected:Object = {};",
             "var o:Object = {a: {b: expected}};",
-            "var result:* = o?.a?.b;",
-            "assertEqual('null conditional', result, expected);",
+            "var result:* = o?.['a']?.['b'];",
+            "assertEqual('dynamic null conditional', result, expected);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -404,8 +391,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = null;",
-            "var result:* = o?.hasOwnProperty('a');",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['hasOwnProperty']('a');",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -418,8 +405,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:* = undefined;",
-            "var result:* = o?.hasOwnProperty('a');",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['hasOwnProperty']('a');",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -432,8 +419,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var b:Boolean = false;",
-            "var result:* = b?.hasOwnProperty('xyz');",
-            "assertEqual('null conditional', result, false);",
+            "var result:* = b?.['hasOwnProperty']('xyz');",
+            "assertEqual('dynamic null conditional', result, false);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -446,8 +433,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var n:Number = 0;",
-            "var result:* = n?.hasOwnProperty('xyz');",
-            "assertEqual('null conditional', result, false);",
+            "var result:* = n?.['hasOwnProperty']('xyz');",
+            "assertEqual('dynamic null conditional', result, false);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -460,8 +447,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: 123};",
-            "var result:* = o?.hasOwnProperty('a');",
-            "assertEqual('null conditional', result, true);",
+            "var result:* = o?.['hasOwnProperty']('a');",
+            "assertEqual('dynamic null conditional', result, true);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -474,8 +461,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = null;",
-            "var result:* = o?.a['b'];",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['a']['b'];",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -488,8 +475,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:* = undefined;",
-            "var result:* = o?.a['b'];",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['a']['b'];",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -502,8 +489,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: {}};",
-            "var result:* = o?.a['b'];",
-            "assertEqual('null conditional', result, undefined);",
+            "var result:* = o?.['a']['b'];",
+            "assertEqual('dynamic null conditional', result, undefined);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -516,8 +503,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: {b: 2}};",
-            "var result:* = o?.a['b'];",
-            "assertEqual('null conditional', result, 2);",
+            "var result:* = o?.['a']['b'];",
+            "assertEqual('dynamic null conditional', result, 2);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -530,8 +517,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = null;",
-            "var result:* = o?.a.b;",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['a'].b;",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -544,8 +531,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:* = undefined;",
-            "var result:* = o?.a.b;",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['a'].b;",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -558,8 +545,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: {}};",
-            "var result:* = o?.a.b;",
-            "assertEqual('null conditional', result, undefined);",
+            "var result:* = o?.['a'].b;",
+            "assertEqual('dynamic null conditional', result, undefined);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -572,8 +559,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: {b: 2}};",
-            "var result:* = o?.a.b;",
-            "assertEqual('null conditional', result, 2);",
+            "var result:* = o?.['a'].b;",
+            "assertEqual('dynamic null conditional', result, 2);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -586,82 +573,82 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:* = {a: {b: {c: {d1: undefined, d2: null, d3: 0, d4: false}}}};",
-            "assertEqual('null conditional', o?.a?.b?.c?.d1, undefined);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d2, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d3, 0);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d4, false);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d1?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d2?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d3?.toString(), '0');",
-            "assertEqual('null conditional', o?.a?.b?.c?.d4?.toString(), 'false');",
-            "assertEqual('null conditional', o?.a?.b?.c?.d1?.e, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d2?.e, null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d1'], undefined);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d2'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d3'], 0);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d4'], false);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d1']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d2']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d3']?.toString(), '0');",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d4']?.toString(), 'false');",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d1']?.['e'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d2']?.['e'], null);",
             "o = {a: {b: {c: {}}}};",
-            "assertEqual('null conditional', o?.a?.b?.c?.d1, undefined);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d2, undefined);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d3, undefined);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d4, undefined);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d1?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d2?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d3?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d4?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d1?.e, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d2?.e, null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d1'], undefined);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d2'], undefined);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d3'], undefined);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d4'], undefined);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d1']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d2']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d3']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d4']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d1']?.['e'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d2']?.['e'], null);",
             "o = {a: {b: {}}};",
-            "assertEqual('null conditional', o?.a?.b?.c?.d1, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d2, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d3, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d4, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d1?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d2?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d3?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d4?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d1?.e, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d2?.e, null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d1'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d2'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d3'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d4'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d1']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d2']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d3']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d4']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d1']?.['e'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d2']?.['e'], null);",
             "o = {a: {}};",
-            "assertEqual('null conditional', o?.a?.b?.c?.d1, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d2, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d3, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d4, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d1?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d2?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d3?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d4?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d1?.e, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d2?.e, null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d1'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d2'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d3'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d4'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d1']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d2']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d3']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d4']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d1']?.['e'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d2']?.['e'], null);",
             "o = {};",
-            "assertEqual('null conditional', o?.a?.b?.c?.d1, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d2, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d3, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d4, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d1?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d2?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d3?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d4?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d1?.e, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d2?.e, null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d1'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d2'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d3'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d4'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d1']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d2']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d3']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d4']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d1']?.['e'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d2']?.['e'], null);",
             "o = null;",
-            "assertEqual('null conditional', o?.a?.b?.c?.d1, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d2, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d3, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d4, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d1?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d2?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d3?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d4?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d1?.e, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d2?.e, null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d1'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d2'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d3'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d4'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d1']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d2']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d3']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d4']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d1']?.['e'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d2']?.['e'], null);",
             "o = undefined;",
-            "assertEqual('null conditional', o?.a?.b?.c?.d1, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d2, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d3, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d4, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d1?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d2?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d3?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d4?.toString(), null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d1?.e, null);",
-            "assertEqual('null conditional', o?.a?.b?.c?.d2?.e, null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d1'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d2'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d3'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d4'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d1']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d2']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d3']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d4']?.toString(), null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d1']?.['e'], null);",
+            "assertEqual('dynamic null conditional', o?.['a']?.['b']?.['c']?.['d2']?.['e'], null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -678,7 +665,7 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
             "if (o?.toString() === null) {",
             "  result = true;",
             "}",
-            "assertEqual('null conditional', result, true);",
+            "assertEqual('dynamic null conditional', result, true);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -692,10 +679,10 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         {
             "var o:* = undefined;",
             "var result:Boolean = false;",
-            "if (o?.toString() === null) {",
+            "if (o?.['toString']() === null) {",
             "  result = true;",
             "}",
-            "assertEqual('null conditional', result, true);",
+            "assertEqual('dynamic null conditional', result, true);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -709,10 +696,10 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         {
             "var b:Boolean = false;",
             "var result:Boolean = false;",
-            "if (b?.toString() === null) {",
+            "if (b?.['toString']() === null) {",
             "  result = true;",
             "}",
-            "assertEqual('null conditional', result, false);",
+            "assertEqual('dynamic null conditional', result, false);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -726,10 +713,10 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         {
             "var n:Number = 0;",
             "var result:Boolean = false;",
-            "if (n?.toString() === null) {",
+            "if (n?.['toString']() === null) {",
             "  result = true;",
             "}",
-            "assertEqual('null conditional', result, false);",
+            "assertEqual('dynamic null conditional', result, false);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -743,10 +730,10 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         {
             "var o:Object = {};",
             "var result:Boolean = false;",
-            "if (o?.toString() === null) {",
+            "if (o?.['toString']() === null) {",
             "  result = true;",
             "}",
-            "assertEqual('null conditional', result, false);",
+            "assertEqual('dynamic null conditional', result, false);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -759,8 +746,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = null;",
-            "var result:* = o?.hasOwnProperty('a')?.toString();",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['hasOwnProperty']('a')?.toString();",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -773,8 +760,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:* = undefined;",
-            "var result:* = o?.hasOwnProperty('a')?.toString();",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['hasOwnProperty']('a')?.toString();",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -787,8 +774,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var b:Boolean = false;",
-            "var result:* = b?.hasOwnProperty('a')?.toString();",
-            "assertEqual('null conditional', result, 'false');",
+            "var result:* = b?.['hasOwnProperty']('a')?.toString();",
+            "assertEqual('dynamic null conditional', result, 'false');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -801,8 +788,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var n:Number = 0;",
-            "var result:* = n?.hasOwnProperty('a')?.toString();",
-            "assertEqual('null conditional', result, 'false');",
+            "var result:* = n?.['hasOwnProperty']('a')?.toString();",
+            "assertEqual('dynamic null conditional', result, 'false');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -815,8 +802,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: 123};",
-            "var result:* = o?.hasOwnProperty('a')?.toString();",
-            "assertEqual('null conditional', result, 'true');",
+            "var result:* = o?.['hasOwnProperty']('a')?.toString();",
+            "assertEqual('dynamic null conditional', result, 'true');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -829,8 +816,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = null;",
-            "var result:* = o?.a.b.c;",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['a'].b.c;",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -843,8 +830,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:* = undefined;",
-            "var result:* = o?.a.b.c;",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['a'].b.c;",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -857,8 +844,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: {b: {c: 123}}};",
-            "var result:* = o?.a.b.c;",
-            "assertEqual('null conditional', result, 123);",
+            "var result:* = o?.['a'].b.c;",
+            "assertEqual('dynamic null conditional', result, 123);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -871,8 +858,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = null;",
-            "var result:* = o?.a.toString();",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['a'].toString();",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -885,8 +872,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:* = undefined;",
-            "var result:* = o?.a.toString();",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['a'].toString();",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -899,8 +886,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: {}};",
-            "var result:* = o?.a.toString();",
-            "assertEqual('null conditional', result, '[object Object]');",
+            "var result:* = o?.['a'].toString();",
+            "assertEqual('dynamic null conditional', result, '[object Object]');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -913,8 +900,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = null;",
-            "var result:* = o?.a.b['c'];",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['a'].b['c'];",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -927,8 +914,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:* = undefined;",
-            "var result:* = o?.a.b['c'];",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['a'].b['c'];",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -941,8 +928,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: {b: {c: 123}}};",
-            "var result:* = o?.a.b['c'];",
-            "assertEqual('null conditional', result, 123);",
+            "var result:* = o?.['a'].b['c'];",
+            "assertEqual('dynamic null conditional', result, 123);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -955,8 +942,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: null};",
-            "var result:* = o.a?.toString();",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o.a?.['toString']();",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -969,8 +956,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {};",
-            "var result:* = o.a?.toString();",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o.a?.['toString']();",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -983,8 +970,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: undefined};",
-            "var result:* = o.a?.toString();",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o.a?.['toString']();",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -997,8 +984,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: false};",
-            "var result:* = o.a?.toString();",
-            "assertEqual('null conditional', result, 'false');",
+            "var result:* = o.a?.['toString']();",
+            "assertEqual('dynamic null conditional', result, 'false');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -1011,8 +998,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: 0};",
-            "var result:* = o.a?.toString();",
-            "assertEqual('null conditional', result, '0');",
+            "var result:* = o.a?.['toString']();",
+            "assertEqual('dynamic null conditional', result, '0');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -1025,8 +1012,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: {}};",
-            "var result:* = o.a?.toString();",
-            "assertEqual('null conditional', result, '[object Object]');",
+            "var result:* = o.a?.['toString']();",
+            "assertEqual('dynamic null conditional', result, '[object Object]');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -1039,8 +1026,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = null;",
-            "var result:* = o?.a['b']['c'];",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['a']['b']['c'];",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -1053,8 +1040,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:* = undefined;",
-            "var result:* = o?.a['b']['c'];",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['a']['b']['c'];",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -1067,8 +1054,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: {b: {c: 123}}};",
-            "var result:* = o?.a['b']['c'];",
-            "assertEqual('null conditional', result, 123);",
+            "var result:* = o?.['a']['b']['c'];",
+            "assertEqual('dynamic null conditional', result, 123);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -1081,8 +1068,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = null;",
-            "var result:* = o?.hasOwnProperty('a').toString();",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['hasOwnProperty']('a').toString();",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -1095,8 +1082,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:* = undefined;",
-            "var result:* = o?.hasOwnProperty('a').toString();",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['hasOwnProperty']('a').toString();",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -1109,8 +1096,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var b:Boolean = false;",
-            "var result:* = b?.hasOwnProperty('a').toString();",
-            "assertEqual('null conditional', result, 'false');",
+            "var result:* = b?.['hasOwnProperty']('a').toString();",
+            "assertEqual('dynamic null conditional', result, 'false');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -1123,8 +1110,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var n:Number = 0;",
-            "var result:* = n?.hasOwnProperty('a').toString();",
-            "assertEqual('null conditional', result, 'false');",
+            "var result:* = n?.['hasOwnProperty']('a').toString();",
+            "assertEqual('dynamic null conditional', result, 'false');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -1137,8 +1124,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: 123};",
-            "var result:* = o?.hasOwnProperty('a').toString();",
-            "assertEqual('null conditional', result, 'true');",
+            "var result:* = o?.['hasOwnProperty']('a').toString();",
+            "assertEqual('dynamic null conditional', result, 'true');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -1151,8 +1138,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = null;",
-            "var result:* = o?.a['b'].toString();",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['a']['b'].toString();",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -1165,8 +1152,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:* = undefined;",
-            "var result:* = o?.a['b'].toString();",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['a']['b'].toString();",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -1179,8 +1166,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {a: {b: 123}};",
-            "var result:* = o?.a['b'].toString();",
-            "assertEqual('null conditional', result, '123');",
+            "var result:* = o?.['a']['b'].toString();",
+            "assertEqual('dynamic null conditional', result, '123');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -1193,8 +1180,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = null;",
-            "var result:* = o?.toString()['length'];",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['toString']()['length'];",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -1207,8 +1194,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:* = undefined;",
-            "var result:* = o?.toString()['length'];",
-            "assertEqual('null conditional', result, null);",
+            "var result:* = o?.['toString']()['length'];",
+            "assertEqual('dynamic null conditional', result, null);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -1221,8 +1208,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var b:Boolean = false;",
-            "var result:* = b?.toString()['length'];",
-            "assertEqual('null conditional', result, 5);",
+            "var result:* = b?.['toString']()['length'];",
+            "assertEqual('dynamic null conditional', result, 5);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -1235,8 +1222,8 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var n:Number = 0;",
-            "var result:* = n?.toString()['length'];",
-            "assertEqual('null conditional', result, 1);",
+            "var result:* = n?.['toString']()['length'];",
+            "assertEqual('dynamic null conditional', result, 1);",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
@@ -1249,8 +1236,67 @@ public class ASNullConditionalOperatorTests extends ASFeatureTestsBase
         String[] testCode = new String[]
         {
             "var o:Object = {};",
-            "var result:* = o?.toString()['length'];",
-            "assertEqual('null conditional', result, '[object Object]'.length);",
+            "var result:* = o?.['toString']()['length'];",
+            "assertEqual('dynamic null conditional', result, '[object Object]'.length);",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testStringFieldNameWithConcatenation()
+    {
+        String[] testCode = new String[]
+        {
+            "var n:Number = 123.4;",
+            "var result:* = n?.['to' + 'String']();",
+            "assertEqual('dynamic null conditional', result, '123.4');",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testNestedStringFieldNameWithConcatenation()
+    {
+        String[] testCode = new String[]
+        {
+            "var o:Object = {a: {}}",
+            "var result:* = o?.['a']?.['to' + 'String']();",
+            "assertEqual('dynamic null conditional', result, '[object Object]');",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testVariableFieldName()
+    {
+        String[] testCode = new String[]
+        {
+            "var n:Number = 123.4;",
+            "var fieldName:String = 'toString';",
+            "var result:* = n?.[fieldName]();",
+            "assertEqual('dynamic null conditional', result, '123.4');",
+        };
+        String source = getAS(new String[0], new String[0], testCode, new String[0]);
+
+        compileAndRun(source);
+    }
+
+    @Test
+    public void testVariableFieldNameWithConcatenation()
+    {
+        String[] testCode = new String[]
+        {
+            "var n:Number = 123.4;",
+            "var f1:String = 'to';",
+            "var f2:String = 'String';",
+            "var result:* = n?.[f1 + f2]();",
+            "assertEqual('dynamic null conditional', result, '123.4');",
         };
         String source = getAS(new String[0], new String[0], testCode, new String[0]);
 
