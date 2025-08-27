@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.common.IMetaInfo;

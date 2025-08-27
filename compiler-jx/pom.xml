@@ -40,7 +40,7 @@
             <manifestEntries>
               <Sealed>false</Sealed>
               <!-- These paths are all defined the way the layout will be in the distribution -->
-              <Class-Path>commons-io.jar guava.jar failureaccess.jar ../../lib/external/antlr.jar  ../../lib/external/antlr-runtime.jar ../../lib/external/commons-lang.jar ../../lib/external/closure-compiler.jar ../../lib/compiler.jar ../../lib/compiler-common.jar</Class-Path>
+              <Class-Path>commons-io.jar guava.jar failureaccess.jar ../../lib/external/antlr.jar  ../../lib/external/antlr-runtime.jar ../../lib/external/commons-lang3.jar ../../lib/external/closure-compiler.jar ../../lib/compiler.jar ../../lib/compiler-common.jar</Class-Path>
             </manifestEntries>
           </archive>
         </configuration>
@@ -201,9 +201,9 @@
       <version>1.26.0</version>
     </dependency>
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <version>2.6</version>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.18.0</version>
     </dependency>
 
     <dependency>

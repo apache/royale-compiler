@@ -36,7 +36,7 @@ import java.util.regex.Matcher;
 import java.util.Set;
 import java.util.Stack;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.royale.abc.ABCConstants;
 import org.apache.royale.abc.instructionlist.InstructionList;
 import org.apache.royale.abc.semantics.Instruction;
@@ -3828,7 +3828,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 			            write(ASEmitterTokens.SPACE);
 			            writeToken(ASEmitterTokens.EQUAL);
 			            write("new XML('");
-				        write(StringEscapeUtils.escapeJavaScript(valueString));
+				        write(StringEscapeUtils.escapeEcmaScript(valueString));
 			            write("')");
 			            write(ASEmitterTokens.SEMICOLON);
 					}
@@ -3848,7 +3848,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 			            write(ASEmitterTokens.SPACE);
 			            writeToken(ASEmitterTokens.EQUAL);
 			            write("new XMLList('");
-				        write(StringEscapeUtils.escapeJavaScript(valueString));
+				        write(StringEscapeUtils.escapeEcmaScript(valueString));
 			            write("')");
 			            write(ASEmitterTokens.SEMICOLON);
 					}

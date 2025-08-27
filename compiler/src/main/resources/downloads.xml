@@ -29,6 +29,7 @@
               antlr (3) - BSD
               commons-cli (1.2) - Apache 2.0
               commons-io (2.14.0) - Apache 2.0
+              commons-lang3 (3.18.0) - Apache 2.0
               guava (32.0.0-jre) - Apache 2.0
               JBurg (1.10.2) - CPL 1.0
               lzma-sdk (9.2) - Public Domain
@@ -116,17 +117,17 @@
       <param name="dest.filename" value="${commons-io.name}.jar"/>
     </antcall>
 
-    <!--  commons-lang (for fdb) -->
-    <property name="commons-lang.name" value="commons-lang"/>
-    <property name="commons-lang.version" value="2.6"/>
+    <!--  commons-lang3 -->
+    <property name="commons-lang3.name" value="commons-lang3"/>
+    <property name="commons-lang3.version" value="3.18.0"/>
     <antcall target="download-dependency">
-        <param name="name" value="${commons-lang.name}-${commons-lang.version}"/>
+        <param name="name" value="${commons-lang3.name}-${commons-lang3.version}"/>
         <param name="src.server" value="${maven.search.url}"/>
-        <param name="src.folder" value="commons-lang/commons-lang/${commons-lang.version}"/>
-        <param name="src.filename" value="${commons-lang.name}-${commons-lang.version}.jar"/>
-        <param name="src.checksum" value="4d5c1693079575b362edf41500630bbd"/>
+        <param name="src.folder" value="org/apache/commons/commons-lang3/${commons-lang3.version}"/>
+        <param name="src.filename" value="${commons-lang3.name}-${commons-lang3.version}.jar"/>
+        <param name="src.checksum" value="48b9886957920a4cdb602780ca345087"/>
         <param name="dest.folder" value=""/>
-        <param name="dest.filename" value="${commons-lang.name}-${commons-lang.version}.jar"/>
+        <param name="dest.filename" value="${commons-lang3.name}-${commons-lang3.version}.jar"/>
     </antcall>
 
     <!--  guava -->

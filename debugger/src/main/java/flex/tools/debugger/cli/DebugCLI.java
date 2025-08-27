@@ -32,7 +32,7 @@ import flash.util.FieldFormat;
 import flash.util.Trace;
 import flex.tools.debugger.cli.ExpressionCache.EvaluationResult;
 import flex.tools.debugger.cli.FaultActions.FaultActionsBuilder;
-import org.apache.commons.lang.LocaleUtils;
+import org.apache.commons.lang3.LocaleUtils;
 
 import java.io.*;
 import java.net.SocketException;

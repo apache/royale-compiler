@@ -251,7 +251,6 @@ Software Dependencies
         args4j - https://repo1.maven.org/maven2/args4j/args4j/2.0.28/args4j-2.0.28.jar
         commons-cli - https://repo1.maven.org/maven2/commons-cli/commons-cli/1.2/commons-cli-1.2.jar
         commons-io - https://repo1.maven.org/maven2/commons-io/commons-io/2.14.0/commons-io-2.14.0.jar
-        commons-lang - https://repo1.maven.org/maven2/commons-lang/commons-lang/2.6/commons-lang-2.6.jar
         commons-lang3 - https://repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.18.0/commons-lang3-3.18.0.jar
         commons-compress - https://repo1.maven.org/maven2/org/apache/commons/commons-compress/1.26.0/commons-compress-1.26.0.jar
         guava - https://repo1.maven.org/maven2/com/google/guava/guava/32.0.0-jre/guava-32.0.0-jre.jar

@@ -83,7 +83,7 @@ Do all the JBurg code generation.
             </manifest>
             <manifestEntries>
               <!-- These paths are all defined the way the layout will be in the distribution -->
-              <Class-Path>compiler.jar compiler-common.jar swfutils.jar external/commons-lang.jar</Class-Path>
+              <Class-Path>compiler.jar compiler-common.jar swfutils.jar external/commons-lang3.jar</Class-Path>
             </manifestEntries>
           </archive>
         </configuration>
@@ -103,9 +103,9 @@ Do all the JBurg code generation.
       <version>0.9.13-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-      <version>2.6</version>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.18.0</version>
     </dependency>
 
     <dependency>
