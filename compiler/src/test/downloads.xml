@@ -202,24 +202,24 @@
     <target name="commons-lang3-jar-check" description="Checks if commons-lang3 JAR exists.">
         <condition property="commons-lang3.jar.exists">
             <and>
-                <available file="${external.lib.dir}/commons-lang3-3.4.jar"/>
+                <available file="${external.lib.dir}/commons-lang3-3.18.0.jar"/>
             </and>
         </condition>
     </target>
 
     <target name="commons-lang3-jar" depends="commons-lang3-jar-check" unless="commons-lang3.jar.exists"
         description="Copies the commons-lang3 JAR to the lib directory.">
-        <echo message="Obtaining lib/external/commons-lang3-3.4.jar"/>
+        <echo message="Obtaining lib/external/commons-lang3-3.18.0.jar"/>
         <antcall target="commons-lang3-download-jar"/>
     </target>
 
     <target name="commons-lang3-download-jar" depends="commons-lang3-jar-check" unless="commons-lang3.jar.exists"
         description="Downloads the commons-lang3 jar.">
         <antcall target="download-jar">
-            <param name="srcUrl" value="https://repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.4"/>
-            <param name="srcJarFile" value="commons-lang3-3.4.jar"/>
+            <param name="srcUrl" value="https://repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.18.0"/>
+            <param name="srcJarFile" value="commons-lang3-3.18.0.jar"/>
             <param name="destDir" value="${external.lib.dir}"/>
-            <param name="destJarFile" value="commons-lang3-3.4.jar"/>
+            <param name="destJarFile" value="commons-lang3-3.18.0.jar"/>
         </antcall>
     </target>
 

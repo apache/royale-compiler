@@ -17,7 +17,7 @@
 	<classpathentry kind="var" path="ANT_JAR"/>
 	<classpathentry kind="lib" path="lib/external/flex-tool-api.jar"/>
 	<classpathentry kind="lib" path="lib/external/junit-4.10.jar"/>
-	<classpathentry kind="lib" path="lib/external/commons-lang3-3.4.jar"/>
+	<classpathentry kind="lib" path="lib/external/commons-lang3-3.18.0.jar"/>
 	<classpathentry kind="lib" path="lib/external/jburg.jar"/>
 	<classpathentry kind="lib" path="lib/external/commons-compress-1.26.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/compiler-common"/>
