@@ -3095,7 +3095,7 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         if (newCodeGen && !context.makingSimpleArray)
             context.pushNumericConstant(numElements);
         context.transfer(IL.PROPERTIES);
-        if (id != null)
+        if (newCodeGen && id != null)
         {
         	if (id.startsWith("#"))
         		context.addInstruction(OP_pushstring, "_id");
