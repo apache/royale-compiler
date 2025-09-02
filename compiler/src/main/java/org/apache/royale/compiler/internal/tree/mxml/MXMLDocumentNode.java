@@ -79,10 +79,6 @@ public class MXMLDocumentNode extends MXMLClassDefinitionNode implements IMXMLDo
         {
             childNode = new MXMLLibraryNode(this);
         }
-        else if (fileScope.isModelTag(childTag))
-        {
-            childNode = new MXMLModelNode(this);
-        }
         else if (fileScope.isPrivateTag(childTag))
         {
             // A <Private> tag must be the last child tag.
