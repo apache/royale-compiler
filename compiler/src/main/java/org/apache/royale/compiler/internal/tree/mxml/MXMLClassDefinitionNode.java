@@ -287,6 +287,11 @@ public class MXMLClassDefinitionNode extends MXMLClassReferenceNodeBase
             childNode = new MXMLBindingNode(this);
             this.setHasDataBindings(); // we must have some, if we made this node
         }
+        else if (fileScope.isComponentTag(childTag)
+                && builder.getMXMLDialect().isEqualToOrBefore(MXMLDialect.MXML_2006))
+        {
+            childNode = new MXMLComponentNode(this);
+        }
         else
         {
             super.processChildTag(builder, tag, childTag, info);
