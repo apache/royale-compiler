@@ -159,25 +159,34 @@ class MXMLComponentNode extends MXMLFactoryNode implements IMXMLComponentNode
             ClassDefinition fxComponentClassDefinition =
                     fileScope.getClassDefinitionForComponentTag(tag);
 
-            assert fxComponentClassDefinition != null : "MXMLScopeBuilder failed to build a class for an fx:Component";
+            if (fxComponentClassDefinition == null)
+            {
+                // MXMLScopeBuilder failed to build a class for an fx:Component
 
-            // attach scope with the component class definition node.
-            TypeScope componentClassScope = (TypeScope)fxComponentClassDefinition.getContainedScope();
-            containedClassDefinitionNode.setScope(componentClassScope); // TODO Move this logic to initializeFromTag().
+                // TODO Add a problem subclass for this.
+                ICompilerProblem problem = new MXMLSemanticProblem(tag);
+                builder.addProblem(problem);
+            }
+            else
+            {
+                // attach scope with the component class definition node.
+                TypeScope componentClassScope = (TypeScope)fxComponentClassDefinition.getContainedScope();
+                containedClassDefinitionNode.setScope(componentClassScope); // TODO Move this logic to initializeFromTag().
 
-            // Connect node to definitions and vice versa.
-            containedClassDefinitionNode.setClassReference(project, tagDefinition); // TODO Move this logic to initializeFromTag().
-            containedClassDefinitionNode.setClassDefinition(fxComponentClassDefinition); // TODO Move this logic to initializeFromTag().
+                // Connect node to definitions and vice versa.
+                containedClassDefinitionNode.setClassReference(project, tagDefinition); // TODO Move this logic to initializeFromTag().
+                containedClassDefinitionNode.setClassDefinition(fxComponentClassDefinition); // TODO Move this logic to initializeFromTag().
 
-            int nameStart = fxComponentClassDefinition.getNameStart();
-            int nameEnd = fxComponentClassDefinition.getNameEnd();
-            fxComponentClassDefinition.setNode(containedClassDefinitionNode);
-            // TODO The above call is setting nameStart and nameEnd to -1
-            // because the MXML class definition node doesn't have a name expression node.
-            // We need to reset the correct nameStart and nameEnd.
-            fxComponentClassDefinition.setNameLocation(nameStart, nameEnd);
+                int nameStart = fxComponentClassDefinition.getNameStart();
+                int nameEnd = fxComponentClassDefinition.getNameEnd();
+                fxComponentClassDefinition.setNode(containedClassDefinitionNode);
+                // TODO The above call is setting nameStart and nameEnd to -1
+                // because the MXML class definition node doesn't have a name expression node.
+                // We need to reset the correct nameStart and nameEnd.
+                fxComponentClassDefinition.setNameLocation(nameStart, nameEnd);
 
-            containedClassDefinitionNode.initializeFromTag(builder, childTag);
+                containedClassDefinitionNode.initializeFromTag(builder, childTag);
+            }
         }
         if (!handled)
         {
