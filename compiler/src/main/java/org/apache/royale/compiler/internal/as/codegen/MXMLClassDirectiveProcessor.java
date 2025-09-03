@@ -197,6 +197,7 @@ import org.apache.royale.compiler.tree.mxml.IMXMLImplementsNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLIntNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLLibraryNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLLiteralNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLMetadataNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLModelNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLModelPropertyContainerNode;
@@ -2653,6 +2654,12 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         return n == null || isDataBindingNode(n);
     }
     
+    boolean isExpressionLiteral(IMXMLExpressionNode node)
+    {
+        IASNode n = node.getExpressionNode();
+        return n instanceof IMXMLLiteralNode;
+    }
+    
     boolean isChildrenAsDataCodeGen(IMXMLExpressionNode node, Context context)
     {
         if (context.parentContext.makingSimpleArray) return false;
@@ -2660,7 +2667,8 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         
         return (getProject().getTargetSettings().getMxmlChildrenAsData() && 
                 (node.getParent().getNodeID() == ASTNodeID.MXMLPropertySpecifierID ||
-                 node.getParent().getNodeID() == ASTNodeID.MXMLStyleSpecifierID));
+                 node.getParent().getNodeID() == ASTNodeID.MXMLStyleSpecifierID ||
+                 node.getParent().getNodeID() == ASTNodeID.MXMLDeclarationsID));
     }
 
     /**
@@ -2672,12 +2680,38 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      */
     void processMXMLBoolean(IMXMLBooleanNode booleanNode, Context context)
     {
-        if (isChildrenAsDataCodeGen(booleanNode, context))
-            context.addInstruction(OP_pushtrue); // simple type
+        boolean childrenAsDataCodeGen = isChildrenAsDataCodeGen(booleanNode, context);
 
-        boolean value = isDataBound(booleanNode) ? false : booleanNode.getValue();       
-        context.addInstruction(value ? OP_pushtrue : OP_pushfalse);
-        traverse(booleanNode, context);
+        String id = null;
+        Context currentContext = context;
+
+        if (getProject().getTargetSettings().getMxmlChildrenAsData()
+                && booleanNode.getParent() != null
+                && booleanNode.getParent().getNodeID() == ASTNodeID.MXMLDeclarationsID)
+        {
+            id = booleanNode.getEffectiveID();
+            if (id != null)
+            {
+                currentContext = currentContext.parentContext;
+                currentContext.startUsing(IL.PROPERTIES);
+                currentContext.addInstruction(OP_pushstring, id);
+            }
+        }
+        
+        if (childrenAsDataCodeGen)
+        {
+            currentContext.addInstruction(OP_pushtrue); // simple type
+        }
+
+        boolean value = isExpressionLiteral(booleanNode) ? booleanNode.getValue() : false;
+        currentContext.addInstruction(value ? OP_pushtrue : OP_pushfalse);
+
+        if (id != null)
+        {
+            currentContext.stopUsing(IL.PROPERTIES, 1);
+        }
+
+        traverse(booleanNode, currentContext);
     }
     
     /**
@@ -2690,12 +2724,38 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      */
     void processMXMLInt(IMXMLIntNode intNode, Context context)
     {
-        if (isChildrenAsDataCodeGen(intNode, context))
-            context.addInstruction(OP_pushtrue); // simple type
+        boolean childrenAsDataCodeGen = isChildrenAsDataCodeGen(intNode, context);
 
-        int value = isDataBound(intNode) ? 0 : intNode.getValue();
-        context.pushNumericConstant(value);
-        traverse(intNode, context);
+        String id = null;
+        Context currentContext = context;
+
+        if (getProject().getTargetSettings().getMxmlChildrenAsData()
+                && intNode.getParent() != null
+                && intNode.getParent().getNodeID() == ASTNodeID.MXMLDeclarationsID)
+        {
+            id = intNode.getEffectiveID();
+            if (id != null)
+            {
+                currentContext = currentContext.parentContext;
+                currentContext.startUsing(IL.PROPERTIES);
+                currentContext.addInstruction(OP_pushstring, id);
+            }
+        }
+        
+        if (childrenAsDataCodeGen)
+        {
+            currentContext.addInstruction(OP_pushtrue); // simple type
+        }
+
+        int value = isExpressionLiteral(intNode) ? intNode.getValue() : 0;
+        currentContext.pushNumericConstant(value);
+
+        if (id != null)
+        {
+            currentContext.stopUsing(IL.PROPERTIES, 1);
+        }
+
+        traverse(intNode, currentContext);
      }
     
     /**
@@ -2707,12 +2767,38 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      */
     void processMXMLUint(IMXMLUintNode uintNode, Context context)
     {
-        if (isChildrenAsDataCodeGen(uintNode, context))
-            context.addInstruction(OP_pushtrue); // simple type
+        boolean childrenAsDataCodeGen = isChildrenAsDataCodeGen(uintNode, context);
 
-        long value = isDataBound(uintNode) ? 0 : uintNode.getValue();
-        context.addInstruction(OP_pushuint, new Object[] { value });
-        traverse(uintNode, context);
+        String id = null;
+        Context currentContext = context;
+
+        if (getProject().getTargetSettings().getMxmlChildrenAsData()
+                && uintNode.getParent() != null
+                && uintNode.getParent().getNodeID() == ASTNodeID.MXMLDeclarationsID)
+        {
+            id = uintNode.getEffectiveID();
+            if (id != null)
+            {
+                currentContext = currentContext.parentContext;
+                currentContext.startUsing(IL.PROPERTIES);
+                currentContext.addInstruction(OP_pushstring, id);
+            }
+        }
+        
+        if (childrenAsDataCodeGen)
+        {
+            currentContext.addInstruction(OP_pushtrue); // simple type
+        }
+
+        long value = isExpressionLiteral(uintNode) ? uintNode.getValue() : 0;
+        currentContext.addInstruction(OP_pushuint, new Object[] { value });
+
+        if (id != null)
+        {
+            currentContext.stopUsing(IL.PROPERTIES, 1);
+        }
+
+        traverse(uintNode, currentContext);
      }
     
     /**
@@ -2724,12 +2810,38 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      */
     void processMXMLNumber(IMXMLNumberNode numberNode, Context context)
     {
-        if (isChildrenAsDataCodeGen(numberNode, context))
-            context.addInstruction(OP_pushtrue); // simple type
+        boolean childrenAsDataCodeGen = isChildrenAsDataCodeGen(numberNode, context);
 
-        double value = isDataBound(numberNode) ? Double.NaN : numberNode.getValue();
-        context.addInstruction(OP_pushdouble, new Object[] { value });
-        traverse(numberNode, context);
+        String id = null;
+        Context currentContext = context;
+
+        if (getProject().getTargetSettings().getMxmlChildrenAsData()
+                && numberNode.getParent() != null
+                && numberNode.getParent().getNodeID() == ASTNodeID.MXMLDeclarationsID)
+        {
+            id = numberNode.getEffectiveID();
+            if (id != null)
+            {
+                currentContext = currentContext.parentContext;
+                currentContext.startUsing(IL.PROPERTIES);
+                currentContext.addInstruction(OP_pushstring, id);
+            }
+        }
+
+        if (childrenAsDataCodeGen)
+        {
+            currentContext.addInstruction(OP_pushtrue); // simple type
+        }
+
+        double value = isExpressionLiteral(numberNode) ? numberNode.getValue() : Double.NaN;
+        currentContext.addInstruction(OP_pushdouble, new Object[] { value });
+
+        if (id != null)
+        {
+            currentContext.stopUsing(IL.PROPERTIES, 1);
+        }
+
+        traverse(numberNode, currentContext);
     }
     
     /**
@@ -2741,16 +2853,41 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
      */
     void processMXMLString(IMXMLStringNode stringNode, Context context)
     {
-        if (isChildrenAsDataCodeGen(stringNode, context))
-            context.addInstruction(OP_pushtrue); // simple type
+        boolean childrenAsDataCodeGen = isChildrenAsDataCodeGen(stringNode, context);
 
-        String value = isDataBound(stringNode) ? null : stringNode.getValue();
-        if (value != null)
-            context.addInstruction(OP_pushstring, new Object[] { value });
-        else
-            context.addInstruction(OP_pushnull);
+        String id = null;
+        Context currentContext = context;
+
+        if (getProject().getTargetSettings().getMxmlChildrenAsData()
+                && stringNode.getParent() != null
+                && stringNode.getParent().getNodeID() == ASTNodeID.MXMLDeclarationsID)
+        {
+            id = stringNode.getEffectiveID();
+            if (id != null)
+            {
+                currentContext = currentContext.parentContext;
+                currentContext.startUsing(IL.PROPERTIES);
+                currentContext.addInstruction(OP_pushstring, id);
+            }
+        }
         
-        traverse(stringNode, context);
+        if (childrenAsDataCodeGen)
+        {
+            currentContext.addInstruction(OP_pushtrue); // simple type
+        }
+
+        String value = isExpressionLiteral(stringNode) ? stringNode.getValue() : null;
+        if (value != null)
+            currentContext.addInstruction(OP_pushstring, new Object[] { value });
+        else
+            currentContext.addInstruction(OP_pushnull);
+
+        if (id != null)
+        {
+            currentContext.stopUsing(IL.PROPERTIES, 1);
+        }
+
+        traverse(stringNode, currentContext);
     }
     
     /**
@@ -2766,20 +2903,45 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         // by the expression node being null.
         if (isDataBindingNode(classNode))
             return;
+
+        boolean childrenAsDataCodeGen = isChildrenAsDataCodeGen(classNode, context);
+
+        String id = null;
+        Context currentContext = context;
+
+        if (getProject().getTargetSettings().getMxmlChildrenAsData()
+                && classNode.getParent() != null
+                && classNode.getParent().getNodeID() == ASTNodeID.MXMLDeclarationsID)
+        {
+            id = classNode.getEffectiveID();
+            if (id != null)
+            {
+                currentContext = currentContext.parentContext;
+                currentContext.startUsing(IL.PROPERTIES);
+                currentContext.addInstruction(OP_pushstring, id);
+            }
+        }
         
-        if (isChildrenAsDataCodeGen(classNode, context))
-            context.addInstruction(OP_pushtrue); // simple type
+        if (childrenAsDataCodeGen)
+        {
+            currentContext.addInstruction(OP_pushtrue); // simple type
+        }
 
         IExpressionNode expressionNode = (IExpressionNode)classNode.getExpressionNode();
         if (expressionNode != null)
         {
             InstructionList init_expression = classScope.getGenerator().generateInstructions(
                 expressionNode, CmcEmitter.__expression_NT, this.classScope);
-            context.addAll(init_expression);
+            currentContext.addAll(init_expression);
         }
         else
         {
-            context.addInstruction(OP_pushnull);
+            currentContext.addInstruction(OP_pushnull);
+        }
+
+        if (id != null)
+        {
+            currentContext.stopUsing(IL.PROPERTIES, 1);
         }
     }
 
@@ -2797,20 +2959,43 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         // by the expression node being null.
         if (isDataBindingNode(functionNode))
             return;
+
+        boolean childrenAsDataCodeGen = isChildrenAsDataCodeGen(functionNode, context);
+
+        String id = null;
+        Context currentContext = context;
+
+        if (getProject().getTargetSettings().getMxmlChildrenAsData()
+                && functionNode.getParent() != null
+                && functionNode.getParent().getNodeID() == ASTNodeID.MXMLDeclarationsID)
+        {
+            id = functionNode.getEffectiveID();
+            if (id != null)
+            {
+                currentContext = currentContext.parentContext;
+                currentContext.startUsing(IL.PROPERTIES);
+                currentContext.addInstruction(OP_pushstring, id);
+            }
+        }
         
-        if (isChildrenAsDataCodeGen(functionNode, context))
-            context.addInstruction(OP_pushtrue); // simple type
+        if (childrenAsDataCodeGen)
+            currentContext.addInstruction(OP_pushtrue); // simple type
 
         IExpressionNode expressionNode = (IExpressionNode)functionNode.getExpressionNode();
         if (expressionNode != null)
         {
             InstructionList init_expression = classScope.getGenerator().generateInstructions(
                 expressionNode, CmcEmitter.__expression_NT, this.classScope);
-            context.addAll(init_expression);
+            currentContext.addAll(init_expression);
         }
         else
         {
-            context.addInstruction(OP_pushnull);
+            currentContext.addInstruction(OP_pushnull);
+        }
+
+        if (id != null)
+        {
+            currentContext.stopUsing(IL.PROPERTIES, 1);
         }
     }
 
