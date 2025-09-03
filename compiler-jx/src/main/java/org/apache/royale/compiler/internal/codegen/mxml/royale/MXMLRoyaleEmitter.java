@@ -2506,8 +2506,10 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             return;
 
         ASTNodeID nodeID = node.getNodeID();
-    	if ((nodeID == ASTNodeID.MXMLXMLID || nodeID == ASTNodeID.MXMLXMLListID) &&
-    			node.getParent().getNodeID() == ASTNodeID.MXMLDeclarationsID)
+    	if ((nodeID == ASTNodeID.MXMLXMLID
+                || nodeID == ASTNodeID.MXMLXMLListID
+                || nodeID == ASTNodeID.MXMLFunctionID)
+                && node.getParent().getNodeID() == ASTNodeID.MXMLDeclarationsID)
     	{
     		primitiveDeclarationNodes.add(node);
     		return;
@@ -3312,6 +3314,12 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	ICompilationUnit classCU = project.resolveQNameToCompilationUnit(qname);
     	ICompilationUnit cu = project.resolveQNameToCompilationUnit(classDefinition.getQualifiedName());
     	project.addDependency(cu, classCU, DependencyType.EXPRESSION, qname);
+
+        if (node.getParent().getNodeID() == ASTNodeID.MXMLDeclarationsID)
+    	{
+    		primitiveDeclarationNodes.add(node);
+    		return;
+    	}
         MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
         ps.value = qname;
     }
@@ -3878,6 +3886,54 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                     }
 	                break;
 				}
+                case MXMLClassID:
+				{
+	    			IMXMLClassNode classNode = (IMXMLClassNode)declNode;
+    	            ITypeDefinition cdef = classNode.getValue(getMXMLWalker().getProject());
+    	            String qname = formatQualifiedName(cdef.getQualifiedName());
+                    varname = classNode.getEffectiveID();
+
+                    writeNewline();
+                    write(ASEmitterTokens.THIS);
+                    write(ASEmitterTokens.MEMBER_ACCESS);
+                    write(varname);
+                    write(ASEmitterTokens.SPACE);
+                    writeToken(ASEmitterTokens.EQUAL);
+                    write(qname);
+                    write(ASEmitterTokens.SEMICOLON);
+                    break;
+                }
+                case MXMLFunctionID:
+                {
+	    			IMXMLFunctionNode functionNode = (IMXMLFunctionNode)declNode;
+                    IASNode exprNode = functionNode.getExpressionNode();
+                    IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
+                            .getASEmitter();
+                    String functionName = ((JSRoyaleEmitter)asEmitter).stringifyNode(exprNode);
+                    varname = functionNode.getEffectiveID();
+
+                    writeNewline();
+                    write(ASEmitterTokens.THIS);
+                    write(ASEmitterTokens.MEMBER_ACCESS);
+                    write(varname);
+                    write(ASEmitterTokens.SPACE);
+                    writeToken(ASEmitterTokens.EQUAL);
+                    write(functionName);
+                    write(ASEmitterTokens.SEMICOLON);
+                    break;
+                }
+                default:
+                    throw new IllegalStateException("Unknown primitive declaration node of type <"
+                            + declNode.getNodeID()
+                            + "> at position ("
+                            + declNode.getLine()
+                            + ", "
+                            + declNode.getColumn()
+                            + ")"
+                            + " in file <"
+                            + declNode.getSourcePath()
+                            + ">"
+                        );
 
     		}
     	}
