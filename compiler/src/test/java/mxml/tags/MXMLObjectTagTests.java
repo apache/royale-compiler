@@ -148,7 +148,7 @@ public class MXMLObjectTagTests extends MXMLInstanceTagTestsBase
             "    <fx:b>true</fx:b>",
             "    <fx:c>123</fx:c>",
             "    <fx:d>3000000000</fx:d>",
-            "    <fx:e>1.5<</fx:e>",
+            "    <fx:e>1.5</fx:e>",
             "    <fx:f>abc</fx:f>",
             "    <fx:g>flash.display.Sprite</fx:g>",
              "</fx:Object>"
