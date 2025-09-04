@@ -2530,6 +2530,13 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                     .getASEmitter();
             String fNodeString = ((JSRoyaleEmitter)asEmitter).stringifyNode(fexpNode);
     		currentPropertySpecifier.value = fNodeString; 
+
+            String id = node.getID();
+            String localId = node.getLocalID();
+            if (id != null || localId != null)
+            {
+                primitiveDeclarationNodes.add(node);
+            }
     		return;
     	}
 
@@ -3254,6 +3261,13 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     		return;
     	}
     	super.emitBoolean(node);
+
+        String id = node.getID();
+        String localId = node.getLocalID();
+        if (id != null || localId != null)
+        {
+            primitiveDeclarationNodes.add(node);
+        }
     }
     
     @Override
@@ -3265,6 +3279,13 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     		return;
     	}
     	super.emitNumber(node);
+
+        String id = node.getID();
+        String localId = node.getLocalID();
+        if (id != null || localId != null)
+        {
+            primitiveDeclarationNodes.add(node);
+        }
     }
     
     @Override
@@ -3276,6 +3297,13 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     		return;
     	}
     	super.emitInt(node);
+
+        String id = node.getID();
+        String localId = node.getLocalID();
+        if (id != null || localId != null)
+        {
+            primitiveDeclarationNodes.add(node);
+        }
     }
     
     @Override
@@ -3287,6 +3315,13 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     		return;
     	}
     	super.emitUint(node);
+
+        String id = node.getID();
+        String localId = node.getLocalID();
+        if (id != null || localId != null)
+        {
+            primitiveDeclarationNodes.add(node);
+        }
     }
     
     @Override
@@ -3303,6 +3338,13 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         emitAttributeValue(node);
 
         currentDescriptor.valueNeedsQuotes = false;
+
+        String id = node.getID();
+        String localId = node.getLocalID();
+        if (id != null || localId != null)
+        {
+            primitiveDeclarationNodes.add(node);
+        }
     }
     
     @Override
@@ -3322,6 +3364,13 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	}
         MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
         ps.value = qname;
+
+        String id = node.getID();
+        String localId = node.getLocalID();
+        if (id != null || localId != null)
+        {
+            primitiveDeclarationNodes.add(node);
+        }
     }
 
     //--------------------------------------------------------------------------
