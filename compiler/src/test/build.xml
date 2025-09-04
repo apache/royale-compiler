@@ -321,19 +321,14 @@
                     <exclude name="f/**"/>
                     <exclude name="mxml/tags/**"/>
                     <exclude name="properties/**"/>
-                    <exclude name="**/MXMLComponentTagTests.class"/>
                     <exclude name="**/MXMLComponentNodeTests.class"/>
-                    <exclude name="**/MXMLHTTPServiceTagTests.class"/>
-                    <exclude name="**/MXMLModelTagTests.class"/>
                     <exclude name="**/MXMLRemoteObjectNodeTests.class"/>
                     <exclude name="**/MXMLWebServiceNodeTests.class"/>
                     <exclude name="**/MXMLDesignLayerNodeTests.class"/>
                     <exclude name="**/MXMLHTTPServiceNodeTests.class"/>
                     <exclude name="**/MXMLModelNodeTests.class"/>
-                    <exclude name="**/MXMLRemoteObjectTagTests.class"/>
                     <exclude name="**/MXMLStateNodeTests.class"/>
                     <exclude name="**/MXMLVectorNodeTests.class"/>
-                    <exclude name="**/MXMLWebServiceTagTests.class"/>
                     
                 </fileset>
             </batchtest>
