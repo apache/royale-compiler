@@ -57,5 +57,8 @@ public class TestInstance {
     
     public function someFunction():void {
     }
+
+    public static function anotherFunction():void {
+    }
 }
 }
