@@ -33,6 +33,7 @@ import org.apache.royale.compiler.tree.mxml.IMXMLEmbedNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLEventSpecifierNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLFactoryNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLFunctionNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLImplementsNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLIntNode;
@@ -125,6 +126,9 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLClassID:
             visitor.visitMXMLClass((IMXMLClassNode) node);
             break;
+        case MXMLFunctionID:
+            visitor.visitFunction((IMXMLFunctionNode) node);
+            break;
         case MXMLStyleID:
             visitor.visitStyleBlock((IMXMLStyleNode)node);
             break;
@@ -161,7 +165,6 @@ public class MXMLNodeSwitch implements IASNodeStrategy
         case MXMLHTTPServiceID:
         case MXMLXMLID:
         case MXMLXMLListID:
-        case MXMLFunctionID:
             visitor.visitInstance((IMXMLInstanceNode) node);
             break;
         case MXMLRemoteObjectID:

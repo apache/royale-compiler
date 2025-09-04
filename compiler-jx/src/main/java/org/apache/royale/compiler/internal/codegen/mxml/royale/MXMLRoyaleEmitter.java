@@ -2507,8 +2507,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
         ASTNodeID nodeID = node.getNodeID();
     	if ((nodeID == ASTNodeID.MXMLXMLID
-                || nodeID == ASTNodeID.MXMLXMLListID
-                || nodeID == ASTNodeID.MXMLFunctionID)
+                || nodeID == ASTNodeID.MXMLXMLListID)
                 && node.getParent().getNodeID() == ASTNodeID.MXMLDeclarationsID)
     	{
     		primitiveDeclarationNodes.add(node);
@@ -2520,25 +2519,6 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                         .getProject());
 
         MXMLDescriptorSpecifier currentPropertySpecifier = getCurrentDescriptor("ps");
-    	if (nodeID == ASTNodeID.MXMLFunctionID)
-    	{
-            RoyaleJSProject project = (RoyaleJSProject) getMXMLWalker().getProject();
-            project.needLanguage = true;
-            MXMLFunctionNode fnode = ((MXMLFunctionNode)node);
-            IExpressionNode fexpNode = (IExpressionNode)fnode.getExpressionNode();
-            IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
-                    .getASEmitter();
-            String fNodeString = ((JSRoyaleEmitter)asEmitter).stringifyNode(fexpNode);
-    		currentPropertySpecifier.value = fNodeString; 
-
-            String id = node.getID();
-            String localId = node.getLocalID();
-            if (id != null || localId != null)
-            {
-                primitiveDeclarationNodes.add(node);
-            }
-    		return;
-    	}
 
         String effectiveId = null;
         String id = node.getID();
@@ -3364,6 +3344,33 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     	}
         MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
         ps.value = qname;
+
+        String id = node.getID();
+        String localId = node.getLocalID();
+        if (id != null || localId != null)
+        {
+            primitiveDeclarationNodes.add(node);
+        }
+    }
+
+    @Override
+    public void emitFunction(IMXMLFunctionNode node)
+    {
+        RoyaleJSProject project = (RoyaleJSProject) getMXMLWalker().getProject();
+        project.needLanguage = true;
+        IASNode exprNode = node.getExpressionNode();
+        IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
+                .getASEmitter();
+        String functionName = ((JSRoyaleEmitter)asEmitter).stringifyNode(exprNode);
+
+        if (node.getParent().getNodeID() == ASTNodeID.MXMLDeclarationsID)
+        {
+            primitiveDeclarationNodes.add(node);
+            return;
+        }
+
+        MXMLDescriptorSpecifier currentPropertySpecifier = getCurrentDescriptor("ps");
+        currentPropertySpecifier.value = functionName; 
 
         String id = node.getID();
         String localId = node.getLocalID();
