@@ -30,6 +30,7 @@ import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.mxml.IMXMLTagData;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLClassNode;
 
@@ -70,13 +71,18 @@ class MXMLClassNode extends MXMLExpressionNodeBase implements IMXMLClassNode
     @Override
     public ITypeDefinition getValue(ICompilerProject project)
     {
-        assert getExpressionNode() instanceof IExpressionNode : "getValue() shouldn't be getting called on a non-expression MXMLClassNode";
+        IASNode expressionNode = getExpressionNode();
 
-        IExpressionNode expressionNode = (IExpressionNode)getExpressionNode();
-
-        if (expressionNode != null)
+        if (expressionNode == null)
         {
-            IDefinition d = expressionNode.resolve(project);
+            return null;
+        }
+
+        assert expressionNode instanceof IExpressionNode : "getValue() shouldn't be getting called on a non-expression MXMLClassNode";
+
+        if (expressionNode instanceof IExpressionNode)
+        {
+            IDefinition d = ((IExpressionNode)expressionNode).resolve(project);
             if (d instanceof ITypeDefinition)
                 return (ITypeDefinition)d;
         }
