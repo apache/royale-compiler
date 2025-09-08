@@ -133,8 +133,6 @@ public class FunctionReference extends BaseReference {
                 returns = "return 0;";
         	else if (returnString.equals("Number"))
         		returns = "return 0;";
-        	else if (returnString.equals("String"))
-        		returns = "return '';";
             else if (returnString.equals("uint"))
                 returns = "return 0;";
         	else
