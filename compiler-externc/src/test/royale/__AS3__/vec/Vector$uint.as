@@ -54,15 +54,15 @@ internal class Vector$uint
 	
 	public function map(callback:Function, thisObject:Object = null):Vector$uint { return null }
 	
-	public function pop():uint { return null }
+	public function pop():uint { return 0 }
 	
 	public function push(... args):uint { return 0 }
 	
-	public function removeAt(index:int):uint { return null }
+	public function removeAt(index:int):uint { return 0 }
 	
 	public function reverse():Vector$uint { return null }
 	
-	public function shift():uint { return null }
+	public function shift():uint { return 0 }
 	
 	public function slice(startIndex:int = 0, endIndex:int = 16777215):Vector$uint { return null }
 	
