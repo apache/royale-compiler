@@ -164,9 +164,9 @@
         </executions>
         <dependencies>
           <dependency>
-            <groupId>antlr</groupId>
-            <artifactId>antlr</artifactId>
-            <version>2.7.7</version>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr-complete</artifactId>
+            <version>3.5.2</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -600,8 +600,8 @@
     </dependency>
     <dependency>
       <groupId>org.antlr</groupId>
-      <artifactId>antlr</artifactId>
-      <version>3.3</version>
+      <artifactId>antlr-complete</artifactId>
+      <version>3.5.2</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
