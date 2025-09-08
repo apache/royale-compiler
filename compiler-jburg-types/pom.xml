@@ -124,9 +124,9 @@
       <version>1.10.3</version>
     </dependency>
     <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr-complete</artifactId>
-      <version>3.5.2</version>
+      <groupId>antlr</groupId>
+      <artifactId>antlr</artifactId>
+      <version>2.7.7</version>
     </dependency>
   </dependencies>
 
