@@ -689,8 +689,8 @@ RGBA : 	'rgba(' 	( WS* NUMBER ( PERCENT | ) WS* ) ','
 				( WS* NUMBER ( PERCENT | ) WS* ) ',' 
 				( WS* NUMBER ( PERCENT | ) WS* ) 
 		')'
-    |   'rgba(' 	( WS* NUMBER ( PERCENT | ) WS* ) 
-				( WS* NUMBER ( PERCENT | ) WS* ) 
+    |   'rgba(' 	( WS* NUMBER ( PERCENT | ) ) 
+				( WS* NUMBER ( PERCENT | ) ) 
 				( WS* NUMBER ( PERCENT | ) WS* ) '/'
 				( WS* NUMBER ( PERCENT | ) WS* ) 
 		')'
@@ -703,8 +703,8 @@ RGB : 	'rgb(' 	( WS* NUMBER ( PERCENT | ) WS* ) ','
 				( WS* NUMBER ( PERCENT | ) WS* ) ',' 
 				( WS* NUMBER ( PERCENT | ) WS* ) 
 		')'
-    | 	'rgb(' 	( WS* NUMBER ( PERCENT | ) WS* )
-				( WS* NUMBER ( PERCENT | ) WS* )
+    | 	'rgb(' 	( WS* NUMBER ( PERCENT | ) )
+				( WS* NUMBER ( PERCENT | ) )
 				( WS* NUMBER ( PERCENT | ) WS* ) 
 		')'
     ; 
