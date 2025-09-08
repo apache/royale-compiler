@@ -76,8 +76,10 @@ def detectFlashPlayer() {
         }
     } else {
         println "missing: FLASHPLAYER_DEBUGGER environment variable. " +
-                "Please get the 'Flash Player projector content debugger' for your platform from here: " +
-                "https://www.adobe.com/support/flashplayer/debug_downloads.html"
+                "Please get the 'Flash Player projector content debugger' for your platform from the appropriate URL below:"
+        println "- Windows: https://fpdownload.macromedia.com/pub/flashplayer/updaters/32/flashplayer_32_sa_debug.exe"
+        println "- macOS: https://fpdownload.macromedia.com/pub/flashplayer/updaters/32/flashplayer_32_sa_debug.dmg"
+        println "- Linux: https://fpdownload.macromedia.com/pub/flashplayer/updaters/32/flash_player_sa_linux_debug.x86_64.tar.gz"
         allConditionsMet = false
     }
 }
