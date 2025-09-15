@@ -3012,18 +3012,44 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         // by the expression node being null.
         if (isDataBindingNode(regexpNode))
             return;
+
+        boolean childrenAsDataCodeGen = isChildrenAsDataCodeGen(regexpNode, context);
+
+        String id = null;
+        Context currentContext = context;
+
+        if (getProject().getTargetSettings().getMxmlChildrenAsData()
+                && regexpNode.getParent() != null
+                && regexpNode.getParent().getNodeID() == ASTNodeID.MXMLDeclarationsID)
+        {
+            id = regexpNode.getEffectiveID();
+            if (id != null)
+            {
+                currentContext = currentContext.parentContext;
+                currentContext.startUsing(IL.PROPERTIES);
+                currentContext.addInstruction(OP_pushstring, id);
+            }
+        }
+        
+        if (childrenAsDataCodeGen)
+            currentContext.addInstruction(OP_pushtrue); // simple type
         
         IExpressionNode expressionNode = (IExpressionNode)regexpNode.getExpressionNode();
         if (expressionNode != null )
         {
             InstructionList init_expression = classScope.getGenerator().generateInstructions(
                 expressionNode, CmcEmitter.__expression_NT, this.classScope);
-            context.addAll(init_expression);
+            currentContext.addAll(init_expression);
         }
         else
         {
-            context.addInstruction(OP_findpropstrict, ABCGeneratingReducer.regexType);
-            context.addInstruction(OP_constructprop, new Object[] {ABCGeneratingReducer.regexType, 0});
+            currentContext.addInstruction(OP_findpropstrict, ABCGeneratingReducer.regexType);
+            currentContext.addInstruction(OP_constructprop, new Object[] {ABCGeneratingReducer.regexType, 0});
+        }
+
+        if (id != null)
+        {
+            currentContext.stopUsing(IL.PROPERTIES, 1);
         }
     }
     

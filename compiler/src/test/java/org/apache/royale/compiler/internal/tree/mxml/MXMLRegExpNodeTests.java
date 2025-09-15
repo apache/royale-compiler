@@ -24,6 +24,8 @@ import static org.junit.Assert.assertThat;
 
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IRegExpLiteralNode;
+import org.apache.royale.compiler.tree.as.IRegExpLiteralNode.RegExpFlag;
 import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLRegExpNode;
 import org.junit.Ignore;
@@ -76,6 +78,37 @@ public class MXMLRegExpNodeTests extends MXMLExpressionNodeBaseTests
 		};
 		IMXMLRegExpNode node = getMXMLRegExpNode(code);
 		assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
+	}
+	
+	@Test
+	public void MXMLRegExpNode_empty4()
+	{
+		String[] code = new String[]
+		{
+			"<fx:RegExp>//</fx:RegExp>"
+		};
+		IMXMLRegExpNode node = getMXMLRegExpNode(code);
+		assertThat("getExpressionNode", node.getExpressionNode(), is((IASNode)null));
+	}
+	
+	@Test
+	public void MXMLRegExpNode_expression()
+	{
+		String[] code = new String[]
+		{
+			"<fx:RegExp>/[a-z]{3,} \\d+(oz|g)/ig</fx:RegExp>"
+		};
+		IMXMLRegExpNode node = getMXMLRegExpNode(code);
+		assertThat("getExpressionNode", node.getExpressionNode().getNodeID(), is(ASTNodeID.LiteralRegexID));
+		testExpressionLocation(node, 11, 34);
+		IRegExpLiteralNode literalNode = (IRegExpLiteralNode) node.getExpressionNode();
+		assertThat("getValue", literalNode.getValue(), is("[a-z]{3,} \\d+(oz|g)"));
+		assertThat("getFlags().contains(s)", literalNode.getFlags().contains(RegExpFlag.DOTALL), is(false));
+		assertThat("getFlags().contains(x)", literalNode.getFlags().contains(RegExpFlag.EXTENDED), is(false));
+		assertThat("getFlags().contains(g)", literalNode.getFlags().contains(RegExpFlag.GLOBAL), is(true));
+		assertThat("getFlags().contains(i)", literalNode.getFlags().contains(RegExpFlag.IGNORECASE), is(true));
+		assertThat("getFlags().contains(m)", literalNode.getFlags().contains(RegExpFlag.MULTILINE), is(false));
+		assertThat("getValue(raw)", literalNode.getValue(true), is("/[a-z]{3,} \\d+(oz|g)/ig"));
 	}
 	
 	@Ignore
