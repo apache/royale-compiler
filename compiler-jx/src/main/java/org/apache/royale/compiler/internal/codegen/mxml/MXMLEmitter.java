@@ -27,6 +27,7 @@ import org.apache.royale.compiler.internal.codegen.Emitter;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IRegExpLiteralNode;
 import org.apache.royale.compiler.tree.mxml.*;
 import org.apache.royale.compiler.visitor.IBlockWalker;
 import org.apache.royale.compiler.visitor.mxml.IMXMLBlockWalker;
@@ -305,6 +306,13 @@ public class MXMLEmitter extends Emitter implements IMXMLEmitter
     public void emitFunction(IMXMLFunctionNode node)
     {
         emitInstance(node);
+    }
+
+    @Override
+    public void emitRegExp(IMXMLRegExpNode node)
+    {
+        IRegExpLiteralNode literalNode = (IRegExpLiteralNode)node.getExpressionNode();
+        write(literalNode.getValue(true));
     }
 
     //--------------------------------------------------------------------------

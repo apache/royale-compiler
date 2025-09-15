@@ -3282,6 +3282,146 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
     }
     
     @Test
+    public void testFXRegExpDeclaration()
+    {
+        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/royale/basic\">"
+        		+ "<fx:Declarations><fx:RegExp id=\"foo\">/[a-z]{3,} \\d+(oz|g)/ig</fx:RegExp>"
+                + "</fx:Declarations><basic:initialView><basic:View><basic:DropDownList dataProvider=\"['Hello', 'World']\"/></basic:View></basic:initialView></basic:Application>";
+
+        IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
+        		IMXMLDocumentNode.class, RoyaleTestBase.WRAP_LEVEL_NONE);
+
+        ((JSRoyaleEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
+        mxmlBlockWalker.visitDocument(dnode);
+        String appName = dnode.getQualifiedName();
+        String outTemplate = "/**\n" +
+        		" * AppName\n" +
+        		" *\n" +
+        		" * @fileoverview\n" +
+        		" *\n" +
+        		" * @suppress {checkTypes|accessControls}\n" +
+        		" */\n" +
+        		"\n" +
+        		"goog.provide('AppName');\n" +
+        		"\n" +
+        		"goog.require('org.apache.royale.core.Application');\n" +
+        		"goog.require('org.apache.royale.core.View');\n" +
+        		"goog.require('org.apache.royale.html.DropDownList');\n" +
+        		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * @constructor\n" +
+        		" * @extends {org.apache.royale.core.Application}\n" +
+        		" */\n" +
+        		"AppName = function() {\n" +
+        		"  AppName.base(this, 'constructor');\n" +
+        		"  \n" +
+        		"  this.foo = /[a-z]{3,}\\u0020\\d+(oz|g)/ig;\n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {org.apache.royale.core.View}\n" +
+        		"   */\n" +
+        		"  this.$ID_8_1;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {org.apache.royale.html.DropDownList}\n" +
+        		"   */\n" +
+        		"  this.$ID_8_0;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldd;\n" +
+        		"  \n" +
+        		"  /**\n" +
+        		"   * @private\n" +
+        		"   * @type {Array}\n" +
+        		"   */\n" +
+        		"  this.mxmldp;\n" +
+        		"\n" +
+        		"  this.generateMXMLAttributes([\n" +
+        		"    1,\n" +
+        		"    'initialView',\n" +
+        		"    false,\n" +
+				"    [\n" +
+				"      org.apache.royale.core.View,\n" +
+				"      1,\n" +
+				"      '_id',\n" +
+				"      true,\n" +
+				"      '$ID_8_1',\n" +
+				"      0,\n" +
+				"      0,\n" +
+				"      [\n" +
+				"        org.apache.royale.html.DropDownList,\n" +
+				"        2,\n" +
+				"        '_id',\n" +
+				"        true,\n" +
+				"        '$ID_8_0',\n" +
+				"        'dataProvider',\n" +
+				"        true,\n" +
+				"        ['Hello','World'],\n" +
+				"        0,\n" +
+				"        0,\n" +
+				"        null\n" +
+				"      ]\n" +
+				"    ],\n" +
+        		"    0,\n" +
+        		"    0\n" +
+        		"  ]);\n" +
+        		"  \n" +
+        		"};\n" +
+        		"goog.inherits(AppName, org.apache.royale.core.Application);\n" +
+          		"\n" +
+        		"\n" +
+        		"\n" +
+				"\n" +
+        		"/**\n" +
+        		" * @export\n" +
+        		" * @type {RegExp}\n" +
+        		" */\n" +
+        		"AppName.prototype.foo;\n" +
+				"\n" +
+        		"/**\n" +
+        		" * Metadata\n" +
+        		" *\n" +
+        		" * @type {Object.<string, Array.<Object>>}\n" +
+        		" */\n" +
+        		"AppName.prototype.ROYALE_CLASS_INFO = { names: [{ name: 'AppName', qName: 'AppName', kind: 'class'  }] };\n" +
+          		"\n" +
+        		"\n" +
+        		"\n" +
+        		"/**\n" +
+        		" * Reflection\n" +
+        		" *\n" +
+        		" * @return {Object.<string, Function>}\n" +
+        		" */\n" +
+        		"AppName.prototype.ROYALE_REFLECTION_INFO = function () {\n" +
+        		"  return {\n" +
+        		"    variables: function () {\n" +
+        		"      return {\n" +
+        		"        'foo': { type: 'RegExp', get_set: function (/** AppName */ inst, /** * */ v) {return v !== undefined ? inst.foo = v : inst.foo;}}\n" +
+        		"      };\n" +
+        		"    },\n" +
+        		"    methods: function () {\n" +
+        		"      return {\n" +
+				"        'AppName': { type: '', declaredBy: 'AppName'}\n"+
+        		"      };\n" +
+        		"    }\n" +
+        		"  };\n" +
+        		"};\n" + 
+        		"/**\n" +
+        		" * @const\n" +
+        		" * @type {number}\n" +
+        		" */\n" +
+        		"AppName.prototype.ROYALE_COMPILE_FLAGS = 9;";
+
+        assertOutMXMLPostProcess(outTemplate.replaceAll("AppName", appName), true);
+    }
+    
+    @Test
     public void testFXArrayDeclaration()
     {
         String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/royale/basic\">"

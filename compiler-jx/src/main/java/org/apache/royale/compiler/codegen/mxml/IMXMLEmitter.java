@@ -42,6 +42,7 @@ import org.apache.royale.compiler.tree.mxml.IMXMLMetadataNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLNumberNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLObjectNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLRegExpNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLRemoteObjectMethodNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLRemoteObjectNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLScriptNode;
@@ -111,6 +112,8 @@ public interface IMXMLEmitter extends IEmitter
     void emitMXMLClass(IMXMLClassNode node);
 
     void emitFunction(IMXMLFunctionNode node);
+
+    void emitRegExp(IMXMLRegExpNode node);
 
     //--------------------------------------------------------------------------
 

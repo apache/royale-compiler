@@ -3380,6 +3380,28 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         }
     }
 
+    @Override
+    public void emitRegExp(IMXMLRegExpNode node)
+    {
+    	if (node.getParent().getNodeID() == ASTNodeID.MXMLDeclarationsID)
+    	{
+    		primitiveDeclarationNodes.add(node);
+    		return;
+    	}
+
+        IRegExpLiteralNode literalNode = (IRegExpLiteralNode)node.getExpressionNode();
+
+        MXMLDescriptorSpecifier currentDescriptor = getCurrentDescriptor("ps");
+        currentDescriptor.value = literalNode.getValue(true);
+
+        String id = node.getID();
+        String localId = node.getLocalID();
+        if (id != null || localId != null)
+        {
+            primitiveDeclarationNodes.add(node);
+        }
+    }
+
     //--------------------------------------------------------------------------
 
     @Override
@@ -3978,6 +4000,28 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                     write(ASEmitterTokens.SEMICOLON);
                     break;
                 }
+	    		case MXMLRegExpID:
+				{
+	    			IMXMLRegExpNode regExpNode = (IMXMLRegExpNode)declNode;
+                    IASNode expressionNode = regExpNode.getExpressionNode();
+                    // it might be a binding expression instead of a literal
+                    if (expressionNode instanceof IRegExpLiteralNode)
+                    {
+                        IRegExpLiteralNode literalNode = (IRegExpLiteralNode) expressionNode;
+                        varname = regExpNode.getEffectiveID();
+                        writeNewline();
+                        write(ASEmitterTokens.THIS);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(varname);
+                        write(ASEmitterTokens.SPACE);
+                        writeToken(ASEmitterTokens.EQUAL);
+                        IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
+                                .getASEmitter();
+                        asEmitter.emitLiteral(literalNode);
+                        write(ASEmitterTokens.SEMICOLON);
+                    }
+	                break;
+				}
                 default:
                     throw new IllegalStateException("Unknown primitive declaration node of type <"
                             + declNode.getNodeID()

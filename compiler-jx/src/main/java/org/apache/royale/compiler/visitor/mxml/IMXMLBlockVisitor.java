@@ -42,6 +42,7 @@ import org.apache.royale.compiler.tree.mxml.IMXMLMetadataNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLNumberNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLObjectNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLPropertySpecifierNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLRegExpNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLRemoteObjectMethodNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLRemoteObjectNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLScriptNode;
@@ -109,6 +110,8 @@ public interface IMXMLBlockVisitor extends IBlockVisitor
     void visitMXMLClass(IMXMLClassNode node);
 
     void visitFunction(IMXMLFunctionNode node);
+
+    void visitRegExp(IMXMLRegExpNode node);
 
     //--------------------------------------------------------------------------
 
