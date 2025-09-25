@@ -24,6 +24,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.css.ConditionType;
+import org.apache.royale.compiler.css.ICSSCombinator;
 import org.apache.royale.compiler.css.ICSSDocument;
 import org.apache.royale.compiler.css.ICSSMediaQueryCondition;
 import org.apache.royale.compiler.css.ICSSProperty;
@@ -167,82 +169,11 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         boolean firstOne = true;
         for (ICSSSelector selector : selectors)
         {
-        	String s = selector.toString();
-	        // add "." to type selectors that don't map cleanly
-	        // to CSS type selectors to convert them to class
-	    	// selectors.
-	        if (!s.startsWith(".") && !s.startsWith("*") && !s.startsWith("#") && !s.startsWith("::"))
-	        {
-	        	String condition = null;
-        		int colon = s.indexOf(":");
-	        	if (colon != -1)
-	        	{
-	        		condition = s.substring(colon);
-	        		s = s.substring(0, colon);
-	        	}
-	        	else
-	        	{
-	        		int brace = s.indexOf("[");
-	        		if (brace != -1)
-	        		{
-		        		condition = s.substring(brace);
-		        		s = s.substring(0, brace);	        			
-	        		}
-	        		else
-	        		{
-	        			int child = s.indexOf(">");
-	        			if (child != -1)
-	        			{
-			        		condition = s.substring(child);
-			        		s = s.substring(0, child);	        			
-	        			}
-	        			else
-	        			{
-	        				int preceded = s.indexOf("+");
-		        			if (preceded != -1)
-		        			{
-				        		condition = s.substring(preceded);
-				        		s = s.substring(0, preceded);	        			
-		        			}
-	        			}
-	        		}
-	        	}
-	        	if (!htmlElementNames.contains(s.toLowerCase()))
-	        	{
-	        		if (s.indexOf(" ") > 0)
-	        		{
-	        			String parts[] = s.split(" ");
-	        			int n = parts.length;
-	        			s = "";
-	        			for (int i = 0; i < n; i++)
-	        			{
-	        				if (i != 0)
-	        					s += " ";
-	        				String part = parts[i];
-	        				if (!part.startsWith(".") && !part.startsWith("*") && !part.startsWith("#") && !part.startsWith("::"))
-	        				{
-	        					int pipe = part.indexOf("|");
-				        		if (pipe != -1)
-				        			part = part.substring(pipe + 1);
-				        		part = "." + part;
-	        				}
-			        		s += part;
-	        			}
-	        		}
-	        		else
-	        		{
-		        		int pipe = s.indexOf("|");
-		        		if (pipe != -1)
-		        			s = s.substring(pipe + 1);
-		        		s = "." + s;
-	        		}
-	        	}
-	        	if (condition != null)
-	        		s = s + condition;
-	        }
-	        if (!firstOne)
+            if (firstOne)
+                firstOne = false;
+            else
 	        	result.append(",\n");
-	        result.append(s);
+            appendSelector(selector, result);
         }
 
         result.append(" {\n");
@@ -269,6 +200,37 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         result.append("}\n");
 
         return result.toString();
+    }
+
+    private void appendSelector(ICSSSelector selector, StringBuilder builder)
+    {
+        ICSSCombinator combinator = selector.getCombinator();
+        if (combinator != null)
+        {
+            appendSelector(combinator.getSelector(), builder);
+            builder.append(combinator.getCombinatorType().text);
+        }
+        String elementName = selector.getElementName();
+        if (elementName != null)
+        {
+            if (!"*".equals(elementName))
+            {
+                String nsPrefix = selector.getNamespacePrefix();
+                if (nsPrefix != null)
+                {
+                    // add "." to type selectors that don't map cleanly
+                    // to CSS type selectors to convert them to class
+                    // selectors.
+                    builder.append(ConditionType.CLASS.prefix);
+                }
+            }
+            builder.append(elementName);
+        }
+        for (ICSSSelectorCondition condition : selector.getConditions())
+        {
+            builder.append(condition.getConditionType().prefix);
+            builder.append(condition.getValue());
+        }
     }
     
     private void walkCSS(ICSSDocument css, StringBuilder sb)

@@ -178,4 +178,14 @@ input+.innerMenu {
 }
 
 
+p:not(.primary) {
+        color: #fff;
+}
+
+
+#my-id~h1:first-child span.subtitle {
+        color: #fff;
+}
+
+
 

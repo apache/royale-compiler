@@ -47,7 +47,7 @@ public enum ConditionType
     /**
      * For example: <code>s|Panel:not(:first-child)</code>
      */
-    NOT("not"),
+    NOT(":not"),
 
     /**
      * For example: <code>s|Label[loadingState]</code>

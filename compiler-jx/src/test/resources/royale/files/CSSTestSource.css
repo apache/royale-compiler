@@ -159,3 +159,11 @@ input + .innerMenu {
 .blurfilter {
   filter: blur(5px)
 }
+
+p:not(.primary) {
+  color: #fff;
+}
+
+#my-id ~ h1:first-child span.subtitle {
+  color: #fff;
+}
