@@ -42,7 +42,10 @@ import com.google.common.collect.ImmutableList;
 
 public class JSCSSCompilationSession extends CSSCompilationSession
 {
-	private List<String> otherCSSFunctions = Arrays.asList(
+    private static final String GLOBAL_SELECTOR = "global";
+    private static final String UNIVERSAL_SELECTOR = "*";
+
+    private List<String> otherCSSFunctions = Arrays.asList(
 			 "-moz-linear-gradient",
 	         "-webkit-linear-gradient",
 	         "linear-gradient",
@@ -213,10 +216,10 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         String elementName = selector.getElementName();
         if (elementName != null)
         {
-            if (!"*".equals(elementName))
+            if (!UNIVERSAL_SELECTOR.equals(elementName) && !GLOBAL_SELECTOR.equals(elementName))
             {
-                String nsPrefix = selector.getNamespacePrefix();
-                if (nsPrefix != null)
+                String qname = resolvedSelectors.get(selector);
+                if ((qname != null && qname.contains(".")) || !htmlElementNames.contains(elementName.toLowerCase()))
                 {
                     // add "." to type selectors that don't map cleanly
                     // to CSS type selectors to convert them to class
