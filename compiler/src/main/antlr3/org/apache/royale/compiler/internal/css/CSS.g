@@ -520,7 +520,7 @@ formatOption
 	;
     
 attributeSelector
-    :   SQUARE_OPEN attributeName attributeOperator* attributeValue* SQUARE_END
+    :   SQUARE_OPEN attributeName (attributeOperator attributeValue)? SQUARE_END
     ;
     
 attributeName

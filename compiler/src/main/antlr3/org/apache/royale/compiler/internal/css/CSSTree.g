@@ -386,9 +386,16 @@ elementSelector
     |   STAR           
         { $simpleSelector::element = $STAR.text; }
     ;
-    
+
+/**
+ * Matches an attribute selector.
+ *
+ * Must starts with an opening square bracket and end with a closing square
+ * bracket. Inside the brackets, it must start with attribute name. An operator
+ * and value may optionally follow, but if either exists, both must exist.
+ */
 attributeSelector
-    :   open = SQUARE_OPEN attributeName attributeOperator* attributeValue* close = SQUARE_END
+    :   open = SQUARE_OPEN attributeName (attributeOperator attributeValue)? close = SQUARE_END
         {
             if (strictFlexCSS)
             {
@@ -398,12 +405,20 @@ attributeSelector
             curAttribute = $open.text + curAttribute + $close.text;
         }
     ;
-    
+
+/**
+ * Matches an attribute name within an attribute selector.
+ */
 attributeName
     :    n1 = ID
          { curAttribute = $n1.text; }
     ;
-    
+
+/**
+ * Matches an operator within an attribute selector.
+ *
+ * Immediately follows the attribute name.
+ */
 attributeOperator
     :    o1 = BEGINS_WITH
          { curAttribute += $o1.text; }
@@ -418,7 +433,13 @@ attributeOperator
     |    o6 = EQUALS
          { curAttribute += $o6.text; }
     ;
-    
+
+
+/**
+ * Matches a value within an attribute selector.
+ *
+ * Immediately follows the attribute operator.
+ */ 
 attributeValue
     :    s = STRING
          { curAttribute += $s.text; }
