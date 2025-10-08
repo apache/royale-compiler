@@ -385,8 +385,7 @@ simpleSelectorFraction
 condition
     :   ( DOT^ ID
         | HASH_WORD 
-        | COLON^ NOT ARGUMENTS 
-        | COLON^ ID 
+        | COLON^ ID ARGUMENTS?
         | DOUBLE_COLON^ ID 
         | attributeSelector
         ) 
@@ -612,15 +611,12 @@ FUNCTIONS : '-moz-linear-gradient'
           | 'saturate'
           | 'sepia'
           ;
-/**
+/*
  * Removed for now this two since conflicts with same keywords in old fucntion
  * This will be fixed later  
  *        | 'grayscale'
  *        | 'opacity'
  */
-NOT
-    :  'not'
-    ;
 
 /** 
  * Matches an alpha filter - alpha(opacity=70)

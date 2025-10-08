@@ -61,6 +61,7 @@ import org.apache.royale.compiler.css.*;
 import org.apache.royale.compiler.problems.CSSParserProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.CSSStrictFlexSyntaxProblem;
+import org.apache.royale.compiler.problems.CSSUnknownPseudoClassProblem;
 
 }
 
@@ -125,6 +126,15 @@ public void displayStrictFlexSyntaxError(String syntax, CommonTree tree)
         -1, -1, // TODO Need start and end info from CSS
         tree.getLine(), tree.getCharPositionInLine());
     problems.add(new CSSStrictFlexSyntaxProblem(location, syntax));
+}
+
+public void displayUnknownPseudoClassError(String pseudoClassName, CommonTree tree)
+{
+    final ISourceLocation location = new SourceLocation(
+        getSourceName(),
+        -1, -1, // TODO Need start and end info from CSS
+        tree.getLine(), tree.getCharPositionInLine());
+    problems.add(new CSSUnknownPseudoClassProblem(location, pseudoClassName));
 }
 }
 
@@ -351,12 +361,16 @@ conditionSelector
 }
     :   ^(DOT c=ID)   { type = ConditionType.CLASS; name = $c.text; }  
     |   HASH_WORD   { type = ConditionType.ID; name = $HASH_WORD.text.substring(1); }
-    |   ^(COLON NOT arg=ARGUMENTS)
+    |   ^(COLON s=ID arg=ARGUMENTS)
         {
             if (strictFlexCSS)
             {
                 // Flex didn't support the CSS :not() pseudo-class
-                displayStrictFlexSyntaxError($COLON.text + $NOT.text, $NOT);
+                displayStrictFlexSyntaxError($COLON.text + $s.text, $s);
+            }
+            if (!$s.text.equals("not"))
+            {
+                displayUnknownPseudoClassError($s.text, $s);
             }
             type = ConditionType.NOT;
             name = $arg.text;

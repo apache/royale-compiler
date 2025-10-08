@@ -318,6 +318,7 @@
             <batchtest todir="${compiler}/target/junit-reports">
                 <fileset dir="${compiler}/target/test-classes">
                     <include name="**/*Tests.class"/>
+                    <!-- <exclude name="as/**"/> -->
                     <exclude name="f/**"/>
                     <exclude name="mxml/tags/**"/>
                     <exclude name="properties/**"/>
