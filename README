@@ -253,8 +253,8 @@ Software Dependencies
         commons-io - https://repo1.maven.org/maven2/commons-io/commons-io/2.14.0/commons-io-2.14.0.jar
         commons-lang3 - https://repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.18.0/commons-lang3-3.18.0.jar
         commons-compress - https://repo1.maven.org/maven2/org/apache/commons/commons-compress/1.26.0/commons-compress-1.26.0.jar
-        guava - https://repo1.maven.org/maven2/com/google/guava/guava/32.0.0-jre/guava-32.0.0-jre.jar
-        failureaccess - https://repo1.maven.org/maven2/com/google/guava/failureaccess/1.0.2/failureaccess-1.0.2.jar
+        guava - https://repo1.maven.org/maven2/com/google/guava/guava/33.5.0-jre/guava-33.5.0-jre.jar
+        failureaccess - https://repo1.maven.org/maven2/com/google/guava/failureaccess/1.0.3/failureaccess-1.0.3.jar
         jburg - https://repo1.maven.org/maven2/net/sourceforge/jburg/jburg/1.10.2/jburg-1.10.2.jar
         jflex - https://jflex.de/jflex-1.6.0.tar.gz
         lzma - http://www.java2s.com/Code/JarDownload/lzma/lzma-9.20.jar.zip
