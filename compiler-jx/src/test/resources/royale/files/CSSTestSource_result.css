@@ -193,4 +193,14 @@ p:not(.primary) {
 }
 
 
+[href*="example.com"] {
+        color: #fff;
+}
+
+
+a[title] {
+        color: #fff;
+}
+
+
 

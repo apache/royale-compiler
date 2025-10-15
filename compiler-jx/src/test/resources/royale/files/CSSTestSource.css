@@ -171,3 +171,11 @@ p:not(.primary) {
 #my-id ~ h1:first-child span.subtitle {
   color: #fff;
 }
+
+[href*="example.com"] {
+  color: #fff;
+}
+
+a[title] {
+  color: #fff;
+}

@@ -156,5 +156,13 @@ function() {this["color"] = 16777215},
 0,
 1,
 "span.subtitle",
+function() {this["color"] = 16777215},
+0,
+1,
+"[href*=\"example.com\"]",
+function() {this["color"] = 16777215},
+0,
+1,
+"a[title]",
 function() {this["color"] = 16777215}];
 
