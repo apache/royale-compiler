@@ -488,16 +488,8 @@ singleValue
     :   NUMBER_WITH_PERCENT
     |   NUMBER_WITH_UNIT
     |   HASH_WORD
-    |   CLASS_REFERENCE ARGUMENTS
-    								-> ^(CLASS_REFERENCE ARGUMENTS)
-    |   PROPERTY_REFERENCE ARGUMENTS
-    								-> ^(PROPERTY_REFERENCE ARGUMENTS)
-    |   EMBED ARGUMENTS
-    								-> ^(EMBED ARGUMENTS)
     |   URL ARGUMENTS formatOption*   -> ^(URL ARGUMENTS formatOption*)
-    |   LOCAL ARGUMENTS		        -> ^(LOCAL ARGUMENTS)
-    |   CALC ARGUMENTS		        -> ^(CALC ARGUMENTS)
-    |   VAR ARGUMENTS		        -> ^(VAR ARGUMENTS)
+    |   ID ARGUMENTS		        -> ^(ID ARGUMENTS)
     |   FUNCTIONS ARGUMENTS		        -> ^(FUNCTIONS ARGUMENTS)
     |   ALPHA_VALUE
     |   SCALE_VALUE
@@ -565,58 +557,14 @@ AT_WEBKIT_KEYFRAMES : '@-webkit-keyframes' ;
 DOUBLE_COLON : '::' ;
 COLON : ':' ;
 AT_FONT_FACE : '@font-face' ;
-CLASS_REFERENCE : 'ClassReference' ;
-PROPERTY_REFERENCE : 'PropertyReference' ;
 IMPORTANT : '!important' ;
-EMBED : 'Embed' ;
 URL : 'url' ;
 FORMAT : 'format' ;
-LOCAL : 'local' ;
-CALC : 'calc' ;
-SCALE : 'scale' ;
-VAR : 'var' ;
 NULL : 'null' ;
 ONLY : 'only' ;
 CHILD : '>' ;
 PRECEDED : '+' ;
-FUNCTIONS : '-moz-linear-gradient'
-          | '-webkit-linear-gradient'
-          | 'linear-gradient'
-          | 'radial-gradient'
-          | 'conic-gradient'
-          | 'repeating-linear-gradient'
-          | 'repeating-radial-gradient'
-          | 'repeating-conic-gradient'
-          | 'progid:DXImageTransform.Microsoft.gradient'
-          | 'translateX'
-          | 'translateY'
-          | 'translateZ'
-          | 'translate'
-          | 'rotateX'
-          | 'rotateY'
-          | 'rotateZ'
-          | 'scaleX'
-          | 'scaleY'
-          | 'scaleZ'
-          | 'skewX'
-          | 'skewY'
-          | 'skew'
-          | 'perspective'
-          | 'blur'
-          | 'brightness'
-          | 'contrast'
-          | 'drop-shadow'
-          | 'hue-rotate'
-          | 'invert'
-          | 'saturate'
-          | 'sepia'
-          ;
-/*
- * Removed for now this two since conflicts with same keywords in old fucntion
- * This will be fixed later  
- *        | 'grayscale'
- *        | 'opacity'
- */
+FUNCTIONS : 'progid:DXImageTransform.Microsoft.gradient' ;
 
 /** 
  * Matches an alpha filter - alpha(opacity=70)

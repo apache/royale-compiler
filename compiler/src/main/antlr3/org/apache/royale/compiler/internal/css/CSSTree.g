@@ -53,6 +53,7 @@ options
 	
 package org.apache.royale.compiler.internal.css;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.HashMap;
 import org.apache.royale.compiler.common.ISourceLocation;
@@ -61,12 +62,115 @@ import org.apache.royale.compiler.css.*;
 import org.apache.royale.compiler.problems.CSSParserProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.CSSStrictFlexSyntaxProblem;
+import org.apache.royale.compiler.problems.CSSUnknownFunctionProblem;
 import org.apache.royale.compiler.problems.CSSUnknownPseudoClassProblem;
 
 }
 
 @members 
 {
+protected static final List<String> STRICT_FUNCTIONS = Arrays.asList("ClassReference", "PropertyReference", "Embed", "url", "local");
+
+protected static final List<String> KNOWN_FUNCTIONS = Arrays.asList(
+    // special Flex functions
+    "ClassReference",
+    "PropertyReference",
+    "Embed",
+
+    // vendor-prefixed browser functions
+    "-moz-linear-gradient",
+    "-webkit-linear-gradient",
+
+    // regular browser functions
+    "acos",
+    "asin",
+    "atan",
+    "atan2",
+    "blur",
+    "brightness",
+    "calc",
+    "circle",
+    "clamp",
+    "color",
+    "color-mix",
+    "conic-gradient",
+    "contrast",
+    "cos",
+    "counter",
+    "counters",
+    "cubic-bezier",
+    "drop-shadow",
+    "ellipse",
+    "env",
+    "exp",
+    "grayscale",
+    "hsl",
+    "hue-rotate",
+    "hwb",
+    "hypot",
+    "image-set",
+    "inset",
+    "invert",
+    "lab",
+    "layer",
+    "lch",
+    "light-dark",
+    "linear",
+    "linear-gradient",
+    "local",
+    "log",
+    "matrix",
+    "matrix3d",
+    "max",
+    "min",
+    "minmax",
+    "mod",
+    "oklab",
+    "oklch",
+    "opacity",
+    "path",
+    "perspective",
+    "polygon",
+    "pow",
+    "radial-gradient",
+    "ray",
+    "rect",
+    "rem",
+    "repeat",
+    "repeating-conic-gradient",
+    "repeating-linear-gradient",
+    "repeating-radial-gradient",
+    "rgb",
+    "rgba",
+    "rotate",
+    "rotate3d",
+    "rotateX",
+    "rotateY",
+    "rotateZ",
+    "round",
+    "saturate",
+    "scale",
+    "scale3d",
+    "scaleX",
+    "scaleY",
+    "scaleZ",
+    "sepia",
+    "sign",
+    "skew",
+    "skewX",
+    "skewY",
+    "sqrt",
+    "steps",
+    "tan",
+    "translate",
+    "translate3d",
+    "translateX",
+    "translateY",
+    "translateZ",
+    "url",
+    "var",
+    "xywh"
+);
 
 /**
  * CSS DOM object.
@@ -136,6 +240,16 @@ public void displayUnknownPseudoClassError(String pseudoClassName, CommonTree tr
         tree.getLine(), tree.getCharPositionInLine());
     problems.add(new CSSUnknownPseudoClassProblem(location, pseudoClassName));
 }
+
+public void displayUnknownFunctionError(String functionName, CommonTree tree)
+{
+    final ISourceLocation location = new SourceLocation(
+        getSourceName(),
+        -1, -1, // TODO Need start and end info from CSS
+        tree.getLine(), tree.getCharPositionInLine());
+    problems.add(new CSSUnknownFunctionProblem(location, functionName));
+}
+
 }
 
 stylesheet
@@ -573,31 +687,19 @@ singleValue returns [CSSPropertyValue propertyValue]
             }
             $propertyValue = new CSSRgbaColorPropertyValue($RGBA.text, $start, tokenStream);
         }
-    |   ^(CLASS_REFERENCE cr=ARGUMENTS)
-        { $propertyValue = new CSSFunctionCallPropertyValue($CLASS_REFERENCE.text, $cr.text, $start, tokenStream); }
-    |   ^(PROPERTY_REFERENCE pr=ARGUMENTS)
-        { $propertyValue = new CSSFunctionCallPropertyValue($PROPERTY_REFERENCE.text, $pr.text, $start, tokenStream); }
-    |   ^(EMBED es=ARGUMENTS)
-        { $propertyValue = new CSSFunctionCallPropertyValue($EMBED.text, $es.text, $start, tokenStream); }
     |   ^(URL url=ARGUMENTS format=formatOption*)
         { $propertyValue = new CSSURLAndFormatPropertyValue($URL.text, $url.text, $format.text, $start, tokenStream); }
-    |   ^(LOCAL l=ARGUMENTS)
-        { $propertyValue = new CSSFunctionCallPropertyValue($LOCAL.text, $l.text, $start, tokenStream); }
-    |   ^(CALC l=ARGUMENTS)
+    |   ^(id=ID args=ARGUMENTS)
         {
-            if (strictFlexCSS)
+            if (strictFlexCSS && !STRICT_FUNCTIONS.contains($id.text))
             {
-                displayStrictFlexSyntaxError($CALC.text, $CALC);
+                displayStrictFlexSyntaxError($id.text, $id);
             }
-            $propertyValue = new CSSFunctionCallPropertyValue($CALC.text, $l.text, $start, tokenStream);
-        }
-    |   ^(VAR l=ARGUMENTS)
-        {
-            if (strictFlexCSS)
+            else if (!KNOWN_FUNCTIONS.contains($id.text))
             {
-                displayStrictFlexSyntaxError($VAR.text, $VAR);
+                displayUnknownFunctionError($id.text, $id);
             }
-            $propertyValue = new CSSFunctionCallPropertyValue($VAR.text, $l.text, $start, tokenStream);
+            $propertyValue = new CSSFunctionCallPropertyValue($id.text, $args.text, $start, tokenStream);
         }
     |   ^(FUNCTIONS l=ARGUMENTS)
         {
