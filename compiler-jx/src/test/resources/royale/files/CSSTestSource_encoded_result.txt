@@ -151,6 +151,10 @@ function() {this["filter"] = null},
 function() {this["color"] = 16777215},
 0,
 1,
+":is(ol, ul)",
+function() {this["color"] = 16777215},
+0,
+1,
 "span.subtitle",
 function() {this["color"] = 16777215}];
 

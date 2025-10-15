@@ -42,6 +42,11 @@ public interface ICSSSelectorCondition extends ICSSNode
     String getValue();
 
     /**
+     * @return Optional arguments value, or null.
+     */
+    String getArguments();
+
+    /**
      * @return Condition type.
      */
     ConditionType getConditionType();

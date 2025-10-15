@@ -37,15 +37,32 @@ public class CSSSelectorCondition extends CSSNodeBase implements ICSSSelectorCon
                                    final CommonTree tree,
                                    final TokenStream tokenStream)
     {
+        this(value, type, null, tree, tokenStream);
+    }
+
+    protected CSSSelectorCondition(final String value,
+                                   final ConditionType type,
+                                   final String arguments,
+                                   final CommonTree tree,
+                                   final TokenStream tokenStream)
+    {
         super(tree, tokenStream, CSSModelTreeType.SELECTOR_CONDITION);
         assert !Strings.isNullOrEmpty(value) : "Selector condition value can't be empty.";
         assert type != null : "Selector condition type can't be null.";
         this.value = value;
         this.type = type;
+        this.arguments = arguments;
     }
 
     private final String value;
     private final ConditionType type;
+    private final String arguments;
+
+    @Override
+    public String getArguments()
+    {
+        return arguments;
+    }
 
     @Override
     public String getValue()
@@ -62,6 +79,11 @@ public class CSSSelectorCondition extends CSSNodeBase implements ICSSSelectorCon
     @Override
     public String toString()
     {
-        return type.prefix.concat(value);
+        String result = type.prefix.concat(value);
+        if (arguments != null)
+        {
+            result = result.concat(arguments);
+        }
+        return result;
     }
 }

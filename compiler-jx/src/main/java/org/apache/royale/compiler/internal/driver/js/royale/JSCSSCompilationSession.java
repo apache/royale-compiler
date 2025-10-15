@@ -233,6 +233,11 @@ public class JSCSSCompilationSession extends CSSCompilationSession
         {
             builder.append(condition.getConditionType().prefix);
             builder.append(condition.getValue());
+            String args = condition.getArguments();
+            if (args != null)
+            {
+                builder.append(args);
+            }
         }
     }
     

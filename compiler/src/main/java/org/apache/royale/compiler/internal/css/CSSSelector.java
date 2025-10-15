@@ -171,6 +171,11 @@ public class CSSSelector extends CSSNodeBase implements ICSSSelector
     		ICSSSelectorCondition condition = conditions.get(i);
     		s.append(condition.getConditionType().prefix);
 			s.append(condition.getValue());
+            String args = condition.getArguments();
+            if (args != null)
+            {
+                s.append(args);
+            }
     	}
     	return s.toString();
     }

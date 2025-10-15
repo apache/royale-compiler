@@ -172,6 +172,21 @@ protected static final List<String> KNOWN_FUNCTIONS = Arrays.asList(
     "xywh"
 );
 
+protected static final List<String> KNOWN_PSEUDO_CLASS_FUNCTIONS = Arrays.asList(
+    "dir",
+    "has",
+    "host",
+    "is",
+    "lang",
+    "not",
+    "nth-child",
+    "nth-last-child",
+    "nth-last-of-type",
+    "nth-of-type",
+    "state",
+    "where"
+);
+
 /**
  * CSS DOM object.
  */
@@ -467,11 +482,12 @@ conditionSelector
 {
     ConditionType type = null;
     String name = null;
+    String arguments = null;
 }
 @after
 {
     $simpleSelector::conditions.add(
-        new CSSSelectorCondition(name, type, $start, tokenStream));
+        new CSSSelectorCondition(name, type, arguments, $start, tokenStream));
 }
     :   ^(DOT c=ID)   { type = ConditionType.CLASS; name = $c.text; }  
     |   HASH_WORD   { type = ConditionType.ID; name = $HASH_WORD.text.substring(1); }
@@ -479,15 +495,16 @@ conditionSelector
         {
             if (strictFlexCSS)
             {
-                // Flex didn't support the CSS :not() pseudo-class
+                // Flex didn't support the CSS pseudo-class functions
                 displayStrictFlexSyntaxError($COLON.text + $s.text, $s);
             }
-            if (!$s.text.equals("not"))
+            if (!KNOWN_PSEUDO_CLASS_FUNCTIONS.contains($s.text))
             {
                 displayUnknownPseudoClassError($s.text, $s);
             }
-            type = ConditionType.NOT;
-            name = $arg.text;
+            type = ConditionType.PSEUDO;
+            name = $s.text;
+            arguments = $arg.text;
         }
     |   ^(COLON s=ID) { type = ConditionType.PSEUDO; name = $s.text; } 
     |   ^(DOUBLE_COLON dc=ID)

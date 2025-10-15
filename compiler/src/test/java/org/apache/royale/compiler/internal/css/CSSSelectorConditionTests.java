@@ -75,6 +75,23 @@ public class CSSSelectorConditionTests extends CSSBaseTests {
 		assertThat("condition.getOperator()" , condition.getOperator(), is( CSSModelTreeType.SELECTOR_CONDITION ) );
 		assertThat("condition.getConditionType()" , condition.getConditionType() , is( ConditionType.PSEUDO ) );
 		assertThat("condition.getValue()" , condition.getValue(), is( "up" ) );
+		assertThat("condition.getArguments()" , condition.getArguments(), is( (String) null ) );
+	}
+
+	
+	@Test
+	public void CSSSelectorConditionTests_pseudo_function_condition()
+	{
+		String code = " custom|Button:not(.rounded) "; 
+		
+		List<ICSSSelectorCondition> conditions = getCSSSelectorConditions(code);
+		assertThat("conditions.size()" , conditions.size(), is(1) );	
+		
+		CSSSelectorCondition condition = (CSSSelectorCondition) conditions.get(0);
+		assertThat("condition.getOperator()" , condition.getOperator(), is( CSSModelTreeType.SELECTOR_CONDITION ) );
+		assertThat("condition.getConditionType()" , condition.getConditionType() , is( ConditionType.PSEUDO ) );
+		assertThat("condition.getValue()" , condition.getValue(), is( "not" ) );
+		assertThat("condition.getArguments()" , condition.getArguments(), is( "(.rounded)" ) );
 	}
 	
 	@Test
@@ -89,6 +106,7 @@ public class CSSSelectorConditionTests extends CSSBaseTests {
 		assertThat("condition.getOperator()" , condition.getOperator(), is( CSSModelTreeType.SELECTOR_CONDITION ) );
 		assertThat("condition.getConditionType()" , condition.getConditionType() , is( ConditionType.CLASS ) );
 		assertThat("condition.getValue()" , condition.getValue(), is( "rounded" ) );
+		assertThat("condition.getArguments()" , condition.getArguments(), is( (String) null ) );
 	}
 	
 	@Test
@@ -103,6 +121,7 @@ public class CSSSelectorConditionTests extends CSSBaseTests {
 		assertThat("condition.getOperator()" , condition.getOperator(), is( CSSModelTreeType.SELECTOR_CONDITION ) );
 		assertThat("condition.getConditionType()" , condition.getConditionType() , is( ConditionType.ID ) );
 		assertThat("condition.getValue())" , condition.getValue(), is( "main" ) );
+		assertThat("condition.getArguments()" , condition.getArguments(), is( (String) null ) );
 	}
 	
 	@Test
@@ -117,16 +136,19 @@ public class CSSSelectorConditionTests extends CSSBaseTests {
 		assertThat("condition1.getOperator()" , condition1.getOperator(), is( CSSModelTreeType.SELECTOR_CONDITION ) );
 		assertThat("condition1.getConditionType()" , condition1.getConditionType() , is( ConditionType.CLASS ) );
 		assertThat("condition1.getValue()" , condition1.getValue(), is( "rounded" ) );
+		assertThat("condition1.getArguments()" , condition1.getArguments(), is( (String) null ) );
 		
 		CSSSelectorCondition condition2 = (CSSSelectorCondition) conditions.get(1);
 		assertThat("condition2.getOperator()" , condition2.getOperator(), is( CSSModelTreeType.SELECTOR_CONDITION ) );
 		assertThat("condition2.getConditionType()" , condition2.getConditionType() , is( ConditionType.ID ) );
 		assertThat("condition2.getValue()" , condition2.getValue(), is( "main" ) );
+		assertThat("condition2.getArguments()" , condition2.getArguments(), is( (String) null ) );
 		
 		CSSSelectorCondition condition3 = (CSSSelectorCondition) conditions.get(2);
 		assertThat("condition3.getOperator()" , condition3.getOperator(), is( CSSModelTreeType.SELECTOR_CONDITION ) );
 		assertThat("condition3.getConditionType()" , condition3.getConditionType() , is( ConditionType.PSEUDO ) );
 		assertThat("condition3.getValue()" , condition3.getValue(), is( "up" ) );
+		assertThat("condition3.getArguments()" , condition3.getArguments(), is( (String) null ) );
 	}
 	
 

@@ -35,7 +35,7 @@ public enum ConditionType
     ID("#"),
 
     /**
-     * For example: <code>s|Label:loadingState</code>
+     * For example: <code>s|Label:loadingState</code> or <code>s|Button:not(.rounded)</code>
      */
     PSEUDO(":"),
 
@@ -43,11 +43,6 @@ public enum ConditionType
      * For example: <code>s|Label:loadingState</code>
      */
     PSEUDO_ELEMENT("::"),
-
-    /**
-     * For example: <code>s|Panel:not(:first-child)</code>
-     */
-    NOT(":not"),
 
     /**
      * For example: <code>s|Label[loadingState]</code>

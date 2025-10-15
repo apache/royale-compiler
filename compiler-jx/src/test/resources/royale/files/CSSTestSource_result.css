@@ -183,6 +183,11 @@ p:not(.primary) {
 }
 
 
+:is(ol, ul) {
+        color: #fff;
+}
+
+
 #my-id~h1:first-child span.subtitle {
         color: #fff;
 }
