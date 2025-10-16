@@ -783,6 +783,9 @@ Op_CommaID(expression payload_expr, void_expression exprs+);
 Pattern simpleName
 IdentifierID(void);
 
+Pattern functionTypeExpression
+FunctionTypeExpressionID(void);
+
 //  A dotted name that looked like member access to the parser.
 Pattern dottedName
 MemberAccessExpressionID(dottedNamePart first, dottedNamePart second);

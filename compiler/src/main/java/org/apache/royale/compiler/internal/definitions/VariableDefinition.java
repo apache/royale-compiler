@@ -24,6 +24,7 @@ import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
@@ -36,12 +37,15 @@ import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.scopes.CatchScope;
 import org.apache.royale.compiler.internal.scopes.FunctionScope;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
+import org.apache.royale.compiler.internal.tree.as.FunctionTypeExpressionNode;
 import org.apache.royale.compiler.internal.tree.as.LiteralNode;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IArrowFunctionBindNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IFunctionTypeExpressionNode;
 import org.apache.royale.compiler.tree.as.IImportNode;
 import org.apache.royale.compiler.tree.as.IScopedNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
@@ -236,11 +240,44 @@ public class VariableDefinition extends DefinitionBase implements IVariableDefin
             IVariableNode varNode = (IVariableNode) getNode();
             if (varNode != null)
             {
+                IDefinition resolvedDefinition = null;
+                IExpressionNode assignedValueNode = varNode.getAssignedValueNode();
+                if (assignedValueNode instanceof IArrowFunctionBindNode)
+                {
+                    IArrowFunctionBindNode arrowFunctionBindNode = (IArrowFunctionBindNode) assignedValueNode;
+                    resolvedDefinition = arrowFunctionBindNode.getFunctionObjectNode().resolve(project);
+                }
+                else if (assignedValueNode != null)
+                {
+                    resolvedDefinition = assignedValueNode.resolve(project);
+                }
+                if (resolvedDefinition instanceof IFunctionDefinition)
+                {
+                    IFunctionDefinition funcDef = (IFunctionDefinition) resolvedDefinition;
+                    FunctionTypeExpressionNode funcTypeExprNode = FunctionTypeExpressionNode.createFromFunctionDefinition(funcDef, project);
+                    if (funcTypeExprNode != null)
+                    {
+                        addFunctionTypeMeta(funcTypeExprNode, null, project);
+                    }
+                }
                 ITypeDefinition typeDef = SemanticUtils.resolveVariableInferredType(varNode, project);
                 if (typeDef != null)
                 {
                     setTypeReference(ReferenceFactory.resolvedReference(typeDef));
                     return (TypeDefinitionBase) typeDef;
+                }
+            }
+        }
+        if (project.getAllowStrictFunctionTypes())
+        {
+            IVariableNode varNode = (IVariableNode) getNode();
+            if (varNode != null)
+            {
+                IExpressionNode varTypeNode = varNode.getVariableTypeNode();
+                if (varTypeNode instanceof IFunctionTypeExpressionNode)
+                {
+                    IFunctionTypeExpressionNode funcTypeExprNode = (IFunctionTypeExpressionNode) varTypeNode;
+                    addFunctionTypeMeta(funcTypeExprNode, null, project);
                 }
             }
         }

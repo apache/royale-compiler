@@ -219,8 +219,7 @@ public interface IMetaAttributeConstants
 
     // [RoyaleFunctionType]
     static final String ATTRIBUTE_FUNCTION_TYPE = "RoyaleFunctionType";
-    static final String NAME_FUNCTION_TYPE_RETURNS = "returns";
-    static final String NAME_FUNCTION_TYPE_PARAMS = "params";
+    static final String NAME_FUNCTION_TYPE_SIGNATURE = "signature";
     static final String NAME_FUNCTION_TYPE_PARAM_NAME = "paramName";
 
     // [RoyalePrivateConstructor]

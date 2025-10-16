@@ -253,6 +253,17 @@ class ClassDirectiveProcessor extends DirectiveProcessor
                     classScope.addProblem(new ForwardReferenceToBaseClassProblem(node, superclassDefinition.getQualifiedName()));
             }
 
+            if (node instanceof IClassNode)
+            {
+                IClassNode classNode = (IClassNode) node;
+                IExpressionNode baseClassExprNode = classNode.getBaseClassExpressionNode();
+                if (baseClassExprNode instanceof IFunctionTypeExpressionNode)
+                {
+                    IFunctionTypeExpressionNode funcExprNode = (IFunctionTypeExpressionNode) baseClassExprNode;
+                    classScope.addProblem(new SyntaxProblem(funcExprNode, funcExprNode.resolveSignature(project)));
+                }
+            }
+
             // Set the superclass Name.
             this.superclassName = superclassDefinition.getMName(project);
             iinfo.superName = superclassName;

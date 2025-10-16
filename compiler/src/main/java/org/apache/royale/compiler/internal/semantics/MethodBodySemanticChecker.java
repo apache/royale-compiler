@@ -35,7 +35,6 @@ import static org.apache.royale.abc.ABCConstants.OP_returnvalue;
 import static org.apache.royale.abc.ABCConstants.OP_returnvoid;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -45,17 +44,17 @@ import org.apache.royale.abc.graph.IBasicBlock;
 import org.apache.royale.abc.instructionlist.InstructionList;
 import org.apache.royale.abc.semantics.ECMASupport;
 import org.apache.royale.abc.semantics.Instruction;
-import org.apache.royale.abc.semantics.MethodInfo;
 import org.apache.royale.abc.semantics.MethodBodyInfo;
+import org.apache.royale.abc.semantics.MethodInfo;
 import org.apache.royale.abc.semantics.Name;
 import org.apache.royale.abc.semantics.PooledValue;
+import org.apache.royale.compiler.common.ASModifier;
 import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.common.ModifiersSet;
-import org.apache.royale.compiler.common.ASModifier;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
-import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 import org.apache.royale.compiler.definitions.IAccessorDefinition;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IConstantDefinition;
@@ -64,42 +63,17 @@ import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.IGetterDefinition;
 import org.apache.royale.compiler.definitions.IInterfaceDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
-import org.apache.royale.compiler.definitions.IParameterDefinition;
 import org.apache.royale.compiler.definitions.ISetterDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
-import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
-import org.apache.royale.compiler.internal.as.codegen.*;
-import org.apache.royale.compiler.internal.definitions.AmbiguousDefinition;
-import org.apache.royale.compiler.internal.definitions.VariableDefinition;
-import org.apache.royale.compiler.internal.definitions.references.ResolvedReference;
-import org.apache.royale.compiler.internal.scopes.ASProjectScope;
-import org.apache.royale.compiler.problems.*;
-import org.apache.royale.compiler.projects.ICompilerProject;
-import org.apache.royale.compiler.scopes.IASScope;
-import org.apache.royale.compiler.scopes.IDefinitionSet;
-import org.apache.royale.compiler.tree.ASTNodeID;
-import org.apache.royale.compiler.tree.as.IASNode;
-import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
-import org.apache.royale.compiler.tree.as.ICompoundAssignmentNode;
-import org.apache.royale.compiler.tree.as.IContainerNode;
-import org.apache.royale.compiler.tree.as.IExpressionNode;
-import org.apache.royale.compiler.tree.as.IFunctionCallNode;
-import org.apache.royale.compiler.tree.as.IFunctionNode;
-import org.apache.royale.compiler.tree.as.IIdentifierNode;
-import org.apache.royale.compiler.tree.as.IImportNode;
-import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
-import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
-import org.apache.royale.compiler.tree.as.INumericLiteralNode;
-import org.apache.royale.compiler.tree.as.IParameterNode;
-import org.apache.royale.compiler.tree.as.IReturnNode;
-import org.apache.royale.compiler.tree.as.IScopedNode;
-import org.apache.royale.compiler.tree.as.ITypedExpressionNode;
-import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
-import org.apache.royale.compiler.tree.as.IVariableNode;
-
+import org.apache.royale.compiler.internal.as.codegen.ABCGeneratingReducer;
+import org.apache.royale.compiler.internal.as.codegen.BindableHelper;
+import org.apache.royale.compiler.internal.as.codegen.Binding;
+import org.apache.royale.compiler.internal.as.codegen.InlineFunctionLexicalScope;
+import org.apache.royale.compiler.internal.as.codegen.LexicalScope;
 import org.apache.royale.compiler.internal.definitions.AccessorDefinition;
+import org.apache.royale.compiler.internal.definitions.AmbiguousDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.definitions.ClassTraitsDefinition;
 import org.apache.royale.compiler.internal.definitions.ConstantDefinition;
@@ -111,6 +85,8 @@ import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.royale.compiler.internal.definitions.ParameterDefinition;
 import org.apache.royale.compiler.internal.definitions.SetterDefinition;
 import org.apache.royale.compiler.internal.definitions.TypeDefinitionBase;
+import org.apache.royale.compiler.internal.definitions.VariableDefinition;
+import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils.MultiDefinitionType;
 import org.apache.royale.compiler.internal.tree.as.BaseDefinitionNode;
@@ -120,6 +96,7 @@ import org.apache.royale.compiler.internal.tree.as.ClassNode;
 import org.apache.royale.compiler.internal.tree.as.ExpressionNodeBase;
 import org.apache.royale.compiler.internal.tree.as.FunctionCallNode;
 import org.apache.royale.compiler.internal.tree.as.FunctionNode;
+import org.apache.royale.compiler.internal.tree.as.FunctionTypeExpressionNode;
 import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.LanguageIdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.LiteralNode;
@@ -138,6 +115,36 @@ import org.apache.royale.compiler.internal.tree.as.UnaryOperatorAtNode;
 import org.apache.royale.compiler.internal.tree.as.VariableNode;
 import org.apache.royale.compiler.internal.tree.as.VectorLiteralNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLDocumentNode;
+import org.apache.royale.compiler.problems.*;
+import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.scopes.IASScope;
+import org.apache.royale.compiler.scopes.IDefinitionSet;
+import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IArrowFunctionBindNode;
+import org.apache.royale.compiler.tree.as.IBinaryOperatorNode;
+import org.apache.royale.compiler.tree.as.ICatchNode;
+import org.apache.royale.compiler.tree.as.ICompoundAssignmentNode;
+import org.apache.royale.compiler.tree.as.IContainerNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IFunctionCallNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.tree.as.IFunctionObjectNode;
+import org.apache.royale.compiler.tree.as.IFunctionTypeExpressionNode;
+import org.apache.royale.compiler.tree.as.IIdentifierNode;
+import org.apache.royale.compiler.tree.as.IImportNode;
+import org.apache.royale.compiler.tree.as.ILiteralNode;
+import org.apache.royale.compiler.tree.as.ILiteralNode.LiteralType;
+import org.apache.royale.compiler.tree.as.IMemberAccessExpressionNode;
+import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
+import org.apache.royale.compiler.tree.as.INumericLiteralNode;
+import org.apache.royale.compiler.tree.as.IParameterNode;
+import org.apache.royale.compiler.tree.as.IReturnNode;
+import org.apache.royale.compiler.tree.as.IScopedNode;
+import org.apache.royale.compiler.tree.as.ITryNode;
+import org.apache.royale.compiler.tree.as.ITypedExpressionNode;
+import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
 
 /**
  *  The MethodBodySemanticChecker contains the logic that checks method body semantics.
@@ -253,8 +260,8 @@ public class MethodBodySemanticChecker
             ITypeDefinition leftType = leftDef.resolveType(project);
             if (project.getAllowStrictFunctionTypes() && project.getBuiltinType(BuiltinType.FUNCTION).equals(leftType))
             {
-                IASNode leftNode = (IExpressionNode) SemanticUtils.getNthChild(iNode, 0);
-                checkFunctionTypeMeta(leftNode, rightNode);
+                IASNode leftNode = SemanticUtils.getNthChild(iNode, 0);
+                checkFunctionSignatureAssignment(leftNode, rightNode);
             }
             
             checkImplicitConversion(rightNode, leftType, null);
@@ -262,113 +269,173 @@ public class MethodBodySemanticChecker
         }
     }
 
-    private void checkFunctionTypeMeta(IASNode leftNode, IASNode rightNode)
+    private void checkFunctionSignatureAssignment(IASNode leftNode, IASNode rightNode)
     {
-        if (!(leftNode instanceof IExpressionNode) || !(rightNode instanceof IExpressionNode))
+        if (!(leftNode instanceof IExpressionNode))
         {
             return;
         }
+
         IExpressionNode leftExpression = (IExpressionNode) leftNode;
         IDefinition resolvedLeft = leftExpression.resolve(project);
-        IMetaTag expectedFunctionTypeMeta = resolvedLeft.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_FUNCTION_TYPE);
-        checkFunctionTypeMeta(expectedFunctionTypeMeta, leftExpression, rightNode);
-    }
-    
-
-    private void checkFunctionTypeMeta(IMetaTag expectedFunctionTypeMeta, IASNode expectedFunctionTypeSite, IASNode rightNode)
-    {
-        if (!(rightNode instanceof IExpressionNode) || expectedFunctionTypeMeta == null)
+        if (resolvedLeft == null)
         {
             return;
         }
 
-        IExpressionNode rightExpression = (IExpressionNode) rightNode;
-        IDefinition resolvedRight = rightExpression.resolve(project);
+        IFunctionTypeExpressionNode expectedFuncTypeExpr = FunctionTypeExpressionNode.createFromDefinition(resolvedLeft, leftExpression, project, this.currentScope.getProblems());
+        checkFunctionSignatureAssignment(expectedFuncTypeExpr, rightNode);
+    }
 
-        boolean checkParams = true;
-
-        String expectedReturnTypeString = expectedFunctionTypeMeta.getAttributeValue(IMetaAttributeConstants.NAME_FUNCTION_TYPE_RETURNS);
-        ITypeDefinition expectedReturnType = parseFunctionTypeMetaReturns(expectedReturnTypeString, expectedFunctionTypeSite);
-
-        String expectedParamsString = expectedFunctionTypeMeta.getAttributeValue(IMetaAttributeConstants.NAME_FUNCTION_TYPE_PARAMS);
-        List<IParameterDefinition> expectedParams = parseFunctionTypeMetaParams(expectedParamsString, expectedFunctionTypeSite);
-
-        ITypeDefinition actualReturnType = null;
-        List<IParameterDefinition> actualParams = null;
-        if (resolvedRight instanceof IVariableDefinition)
+    private void checkFunctionSignatureAssignment(IFunctionTypeExpressionNode expectedFuncTypeExpr, IASNode rightNode)
+    {
+        if (expectedFuncTypeExpr == null)
         {
-            IVariableDefinition rightVariable = (IVariableDefinition) resolvedRight;
-            IMetaTag actualFunctionType = rightVariable.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_FUNCTION_TYPE);
-            if (actualFunctionType == null)
+            return;
+        }
+
+        if (!(rightNode instanceof IExpressionNode))
+        {
+            // errors for non-expressions will be handled elsewhere
+            return;
+        }
+
+        if (rightNode instanceof ILiteralNode)
+        {
+            ILiteralNode literalNode = (ILiteralNode) rightNode;
+            if (LiteralType.NULL.equals(literalNode.getLiteralType()))
             {
-                String expectedFunctionSignature = buildFunctionSignatureString(expectedParams, expectedReturnType);
-                addProblem(new ImplicitCoercionToUnrelatedTypeProblem(rightExpression, "Function", expectedFunctionSignature));
+                // null may be safely assigned and doesn't require metadata
+                return;
+            }
+        }
+        IFunctionTypeExpressionNode actualFuncTypeExpr = null;
+
+        IExpressionNode rightExpression = (IExpressionNode) rightNode;
+        if (rightExpression instanceof IFunctionCallNode
+            && !(rightExpression instanceof IArrowFunctionBindNode))
+        {
+            IFunctionCallNode funcCallNode = (IFunctionCallNode) rightExpression;
+            actualFuncTypeExpr = resolveReturnedFunctionTypeExpressionFromCall(funcCallNode);
+        }
+
+        if (actualFuncTypeExpr == null)
+        {
+            ITypeDefinition resolvedRightType = rightExpression.resolveType(project);
+            if (!project.getBuiltinType(BuiltinType.FUNCTION).equals(resolvedRightType))
+            {
+                // problems for assigning a non-function type are handled elsewhere
+                return;
+            }
+
+            IDefinition resolvedRightDef = null;
+            if (rightExpression instanceof IArrowFunctionBindNode)
+            {
+                IArrowFunctionBindNode arrowBindNode = (IArrowFunctionBindNode) rightExpression;
+                IFunctionObjectNode arrowFuncObjNode = arrowBindNode.getFunctionObjectNode();
+                IFunctionNode arrowFuncNode = arrowFuncObjNode.getFunctionNode();
+                resolvedRightDef = arrowFuncNode.getDefinition();
             }
             else
             {
-                String actualReturnTypeString = actualFunctionType.getAttributeValue(IMetaAttributeConstants.NAME_FUNCTION_TYPE_RETURNS);
-                actualReturnType = parseFunctionTypeMetaReturns(actualReturnTypeString, rightExpression);
+                resolvedRightDef = rightExpression.resolve(project);
+            }
 
-                String actualParamsString = actualFunctionType.getAttributeValue(IMetaAttributeConstants.NAME_FUNCTION_TYPE_PARAMS);
-                actualParams = parseFunctionTypeMetaParams(actualParamsString, rightExpression);
+            if (resolvedRightDef != null)
+            {
+                actualFuncTypeExpr = FunctionTypeExpressionNode.createFromDefinition(resolvedRightDef, rightExpression, project, this.currentScope.getProblems());
             }
         }
-        else if (resolvedRight instanceof IFunctionDefinition)
+        
+        checkFunctionSignatureAssignment(expectedFuncTypeExpr, actualFuncTypeExpr, rightExpression);
+    }
+
+    private void checkFunctionSignatureAssignment(IFunctionTypeExpressionNode expectedFuncTypeExpr, IFunctionTypeExpressionNode actualFuncTypeExpr, IASNode actualSite)
+    {
+        if (expectedFuncTypeExpr == null)
         {
-            IFunctionDefinition rightFunction = (IFunctionDefinition) resolvedRight;
-            actualReturnType = rightFunction.resolveReturnType(project);
-            actualParams = Arrays.asList(rightFunction.getParameters());
-        }
-        if (expectedParams == null || actualParams == null)
-        {
-            checkParams = false;
+            return;
         }
 
-        if (checkParams)
+        if (actualFuncTypeExpr == null)
         {
-            boolean lastExpectedIsRest = expectedParams.size() > 0 && expectedParams.get(expectedParams.size() - 1).isRest();
-            boolean lastActualIsRest = actualParams.size() > 0 && actualParams.get(actualParams.size() - 1).isRest();
-            
-            boolean isInvalidSignature = false;
-            if (lastExpectedIsRest && !lastActualIsRest)
+            addProblem(new ImplicitCoercionToUnrelatedTypeProblem(actualSite, IASLanguageConstants.Function, expectedFuncTypeExpr.resolveSignature(project)));
+            return;
+        }
+
+        IParameterNode[] expectedParams = expectedFuncTypeExpr.getParameterNodes();
+        IParameterNode[] actualParams = actualFuncTypeExpr.getParameterNodes();
+
+        boolean isInvalidSignature = false;
+        boolean lastExpectedIsRest = expectedParams.length > 0 && expectedParams[expectedParams.length - 1].isRest();
+        boolean lastActualIsRest = actualParams.length > 0 && actualParams[actualParams.length - 1].isRest();
+        
+        if (lastExpectedIsRest && !lastActualIsRest)
+        {
+            isInvalidSignature = true;
+        }
+        if (!isInvalidSignature && actualParams.length > expectedParams.length)
+        {
+            for (int i = expectedParams.length; i < actualParams.length; i++)
             {
-                isInvalidSignature = true;
-            }
-            if (!isInvalidSignature && actualParams.size() > expectedParams.size())
-            {
-                for (int i = expectedParams.size(); i < actualParams.size(); i++)
+                IParameterNode actualParam = actualParams[i];
+                if (actualParam.isRest() || actualParam.hasDefaultValue())
                 {
-                    IParameterDefinition actualParam = actualParams.get(i);
-                    if (actualParam.isRest() || actualParam.hasDefaultValue())
+                    // allow more actual parameters, as long
+                    // as they are optional
+                    continue;
+                }
+                isInvalidSignature = true;
+                break;
+            }
+        }
+        if (!isInvalidSignature)
+        {
+            for (int i = 0; i < expectedParams.length; i++)
+            {
+                if (i >= actualParams.length)
+                {
+                    if (!lastActualIsRest)
                     {
-                        // allow more actual parameters, as long
-                        // as they are optional
-                        continue;
+                        isInvalidSignature = true;
                     }
+                    break;
+                }
+                IParameterNode expectedParam = expectedParams[i];
+                IParameterNode actualParam = actualParams[i];
+                if (actualParam.isRest())
+                {
+                    break;
+                }
+                if (expectedParam.hasDefaultValue() && !actualParam.hasDefaultValue())
+                {
                     isInvalidSignature = true;
                     break;
                 }
-            }
-            if (!isInvalidSignature)
-            {
-                for (int i = 0; i < expectedParams.size(); i++)
+                IExpressionNode expectedParamTypeNode = expectedParam.getVariableTypeNode();
+                IExpressionNode actualParamTypeNode = actualParam.getVariableTypeNode();
+                if (expectedParamTypeNode instanceof IFunctionTypeExpressionNode)
                 {
-                    if (i >= actualParams.size())
+                    IFunctionTypeExpressionNode expectedParamFuncTypeExpr = (IFunctionTypeExpressionNode) expectedParamTypeNode;
+                    if (actualParamTypeNode instanceof IFunctionTypeExpressionNode)
                     {
-                        if (!lastActualIsRest)
-                        {
-                            isInvalidSignature = true;
-                        }
+                        IFunctionTypeExpressionNode actualParamFuncTypeExpr = (IFunctionTypeExpressionNode) actualParamTypeNode;
+                        checkFunctionSignatureAssignment(expectedParamFuncTypeExpr, actualParamFuncTypeExpr, actualSite);
+                    }
+                    else
+                    {
+                        // not a function type expression, so it can't be
+                        // assigned at all because there is no signature
+                        isInvalidSignature = true;
+                        // the whole signature is considered invalid, so don't
+                        // bother checking any more params (nor the return type)
                         break;
                     }
-                    IParameterDefinition expectedParam = expectedParams.get(i);
-                    IParameterDefinition actualParam = actualParams.get(i);
-                    if (actualParam.isRest())
-                    {
-                        break;
-                    }
-                    ITypeDefinition expectedParamType = expectedParam.resolveType(project);
-                    ITypeDefinition actualParamType = actualParam.resolveType(project);
+                }
+                else
+                {
+                    ITypeDefinition expectedParamType = (ITypeDefinition) expectedParamTypeNode.resolve(project);
+                    ITypeDefinition actualParamType = (ITypeDefinition) actualParamTypeNode.resolve(project);
                     if (expectedParamType != null
                         && actualParamType != null
                         && !project.getBuiltinType(BuiltinType.ANY_TYPE).equals(actualParamType)
@@ -377,15 +444,32 @@ public class MethodBodySemanticChecker
                         isInvalidSignature = true;
                         break;
                     }
-                    if (expectedParam.hasDefaultValue() && !actualParam.hasDefaultValue())
-                    {
-                        isInvalidSignature = true;
-                        break;
-                    }
                 }
             }
-            if (!isInvalidSignature)
+        }
+        if (!isInvalidSignature)
+        {
+            IExpressionNode expectedReturnTypeNode = expectedFuncTypeExpr.getReturnTypeNode();
+            IExpressionNode actualReturnTypeNode = actualFuncTypeExpr.getReturnTypeNode();
+            if (expectedReturnTypeNode instanceof IFunctionTypeExpressionNode)
             {
+                IFunctionTypeExpressionNode expectedReturnFuncTypeExpr = (IFunctionTypeExpressionNode) expectedReturnTypeNode;
+                if (actualReturnTypeNode instanceof IFunctionTypeExpressionNode)
+                {
+                    IFunctionTypeExpressionNode actualReturnFuncTypeExpr = (IFunctionTypeExpressionNode) actualReturnTypeNode;
+                    checkFunctionSignatureAssignment(expectedReturnFuncTypeExpr, actualReturnFuncTypeExpr, actualSite);
+                }
+                else
+                {
+                    // not a function type expression, so it can't be
+                    // assigned at all because there is no signature
+                    isInvalidSignature = true;
+                }
+            }
+            else
+            {
+                ITypeDefinition expectedReturnType = (ITypeDefinition) expectedReturnTypeNode.resolve(project);
+                ITypeDefinition actualReturnType = (ITypeDefinition) actualReturnTypeNode.resolve(project);
                 // actual return type must be the same or a subclass
                 // but if expected is void, any return type is accepted because it will be ignored anyway
                 if (expectedReturnType != null
@@ -396,130 +480,11 @@ public class MethodBodySemanticChecker
                     isInvalidSignature = true;
                 }
             }
-            if (isInvalidSignature)
-            {
-                String actualFunctionSignature = buildFunctionSignatureString(actualParams, actualReturnType);
-                String expectedFunctionSignature = buildFunctionSignatureString(expectedParams, expectedReturnType);
-                addProblem(new ImplicitCoercionToUnrelatedTypeProblem(rightExpression, actualFunctionSignature, expectedFunctionSignature));
-            }
         }
-    }
-
-    private ITypeDefinition parseFunctionTypeMetaReturns(String returnsString, IASNode site)
-    {
-        if (returnsString == null)
+        if (isInvalidSignature)
         {
-            return null;
+            addProblem(new ImplicitCoercionToUnrelatedTypeProblem(actualSite, actualFuncTypeExpr.resolveSignature(project), expectedFuncTypeExpr.resolveSignature(project)));
         }
-        String returnsStringTrimmed = returnsString.trim();
-        if (returnsStringTrimmed.length() == 0)
-        {
-            return null;
-        }
-        IDefinition resolvedReturnType = project.resolveQNameToDefinition(returnsStringTrimmed);
-        if (!(resolvedReturnType instanceof ITypeDefinition))
-        {
-            addProblem(new UnknownTypeProblem(site, returnsStringTrimmed));
-            return null;
-        }
-        return (ITypeDefinition) resolvedReturnType;
-    }
-
-    private List<IParameterDefinition> parseFunctionTypeMetaParams(String paramsString, IASNode site)
-    {
-        if (paramsString == null)
-        {
-            return null;
-        }
-        List<IParameterDefinition> parsedParams = new ArrayList<IParameterDefinition>();
-        if (paramsString.trim().length() == 0)
-        {
-            return parsedParams;
-        }
-        String[] splitParamsStrings = paramsString.split(",");
-        for (int i = 0; i < splitParamsStrings.length; i++)
-        {
-            String paramString = splitParamsStrings[i].trim();
-            boolean isRest = paramString.startsWith("...");
-            if (isRest)
-            {
-                paramString = paramString.substring(3);
-            }
-            boolean hasDefaultValue = paramString.endsWith("=");
-            if (hasDefaultValue)
-            {
-                paramString = paramString.substring(0, paramString.length() - 1);
-            }
-            ITypeDefinition resolvedParamType = null;
-            IDefinition resolvedParamDef = project.resolveQNameToDefinition(paramString);
-            if (resolvedParamDef instanceof ITypeDefinition)
-            {
-                resolvedParamType = (ITypeDefinition) resolvedParamDef;
-            }
-            if (resolvedParamType == null)
-            {
-                addProblem(new UnknownTypeProblem(site, paramString));
-                return null;
-            }
-            else
-            {
-                ParameterDefinition paramDef = new ParameterDefinition(i + "");
-                if (isRest)
-                {
-                    paramDef.setRest();
-                }
-                if (hasDefaultValue)
-                {
-                    paramDef.setDefaultValue(true);
-                }
-                paramDef.setTypeReference(new ResolvedReference(resolvedParamType));
-                parsedParams.add(paramDef);
-            }
-        }
-        return parsedParams;
-    }
-
-    private String buildFunctionSignatureString(List<IParameterDefinition> params, ITypeDefinition returnType)
-    {
-        StringBuilder functionBuilder = new StringBuilder();
-        functionBuilder.append(IASKeywordConstants.FUNCTION);
-        functionBuilder.append("(");
-        for (int i = 0; i < params.size(); i++)
-        {
-            if (i > 0)
-            {
-                functionBuilder.append(", ");
-            }
-            IParameterDefinition paramDef = params.get(i);
-            if (paramDef.isRest())
-            {
-                functionBuilder.append("...");
-                functionBuilder.append(paramDef.getBaseName());
-            }
-            else
-            {
-                ITypeDefinition paramTypeDef = paramDef.resolveType(project);
-                if (paramTypeDef == null)
-                {
-                    functionBuilder.append(paramDef.getTypeAsDisplayString());
-                }
-                else
-                {
-                    functionBuilder.append(paramTypeDef.getBaseName());
-                }
-                if (paramDef.hasDefaultValue())
-                {
-                    functionBuilder.append("=");
-                }
-            }
-        }
-        functionBuilder.append(")");
-        if (returnType != null)
-        {
-            functionBuilder.append(":");
-            functionBuilder.append(returnType.getBaseName());
-        }
-        return functionBuilder.toString();
     }
     
     /**
@@ -567,7 +532,7 @@ public class MethodBodySemanticChecker
             if (project.getAllowStrictFunctionTypes() && project.getBuiltinType(BuiltinType.FUNCTION).equals(leftType))
             {
                 IASNode leftNode = SemanticUtils.getNthChild(iNode, 0);
-                checkFunctionTypeMeta(leftNode, rightNode);
+                checkFunctionSignatureAssignment(leftNode, rightNode);
             }
 
             checkImplicitConversion(rightNode, leftType, null);
@@ -659,10 +624,75 @@ public class MethodBodySemanticChecker
             final IExpressionNode rightOp = ((IBinaryOperatorNode)iNode).getRightOperandNode();
             checkImplicitConversion(rightOp, expected_type, null);
         }
-
         else if (iNode instanceof ExpressionNodeBase)
         {
-            checkImplicitConversion(iNode, ((ExpressionNodeBase)iNode).resolveType(project), expected_type, func);
+            ExpressionNodeBase exprNode = (ExpressionNodeBase)iNode;
+            ITypeDefinition resolvedType = null;
+            if (project.getAllowStrictFunctionTypes())
+            {
+                if (iNode instanceof IFunctionCallNode
+                    && !(iNode instanceof IArrowFunctionBindNode))
+                {
+                    IFunctionCallNode funcCallNode = (IFunctionCallNode) iNode;
+                    IDefinition calledDef = funcCallNode.resolveCalledExpression(project);
+                    if (calledDef == null)
+                    {
+                        int stackSize = 0;
+                        while (funcCallNode != null)
+                        {
+                            IExpressionNode funcCallNameNode = funcCallNode.getNameNode();
+                            funcCallNode = null;
+                            if (funcCallNameNode instanceof IFunctionCallNode
+                                && !(funcCallNameNode instanceof IArrowFunctionBindNode))
+                            {
+                                stackSize++;
+                                funcCallNode = (IFunctionCallNode) funcCallNameNode;
+                                IDefinition nestedCalledDef = funcCallNode.resolveCalledExpression(project);
+                                if (nestedCalledDef != null)
+                                {
+                                    IFunctionTypeExpressionNode funcTypeExprNode = FunctionTypeExpressionNode.createFromDefinition(nestedCalledDef, funcCallNode, project, this.currentScope.getProblems());
+                                    if (funcTypeExprNode != null)
+                                    {
+                                        IExpressionNode returnTypeNode = funcTypeExprNode.getReturnTypeNode();
+                                        while (stackSize > 0 && returnTypeNode instanceof IFunctionTypeExpressionNode)
+                                        {
+                                            IFunctionTypeExpressionNode nestedFuncTypeExprNode = (IFunctionTypeExpressionNode) returnTypeNode;
+                                            returnTypeNode = nestedFuncTypeExprNode.getReturnTypeNode();
+                                            stackSize--;
+                                        }
+                                        if (returnTypeNode != null)
+                                        {
+                                            resolvedType = (ITypeDefinition) returnTypeNode.resolve(project);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if (calledDef instanceof IVariableDefinition)
+                    {
+                        IVariableDefinition varDef = (IVariableDefinition) calledDef;
+                        IFunctionTypeExpressionNode funcTypeExprNode = FunctionTypeExpressionNode.createFromDefinition(varDef, funcCallNode, project, this.currentScope.getProblems());
+                        if (funcTypeExprNode != null)
+                        {
+                            IExpressionNode returnTypeNode = funcTypeExprNode.getReturnTypeNode();
+                            if (returnTypeNode != null)
+                            {
+                                resolvedType = (ITypeDefinition) returnTypeNode.resolve(project);
+                            }
+                        }
+                    }
+                }
+                if (resolvedType == null)
+                {
+                    resolvedType = exprNode.resolveType(project);
+                }
+            }
+            else
+            {
+                resolvedType = exprNode.resolveType(project);
+            }
+            checkImplicitConversion(iNode, resolvedType, expected_type, func);
         }
     }
 
@@ -1010,6 +1040,74 @@ public class MethodBodySemanticChecker
         }
     }
 
+    private void checkFormalsVsActuals(IASNode iNode, IFunctionTypeExpressionNode func, Vector<? extends Object> actuals)
+    {
+        //  Check the formal parameter definitions, and ensure we have
+        //  a corresponding number of actual parameters.
+        IParameterNode[] formals = func.getParameterNodes();
+
+        if ( formals == null )
+        {
+            return;
+        }
+        
+        boolean last_is_rest   = formals.length > 0 && formals[formals.length - 1].isRest();
+
+        int required_count = 0;
+
+        if ( actuals.size() > formals.length && !last_is_rest )
+        {
+            addProblem(new TooManyFunctionParametersProblem(iNode, formals.length));
+        }
+
+        //  Compute the number of required parameters.
+        for ( int i = 0; i < formals.length; i++ )
+        {
+            if ( formals[i].hasDefaultValue() || formals[i].isRest() )
+                break;
+
+            required_count++;
+        }
+
+        if ( actuals.size() < required_count )
+        {
+            addProblem(new TooFewFunctionParametersProblem(iNode, required_count));
+        }
+
+        //  Check that the actuals are compatible with the formals.
+        IASNode actuals_container = null;
+        if( iNode instanceof FunctionCallNode )
+            actuals_container = ((FunctionCallNode)iNode).getArgumentsNode();
+
+        if ( actuals_container != null )
+        {
+            for ( int i = 0; i < actuals_container.getChildCount() && i < formals.length; i++ )
+            {
+                if ( !formals[i].isRest() )
+                {
+                    IASNode actualNode = actuals_container.getChild(i);
+                    IParameterNode formalParam = formals[i];
+                    ITypeDefinition formalParamType = null;
+                    IExpressionNode formalParamTypeNode = formalParam.getVariableTypeNode();
+                    if (formalParamTypeNode != null)
+                    {
+                        formalParamType = (ITypeDefinition) formalParamTypeNode.resolve(project);
+
+                        if (project.getAllowStrictFunctionTypes()
+                                && project.getBuiltinType(BuiltinType.FUNCTION).equals(formalParamType)
+                                && formalParamTypeNode instanceof IFunctionTypeExpressionNode)
+                        {
+                            IFunctionTypeExpressionNode formalParamFuncType = (IFunctionTypeExpressionNode) formalParamTypeNode;
+                            checkFunctionSignatureAssignment(formalParamFuncType, actualNode);
+                        }
+                    }
+
+                    checkImplicitConversion( actualNode, formalParamType, null );
+                }
+            }
+        }
+    }
+
     /**
      *  Check that formal and actual parameters correspond and are compatible.
      */
@@ -1066,6 +1164,7 @@ public class MethodBodySemanticChecker
 
         if ( actuals_container != null )
         {
+            IFunctionTypeExpressionNode funcTypeExprNode = null;
             for ( int i = 0; i < actuals_container.getChildCount() && i < formals.length; i++ )
             {
                 if ( !formals[i].isRest() )
@@ -1075,26 +1174,17 @@ public class MethodBodySemanticChecker
                     ITypeDefinition formalParamType = formalParam.resolveType(project);
                     if (project.getAllowStrictFunctionTypes() && project.getBuiltinType(BuiltinType.FUNCTION).equals(formalParamType))
                     {
-                        // we can't add metadata directly to parameters, so we
-                        // need to find it on the function that contains the
-                        // parameter
-                        IMetaTag[] functionTypeTags = func.getMetaTagsByName(IMetaAttributeConstants.ATTRIBUTE_FUNCTION_TYPE);
-                        if (functionTypeTags != null)
+                        if (funcTypeExprNode == null)
                         {
-                            IMetaTag foundMetaTag = null;
-                            for (IMetaTag functionTypeTag : functionTypeTags)
-                            {
-                                String paramName = functionTypeTag.getAttributeValue(IMetaAttributeConstants.NAME_FUNCTION_TYPE_PARAM_NAME);
-                                if (paramName != null && paramName.equals(formalParam.getBaseName()))
-                                {
-                                    foundMetaTag = functionTypeTag;
-                                    break;
-                                }
-                            }
-                            if (foundMetaTag != null)
-                            {
-                                checkFunctionTypeMeta(foundMetaTag, iNode, actualNode);
-                            }
+                            // don't create this expression until we know it is required
+                            funcTypeExprNode = FunctionTypeExpressionNode.createFromFunctionDefinition(func, project);
+                        }
+                        IParameterNode paramNode = funcTypeExprNode.getParameterNodes()[i];
+                        IExpressionNode paramTypeNode = paramNode.getVariableTypeNode();
+                        if (paramTypeNode instanceof IFunctionTypeExpressionNode)
+                        {
+                            IFunctionTypeExpressionNode paramFuncTypeExprNode = (IFunctionTypeExpressionNode) paramTypeNode;
+                            checkFunctionSignatureAssignment(paramFuncTypeExprNode, actualNode);
                         }
                     }
                     checkImplicitConversion( actualNode, formalParamType, func );
@@ -1177,6 +1267,117 @@ public class MethodBodySemanticChecker
         String iEventDispatcherName = BindableHelper.NAME_IEVENT_DISPATCHER.getBaseName();
         IDefinition iEventDispatcher =  ((ASProjectScope)(project.getScope())).findDefinitionByName(iEventDispatcherPackage + "." + iEventDispatcherName);
         if (iEventDispatcher instanceof IInterfaceDefinition) return (IInterfaceDefinition) iEventDispatcher;
+        return null;
+    }
+
+    /**
+     * Check a "random expression" function call that can't be mapped to a
+     * function definition, but might map to a function type expression.
+     */
+    public void checkRandomExprFunctionCall(IASNode iNode, Vector<? extends Object>actuals)
+    {
+        if (project.getAllowStrictFunctionTypes())
+        {
+            if (iNode instanceof IFunctionCallNode
+                && !(iNode instanceof IArrowFunctionBindNode))
+            {
+                IFunctionCallNode randomFuncCallNode = (IFunctionCallNode) iNode;
+                IDefinition resolvedCalledDef = randomFuncCallNode.resolveCalledExpression(project);
+                if (resolvedCalledDef == null)
+                {
+                    IExpressionNode funcCallNameNode = randomFuncCallNode.getNameNode();
+                    if (funcCallNameNode instanceof IArrowFunctionBindNode)
+                    {
+                        IArrowFunctionBindNode arrowFuncBindNode = (IArrowFunctionBindNode) funcCallNameNode;
+                        IFunctionObjectNode funcObjNode = arrowFuncBindNode.getFunctionObjectNode();
+                        resolvedCalledDef = funcObjNode.getFunctionNode().getDefinition();
+                    }
+                }
+                if (resolvedCalledDef instanceof FunctionDefinition)
+                {
+                    // could be an anonymous function in parentheses
+                    FunctionDefinition funcDef = (FunctionDefinition) resolvedCalledDef;
+                    checkFormalsVsActuals(iNode, funcDef, actuals);
+                }
+                else
+                {
+                    IFunctionTypeExpressionNode resolvedFuncTypeExpr = resolveReturnedFunctionTypeExpressionFromCall(randomFuncCallNode);
+                    if (resolvedFuncTypeExpr != null)
+                    {
+                        // the "random" function call can be matched to a function type expression
+                        // so check that the arguments correctly match the parameter types
+                        checkFormalsVsActuals(randomFuncCallNode, resolvedFuncTypeExpr, actuals);
+                    }
+                }
+            }
+        }
+    }
+
+    private IFunctionTypeExpressionNode resolveReturnedFunctionTypeExpressionFromCall(IFunctionCallNode outerFuncCallNode)
+    {
+        IFunctionCallNode resolvedFunctionCallNode = outerFuncCallNode;
+        IDefinition resolvedCalledDef = outerFuncCallNode.resolveCalledExpression(project);
+        if (resolvedCalledDef == null)
+        {
+            IExpressionNode outerFuncCallNameNode = outerFuncCallNode.getNameNode();
+            if (outerFuncCallNameNode instanceof IArrowFunctionBindNode)
+            {
+                IArrowFunctionBindNode arrowFuncBindNode = (IArrowFunctionBindNode) outerFuncCallNameNode;
+                IFunctionObjectNode funcObjNode = arrowFuncBindNode.getFunctionObjectNode();
+                resolvedCalledDef = funcObjNode.getFunctionNode().getDefinition();
+            }
+        }
+        int stackSize = 0;
+        if (resolvedCalledDef == null)
+        {
+            IFunctionCallNode innerFuncCallNode = outerFuncCallNode;
+            while (innerFuncCallNode != null)
+            {
+                IExpressionNode innerFuncCallNameNode = innerFuncCallNode.getNameNode();
+                innerFuncCallNode = null;
+                if (innerFuncCallNameNode instanceof IFunctionCallNode
+                    && !(innerFuncCallNameNode instanceof IArrowFunctionBindNode))
+                {
+                    stackSize++;
+                    innerFuncCallNode = (IFunctionCallNode) innerFuncCallNameNode;
+                    IDefinition nestedCalledDef = innerFuncCallNode.resolveCalledExpression(project);
+                    if (nestedCalledDef == null)
+                    {
+                        IExpressionNode innerInnerFuncCallNameNode = innerFuncCallNode.getNameNode();
+                        if (innerInnerFuncCallNameNode instanceof IArrowFunctionBindNode)
+                        {
+                            IArrowFunctionBindNode arrowFuncBindNode = (IArrowFunctionBindNode) innerInnerFuncCallNameNode;
+                            IFunctionObjectNode funcObjNode = arrowFuncBindNode.getFunctionObjectNode();
+                            nestedCalledDef = funcObjNode.getFunctionNode().getDefinition();
+                        }
+                    }
+                    if (nestedCalledDef != null)
+                    {
+                        resolvedCalledDef = nestedCalledDef;
+                        resolvedFunctionCallNode = innerFuncCallNode;
+                        break;
+                    }
+                }
+            }
+        }
+        if (resolvedCalledDef != null)
+        {
+            IFunctionTypeExpressionNode funcTypeExprNode = FunctionTypeExpressionNode.createFromDefinition(resolvedCalledDef, resolvedFunctionCallNode, project, this.currentScope.getProblems());
+            if (funcTypeExprNode != null)
+            {
+                IExpressionNode returnTypeNode = funcTypeExprNode.getReturnTypeNode();
+                while (stackSize > 1 && returnTypeNode instanceof IFunctionTypeExpressionNode)
+                {
+                    IFunctionTypeExpressionNode nestedFuncTypeExprNode = (IFunctionTypeExpressionNode) returnTypeNode;
+                    returnTypeNode = nestedFuncTypeExprNode.getReturnTypeNode();
+                    stackSize--;
+                }
+                if (returnTypeNode instanceof IFunctionTypeExpressionNode)
+                {
+                    return (IFunctionTypeExpressionNode) returnTypeNode;
+                }
+            }
+        }
         return null;
     }
 
@@ -1276,9 +1477,17 @@ public class MethodBodySemanticChecker
         {
             VariableDefinition varDef = (VariableDefinition)def;
             IDefinition varType = varDef.resolveType(project);
-            if (varType == null || // Null here means the ANY_TYPE
+            if (project.getBuiltinType(BuiltinType.FUNCTION).equals(varType))
+            {
+                IFunctionTypeExpressionNode funcTypeExprNode = FunctionTypeExpressionNode.createFromDefinition(varDef, iNode, project, this.currentScope.getProblems());
+                if (funcTypeExprNode != null)
+                {
+                    checkFormalsVsActuals(iNode, funcTypeExprNode, actuals);
+                }
+                // otherwise, just assume it can be called
+            }
+            else if (varType == null || // Null here means the ANY_TYPE
                 varType.equals(project.getBuiltinType(BuiltinType.CLASS)) ||
-                varType.equals(project.getBuiltinType(BuiltinType.FUNCTION)) ||
                 varType.equals(project.getBuiltinType(BuiltinType.OBJECT)) ||
                 varType.equals(project.getBuiltinType(BuiltinType.ANY_TYPE)) ||
                 varType.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_CALLABLE_INSTANCES) != null)
@@ -1350,6 +1559,55 @@ public class MethodBodySemanticChecker
         }
         checkReference(method_binding);
     }
+    
+    private void checkFunctionTypeExpression(IFunctionTypeExpressionNode iNode)
+    {
+        SemanticUtils.checkReturnValueHasNoTypeDeclaration(this.currentScope, iNode);
+        SemanticUtils.checkParametersHaveNoTypeDeclaration(this.currentScope, iNode);
+        SemanticUtils.checkParametersHaveUniqueNames(this.currentScope, iNode);
+
+        IParameterNode[] paramNodes = iNode.getParameterNodes();
+        if ( paramNodes == null )
+            return;
+
+        boolean found_optional = false;
+
+        for ( int i = 0; i < paramNodes.length; i++ )
+        {
+            IParameterNode paramNode = paramNodes[i];
+            //  Check the structure of the formals; 
+            //  required parameters, then optionals,
+            //  then the rest parameter, if present.
+            if ( paramNode.hasDefaultValue() )
+            {
+                found_optional = true;
+            }
+            else if ( paramNode.isRest() )
+            {
+                if ( i != paramNodes.length -1 )
+                {
+                    addProblem(new RestParameterMustBeLastProblem(paramNode));
+                }
+            }
+            else
+            {
+                if ( found_optional )
+                {
+                    addProblem(new RequiredParameterAfterOptionalProblem(paramNode));
+                }
+            }
+        }
+
+        for (IParameterNode paramNode : iNode.getParameterNodes())
+        {
+            IExpressionNode typeNode = paramNode.getVariableTypeNode();
+            if (typeNode instanceof IFunctionTypeExpressionNode)
+            {
+                IFunctionTypeExpressionNode funcExprNode = (IFunctionTypeExpressionNode) typeNode;
+                checkFunctionTypeExpression(funcExprNode);
+            }
+        }
+    }
 
     /**
      *  Check a function definition.
@@ -1409,7 +1667,23 @@ public class MethodBodySemanticChecker
                     addProblem(new RequiredParameterAfterOptionalProblem(formals[i].getNode()));
                 }
             }
+        }
 
+        for (IParameterNode paramNode : iNode.getParameterNodes())
+        {
+            IExpressionNode typeNode = paramNode.getVariableTypeNode();
+            if (typeNode instanceof IFunctionTypeExpressionNode)
+            {
+                IFunctionTypeExpressionNode funcExprNode = (IFunctionTypeExpressionNode) typeNode;
+                if (project.getAllowStrictFunctionTypes())
+                {
+                    checkFunctionTypeExpression(funcExprNode);
+                }
+                else
+                {
+                    this.currentScope.addProblem(new SyntaxProblem(funcExprNode, funcExprNode.resolveSignature(project)));
+                }
+            }
         }
 
         //  Check the return type.
@@ -1425,6 +1699,20 @@ public class MethodBodySemanticChecker
                  return_type != project.getBuiltinType(BuiltinType.ANY_TYPE)) )
         {
             addProblem(new BadSetterReturnTypeProblem(iNode.getReturnTypeNode()));
+        }
+
+        IExpressionNode returnTypeNode = iNode.getReturnTypeNode();
+        if (returnTypeNode instanceof IFunctionTypeExpressionNode)
+        {
+            IFunctionTypeExpressionNode funcExprNode = (IFunctionTypeExpressionNode) returnTypeNode;
+            if (project.getAllowStrictFunctionTypes())
+            {
+                checkFunctionTypeExpression(funcExprNode);
+            }
+            else
+            {
+                this.currentScope.addProblem(new SyntaxProblem(funcExprNode, funcExprNode.resolveSignature(project)));
+            }
         }
 
         if( def instanceof IAccessorDefinition )
@@ -2663,8 +2951,13 @@ public class MethodBodySemanticChecker
                 {
                     if (project.getAllowStrictFunctionTypes() && project.getBuiltinType(BuiltinType.FUNCTION).equals(return_type))
                     {
-                        IMetaTag expectedFunctionTypeMeta = func_def.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_FUNCTION_TYPE);
-                        checkFunctionTypeMeta(expectedFunctionTypeMeta, iNode, returnExpression);
+                        IFunctionTypeExpressionNode funcTypeExprNode = FunctionTypeExpressionNode.createFromFunctionDefinition(func_def, project);
+                        IExpressionNode returnTypeNode = funcTypeExprNode.getReturnTypeNode();
+                        if (returnTypeNode instanceof IFunctionTypeExpressionNode)
+                        {
+                            IFunctionTypeExpressionNode returnFuncTypeExprNode = (IFunctionTypeExpressionNode) returnTypeNode;
+                            checkFunctionSignatureAssignment(returnFuncTypeExprNode, returnExpression);
+                        }
                     }
                     checkImplicitConversion(returnExpression, return_type, null);
                 }
@@ -3034,6 +3327,18 @@ public class MethodBodySemanticChecker
         }
 
         ExpressionNodeBase typeNode = var.getTypeNode();
+        if (typeNode instanceof IFunctionTypeExpressionNode)
+        {
+            IFunctionTypeExpressionNode funcExprNode = (IFunctionTypeExpressionNode) typeNode;
+            if (project.getAllowStrictFunctionTypes())
+            {
+                checkFunctionTypeExpression(funcExprNode);
+            }
+            else
+            {
+                this.currentScope.addProblem(new SyntaxProblem(funcExprNode, funcExprNode.resolveSignature(project)));
+            }
+        }
         IExpressionNode currentTypeNode = typeNode;
         IDefinition vectorType = project.getBuiltinType(IASLanguageConstants.BuiltinType.VECTOR);
         while (currentTypeNode instanceof ITypedExpressionNode)
@@ -3731,6 +4036,22 @@ public class MethodBodySemanticChecker
                 && !rightIsBoolean
                 && !rightIsAny
                 && !rightIsObject;
+    }
+
+    public void checkTry(IASNode iNode)
+    {
+        ITryNode tryNode = (ITryNode) iNode;
+        for (int i = 0; i < tryNode.getCatchNodeCount(); i++)
+        {
+            ICatchNode catchNode = tryNode.getCatchNode(i);
+            IParameterNode paramNode = catchNode.getCatchParameterNode();
+            IExpressionNode typeNode = paramNode.getVariableTypeNode();
+            if (typeNode instanceof IFunctionTypeExpressionNode)
+            {
+                IFunctionTypeExpressionNode funcExprNode = (IFunctionTypeExpressionNode) typeNode;
+                this.currentScope.addProblem(new SyntaxProblem(paramNode, funcExprNode.resolveSignature(project)));
+            }
+        }
     }
 }
 

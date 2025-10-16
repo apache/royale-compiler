@@ -46,11 +46,13 @@ import org.apache.royale.compiler.internal.tree.as.ClassNode;
 import org.apache.royale.compiler.problems.AmbiguousReferenceProblem;
 import org.apache.royale.compiler.problems.DuplicateInterfaceProblem;
 import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.SyntaxProblem;
 import org.apache.royale.compiler.problems.UnknownInterfaceProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IDefinitionSet;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IFunctionTypeExpressionNode;
 import org.apache.royale.compiler.tree.as.ITypeNode;
 import org.apache.royale.utils.Version;
 import com.google.common.collect.Iterables;
@@ -181,7 +183,7 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
                         if (idef instanceof AmbiguousDefinition)
                             problems.add(new AmbiguousReferenceProblem(getNode(), implementedInterface.getDisplayString()));
                         else
-                            problems.add(unknownInterfaceProblem(implementedInterface, i));                        
+                            problems.add(unknownInterfaceProblem(implementedInterface, i, project));                        
                     }
 
                     typeDefinition = null;
@@ -346,10 +348,15 @@ public abstract class ClassDefinitionBase extends TypeDefinitionBase implements 
      * for the implemented interfaces, if there is one, for location info,
      * therwise will use the definition for location info
      */
-    private UnknownInterfaceProblem unknownInterfaceProblem(IReference interfRef, int idx)
+    private ICompilerProblem unknownInterfaceProblem(IReference interfRef, int idx, ICompilerProject project)
     {
         IASNode node = getInterfaceNode(idx);
-        if (node != null)
+        if (node instanceof IFunctionTypeExpressionNode)
+        {
+            IFunctionTypeExpressionNode funcTypeExpr = (IFunctionTypeExpressionNode) node;
+            return new SyntaxProblem(funcTypeExpr, funcTypeExpr.resolveSignature(project));
+        }
+        else if (node != null)
             return new UnknownInterfaceProblem(node, interfRef.getDisplayString());
         else
             return new UnknownInterfaceProblem(this, interfRef.getDisplayString());

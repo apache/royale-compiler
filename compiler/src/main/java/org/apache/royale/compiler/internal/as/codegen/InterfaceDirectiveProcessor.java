@@ -79,6 +79,7 @@ import org.apache.royale.compiler.problems.VirtualOutsideClassProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IFunctionTypeExpressionNode;
 import org.apache.royale.compiler.tree.as.IIdentifierNode;
 import org.apache.royale.compiler.tree.as.INamespaceDecorationNode;
 import org.apache.royale.utils.ArrayLikeUtil;
@@ -181,7 +182,12 @@ public class InterfaceDirectiveProcessor extends DirectiveProcessor
             IExpressionNode extendedInterface = raw_interfaces[i];
             IDefinition extendedDefinition = extendedInterface.resolve(interfaceScope.getProject());
             
-            if ( extendedDefinition instanceof IInterfaceDefinition ) 
+            if (extendedInterface instanceof IFunctionTypeExpressionNode)
+            {
+                IFunctionTypeExpressionNode funcExprNode = (IFunctionTypeExpressionNode) extendedInterface;
+                interfaceScope.addProblem(new SyntaxProblem(funcExprNode, funcExprNode.resolveSignature(interfaceScope.getProject())));
+            }
+            else if ( extendedDefinition instanceof IInterfaceDefinition ) 
             {
                 Name interfaceName = ((DefinitionBase)extendedDefinition).getMName(interfaceScope.getProject());
                 iinfo.interfaceNames[i] = interfaceName;

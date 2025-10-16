@@ -57,6 +57,7 @@ import org.apache.royale.compiler.filespecs.IFileSpecification;
 import org.apache.royale.compiler.internal.common.Counter;
 import org.apache.royale.compiler.internal.definitions.metadata.DeprecationInfo;
 import org.apache.royale.compiler.internal.definitions.metadata.MetaTag;
+import org.apache.royale.compiler.internal.definitions.metadata.MetaTagAttribute;
 import org.apache.royale.compiler.internal.parsing.as.OffsetLookup;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
@@ -73,6 +74,7 @@ import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IDefinitionNode;
 import org.apache.royale.compiler.tree.as.IDocumentableDefinitionNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IFunctionTypeExpressionNode;
 import org.apache.royale.compiler.units.ICompilationUnit;
 
 /**
@@ -1816,5 +1818,38 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
             return parentDef.isInProject(project);
         }
         return false;
+    }
+
+    protected void addFunctionTypeMeta(IFunctionTypeExpressionNode funcTypeExprNode, String paramName, ICompilerProject project)
+    {
+        int existingIndex = -1;
+        for (int i = 0; i < metaTags.length; i++)
+        {
+            IMetaTag otherMetaTag = metaTags[i];
+            if (IMetaAttributeConstants.ATTRIBUTE_FUNCTION_TYPE.equals(otherMetaTag.getTagName()))
+            {
+                if ((paramName == null && otherMetaTag.getAttributeValue(IMetaAttributeConstants.NAME_FUNCTION_TYPE_PARAM_NAME) == null)
+                    || (paramName != null && paramName.equals(otherMetaTag.getAttributeValue(IMetaAttributeConstants.NAME_FUNCTION_TYPE_PARAM_NAME))))
+                {
+                    existingIndex = i;
+                    break;
+                }
+            }
+        }
+        ArrayList<IMetaTagAttribute> attributes = new ArrayList<IMetaTagAttribute>();
+        if (paramName != null)
+        {
+            attributes.add(new MetaTagAttribute(IMetaAttributeConstants.NAME_FUNCTION_TYPE_PARAM_NAME, paramName));
+        }
+        attributes.add(new MetaTagAttribute(IMetaAttributeConstants.NAME_FUNCTION_TYPE_SIGNATURE, funcTypeExprNode.resolveSignature(project)));
+        MetaTag metaTag = new MetaTag(this, IMetaAttributeConstants.ATTRIBUTE_FUNCTION_TYPE, attributes.toArray(new IMetaTagAttribute[0]));
+        if (existingIndex == -1)
+        {
+            addMetaTag(metaTag);
+        }
+        else
+        {
+            metaTags[existingIndex] = metaTag;
+        }
     }
 }

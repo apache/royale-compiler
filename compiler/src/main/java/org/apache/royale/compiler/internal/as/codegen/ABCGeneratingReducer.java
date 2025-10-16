@@ -3908,6 +3908,8 @@ public class ABCGeneratingReducer
 
     public InstructionList reduce_functionAsRandomExpr(IASNode iNode, InstructionList random_expr, Vector<InstructionList> args)
     {
+        currentScope.getMethodBodySemanticChecker().checkRandomExprFunctionCall(iNode, args);
+
         //  TODO: Investigate optimizing this.
         InstructionList result = createInstructionList(iNode);
 
@@ -5540,6 +5542,15 @@ public class ABCGeneratingReducer
         return expr;
     }
 
+    public Binding reduce_functionTypeExpression(IASNode iNode)
+    {
+        // function types are checked at compile-time
+        // but the type is simply "Function" in the bytecode at run-time
+        ITypeDefinition typeDef = currentScope.getProject().getBuiltinType(BuiltinType.FUNCTION);
+        final Name name = new Name(new Namespace(CONSTANT_PackageNs, typeDef.getPackageName()), typeDef.getBaseName());
+        return new Binding(iNode, name, typeDef);
+    }
+
     public Binding reduce_simpleName(IASNode iNode)
     {
         final Binding result;
@@ -5981,6 +5992,8 @@ public class ABCGeneratingReducer
 
     public InstructionList reduce_tryCatchFinallyStmt(IASNode iNode, InstructionList try_stmt, InstructionList finally_stmt, Vector<CatchPrototype> catch_blocks)
     {
+        currentScope.getMethodBodySemanticChecker().checkTry(iNode);
+
         InstructionList result = generateTryCatchFinally(try_stmt, catch_blocks, finally_stmt);
         currentScope.getFlowManager().finishExceptionContext();
         return result;
@@ -5989,6 +6002,9 @@ public class ABCGeneratingReducer
     public InstructionList reduce_tryCatchStmt(IASNode iNode, InstructionList try_stmt, Vector<CatchPrototype> catch_blocks)
     {
         //  TODO: Optimize.
+
+        currentScope.getMethodBodySemanticChecker().checkTry(iNode);
+
         InstructionList result = createInstructionList(iNode);
 
         if ( try_stmt.isEmpty() )
@@ -6028,6 +6044,8 @@ public class ABCGeneratingReducer
 
     public InstructionList reduce_tryFinallyStmt(IASNode iNode, InstructionList try_stmt, InstructionList finally_stmt)
     {
+        currentScope.getMethodBodySemanticChecker().checkTry(iNode);
+
         InstructionList result = generateTryCatchFinally(try_stmt, null, finally_stmt);
         currentScope.getFlowManager().finishExceptionContext();
         return result;

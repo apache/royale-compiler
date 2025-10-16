@@ -131,6 +131,7 @@ import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.IFileNode;
 import org.apache.royale.compiler.tree.as.IFunctionCallNode;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.tree.as.IFunctionTypeExpressionNode;
 import org.apache.royale.compiler.tree.as.IGetterNode;
 import org.apache.royale.compiler.tree.as.IIdentifierNode;
 import org.apache.royale.compiler.tree.as.IImportNode;
@@ -2752,6 +2753,29 @@ public class SemanticUtils
     }
     
     /**
+     * Checks that a given function type expression's parameters have unique names, and logs a problem if not
+     * 
+     * @param scope is the scope where problems are to be logged
+     * @param node is the function type expression node that is being checked (used for location reporting)
+     */
+    public static void checkParametersHaveUniqueNames(LexicalScope scope, IFunctionTypeExpressionNode node)
+    {
+        Set<String> namesSet = new HashSet<String>();
+        for (IParameterNode paramNode : node.getParameterNodes())
+        {
+            String paramName = paramNode.getName();
+            if (namesSet.contains(paramName))
+            {
+                scope.addProblem(new DuplicateParameterNameProblem(paramNode, paramNode.getName(), ""));
+            }
+            else
+            {
+                namesSet.add(paramName);
+            }
+        }
+    }
+    
+    /**
      * Checks that a given function's parameters have unique names, and logs a problem if not
      * 
      * @param scope is the scope where problems are to be logged
@@ -2814,6 +2838,35 @@ public class SemanticUtils
     }
     
     /**
+     * Checks that a given function type expression's parameters have a type, and logs a problem if not
+     * 
+     * @param scope is the scope where problems are to be logged
+     * @param node is the function node that is being checked (used
+     */
+    public static void checkParametersHaveNoTypeDeclaration(LexicalScope scope, IFunctionTypeExpressionNode node)
+    {
+        for (IParameterNode paramNode : node.getParameterNodes())
+        {
+            IExpressionNode paramType = paramNode.getVariableTypeNode();
+
+            // check for parameter type declaration
+            if (paramType == null)
+            {
+                scope.addProblem(new ParameterHasNoTypeDeclarationProblem(paramNode, paramNode.getName(), ""));
+            }
+            else if(paramType.getAbsoluteStart() == -1 && paramType.getAbsoluteEnd() == -1
+                    && paramType instanceof ILanguageIdentifierNode)
+            {
+                ILanguageIdentifierNode identifier = (ILanguageIdentifierNode) paramType;
+                if (identifier.getKind().equals(LanguageIdentifierKind.ANY_TYPE))
+                {
+                    scope.addProblem(new ParameterHasNoTypeDeclarationProblem(paramNode, paramNode.getName(), ""));
+                }
+            }
+        }
+    }
+    
+    /**
      * Checks that a given function definition has a return type, and logs a problem if not
      * 
      * @param scope is the scope where problems are to be logged
@@ -2857,6 +2910,23 @@ public class SemanticUtils
             if (nameNode != null)
                 sourceLoc = nameNode;
             scope.addProblem(new ReturnValueHasNoTypeDeclarationProblem(sourceLoc, func.getBaseName()));
+        }
+    }
+    
+    /**
+     * Checks that a given function type expression has a return type, and logs a problem if not
+     * 
+     * @param scope is the scope where problems are to be logged
+     * @param node is the function type expression node that is being checked (used for location reporting)
+     */
+    public static void checkReturnValueHasNoTypeDeclaration(LexicalScope scope, IFunctionTypeExpressionNode node)
+    {
+        IExpressionNode returnType = node.getReturnTypeNode();
+        
+        // check for return type declaration
+        if (returnType == null)       
+        {
+            scope.addProblem(new ReturnValueHasNoTypeDeclarationProblem(node, ""));
         }
     }
     

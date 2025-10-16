@@ -850,7 +850,11 @@ interfaceDefinition[ContainerNode c,  INamespaceDecorationNode namespace, List<M
 		
 		(	extendsT:TOKEN_RESERVED_WORD_EXTENDS
 			{ interfaceNode.setExtendsKeyword((ASToken)extendsT); }
-			(	baseInterfaceName=restrictedName
+            // The rule for interface type should be "restrictedName". However,
+			// in order to trap errors like "class Foo implements Vector.<T>",
+			// the parser has to allow parameterized type as super name. It's up
+			// to semantic analysis to report this problem.
+			(	baseInterfaceName=type
 				{ 
 					interfaceNode.addBaseInterface(baseInterfaceName);  
 					interfaceNode.setEnd(baseInterfaceName.getEnd()); 
@@ -858,7 +862,7 @@ interfaceDefinition[ContainerNode c,  INamespaceDecorationNode namespace, List<M
  
 				(	commaT:TOKEN_COMMA 
 					{ interfaceNode.endAfter(commaT); }
-					(	baseInterfaceName=restrictedName
+					(	baseInterfaceName=type
 						{ 
 							interfaceNode.addBaseInterface(baseInterfaceName); 
 							interfaceNode.setEnd(baseInterfaceName.getEnd()); 
@@ -939,14 +943,19 @@ classDefinition [ContainerNode c, INamespaceDecorationNode namespace, List<Modif
  
         (   impT: TOKEN_RESERVED_WORD_IMPLEMENTS 
             { classNode.setImplementsKeyword((ASToken)impT); }
-            (   interfaceName=restrictedName
+
+            // The rule for interface type should be "restrictedName". However,
+			// in order to trap errors like "class Foo implements Vector.<T>",
+			// the parser has to allow parameterized type as super name. It's up
+			// to semantic analysis to report this problem.
+            (   interfaceName=type
                 { 
                     classNode.addInterface(interfaceName);
                     classNode.setEnd(interfaceName.getEnd());
                 }
                 (   commaT:TOKEN_COMMA 
                     { classNode.endAfter(commaT); }
-                    interfaceName=restrictedName
+                    interfaceName=type
                     { 
                         classNode.addInterface(interfaceName); 
                         classNode.setEnd(interfaceName.getEnd()); 
@@ -1084,7 +1093,7 @@ arrowFunctionExpression returns [ExpressionNodeBase n]
 				funcObj.endAfter(b);
 			}
 		)
-		{ n=bindArrowFunction(funcObj, (ASToken)arrowT); }
+		{ n=new ArrowFunctionBindNode(funcObj); }
  	;
  	exception catch [RecognitionException ex] {
 		handleParsingError(ex);
@@ -2236,6 +2245,7 @@ type returns [ExpressionNodeBase n]
     :   n=starLiteral
     |   n=configConditionAsType
     |   n=restrictedName ( n=typeApplication[n] )?
+	|   n=functionTypeExpression
     ;	
     exception catch [RecognitionException ex] { n = handleMissingIdentifier(ex); }
   
@@ -2284,6 +2294,39 @@ typeApplication [ExpressionNodeBase root] returns[TypedExpressionNode n]
         { n.endAfter(closeT); }
     ; 
     exception catch [RecognitionException ex] { consumeParsingError(ex); } 
+
+
+/**
+ * Matches a function type expression.
+ *
+ *     () => void
+ *     (s:String, n:Number = 123.4) => Boolean
+ *     (...rest) => Vector.<int>
+ */
+functionTypeExpression returns[ExpressionNodeBase n]
+{
+	n = null;
+	FunctionTypeExpressionNode func = null;
+	ContainerNode params = null;
+
+    ExpressionNodeBase t = null; 
+}
+	:   lpT:TOKEN_PAREN_OPEN
+		{
+			func = new FunctionTypeExpressionNode();
+			func.startBefore(lpT);
+			params = func.getParametersContainerNode();
+		}
+		functionTypeExpressionFormalParameters[params]
+		rpT:TOKEN_PAREN_CLOSE
+		arrowT:TOKEN_ARROW
+		( t=voidLiteral | t=type )
+		{
+			func.setReturnType(t);
+			func.endAfter(t);
+			n = func;
+		}
+	;
 
 
 /**
@@ -3532,3 +3575,66 @@ bracketExpression [ExpressionNodeBase root] returns [DynamicAccessNode result]
         }
     ;
     exception catch [RecognitionException ex] { handleParsingError(ex); }
+
+/**
+ * Matches the parameters of a function type expression (excluding the parenthesis).
+ * Unlike function signature definitions, a parameters cannot be const, and it
+ * cannot have an initializer, but it can be marked optional with a ? token.
+ * 
+ *     arg1:int, arg2?:String
+ */
+functionTypeExpressionFormalParameters[ContainerNode c]
+	: (functionTypeExpressionFormal[c] (TOKEN_COMMA functionTypeExpressionFormal[c])*)?
+	;
+	exception catch [RecognitionException ex] {handleParsingError(ex); }
+
+/**
+ * Matches a single parameter in a function type expression.
+ */
+functionTypeExpressionFormal[ContainerNode c]
+	{ ParameterNode p = null; }
+	
+	:(p=restParameter | p=functionTypeExpressionParameter)
+		{ if (p != null) c.addItem(p); }
+	;
+
+/**
+ * Matches a parameter in a function type expression.
+ */
+functionTypeExpressionParameter returns [ParameterNode p]
+{ 
+	p = null; 
+	ASToken t = null;
+	IdentifierNode name = null; 
+}
+	:   (   t=varOrConst 
+    		{
+    			// var and const are not allowed here...log error, keep going
+				handleParsingError(new RecognitionException()); 
+    		}
+        )? 
+	
+        name=identifier
+		{ 
+			p = new ParameterNode(name);
+		}
+
+		(   optionalT:TOKEN_OPERATOR_TERNARY
+			{
+				IdentifierNode e = IdentifierNode.createEmptyIdentifierNodeAfterToken((ASToken)optionalT);
+				// we're not actually using this value. we're just using it to
+				// indicate that a real function should have a value.
+				p.setAssignedValue((IASToken) optionalT, e);
+			}
+		)?
+		
+        (resultType[p])?
+
+        (   initializer[p]
+			{
+    			// initializer is not allowed here...log error, keep going
+    			handleParsingError(new RecognitionException()); 
+			}
+		)?	 
+	;
+	exception catch [RecognitionException ex] { handleParsingError(ex); }

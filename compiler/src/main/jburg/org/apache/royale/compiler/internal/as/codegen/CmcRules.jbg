@@ -901,6 +901,9 @@ JBurg.Reduction reducer.reduce_commaExpr(__p, payload_expr, exprs);
 name = Pattern simpleName : 0
 JBurg.Reduction reducer.reduce_simpleName (__p);
 
+type_name = Pattern functionTypeExpression : 0
+JBurg.Reduction reducer.reduce_functionTypeExpression (__p);
+
 decl_name = Pattern simpleName : 0
 JBurg.Reduction reducer.reduce_declName(__p);
 

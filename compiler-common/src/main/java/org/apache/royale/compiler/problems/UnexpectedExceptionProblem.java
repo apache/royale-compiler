@@ -33,7 +33,16 @@ public final class UnexpectedExceptionProblem extends CompilerProblem
     {
         super();
         this.exceptionName = throwable.getClass().getName();
-        this.exceptionMessage = throwable.getMessage() != null ? throwable.getMessage() : "";
+        String message = null;
+        try
+        {
+            message = throwable.getMessage();
+        }
+        catch (Exception e)
+        {
+            message = "Failed to get message for throwable: " + throwable.getClass();
+        }
+        this.exceptionMessage = message;
         StringBuilder exceptionLocation = new StringBuilder();
         boolean first = false;
         for (StackTraceElement element : throwable.getStackTrace())

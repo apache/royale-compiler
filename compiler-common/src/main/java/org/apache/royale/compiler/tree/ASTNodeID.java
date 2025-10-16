@@ -74,6 +74,7 @@ public enum ASTNodeID
     FunctionCallID(null),
     FunctionID("function"),
     FunctionObjectID(null),
+    FunctionTypeExpressionID(null),
     GetterID("get"),
     GotoID("goto"),
     IdentifierID(null),

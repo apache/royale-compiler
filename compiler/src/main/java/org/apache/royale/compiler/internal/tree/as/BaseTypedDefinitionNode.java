@@ -32,6 +32,7 @@ import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.scopes.FunctionScope;
 import org.apache.royale.compiler.parsing.IASToken;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IFunctionTypeExpressionNode;
 import org.apache.royale.compiler.tree.as.IIdentifierNode;
 import org.apache.royale.compiler.tree.as.ILanguageIdentifierNode;
 import org.apache.royale.compiler.tree.as.INamespaceAccessExpressionNode;
@@ -128,6 +129,10 @@ public abstract class BaseTypedDefinitionNode extends BaseDefinitionNode impleme
     {
         if(hasExplicitType())
         {
+            if (typeNode instanceof IFunctionTypeExpressionNode)
+            {
+                return IASLanguageConstants.Function;
+            }
             IIdentifierNode identifierNode = null;
             if(typeNode instanceof IIdentifierNode)
             {

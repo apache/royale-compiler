@@ -22,15 +22,16 @@ package org.apache.royale.compiler.internal.definitions;
 import java.util.List;
 
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IASLanguageConstants.BuiltinType;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IScopedDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;
-
 import org.apache.royale.compiler.internal.scopes.ASFileScope;
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
+import org.apache.royale.compiler.internal.tree.as.FunctionTypeExpressionNode;
 
 /**
  * IDefinition marker to represent ambiguous results. TODO: Can modify to keep
@@ -232,6 +233,19 @@ public final class AmbiguousDefinition extends DefinitionBase implements IDefini
             // If the types match, doesn't matter which one we return
             if (thisType == thatType)
             {
+                if (project.getAllowStrictFunctionTypes()
+                    && project.getBuiltinType(BuiltinType.FUNCTION).equals(thisType))
+                {
+                    // TODO: parameter names could be different
+                    String sig1 = FunctionTypeExpressionNode.getSignatureFromDefinition(var1);
+                    String sig2 = FunctionTypeExpressionNode.getSignatureFromDefinition(var2);
+                    if ((sig1 == null && sig2 != null)
+                        || (sig1 != null && sig2 == null)
+                        || (sig1 != null && sig2 != null && !sig1.equals(sig2)))
+                    {
+                        return null;
+                    }
+                }
                 return v1;
             }
             else

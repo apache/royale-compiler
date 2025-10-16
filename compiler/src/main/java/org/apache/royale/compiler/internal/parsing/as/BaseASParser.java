@@ -43,7 +43,6 @@ import org.apache.royale.compiler.parsing.IASToken.ASTokenKind;
 import org.apache.royale.compiler.problems.InvalidConfigLocationProblem;
 import org.apache.royale.compiler.problems.NonConstConfigVarProblem;
 import org.apache.royale.compiler.problems.ShadowedConfigNamespaceProblem;
-import org.apache.royale.compiler.tree.as.IContainerNode;
 
 import org.apache.commons.io.IOUtils;
 
@@ -92,7 +91,6 @@ import org.apache.royale.compiler.internal.tree.as.FunctionNode;
 import org.apache.royale.compiler.internal.tree.as.FunctionObjectNode;
 import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.ImportNode;
-import org.apache.royale.compiler.internal.tree.as.LanguageIdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.LiteralNode;
 import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.royale.compiler.internal.tree.as.ModifierNode;
@@ -100,15 +98,12 @@ import org.apache.royale.compiler.internal.tree.as.NamespaceAccessExpressionNode
 import org.apache.royale.compiler.internal.tree.as.NamespaceIdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.NamespaceNode;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
-import org.apache.royale.compiler.internal.tree.as.ParameterNode;
 import org.apache.royale.compiler.internal.tree.as.QualifiedNamespaceExpressionNode;
-import org.apache.royale.compiler.internal.tree.as.ReturnNode;
 import org.apache.royale.compiler.internal.tree.as.ScopedBlockNode;
 import org.apache.royale.compiler.internal.tree.as.TernaryOperatorNode;
 import org.apache.royale.compiler.internal.tree.as.UnaryOperatorNodeBase;
 import org.apache.royale.compiler.internal.tree.as.VariableNode;
 import org.apache.royale.compiler.internal.tree.as.metadata.MetaTagsNode;
-import org.apache.royale.compiler.internal.tree.as.parts.FunctionContentsPart;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.mxml.IMXMLTextData;
 import org.apache.royale.compiler.problems.AttributesNotAllowedOnPackageDefinitionProblem;
@@ -2613,6 +2608,44 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
         fileNodeAccumulator.addDeferredFunctionNode(functionNode);
     }
 
+    private final int checkFunctionTypeExpression(int startLookahead)
+    {
+        if (LA(startLookahead) != TOKEN_PAREN_OPEN)
+        {
+            return startLookahead;
+        }
+        int lookahead = startLookahead + 1;
+        // skip the content between the parentheses, even if it's not
+        // technically valid. we're only checking for a => token.
+        for (int depth = 0; depth > 0 || LA(lookahead) != TOKEN_PAREN_CLOSE; lookahead++)
+        {
+            ASToken token = LT(lookahead);
+
+            switch (token.getType())
+            {
+                case TOKEN_PAREN_OPEN:
+                    depth++;
+                    break;
+                case TOKEN_PAREN_CLOSE:
+                    depth--;
+                    break;
+                case EOF:
+                    return startLookahead;
+            }
+        }
+        lookahead++;
+        if (LA(lookahead) == TOKEN_ARROW)
+        {
+            if (precedence(LT(0)) > precedence(LT(lookahead)))
+            {
+                reportUnexpectedTokenProblem(LT(lookahead));
+            }
+            lookahead++;
+            return lookahead;
+        }
+        return startLookahead;
+    }
+
     protected final boolean isArrowFunction()
     {
         int lookahead = 1;
@@ -2644,6 +2677,27 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
             {
                 lookahead++;
                 int nextToken = LA(lookahead);
+
+                // check for a function type expression as the return type of
+                // the arrow function. it will include a separate => token!
+                while (true)
+                {
+                    // the return type of a function type expression might
+                    // be another function type expression, so keep
+                    // searching until there's no new match
+                    int outLookahead = checkFunctionTypeExpression(lookahead);
+                    if (outLookahead == lookahead)
+                    {
+                        // not a function type expression
+                        break;
+                    }
+                    lookahead = outLookahead;
+                    nextToken = LA(lookahead);
+                }
+                // after checking for function type expressions, we're either
+                // still after the colon, or we're looking at the return type
+                // of a function type expression. either way, the following
+                // code will be valid because it's checking for a return type
                 if (nextToken == TOKEN_OPERATOR_STAR)
                 {
                     // special case where * is not considered an operator
@@ -2708,126 +2762,6 @@ abstract class BaseASParser extends LLkParser implements IProblemReporter
             return true;
         }
         return false;
-    }
-
-    private FunctionObjectNode createInnerBindFunction(String funcName, String contextName, ISourceLocation sourceLocation)
-    {
-        FunctionContentsPart contentsPart = new FunctionContentsPart();
-
-        // some tokens and nodes must have a valid location
-        // just place them before the source location
-        int start = sourceLocation.getAbsoluteStart();
-        int end = start;
-        int line = sourceLocation.getLine();
-        int column = sourceLocation.getColumn();
-
-        // ...rest parameter
-        ContainerNode paramsContainerNode = contentsPart.getParametersNode();
-        IdentifierNode restNameNode = new IdentifierNode(IASLanguageConstants.REST_IDENTIFIER);
-        ParameterNode restParamNode = new ParameterNode(restNameNode);
-        restParamNode.setIsRestParameter(true);
-        paramsContainerNode.addChild(restParamNode);
-
-        IdentifierNode functionNameNode = new IdentifierNode("");
-        functionNameNode.startBefore(sourceLocation);
-        functionNameNode.endBefore(sourceLocation);
-        FunctionNode functionNode = new FunctionNode(functionNameNode, contentsPart);
-
-        // * return type
-        ASToken starToken = new ASToken(ASTokenTypes.TOKEN_OPERATOR_STAR, start, end, line, column, IASLanguageConstants.ANY_TYPE);
-        LanguageIdentifierNode anyTypeNode = LanguageIdentifierNode.buildAnyType(starToken);
-        ASToken colonToken = new ASToken(ASTokenTypes.TOKEN_COLON, start, end, line, column, ":");
-        functionNode.setType(colonToken, anyTypeNode);
-
-        BlockNode body = functionNode.getScopedNode();
-        body.setContainerType(IContainerNode.ContainerType.BRACES);
-
-        // funcName.apply(context, rest)
-        ASToken memberAccessToken = new ASToken(ASTokenTypes.TOKEN_OPERATOR_MEMBER_ACCESS, start, end, line, column, ".");
-        IdentifierNode funcNameNode = new IdentifierNode(funcName);
-        IdentifierNode applyNameNode = new IdentifierNode("apply");
-        MemberAccessExpressionNode memberAccessNode = new MemberAccessExpressionNode(funcNameNode, memberAccessToken, applyNameNode);
-        FunctionCallNode functionCallNode = new FunctionCallNode(memberAccessNode);
-        ContainerNode args = functionCallNode.getArgumentsNode();
-        args.addItem(new IdentifierNode(contextName));
-        args.addItem(new IdentifierNode(IASLanguageConstants.REST_IDENTIFIER));
-
-        // return funcName.apply(context, rest)
-        ASToken returnToken = new ASToken(ASTokenTypes.TOKEN_KEYWORD_RETURN, start, end, line, column, IASKeywordConstants.RETURN);
-        ReturnNode returnNode = new ReturnNode(returnToken);
-        returnNode.setStatementExpression(functionCallNode);
-        body.addItem(returnNode);
-
-        return new FunctionObjectNode(functionNode);
-    }
-
-    private FunctionObjectNode createOuterBindFunction(ISourceLocation sourceLocation)
-    {
-        FunctionContentsPart contentsPart = new FunctionContentsPart();
-
-        // some tokens and nodes must have a valid location
-        // just place them before the source location
-        int start = sourceLocation.getAbsoluteStart();
-        int end = start;
-        int line = sourceLocation.getLine();
-        int column = sourceLocation.getColumn();
-
-        ContainerNode paramsContainerNode = contentsPart.getParametersNode();
-
-        // context:* parameter
-        IdentifierNode contextNameNode = new IdentifierNode("context");
-        ParameterNode contextParamNode = new ParameterNode(contextNameNode);
-        ASToken contextColonToken = new ASToken(ASTokenTypes.TOKEN_COLON, start, end, line, column, ":");
-        ASToken starToken = new ASToken(ASTokenTypes.TOKEN_OPERATOR_STAR, start, end, line, column, IASLanguageConstants.ANY_TYPE);
-        LanguageIdentifierNode starTypeNode = LanguageIdentifierNode.buildAnyType(starToken);
-        contextParamNode.setType(contextColonToken, starTypeNode);
-        paramsContainerNode.addChild(contextParamNode);
-        
-        // func:Function parameter
-        ASToken funcColonToken = new ASToken(ASTokenTypes.TOKEN_COLON, start, end, line, column, ":");
-        IdentifierNode funcNameNode = new IdentifierNode("func");
-        ParameterNode funcParamNode = new ParameterNode(funcNameNode);
-        IdentifierNode funcTypeNode = new IdentifierNode("Function");
-        funcParamNode.setType(funcColonToken, funcTypeNode);
-        paramsContainerNode.addChild(funcParamNode);
-
-        IdentifierNode functionNameNode = new IdentifierNode("");
-        functionNameNode.startBefore(sourceLocation);
-        functionNameNode.endBefore(sourceLocation);
-        FunctionNode functionNode = new FunctionNode(functionNameNode, contentsPart);
-
-        // Function return type
-        ASToken colonToken = new ASToken(ASTokenTypes.TOKEN_COLON, start, end, line, column, ":");
-        IdentifierNode funcReturnTypeNode = new IdentifierNode("Function");
-        functionNode.setType(colonToken, funcReturnTypeNode);
-
-        BlockNode body = functionNode.getScopedNode();
-        body.setContainerType(IContainerNode.ContainerType.BRACES);
-
-        FunctionObjectNode innerBindFunction = createInnerBindFunction("func", "context", sourceLocation);
-
-        // return funcName.apply(context, rest)
-        ASToken returnToken = new ASToken(ASTokenTypes.TOKEN_KEYWORD_RETURN, start, end, line, column, IASKeywordConstants.RETURN);
-        ReturnNode returnNode = new ReturnNode(returnToken);
-        returnNode.setStatementExpression(innerBindFunction);
-        body.addItem(returnNode);
-
-        return new FunctionObjectNode(functionNode);
-    }
-
-    protected ExpressionNodeBase bindArrowFunction(FunctionObjectNode arrowFunction, ASToken arrowT)
-    {
-        FunctionObjectNode bindFunction = createOuterBindFunction(arrowFunction);
-
-        FunctionCallNode callNode = new FunctionCallNode(bindFunction);
-        callNode.span(arrowFunction);
-
-        ContainerNode args = callNode.getArgumentsNode();
-        args.addItem(LanguageIdentifierNode.buildThis());
-        args.addItem(arrowFunction);
-        args.span(arrowFunction);
-
-        return callNode;
     }
 
     /**

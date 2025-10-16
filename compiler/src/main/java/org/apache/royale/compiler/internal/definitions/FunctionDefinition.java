@@ -37,7 +37,6 @@ import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.definitions.references.IReference;
 import org.apache.royale.compiler.definitions.references.ReferenceFactory;
 import org.apache.royale.compiler.internal.definitions.metadata.MetaTag;
-import org.apache.royale.compiler.internal.definitions.references.ResolvedReference;
 import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.problems.ConflictingDefinitionProblem;
@@ -47,7 +46,10 @@ import org.apache.royale.compiler.scopes.IDefinitionSet;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IContainerNode;
 import org.apache.royale.compiler.tree.as.IDefinitionNode;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.tree.as.IFunctionTypeExpressionNode;
+import org.apache.royale.compiler.tree.as.IParameterNode;
 
 import com.google.common.base.Predicate;
 
@@ -216,6 +218,29 @@ public class FunctionDefinition extends ScopedDefinitionBase implements IFunctio
                 setReturnTypeReference(ReferenceFactory.resolvedReference(inferredReturnType));
                 DependencyType dt = DependencyType.SIGNATURE;
                 return resolveType(resolvedRef, project, dt);
+            }
+        }
+
+        if (project.getAllowStrictFunctionTypes())
+        {
+            IFunctionNode funcNode = (IFunctionNode) getNode();
+            if (funcNode != null)
+            {
+                IExpressionNode returnTypeNode = funcNode.getReturnTypeNode();
+                if (returnTypeNode instanceof IFunctionTypeExpressionNode)
+                {
+                    IFunctionTypeExpressionNode funcTypeExprNode = (IFunctionTypeExpressionNode) returnTypeNode;
+                    addFunctionTypeMeta(funcTypeExprNode, null, project);
+                }
+                for (IParameterNode paramNode : funcNode.getParameterNodes())
+                {
+                    IExpressionNode paramTypeNode = paramNode.getVariableTypeNode();
+                    if (paramTypeNode instanceof IFunctionTypeExpressionNode)
+                    {
+                        IFunctionTypeExpressionNode funcTypeExprNode = (IFunctionTypeExpressionNode) paramTypeNode;
+                        addFunctionTypeMeta(funcTypeExprNode, paramNode.getName(), project);
+                    }
+                }
             }
         }
 

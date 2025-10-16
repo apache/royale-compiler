@@ -324,8 +324,11 @@ public class ClassNode extends MemberedNode implements IClassNode
         int childCount = interfacesNode.getChildCount();
         for (int i = 0; i < childCount; i++)
         {
-            if (interfacesNode.getChild(i) instanceof IIdentifierNode)
-                names.add(((IExpressionNode)interfacesNode.getChild(i)));
+            IASNode child = interfacesNode.getChild(i);
+            if (child instanceof IExpressionNode)
+            {
+                names.add((IExpressionNode) child);
+            }
         }
         return names.toArray(new IExpressionNode[0]);
     }
@@ -342,9 +345,16 @@ public class ClassNode extends MemberedNode implements IClassNode
                 for (int i = 0; i < childCount; i++)
                 {
                     IASNode child = interfacesNode.getChild(i);
-                    if (child instanceof IIdentifierNode)
+                    if (child instanceof IExpressionNode)
                     {
-                        interfaceNodeList.add(((IIdentifierNode)child).getName());
+                        if (child instanceof IIdentifierNode)
+                        {
+                            interfaceNodeList.add(((IIdentifierNode)child).getName());
+                        }
+                        else
+                        {
+                            interfaceNodeList.add("");
+                        }
                     }
                 }
             }

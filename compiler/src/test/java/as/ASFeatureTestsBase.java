@@ -115,6 +115,11 @@ public class ASFeatureTestsBase
 	
 	protected String compile(File tempASFile, String source, boolean withFramework, boolean withRPC, boolean withSpark, String[] otherOptions, boolean checkExitCode)
 	{
+		return compile(tempASFile, source, withFramework, withRPC, withSpark, otherOptions, checkExitCode, false);
+	}
+	
+	protected String compile(File tempASFile, String source, boolean withFramework, boolean withRPC, boolean withSpark, String[] otherOptions, boolean checkExitCode, boolean filterProblems)
+	{
         System.out.println("Generating test:");
 
         ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
@@ -167,8 +172,21 @@ public class ASFeatureTestsBase
         int exitCode = mxmlc.mainNoExit(args.toArray(new String[args.size()]));
 
         // Check that there were no compilation problems.
-        List<ICompilerProblem> problems = mxmlc.getProblems().getProblems();
-        StringBuilder sb = new StringBuilder(checkExitCode && problems.size() > 0 ? "Unexpected compilation problems:\n" : "");
+        
+        Iterable<ICompilerProblem> problems = null;
+		if (filterProblems)
+		{
+			// the mxmlc compiler reports only filtered problems to the user
+			// so set filterProblems to true if you want that
+			problems = mxmlc.getProblems().getFilteredProblems();
+		}
+		else
+		{
+			// may contain additional problems that are normally filtered out
+			// from the user because other problems take higher precedence
+			problems = mxmlc.getProblems().getProblems();
+		}
+        StringBuilder sb = new StringBuilder(checkExitCode && problems.iterator().hasNext()  ? "Unexpected compilation problems:\n" : "");
         for (ICompilerProblem problem : problems)
         {
             sb.append(problem.toString());
@@ -182,17 +200,24 @@ public class ASFeatureTestsBase
 
 	}
 	
+    protected void compileAndExpectFilteredErrors(String source, boolean withFramework, boolean withRPC, boolean withSpark, String[] otherOptions, String errors)
+    {
+        File tempASFile = generateTempFile(source);
+        String results = compile(tempASFile, source, withFramework, withRPC, withSpark, otherOptions, false, true);
+        assertThat(results, is(errors));
+    }
+	
     protected void compileAndExpectErrors(String source, boolean withFramework, boolean withRPC, boolean withSpark, String[] otherOptions, String errors)
     {
         File tempASFile = generateTempFile(source);
-        String results = compile(tempASFile, source, withFramework, withRPC, withSpark, otherOptions, false);
+        String results = compile(tempASFile, source, withFramework, withRPC, withSpark, otherOptions, false, false);
         assertThat(results, is(errors));
     }
 	
     protected void compileAndExpectNoErrors(String source, boolean withFramework, boolean withRPC, boolean withSpark, String[] otherOptions)
     {
         File tempASFile = generateTempFile(source);
-        String results = compile(tempASFile, source, withFramework, withRPC, withSpark, otherOptions, false);
+        String results = compile(tempASFile, source, withFramework, withRPC, withSpark, otherOptions, false, false);
         assertThat(results, is(""));
     }
 
@@ -200,7 +225,7 @@ public class ASFeatureTestsBase
 	{
 	    int exitCode = 0;
 	    File tempASFile = generateTempFile(source);
-	    compile(tempASFile, source, withFramework, withRPC, withSpark, otherOptions, true);
+	    compile(tempASFile, source, withFramework, withRPC, withSpark, otherOptions, true, false);
         ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
 		// Check the existence of the flashplayer executable
 		// Run the SWF in the standalone player amd wait until the SWF calls System.exit().

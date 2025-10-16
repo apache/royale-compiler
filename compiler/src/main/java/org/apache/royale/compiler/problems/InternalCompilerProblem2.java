@@ -54,7 +54,14 @@ public final class InternalCompilerProblem2 extends CompilerProblem
     static String makeStackTrace(Throwable throwable)
     {
         StringWriter stackTraceBuffer = new StringWriter();
-        throwable.printStackTrace(new PrintWriter(stackTraceBuffer));
+        try
+        {
+            throwable.printStackTrace(new PrintWriter(stackTraceBuffer));
+        }
+        catch (Exception e)
+        {
+            stackTraceBuffer.write("Failed to create stack trace for throwable: " + throwable.getClass());
+        }
         return stackTraceBuffer.toString();
     }
 }
