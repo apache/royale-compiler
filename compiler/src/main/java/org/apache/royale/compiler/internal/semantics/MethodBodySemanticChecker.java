@@ -277,7 +277,7 @@ public class MethodBodySemanticChecker
 
     private void checkFunctionTypeMeta(IMetaTag expectedFunctionTypeMeta, IASNode expectedFunctionTypeSite, IASNode rightNode)
     {
-        if (!(rightNode instanceof IExpressionNode))
+        if (!(rightNode instanceof IExpressionNode) || expectedFunctionTypeMeta == null)
         {
             return;
         }
@@ -285,10 +285,6 @@ public class MethodBodySemanticChecker
         IExpressionNode rightExpression = (IExpressionNode) rightNode;
         IDefinition resolvedRight = rightExpression.resolve(project);
 
-        if (expectedFunctionTypeMeta == null)
-        {
-            return;
-        }
         boolean checkParams = true;
 
         String expectedReturnTypeString = expectedFunctionTypeMeta.getAttributeValue(IMetaAttributeConstants.NAME_FUNCTION_TYPE_RETURNS);
