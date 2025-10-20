@@ -2660,6 +2660,11 @@ public class MethodBodySemanticChecker
                 }
                 else
                 {
+                    if (project.getAllowStrictFunctionTypes() && project.getBuiltinType(BuiltinType.FUNCTION).equals(return_type))
+                    {
+                        IMetaTag expectedFunctionTypeMeta = func_def.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_FUNCTION_TYPE);
+                        checkFunctionTypeMeta(expectedFunctionTypeMeta, iNode, returnExpression);
+                    }
                     checkImplicitConversion(returnExpression, return_type, null);
                 }
 
