@@ -68,6 +68,7 @@ import org.apache.royale.compiler.mxml.IMXMLTextData.TextType;
 import org.apache.royale.compiler.mxml.IMXMLUnitData;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.MXMLEmptyAttributeProblem;
+import org.apache.royale.compiler.problems.MXMLInvalidClassNameProblem;
 import org.apache.royale.compiler.problems.MXMLLibraryTagNotTheFirstChildProblem;
 
 import com.google.common.collect.ImmutableSet;
@@ -622,6 +623,10 @@ public class MXMLScopeBuilder
                        className = attr.getRawValue();
                        nameStart = attr.getValueStart() + 1;
                        nameEnd = attr.getValueEnd() - 1;
+                       if (!isValidClassName(className))
+                       {
+                            problems.add(new MXMLInvalidClassNameProblem(attr, className));
+                       }
                    }
                    // TODO create problem if className has already been set.
                }
@@ -665,6 +670,24 @@ public class MXMLScopeBuilder
         // Restore the previous class definition and scope.
         currentClassDefinition = oldClassDefinition;
         currentClassScope = oldClassScope;
+    }
+
+    private boolean isValidClassName(String className)
+    {
+        if (className == null || className.length() == 0 || !Character.isJavaIdentifierStart(className.charAt(0)))
+        {
+            return false;
+        }
+
+        for (int i=1; i < className.length(); i++)
+        {
+            if (!Character.isJavaIdentifierPart((className.charAt(i))))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private void processState(IMXMLTagData tag, String qname)
