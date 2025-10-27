@@ -616,7 +616,7 @@ public class MXMLScopeBuilder
         {
             if ((!(attr instanceof IMXMLNamespaceAttributeData)) && (attr.hasValue()))
             {
-               if ((attr.getURI() == null) && (attr.getName().equals("className")))
+               if ((attr.getURI() == null) && IMXMLLanguageConstants.ATTRIBUTE_CLASS_NAME.equals(attr.getName()))
                {
                    if (className == null)
                    {
