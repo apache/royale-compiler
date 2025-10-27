@@ -651,7 +651,7 @@ public class MXMLScopeBuilder
             
             // Add a class definition for the component class to the file scope.
             ClassDefinition fxComponentClassDefinition =
-                fileScope.addFXComponent(qname, componentTag.getAbsoluteStart(), className, baseClassQName);
+                fileScope.addFXComponent(qname, componentTag.getAbsoluteStart(), className, baseClassQName, packageScope);
             fxComponentClassDefinition.setNameLocation(nameStart, nameEnd);
             
             if (className == null)

@@ -204,6 +204,16 @@ public class MXMLFileScope extends ASFileScope implements IXMLNameResolver
                                           String componentClassName,
                                           String componentBaseClassQName)
     {
+        return addFXComponent(mainClassQName, componentTagStart, componentClassName, componentBaseClassQName, this);
+    }
+
+
+    public ClassDefinition addFXComponent(String mainClassQName,
+                                          int componentTagStart,
+                                          String componentClassName,
+                                          String componentBaseClassQName,
+                                          ASScope parentScope)
+    {
         // Use the class name specified by the <code>className</code> attribute,
         // or generate a unique class name for the new component class,
         // such as "com_whatever_Whatever_component2"
@@ -227,7 +237,7 @@ public class MXMLFileScope extends ASFileScope implements IXMLNameResolver
         addDefinition(fxComponentClassDefinition);
 
         // Create a class scope for the component class.
-        TypeScope classScope = new TypeScope(this, fxComponentClassDefinition);
+        TypeScope classScope = new TypeScope(parentScope, fxComponentClassDefinition);
         classScope.setContainingDefinition(fxComponentClassDefinition);
         fxComponentClassDefinition.setContainedScope(classScope);
         fxComponentClassDefinition.setupThisAndSuper();
