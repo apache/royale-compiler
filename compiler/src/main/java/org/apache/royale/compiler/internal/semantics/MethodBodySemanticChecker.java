@@ -377,6 +377,11 @@ public class MethodBodySemanticChecker
                         isInvalidSignature = true;
                         break;
                     }
+                    if (expectedParam.hasDefaultValue() && !actualParam.hasDefaultValue())
+                    {
+                        isInvalidSignature = true;
+                        break;
+                    }
                 }
             }
             if (!isInvalidSignature)
