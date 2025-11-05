@@ -19,9 +19,16 @@
 
 package org.apache.royale.compiler.internal.css;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.tree.CommonTree;
+import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.common.SourceLocation;
+import org.apache.royale.compiler.problems.CSSInvalidRGBProblem;
+import org.apache.royale.compiler.problems.ICompilerProblem;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -213,7 +220,17 @@ public class CSSColorPropertyValue extends CSSPropertyValue
             six.append(tokenText.charAt(3));
             tokenText = six.toString();
         }
-        this.colorInt = Integer.parseInt(tokenText.substring(1), 16);
+        int parsedColorInt = 0;
+        try
+        {
+            parsedColorInt = Integer.parseInt(tokenText.substring(1), 16);
+        }
+        catch (NumberFormatException e)
+        {
+            ISourceLocation sourceLocation = new SourceLocation(tokenStream.getSourceName(), UNKNOWN, UNKNOWN, tree.getLine(), tree.getCharPositionInLine());
+            problems.add(new CSSInvalidRGBProblem(sourceLocation, tokenText));
+        }
+        this.colorInt = parsedColorInt;
     }
 
     /**
@@ -235,6 +252,13 @@ public class CSSColorPropertyValue extends CSSPropertyValue
 
     private final Token token;
     private final int colorInt;
+
+    private final List<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
+
+    public List<ICompilerProblem> getProblems()
+    {
+        return problems;
+    }
 
     /**
      * @return Integer value for the 24-bit color.

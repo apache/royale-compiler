@@ -171,5 +171,37 @@ public class CSSNumberPropertyValueTests extends CSSPropertyValueTests {
 		assertThat("numberPropertyValue.getNumber()" , numberPropertyValue.getNumber(), is( (Number) Float.valueOf(-10.31f) ) );
 	}
 	
+	@Test
+	public void CSSNumberPropertyValue_positiveInfinity_problem()
+	{
+		String code = "	fontSize: 123456789876543210123456789876543210123456789px; ";
+		
+		List<CSSNumberPropertyValue> numberProperties = getCSSNumberPropertyValues(code);
+		assertThat("numberProperties.size()" , numberProperties.size(), is(1) );	
+		
+		CSSNumberPropertyValue numberPropertyValue = numberProperties.get(0);
+		assertThat("numberPropertyValue.getOperator()" , numberPropertyValue.getOperator(), is( CSSModelTreeType.PROPERTY_VALUE ) );
+		assertThat("numberPropertyValue.getUnit()" , numberPropertyValue.getUnit(), is( (String) null ) );
+		assertThat("numberPropertyValue.getNumber()" , numberPropertyValue.getNumber(), is( (Number) null ) );
+
+		assertThat("numberPropertyValue.getProblems().size()" , numberPropertyValue.getProblems().size(), is( 1 ) );
+	}
+	
+	@Test
+	public void CSSNumberPropertyValue_negativeInfinity_problem()
+	{
+		String code = "	fontSize: -123456789876543210123456789876543210123456789px; ";
+		
+		List<CSSNumberPropertyValue> numberProperties = getCSSNumberPropertyValues(code);
+		assertThat("numberProperties.size()" , numberProperties.size(), is(1) );	
+		
+		CSSNumberPropertyValue numberPropertyValue = numberProperties.get(0);
+		assertThat("numberPropertyValue.getOperator()" , numberPropertyValue.getOperator(), is( CSSModelTreeType.PROPERTY_VALUE ) );
+		assertThat("numberPropertyValue.getUnit()" , numberPropertyValue.getUnit(), is( (String) null ) );
+		assertThat("numberPropertyValue.getNumber()" , numberPropertyValue.getNumber(), is( (Number) null ) );
+
+		assertThat("numberPropertyValue.getProblems().size()" , numberPropertyValue.getProblems().size(), is( 1 ) );
+	}
+	
 
 }

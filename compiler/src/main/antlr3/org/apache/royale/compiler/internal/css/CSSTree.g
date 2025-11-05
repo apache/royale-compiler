@@ -639,11 +639,23 @@ multiValue returns [CSSPropertyValue propertyValue]
   
 singleValue returns [CSSPropertyValue propertyValue]
     :   NUMBER_WITH_PERCENT         
-		{ $propertyValue = new CSSNumberPropertyValue($NUMBER_WITH_PERCENT.text, $start, tokenStream); }
+		{
+            CSSNumberPropertyValue numWithPercentValue = new CSSNumberPropertyValue($NUMBER_WITH_PERCENT.text, $start, tokenStream);
+            problems.addAll(numWithPercentValue.getProblems());
+            $propertyValue = numWithPercentValue;
+        }
     |   NUMBER_WITH_UNIT         
-		{ $propertyValue = new CSSNumberPropertyValue($NUMBER_WITH_UNIT.text, $start, tokenStream); }
+		{
+            CSSNumberPropertyValue numWithUnitValue = new CSSNumberPropertyValue($NUMBER_WITH_UNIT.text, $start, tokenStream);
+            problems.addAll(numWithUnitValue.getProblems());
+            $propertyValue = numWithUnitValue;
+        }
     |   HASH_WORD         
-        { $propertyValue = new CSSColorPropertyValue($start, tokenStream); }
+        {
+            CSSColorPropertyValue colorValue = new CSSColorPropertyValue($start, tokenStream);
+            problems.addAll(colorValue.getProblems());
+            $propertyValue = colorValue;
+        }
     |   ALPHA_VALUE
         {
             if (strictFlexCSS)
