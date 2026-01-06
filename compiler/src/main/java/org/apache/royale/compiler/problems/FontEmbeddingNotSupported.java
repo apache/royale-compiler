@@ -27,7 +27,7 @@ import org.apache.royale.compiler.common.ISourceLocation;
 public class FontEmbeddingNotSupported extends CompilerProblem
 {
     public static final String DESCRIPTION =
-        "The direct embedding of fonts is not supported. Use the ${FONTSWF} utility and embed the resuting ${SWF}.";
+        "The direct embedding of fonts is not supported. Use the ${FONTSWF} utility and embed the resulting ${SWF}.";
 
     public static final int errorCode = 5034;
 
