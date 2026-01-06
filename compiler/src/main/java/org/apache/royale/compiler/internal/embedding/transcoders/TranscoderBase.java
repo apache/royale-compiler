@@ -326,7 +326,14 @@ public abstract class TranscoderBase implements ITranscoder
             return false;
 
         TranscoderBase t = (TranscoderBase)o;
-        if (!source.equals(t.source) ||
+        if (source == null)
+        {
+            if (t.source != null)
+            {
+                return false;
+            }
+        }
+        else if (!source.equals(t.source) ||
             !baseClassQName.equals(t.baseClassQName) ||
             mimeType != t.mimeType)
         {

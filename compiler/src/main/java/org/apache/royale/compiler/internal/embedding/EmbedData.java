@@ -40,6 +40,7 @@ import org.apache.royale.compiler.embedding.IEmbedData;
 import org.apache.royale.compiler.embedding.transcoders.ITranscoder;
 import org.apache.royale.compiler.internal.definitions.ClassDefinition;
 import org.apache.royale.compiler.internal.embedding.transcoders.DataTranscoder;
+import org.apache.royale.compiler.internal.embedding.transcoders.FontTranscoder;
 import org.apache.royale.compiler.internal.embedding.transcoders.ImageTranscoder;
 import org.apache.royale.compiler.internal.embedding.transcoders.JPEGTranscoder;
 import org.apache.royale.compiler.internal.embedding.transcoders.MovieTranscoder;
@@ -60,7 +61,6 @@ import org.apache.royale.compiler.problems.EmbedSourceAttributeDoesNotExistProbl
 import org.apache.royale.compiler.problems.EmbedUnknownAttributeProblem;
 import org.apache.royale.compiler.problems.EmbedUnknownMimeTypeProblem;
 import org.apache.royale.compiler.problems.EmbedUnrecogniedFileTypeProblem;
-import org.apache.royale.compiler.problems.FontEmbeddingNotSupported;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.projects.IASProject;
 import org.apache.royale.compiler.projects.ICompilerProject;
@@ -350,15 +350,39 @@ public class EmbedData implements IEmbedData
             {
                 attributes.put(EmbedAttribute.CHARSET, value);
             }
-            else if (EmbedAttribute.ADV_ANTI_ALIASING.equals(key) ||
-                    EmbedAttribute.EMBED_AS_CFF.equals(key) ||
-                    EmbedAttribute.UNICODE_RANGE.equals(key) ||
-                    EmbedAttribute.FONT_FAMILY.equals(key) ||
-                    EmbedAttribute.FONT_NAME.equals(key) ||
-                    EmbedAttribute.FONT_STYLE.equals(key) ||
-                    EmbedAttribute.FONT_WEIGHT.equals(key) ||
-                    EmbedAttribute.SYSTEM_FONT.equals(key) ||
-                    EmbedAttribute.SOURCE_LIST.equals(key))
+            else if (EmbedAttribute.ADV_ANTI_ALIASING.equals(key))
+            {
+                attributes.put(EmbedAttribute.ADV_ANTI_ALIASING, Boolean.parseBoolean(value));
+            }
+            else if (EmbedAttribute.EMBED_AS_CFF.equals(key))
+            {
+                attributes.put(EmbedAttribute.EMBED_AS_CFF, Boolean.parseBoolean(value));
+            }
+            else if (EmbedAttribute.UNICODE_RANGE.equals(key))
+            {
+                attributes.put(EmbedAttribute.UNICODE_RANGE, value);
+            }
+            else if (EmbedAttribute.FONT_FAMILY.equals(key))
+            {
+                attributes.put(EmbedAttribute.FONT_FAMILY, value);
+            }
+            else if (EmbedAttribute.FONT_NAME.equals(key))
+            {
+                attributes.put(EmbedAttribute.FONT_NAME, value);
+            }
+            else if (EmbedAttribute.FONT_STYLE.equals(key))
+            {
+                attributes.put(EmbedAttribute.FONT_STYLE, value);
+            }
+            else if (EmbedAttribute.FONT_WEIGHT.equals(key))
+            {
+                attributes.put(EmbedAttribute.FONT_WEIGHT, value);
+            }
+            else if (EmbedAttribute.SYSTEM_FONT.equals(key))
+            {
+                attributes.put(EmbedAttribute.SYSTEM_FONT, value);
+            }
+            else if (EmbedAttribute.SOURCE_LIST.equals(key))
             {
                 // silently ignore these, as proper problem will be reported elsewhere
             }
@@ -404,30 +428,40 @@ public class EmbedData implements IEmbedData
      */
     public boolean createTranscoder(ICompilerProject project, ISourceLocation location, Collection<ICompilerProblem> problems)
     {
-        // there should always be a source, with the exception of skin embedding, so don't
-        // create a transcoder in this error state
+        // there should always be a source, with the exception of skin or font
+        // embedding, so don't create a transcoder in this error state
         String source = (String)getAttribute(EmbedAttribute.SOURCE);
-        if (source == null && getAttribute(EmbedAttribute.SKIN_CLASS) == null)
+        if (source == null
+                && getAttribute(EmbedAttribute.SKIN_CLASS) == null
+                && getAttribute(EmbedAttribute.SYSTEM_FONT) == null)
         {
             problems.add(new EmbedNoSourceAttributeProblem(location));
             return false;
         }
+
         String uniqueName = source;
-        List<File> sourcePaths = ((IASProject)project).getSourcePath();
-        for (File sourcePath : sourcePaths)
+        if (source != null)
         {
-        	String sourcePathString = sourcePath.getAbsolutePath();
-        	if (source.startsWith(sourcePathString))
-        	{
-        		uniqueName = source.substring(sourcePathString.length());
-        		uniqueName = uniqueName.replace("\\", "/");
-        		break;
-        	}
+            List<File> sourcePaths = ((IASProject)project).getSourcePath();
+            for (File sourcePath : sourcePaths)
+            {
+                String sourcePathString = sourcePath.getAbsolutePath();
+                if (source.startsWith(sourcePathString))
+                {
+                    uniqueName = source.substring(sourcePathString.length());
+                    uniqueName = uniqueName.replace("\\", "/");
+                    break;
+                }
+            }
         }
 
         // also check that we have a mimetype set, as don't know what transcoder
         // to create without it!
         EmbedMIMEType mimeType = (EmbedMIMEType)getAttribute(EmbedAttribute.MIME_TYPE);
+        if (mimeType == null && getAttribute(EmbedAttribute.SYSTEM_FONT) != null)
+        {
+            mimeType = EmbedMIMEType.FONT;
+        }
         if (mimeType == null)
         {
             problems.add(new EmbedUnrecogniedFileTypeProblem(location, source));
@@ -490,8 +524,7 @@ public class EmbedData implements IEmbedData
             case FONT:
             case DFONT:
             {
-                problems.add(new FontEmbeddingNotSupported(location));
-                transcoder = null;
+                transcoder = new FontTranscoder(this, workspace);
                 break;
             }
             case TEXT:

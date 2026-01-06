@@ -22,21 +22,23 @@ package org.apache.royale.compiler.problems;
 import org.apache.royale.compiler.common.ISourceLocation;
 
 /**
- * Problem created when a user tried to embed a font.
+ * Problem created when a user tried to embed a system font.
  */
-public class FontEmbeddingNotSupported extends CompilerProblem
+public class SystemFontEmbeddingNotSupportedProblem extends CompilerProblem
 {
     public static final String DESCRIPTION =
-        "The direct embedding of fonts is not supported. Use the ${FONTSWF} utility and embed the resulting ${SWF}.";
+        "Failed to embed font '${fontName}'. Embedding of system fonts is not supported.";
 
-    public static final int errorCode = 5034;
-
-    public FontEmbeddingNotSupported(ISourceLocation site)
+    public SystemFontEmbeddingNotSupportedProblem(ISourceLocation location, String fontName)
     {
-        super(site);
+        super(location);
+        this.fontName = fontName;
     }
 
-    // Prevent these from being localized.
-    public final String FONTSWF = "fontswf";
-    public final String SWF = "SWF";
+    public SystemFontEmbeddingNotSupportedProblem(String fontName)
+    {
+        this(null, fontName);
+    }
+
+    public final String fontName;
 }

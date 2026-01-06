@@ -40,9 +40,6 @@ public enum EmbedAttribute
     SMOOTHING("smoothing"),
     SYMBOL("symbol"),
     CHARSET("charset"),
-    // obsolete font related attributes, which are kept
-    // here so we don't report problems on them, and instead
-    // report one problem that font embeddeding is not supported.
     ADV_ANTI_ALIASING("advancedAntiAliasing"),
     EMBED_AS_CFF("embedAsCFF"),
     UNICODE_RANGE("unicodeRange"),

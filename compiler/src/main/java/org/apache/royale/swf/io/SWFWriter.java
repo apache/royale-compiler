@@ -2160,8 +2160,22 @@ public class SWFWriter implements ISWFWriter
     private void writeDefineFontName(DefineFontNameTag tag)
     {
         tagBuffer.writeUI16(tag.getFontTag().getCharacterID());
-        tagBuffer.writeString(tag.getFontName());
-        tagBuffer.writeString(tag.getFontCopyright());
+        if (tag.getFontName() != null)
+        {
+            tagBuffer.writeString(tag.getFontName());
+        }
+        else
+        {
+            tagBuffer.writeString("");
+        }
+        if (tag.getFontCopyright() != null)
+        {
+            tagBuffer.writeString(tag.getFontCopyright());
+        }
+        else
+        {
+            tagBuffer.writeString("");
+        }
     }
 
     private void writeDefineFontAlignZones(DefineFontAlignZonesTag tag)
