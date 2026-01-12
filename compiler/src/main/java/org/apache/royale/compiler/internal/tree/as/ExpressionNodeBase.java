@@ -32,6 +32,7 @@ import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IFunctionTypeExpressionNode;
 import org.apache.royale.compiler.tree.as.IScopedNode;
 
 /**
@@ -483,6 +484,12 @@ public abstract class ExpressionNodeBase extends FixedChildrenNode implements IE
                 return DependencyType.EXPRESSION;
             else
                 return DependencyType.SIGNATURE;
+        }
+
+        IFunctionTypeExpressionNode funcTypeExprContainingReference = (IFunctionTypeExpressionNode) getAncestorOfType(IFunctionTypeExpressionNode.class);
+        if (funcTypeExprContainingReference != null)
+        {
+            return DependencyType.EXPRESSION;
         }
 
         // Identifier nodes that are the type annotation of a definition
