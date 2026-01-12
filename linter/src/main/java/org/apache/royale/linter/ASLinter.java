@@ -31,13 +31,13 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.royale.compiler.clients.problems.CompilerProblemCategorizer;
-import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.internal.parsing.as.ASParser;
 import org.apache.royale.compiler.internal.parsing.as.ASToken;
 import org.apache.royale.compiler.internal.parsing.as.ASTokenTypes;
 import org.apache.royale.compiler.internal.parsing.as.IncludeHandler;
 import org.apache.royale.compiler.internal.parsing.as.RepairingTokenBuffer;
 import org.apache.royale.compiler.internal.parsing.as.StreamingASTokenizer;
+import org.apache.royale.compiler.internal.scopes.ASFileScope;
 import org.apache.royale.compiler.internal.semantics.PostProcessStep;
 import org.apache.royale.compiler.internal.tree.as.FileNode;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
@@ -49,6 +49,7 @@ import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.linter.internal.BaseLinter;
+import org.apache.royale.utils.FilenameNormalization;
 
 public class ASLinter extends BaseLinter {
 	private static final String LINTER_TAG_OFF = "@linter:off";
@@ -62,6 +63,8 @@ public class ASLinter extends BaseLinter {
 		if (allProblems == null) {
 			allProblems = new ArrayList<ICompilerProblem>();
 		}
+
+		filePath = FilenameNormalization.normalize(filePath);
 
 		List<ICompilerProblem> fileProblems = new ArrayList<ICompilerProblem>();
 		try {
@@ -106,6 +109,7 @@ public class ASLinter extends BaseLinter {
 			ASParser parser = new ASParser(workspace, buffer);
 			parser.setFilename(filePath);
 			FileNode node = new FileNode(workspace);
+			node.setScope(new ASFileScope(node));
 			try {
 				parser.parseFile(node, EnumSet.of(PostProcessStep.CALCULATE_OFFSETS));
 			} catch (Exception e) {

@@ -38,6 +38,7 @@ import org.apache.royale.compiler.internal.parsing.as.MetadataToken;
 import org.apache.royale.compiler.internal.parsing.as.MetadataTokenTypes;
 import org.apache.royale.compiler.internal.parsing.as.RepairingTokenBuffer;
 import org.apache.royale.compiler.internal.parsing.as.StreamingASTokenizer;
+import org.apache.royale.compiler.internal.scopes.ASFileScope;
 import org.apache.royale.compiler.internal.tree.as.FileNode;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.parsing.IASToken;
@@ -47,6 +48,7 @@ import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
 import org.apache.royale.formatter.config.Semicolons;
 import org.apache.royale.formatter.internal.BaseTokenFormatter;
+import org.apache.royale.utils.FilenameNormalization;
 
 public class ASTokenFormatter extends BaseTokenFormatter {
 	private static final int TOKEN_TYPE_EXTRA = 999999;
@@ -91,6 +93,8 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 			problems = new ArrayList<ICompilerProblem>();
 		}
 
+		filePath = FilenameNormalization.normalize(filePath);
+
 		StringReader textReader = new StringReader(text);
 		StreamingASTokenizer tokenizer = null;
 		ASToken[] streamingTokens = null;
@@ -132,6 +136,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 		ASParser parser = new ASParser(workspace, buffer);
 		parser.setFilename(filePath);
 		FileNode node = new FileNode(workspace);
+		node.setScope(new ASFileScope(node));
 		try {
 			parser.file(node);
 		} catch (Exception e) {
