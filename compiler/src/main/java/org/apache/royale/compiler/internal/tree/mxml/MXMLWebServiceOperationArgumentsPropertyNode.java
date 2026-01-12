@@ -118,6 +118,7 @@ class MXMLWebServiceOperationArgumentsPropertyNode extends MXMLPropertySpecifier
         {
             MXMLArrayNode argsArrayNode = new MXMLArrayNode(this);
             argsArrayNode.setClassReference(project, IASLanguageConstants.Array);
+            argsArrayNode.setParent(specifierNode);
 
             List<IMXMLNode> argsChildNodes = new ArrayList<IMXMLNode>();
             for (IMXMLModelPropertyNode propNode : propertyNodes)
@@ -131,6 +132,7 @@ class MXMLWebServiceOperationArgumentsPropertyNode extends MXMLPropertySpecifier
                 else
                 {
                     MXMLObjectNode propObjectNode = new MXMLObjectNode(this);
+                    propObjectNode.setParent(argsArrayNode);
                     propObjectNode.setLocation(propNode);
                     propObjectNode.setClassReference(project, IASLanguageConstants.Object);
                     MXMLPropertySpecifierNode[] propSpecifiers = getPropertySpecifiers(builder, propNode, propObjectNode, specifierNode, project);
@@ -148,13 +150,14 @@ class MXMLWebServiceOperationArgumentsPropertyNode extends MXMLPropertySpecifier
             if (propNode.hasLeafValue())
             {
                 MXMLInstanceNode propInstanceNode = (MXMLInstanceNode) propNode.getInstanceNode();
-                propInstanceNode.setParent(parentSpecifierNode);
+                propInstanceNode.setParent(specifierNode);
                 specifierNode.setLocation(propNode);
                 specifierNode.setInstanceNode(propInstanceNode);
             }
             else
             {
                 MXMLObjectNode propObjectNode = new MXMLObjectNode(this);
+                propObjectNode.setParent(specifierNode);
                 propObjectNode.setLocation(propNode);
                 propObjectNode.setClassReference(project, IASLanguageConstants.Object);
                 MXMLPropertySpecifierNode[] propSpecifiers = getPropertySpecifiers(builder, propNode, propObjectNode, specifierNode, project);
