@@ -2259,6 +2259,7 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
         return null;
     }
     
+    @Override
     public boolean useStrictXML()
     {
         return this.strictXML;

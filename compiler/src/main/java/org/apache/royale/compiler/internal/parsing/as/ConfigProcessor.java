@@ -206,6 +206,12 @@ public class ConfigProcessor
             // TODO Auto-generated method stub
             return false;
         }
+
+        @Override
+        public boolean useStrictXML() {
+            // TODO Auto-generated method stub
+            return false;
+        }
     }
 
     /**

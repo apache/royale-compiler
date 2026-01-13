@@ -306,5 +306,10 @@ public interface ICompilerProject
       * @return True if type inference is enabled.
       */
      boolean getInferTypes();
+     
+     /**
+      * @return True if strict XML is enabled.
+      */
+     boolean useStrictXML();
 
 }

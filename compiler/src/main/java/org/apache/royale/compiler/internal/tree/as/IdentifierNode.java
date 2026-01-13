@@ -896,7 +896,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
                     // and x is type XML you would get a can't-convert-Object-to-String
                     // problem, but there is lots of existing source code that expects
                     // this to compile with no cast.
-                    if (!((RoyaleProject)project).useStrictXML() && SemanticUtils.isXMLish(baseType, project))
+                    if (!project.useStrictXML() && SemanticUtils.isXMLish(baseType, project))
                         return null;
                     
                     if (baseExpr instanceof IdentifierNode)
