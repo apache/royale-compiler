@@ -333,6 +333,9 @@
                 </fileset>
             </batchtest>
             <formatter type="xml"/>
+            <assertions>
+                <enable/>
+            </assertions>
         </junit>
     </target>
     
@@ -376,6 +379,9 @@
                 </fileset>
             </batchtest>
             <formatter type="xml"/>
+            <assertions>
+                <enable/>
+            </assertions>
         </junit>
     </target>
     

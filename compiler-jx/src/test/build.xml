@@ -175,10 +175,10 @@
                 </fileset>
             </batchtest>
             <formatter type="xml"/>
+            <assertions>
+                <enable/>
+            </assertions>
         </junit>
-        <assertions>
-            <enable/>
-        </assertions>
     </target>
     
     <target name="typedef.tests" depends="download, compile.unit.tests">
