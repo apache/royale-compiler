@@ -139,6 +139,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                 {
                     VectorLiteralNode vectorLiteralNode = (VectorLiteralNode) node.getChild(1);
                     String vectorEmulationClass = null;
+                    String vectorEmulationLiteralFunction = null;
                     boolean vectorEmulationElementTypes = true;
                     if (project instanceof RoyaleJSProject)
                     {
@@ -146,6 +147,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                         if (royaleProject.config != null)
                         {
                             vectorEmulationClass = royaleProject.config.getJsVectorEmulationClass();
+                            vectorEmulationLiteralFunction = royaleProject.config.getJsVectorEmulationLiteralFunction();
                             vectorEmulationElementTypes = royaleProject.config.getJsVectorEmulationElementTypes();
                         }
                     }
@@ -153,7 +155,12 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     String elementClassName;
                     IDefinition elementClass = (((AppliedVectorDefinition)def).resolveElementType(getWalker().getProject()));
                     elementClassName = getEmitter().formatQualifiedName(elementClass.getQualifiedName());
-                    if (vectorEmulationClass != null)
+                    if (vectorEmulationLiteralFunction != null)
+                    {
+                        write(vectorEmulationLiteralFunction);
+                        write(ASEmitterTokens.PAREN_OPEN);
+                    }
+                    else if (vectorEmulationClass != null)
                     {
                         if (!vectorEmulationClass.equals(IASLanguageConstants.Array))
                         {

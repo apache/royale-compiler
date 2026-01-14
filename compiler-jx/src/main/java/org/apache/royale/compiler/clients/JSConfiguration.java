@@ -495,7 +495,7 @@ public class JSConfiguration extends Configuration
     }
 
     /**
-     * The class to use instead of default Vector implementation for handling Vector.
+     * The class to use instead of default Vector implementation.
      */
     @Config(advanced = true)
     public void setJsVectorEmulationClass(ConfigurationValue cv, String b)
@@ -522,6 +522,26 @@ public class JSConfiguration extends Configuration
     public void setJsVectorEmulationElementTypes(ConfigurationValue cv, boolean b)
     {
     	jsVectorEmulationElementTypes = b;
+    }
+
+    //
+    // 'js-vector-emulation-literal-function' option
+    //
+
+    private String jsVectorEmulationLiteralFunction = null;
+
+    public String getJsVectorEmulationLiteralFunction()
+    {
+        return jsVectorEmulationLiteralFunction;
+    }
+
+    /**
+     * The function to use instead of default Vector literal implementation.
+     */
+    @Config(advanced = true)
+    public void setJsVectorEmulationLiteralFunction(ConfigurationValue cv, String b)
+    {
+    	jsVectorEmulationLiteralFunction = b;
     }
     
     
