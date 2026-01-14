@@ -187,32 +187,61 @@ public class AsIsEmitter extends JSSubEmitter
         if (dnode instanceof IClassDefinition)
         {
             startMapping(right);
-            if (NativeUtils.isSyntheticJSType(dnode.getQualifiedName())) {
-                String langMethod;
-                String synthName;
-                if (NativeUtils.isVector(dnode.getQualifiedName()) && dnode instanceof IAppliedVectorDefinition) {
-                    langMethod = fjs.formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken())
-                            + ASEmitterTokens.MEMBER_ACCESS.getToken()
-                            + JSRoyaleEmitterTokens.SYNTH_VECTOR.getToken();
-                    synthName = getEmitter().formatQualifiedName(((IAppliedVectorDefinition) dnode).resolveElementType(project).getQualifiedName());
-                } else {
+            if (NativeUtils.isSyntheticJSType(dnode.getQualifiedName()))
+            {
+                if (NativeUtils.isVector(dnode.getQualifiedName()) && dnode instanceof IAppliedVectorDefinition)
+                {
+                    String vectorEmulationClass = null;
+                    if (project instanceof RoyaleJSProject)
+                    {
+                        RoyaleJSProject royaleProject = (RoyaleJSProject) project;
+                        if (royaleProject.config != null)
+                        {
+                            vectorEmulationClass = royaleProject.config.getJsVectorEmulationClass();
+                        }
+                    }
+                    if (vectorEmulationClass != null)
+                    {
+                        write(vectorEmulationClass);
+                    }
+                    else
+                    {
+                        String langMethod = fjs.formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken())
+                                + ASEmitterTokens.MEMBER_ACCESS.getToken()
+                                + JSRoyaleEmitterTokens.SYNTH_VECTOR.getToken();
+                        String synthName = getEmitter().formatQualifiedName(((IAppliedVectorDefinition) dnode).resolveElementType(project).getQualifiedName());
+                        write(langMethod);
+                        write(ASEmitterTokens.PAREN_OPEN);
+                        write(ASEmitterTokens.SINGLE_QUOTE);
+                        write(synthName);
+                        write(ASEmitterTokens.SINGLE_QUOTE);
+                        write(ASEmitterTokens.PAREN_CLOSE);
+                        if (project instanceof RoyaleJSProject)
+                            ((RoyaleJSProject)project).needLanguage = true;
+                        getEmitter().getModel().needLanguage = true;
+                    }
+                }
+                else
+                {
                     //non-vector, e.g. int/uint
-                    langMethod = fjs.formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken())
+                    String langMethod = fjs.formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken())
                             + ASEmitterTokens.MEMBER_ACCESS.getToken()
                             + JSRoyaleEmitterTokens.SYNTH_TYPE.getToken();
-                    synthName = getEmitter().formatQualifiedName(dnode.getQualifiedName());
+                    String synthName = getEmitter().formatQualifiedName(dnode.getQualifiedName());
+                    write(langMethod);
+                    write(ASEmitterTokens.PAREN_OPEN);
+                    write(ASEmitterTokens.SINGLE_QUOTE);
+                    write(synthName);
+                    write(ASEmitterTokens.SINGLE_QUOTE);
+                    write(ASEmitterTokens.PAREN_CLOSE);
+                    if (project instanceof RoyaleJSProject)
+                        ((RoyaleJSProject)project).needLanguage = true;
+                    getEmitter().getModel().needLanguage = true;
                 }
-                write(langMethod);
-                write(ASEmitterTokens.PAREN_OPEN);
-                write(ASEmitterTokens.SINGLE_QUOTE);
-                write(synthName);
-                write(ASEmitterTokens.SINGLE_QUOTE);
-                write(ASEmitterTokens.PAREN_CLOSE);
-                if (project instanceof RoyaleJSProject)
-                    ((RoyaleJSProject)project).needLanguage = true;
-                getEmitter().getModel().needLanguage = true;
-            } else {
-                write(getEmitter().formatQualifiedName(((JSRoyaleEmitter)getEmitter()).convertASTypeToJS(dnode.getQualifiedName())));
+            }
+            else
+            {
+                write(getEmitter().formatQualifiedName(fjs.convertASTypeToJS(dnode.getQualifiedName())));
             }
             endMapping(right);
         }
