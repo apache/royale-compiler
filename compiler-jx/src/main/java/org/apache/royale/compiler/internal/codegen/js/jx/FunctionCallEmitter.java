@@ -63,6 +63,8 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
     {
         // TODO (mschmalle) will remove this cast as more things get abstracted
         JSRoyaleEmitter fjs = (JSRoyaleEmitter) getEmitter();
+        ICompilerProject project = this.getProject();
+
         IASNode cnode = node.getChild(0);
 
         if (cnode.getNodeID() == ASTNodeID.MemberAccessExpressionID)
@@ -109,7 +111,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                                 || !(def.getBaseName().equals(IASGlobalFunctionConstants._int) || def.getBaseName().equals(IASGlobalFunctionConstants.uint)))
                                 && !(def instanceof AppliedVectorDefinition && (
                                         ((RoyaleJSProject) getProject()).config.getJsVectorEmulationClass()!= null
-                                        && ((RoyaleJSProject) getProject()).config.getJsVectorEmulationClass().equals("Array"))
+                                        && ((RoyaleJSProject) getProject()).config.getJsVectorEmulationClass().equals(IASLanguageConstants.Array))
                                 ))
                         )
                     {
@@ -136,22 +138,36 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                 else
                 {
                     VectorLiteralNode vectorLiteralNode = (VectorLiteralNode) node.getChild(1);
-                    String vectorEmulationClass = (((RoyaleJSProject)fjs.getWalker().getProject()).config.getJsVectorEmulationClass());
+                    String vectorEmulationClass = null;
+                    boolean vectorEmulationElementTypes = true;
+                    if (project instanceof RoyaleJSProject)
+                    {
+                        RoyaleJSProject royaleProject = (RoyaleJSProject) project;
+                        if (royaleProject.config != null)
+                        {
+                            vectorEmulationClass = royaleProject.config.getJsVectorEmulationClass();
+                            vectorEmulationElementTypes = royaleProject.config.getJsVectorEmulationElementTypes();
+                        }
+                    }
                     SourceLocation mappingLocation;
                     String elementClassName;
                     IDefinition elementClass = (((AppliedVectorDefinition)def).resolveElementType(getWalker().getProject()));
                     elementClassName = getEmitter().formatQualifiedName(elementClass.getQualifiedName());
                     if (vectorEmulationClass != null)
                     {
-                        if (!vectorEmulationClass.equals("Array")) {
+                        if (!vectorEmulationClass.equals(IASLanguageConstants.Array))
+                        {
                             //Explanation:
                             //this was how it was originally set up, but it assumes the constructor of the emulation
                             //class can handle first argument being an Array or numeric value...
                             writeToken(ASEmitterTokens.NEW);
                             write(vectorEmulationClass);
                             write(ASEmitterTokens.PAREN_OPEN);
-                        }// otherwise.... if 'Array' is the emulation class, then just use the literal content
-                    } else {
+                        }
+                        // otherwise.... if 'Array' is the emulation class, then just use the literal content
+                    }
+                    else
+                    {
                         //no 'new' output in this case, just coercion, so map from the start of 'new'
                         startMapping(node);
                         write(fjs.formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()));
@@ -203,14 +219,20 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     endMapping(mappingLocation);
                     if (vectorEmulationClass != null)
                     {
-                        if (!vectorEmulationClass.equals("Array")) {
-                            writeToken(ASEmitterTokens.COMMA);
-                            write(ASEmitterTokens.SINGLE_QUOTE);
-                            write(elementClassName);
-                            write(ASEmitterTokens.SINGLE_QUOTE);
+                        if (!vectorEmulationClass.equals(IASLanguageConstants.Array))
+                        {
+                            if (vectorEmulationElementTypes)
+                            {
+                                writeToken(ASEmitterTokens.COMMA);
+                                write(ASEmitterTokens.SINGLE_QUOTE);
+                                write(elementClassName);
+                                write(ASEmitterTokens.SINGLE_QUOTE);
+                            }
                             write(ASEmitterTokens.PAREN_CLOSE);
                         }
-                    } else {
+                    }
+                    else
+                    {
                         write(ASEmitterTokens.PAREN_CLOSE);
                     }
                     return;
@@ -242,7 +264,6 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     boolean isInt = def.getBaseName().equals(IASGlobalFunctionConstants._int);
                     if (isInt || def.getBaseName().equals(IASGlobalFunctionConstants.uint))
                     {
-                        ICompilerProject project = this.getProject();
                         if (project instanceof RoyaleJSProject)
                             ((RoyaleJSProject) project).needLanguage = true;
                         getEmitter().getModel().needLanguage = true;
@@ -317,25 +338,45 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                         && (((RoyaleJSProject)fjs.getWalker().getProject()).config.getJsVectorEmulationClass() != null))
                 {
                     ContainerNode args = node.getArgumentsNode();
-                    String vectorEmulationClass = ((RoyaleJSProject)fjs.getWalker().getProject()).config.getJsVectorEmulationClass();
+                    String vectorEmulationClass = null;
+                    boolean vectorEmulationElementTypes = true;
+                    if (project instanceof RoyaleJSProject)
+                    {
+                        RoyaleJSProject royaleProject = (RoyaleJSProject) project;
+                        if (royaleProject.config != null)
+                        {
+                            vectorEmulationClass = royaleProject.config.getJsVectorEmulationClass();
+                            vectorEmulationElementTypes = royaleProject.config.getJsVectorEmulationElementTypes();
+                        }
+                    }
                     if (args.getChildCount() == 0)
                     {
-                        if (vectorEmulationClass.equals("Array")) {
+                        if (vectorEmulationClass.equals(IASLanguageConstants.Array))
+                        {
                             write(ASEmitterTokens.SQUARE_OPEN);
                             write(ASEmitterTokens.SQUARE_CLOSE);
-                        } else {
+                        }
+                        else
+                        {
                             write(ASEmitterTokens.PAREN_OPEN);
                             write(ASEmitterTokens.SQUARE_OPEN);
                             write(ASEmitterTokens.SQUARE_CLOSE);
-                            write(ASEmitterTokens.COMMA);
-                            write(ASEmitterTokens.SPACE);
-                            write(ASEmitterTokens.SINGLE_QUOTE);
-                            write(((AppliedVectorDefinition)def).resolveElementType(getWalker().getProject()).getQualifiedName());
-                            write(ASEmitterTokens.SINGLE_QUOTE);
+                            if (vectorEmulationElementTypes)
+                            {
+                                String vectorElementType = ((AppliedVectorDefinition)def).resolveElementType(getWalker().getProject()).getQualifiedName();
+                                write(ASEmitterTokens.COMMA);
+                                write(ASEmitterTokens.SPACE);
+                                write(ASEmitterTokens.SINGLE_QUOTE);
+                                write(vectorElementType);
+                                write(ASEmitterTokens.SINGLE_QUOTE);
+                            }
                             write(ASEmitterTokens.PAREN_CLOSE);
                         }
-                    } else {
-                        if (vectorEmulationClass.equals("Array")) {
+                    }
+                    else
+                    {
+                        if (vectorEmulationClass.equals(IASLanguageConstants.Array))
+                        {
                             if (getProject() instanceof RoyaleJSProject)
                                 ((RoyaleJSProject) getProject()).needLanguage = true;
                             getEmitter().getModel().needLanguage = true;
@@ -349,12 +390,16 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                         write(ASEmitterTokens.PAREN_OPEN);
                         endMapping(node);
                         getWalker().walk(args.getChild(0));
-                        write(ASEmitterTokens.COMMA);
-                        write(ASEmitterTokens.SPACE);
-                        write(ASEmitterTokens.SINGLE_QUOTE);
-                        write(((AppliedVectorDefinition) def).resolveElementType(getWalker().getProject()).getQualifiedName());
-                        write(ASEmitterTokens.SINGLE_QUOTE);
-                        if (args.getChildCount() == 2 && !vectorEmulationClass.equals("Array")) {
+                        if (vectorEmulationClass.equals(IASLanguageConstants.Array) || vectorEmulationElementTypes)
+                        {
+                            String vectorElementType = ((AppliedVectorDefinition) def).resolveElementType(project).getQualifiedName();
+                            write(ASEmitterTokens.COMMA);
+                            write(ASEmitterTokens.SPACE);
+                            write(ASEmitterTokens.SINGLE_QUOTE);
+                            write(vectorElementType);
+                            write(ASEmitterTokens.SINGLE_QUOTE);
+                        }
+                        if (args.getChildCount() == 2 && !vectorEmulationClass.equals(IASLanguageConstants.Array)) {
                             IASNode second = args.getChild(1);
                             if (second instanceof IExpressionNode) {
                                 ITypeDefinition secondType =
@@ -415,7 +460,6 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     if (isInt || isTrace
                             || def.getBaseName().equals(IASGlobalFunctionConstants.uint))
                     {
-                        ICompilerProject project = this.getProject();
                         if (project instanceof RoyaleJSProject)
                             ((RoyaleJSProject) project).needLanguage = true;
                         getEmitter().getModel().needLanguage = true;
@@ -432,7 +476,6 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                 		if (def.getParent() != null &&
                     		def.getParent().getQualifiedName().equals("Array"))
                 		{
-                            ICompilerProject project = this.getProject();
                             if (project instanceof RoyaleJSProject)
                                 ((RoyaleJSProject) project).needLanguage = true;
                             getEmitter().getModel().needLanguage = true;
@@ -458,7 +501,6 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                                 if (args.length > 0)
                                 {
                                     IExpressionNode optionsParamCheck = args.length == 1 ? args[0] : args[1];
-                                    ICompilerProject project = this.getProject();
                                     IDefinition paramCheck = optionsParamCheck.resolveType(project);
             
                                     if (paramCheck.getBaseName().equals(IASLanguageConstants._int)
@@ -517,11 +559,11 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                                 &&  def.getParent() instanceof AppliedVectorDefinition
                                 && ((getProject() instanceof RoyaleJSProject) && (
                                     ((RoyaleJSProject)getProject()).config.getJsVectorEmulationClass() == null
-                                    || ((RoyaleJSProject)getProject()).config.getJsVectorEmulationClass().equals("Array")))
+                                    || ((RoyaleJSProject)getProject()).config.getJsVectorEmulationClass().equals(IASLanguageConstants.Array)))
                            ) {
 
                             if ((((RoyaleJSProject)getProject()).config.getJsVectorEmulationClass() != null)
-                                && ((RoyaleJSProject)getProject()).config.getJsVectorEmulationClass().equals("Array")) {
+                                && ((RoyaleJSProject)getProject()).config.getJsVectorEmulationClass().equals(IASLanguageConstants.Array)) {
                                 //use a similar approach to regular 'Array' insertAt/removeAt
                                 //for Array Vector emulation only (not for other custom classes)
                                 //replace the insertAt/removeAt method with 'splice'
@@ -587,7 +629,7 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     	    if (getProject() instanceof RoyaleJSProject
                                 && ((RoyaleJSProject) getProject()).config.getJsVectorEmulationClass()!= null) {
                     	        String vectorEmulationClass = ((RoyaleJSProject) getProject()).config.getJsVectorEmulationClass();
-                    	        if (vectorEmulationClass.equals("Array")) {
+                    	        if (vectorEmulationClass.equals(IASLanguageConstants.Array)) {
                     	            //just do a slice copy of the array which is the first argument
                                     getWalker().walk(node.getArgumentsNode().getChild(0));
                                     write(ASEmitterTokens.MEMBER_ACCESS);

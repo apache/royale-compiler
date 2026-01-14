@@ -502,6 +502,27 @@ public class JSConfiguration extends Configuration
     {
     	jsVectorEmulationClass = b;
     }
+
+    //
+    // 'js-vector-emulation-element-types' option
+    //
+
+    private boolean jsVectorEmulationElementTypes = true;
+
+    public boolean getJsVectorEmulationElementTypes()
+    {
+        return jsVectorEmulationElementTypes;
+    }
+
+    /**
+     * Indicates if the Vector emulation class requires the type of its elements
+     * or not.
+     */
+    @Config(advanced = true)
+    public void setJsVectorEmulationElementTypes(ConfigurationValue cv, boolean b)
+    {
+    	jsVectorEmulationElementTypes = b;
+    }
     
     
     //
