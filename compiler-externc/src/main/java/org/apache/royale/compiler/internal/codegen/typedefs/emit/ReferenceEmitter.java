@@ -46,6 +46,24 @@ public class ReferenceEmitter
         final File asRoot = model.getConfiguration().getAsRoot();
         if (!asRoot.exists())
             asRoot.mkdirs();
+        final File asClassRoot = model.getConfiguration().getAsClassRoot();
+        if (!asClassRoot.exists())
+            asClassRoot.mkdirs();
+        final File asInterfaceRoot = model.getConfiguration().getAsInterfaceRoot();
+        if (!asInterfaceRoot.exists())
+            asInterfaceRoot.mkdirs();
+        final File asTypeDefRoot = model.getConfiguration().getAsTypeDefRoot();
+        if (!asTypeDefRoot.exists())
+            asTypeDefRoot.mkdirs();
+        final File asFunctionRoot = model.getConfiguration().getAsFunctionRoot();
+        if (!asFunctionRoot.exists())
+            asFunctionRoot.mkdirs();
+        final File asConstantRoot = model.getConfiguration().getAsConstantRoot();
+        if (!asConstantRoot.exists())
+            asConstantRoot.mkdirs();
+        final File asDuplicatesRoot = model.getConfiguration().getAsDuplicatesRoot();
+        if (!asDuplicatesRoot.exists())
+            asDuplicatesRoot.mkdirs();
 
         emitClasses();
         emitInterfaces();
