@@ -1662,6 +1662,27 @@ public class TestRoyaleExpressions extends TestExpressions
          asBlockWalker.visitFunction(node);
          assertOut("/**\n * @royalesuppresscompleximplicitcoercion false\n * @param {Object} o\n * @return {number}\n */\nfoo.bar.B.prototype.b = function(o) {\n  var /** @type {foo.bar.B} */ a = null;\n  a = /* implicit cast */ org.apache.royale.utils.Language.as(org.apache.royale.utils.Language.as(o, this.memberVar), foo.bar.B, true);\n}");
      }
+    
+    @Test
+    public void testVisitAsVectorImplicit()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "public class B {public function b() { var a:*; var b:Vector.<String> = a; }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n */\nB.prototype.b = function() {\n  var /** @type {*} */ a;\n  var /** @type {Array.<string>} */ b = /* implicit cast */ org.apache.royale.utils.Language.as(a, org.apache.royale.utils.Language.synthVector('String'), true);\n}");
+    }
+
+    @Test
+    public void testVisitAsVectorImplicitEmulationClass()
+    {
+        project.config.setJsVectorEmulationClass(null, "CustomVector");
+        IFunctionNode node = (IFunctionNode) getNode(
+                "public class B {public function b() { var a:*; var b:Vector.<String> = a; }}",
+                IFunctionNode.class, WRAP_LEVEL_PACKAGE);
+        asBlockWalker.visitFunction(node);
+        assertOut("/**\n */\nB.prototype.b = function() {\n  var /** @type {*} */ a;\n  var /** @type {CustomVector} */ b = /* implicit cast */ org.apache.royale.utils.Language.as(a, CustomVector, true);\n}");
+    }
 
     @Test
     public void testVisitJSDoc()

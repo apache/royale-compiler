@@ -896,25 +896,46 @@ public class JSEmitter extends ASEmitter implements IJSEmitter
                         + ASEmitterTokens.PAREN_OPEN.getToken();
                 String coercionTypeString = formatQualifiedName(definition.getQualifiedName());
                 if (NativeUtils.isSyntheticJSType(coercionTypeString)) {
-                    String synthCall;
-                    String synthethicType;
                     if (NativeUtils.isVector(coercionTypeString)) {
-                        synthCall = formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken())
-                                + ASEmitterTokens.MEMBER_ACCESS.getToken()
-                                + JSRoyaleEmitterTokens.SYNTH_VECTOR.getToken();
-                        synthethicType = formatQualifiedName(coercionTypeString.substring(8, coercionTypeString.length() -1));
+                        String vectorEmulationClass = null;
+                        if (project instanceof RoyaleJSProject)
+                        {
+                            RoyaleJSProject royaleProject = (RoyaleJSProject) project;
+                            if (royaleProject.config != null)
+                            {
+                                vectorEmulationClass = royaleProject.config.getJsVectorEmulationClass();
+                            }
+                        }
+                        if (vectorEmulationClass != null)
+                        {
+                            coercionTypeString = vectorEmulationClass;
+                        }
+                        else
+                        {
+                            String synthCall = formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken())
+                                    + ASEmitterTokens.MEMBER_ACCESS.getToken()
+                                    + JSRoyaleEmitterTokens.SYNTH_VECTOR.getToken();
+                            String synthethicType = formatQualifiedName(coercionTypeString.substring(8, coercionTypeString.length() -1));
+                            coercionTypeString = synthCall
+                                    + ASEmitterTokens.PAREN_OPEN.getToken()
+                                    + ASEmitterTokens.SINGLE_QUOTE.getToken()
+                                    + synthethicType
+                                    + ASEmitterTokens.SINGLE_QUOTE.getToken()
+                                    + ASEmitterTokens.PAREN_CLOSE.getToken();
+                        }
                     } else {
-                        synthCall = formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken())
+                        //non-vector, e.g. int/uint
+                        String synthCall = formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken())
                                 + ASEmitterTokens.MEMBER_ACCESS.getToken()
                                 + JSRoyaleEmitterTokens.SYNTH_TYPE.getToken();
-                        synthethicType = coercionTypeString;
+                        String synthethicType = coercionTypeString;
+                        coercionTypeString = synthCall
+                                + ASEmitterTokens.PAREN_OPEN.getToken()
+                                + ASEmitterTokens.SINGLE_QUOTE.getToken()
+                                + synthethicType
+                                + ASEmitterTokens.SINGLE_QUOTE.getToken()
+                                + ASEmitterTokens.PAREN_CLOSE.getToken();
                     }
-                    coercionTypeString = synthCall
-                            + ASEmitterTokens.PAREN_OPEN.getToken()
-                            + ASEmitterTokens.SINGLE_QUOTE.getToken()
-                            + synthethicType
-                            + ASEmitterTokens.SINGLE_QUOTE.getToken()
-                            + ASEmitterTokens.PAREN_CLOSE.getToken();
                 }
                 
                 coercionEnd = ASEmitterTokens.COMMA.getToken()
