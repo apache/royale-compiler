@@ -632,32 +632,62 @@ public class FunctionCallEmitter extends JSSubEmitter implements ISubEmitter<IFu
                     	}
                     	else
                     	{
+                            String vectorEmulationClass = null;
+                            String vectorEmulationLiteralFunction = null;
+                            boolean vectorEmulationElementTypes = true;
+                            if (project instanceof RoyaleJSProject)
+                            {
+                                RoyaleJSProject royaleProject = (RoyaleJSProject) project;
+                                if (royaleProject.config != null)
+                                {
+                                    vectorEmulationClass = royaleProject.config.getJsVectorEmulationClass();
+                                    vectorEmulationLiteralFunction = royaleProject.config.getJsVectorEmulationLiteralFunction();
+                                    vectorEmulationElementTypes = royaleProject.config.getJsVectorEmulationElementTypes();
+                                }
+                            }
                             String elementClassName = getEmitter().formatQualifiedName(((TypedExpressionNode)nameNode).getTypeNode().resolve(getProject()).getQualifiedName());
-                    	    if (getProject() instanceof RoyaleJSProject
-                                && ((RoyaleJSProject) getProject()).config.getJsVectorEmulationClass()!= null) {
-                    	        String vectorEmulationClass = ((RoyaleJSProject) getProject()).config.getJsVectorEmulationClass();
-                    	        if (vectorEmulationClass.equals(IASLanguageConstants.Array)) {
-                    	            //just do a slice copy of the array which is the first argument
-                                    getWalker().walk(node.getArgumentsNode().getChild(0));
-                                    write(ASEmitterTokens.MEMBER_ACCESS);
-                                    write("slice");
-                                    write(ASEmitterTokens.PAREN_OPEN);
-                                    write(ASEmitterTokens.PAREN_CLOSE);
-                                } else {
-                    	            //assume the emulation class can handle an array or numeric value for first constructor arg...
-                                    writeToken(ASEmitterTokens.NEW);
-                                    startMapping(node.getNameNode());
-                                    write(vectorEmulationClass);
-                                    endMapping(node.getNameNode());
-                                    write(ASEmitterTokens.PAREN_OPEN);
-                                    getWalker().walk(node.getArgumentsNode().getChild(0));
+                            if (IASLanguageConstants.Array.equals(vectorEmulationClass))
+                            {
+                                //just do a slice copy of the array which is the first argument
+                                getWalker().walk(node.getArgumentsNode().getChild(0));
+                                write(ASEmitterTokens.MEMBER_ACCESS);
+                                write("slice");
+                                write(ASEmitterTokens.PAREN_OPEN);
+                                write(ASEmitterTokens.PAREN_CLOSE);
+                            }
+                            else if (vectorEmulationLiteralFunction != null)
+                            {
+                                write(vectorEmulationLiteralFunction);
+                                write(ASEmitterTokens.PAREN_OPEN);
+                                getWalker().walk(node.getArgumentsNode().getChild(0));
+                                if (vectorEmulationElementTypes)
+                                {
                                     writeToken(ASEmitterTokens.COMMA);
                                     write(ASEmitterTokens.SINGLE_QUOTE);
                                     //the element type of the Vector:
                                     write(elementClassName);
                                     write(ASEmitterTokens.SINGLE_QUOTE);
-                                    write(ASEmitterTokens.PAREN_CLOSE);
                                 }
+                                write(ASEmitterTokens.PAREN_CLOSE);
+                            }
+                            else if (vectorEmulationClass != null) 
+                            {
+                                //assume the emulation class can handle an array or numeric value for first constructor arg...
+                                writeToken(ASEmitterTokens.NEW);
+                                startMapping(node.getNameNode());
+                                write(vectorEmulationClass);
+                                endMapping(node.getNameNode());
+                                write(ASEmitterTokens.PAREN_OPEN);
+                                getWalker().walk(node.getArgumentsNode().getChild(0));
+                                if (vectorEmulationElementTypes)
+                                {
+                                    writeToken(ASEmitterTokens.COMMA);
+                                    write(ASEmitterTokens.SINGLE_QUOTE);
+                                    //the element type of the Vector:
+                                    write(elementClassName);
+                                    write(ASEmitterTokens.SINGLE_QUOTE);
+                                }
+                                write(ASEmitterTokens.PAREN_CLOSE);
                             } else {
                     	        //default Vector implementation
                                 startMapping(node.getNameNode());
