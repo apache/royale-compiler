@@ -1581,6 +1581,14 @@ public class TestRoyaleExpressions extends TestExpressions
     }
 
     @Test
+    public void testVisitAsAny()
+    {
+        IBinaryOperatorNode node = getBinaryNode("a as *");
+        asBlockWalker.visitBinaryOperator(node);
+        assertOut("/** @type {*} */ (a)");
+    }
+
+    @Test
     public void testVisitAsMemberVariable()
     {
         IFunctionNode node = (IFunctionNode) getNode(

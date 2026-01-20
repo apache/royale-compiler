@@ -57,6 +57,13 @@ public class AsIsEmitter extends JSSubEmitter
         //IDefinition dnode = project != null ? (right).resolve(project) : null;
         IDefinition dnode = getProject() != null ? (right)
                 .resolve(getProject()) : null;
+        if (id == ASTNodeID.Op_AsID && dnode != null && IASLanguageConstants.ANY_TYPE.equals(dnode.getQualifiedName()))
+        {
+            write("/** @type {*} */ (");
+            getWalker().walk(left);
+            write(")");
+            return;
+        }
         if (id != ASTNodeID.Op_IsID && dnode != null)
         {
             boolean emit = coercion ?
