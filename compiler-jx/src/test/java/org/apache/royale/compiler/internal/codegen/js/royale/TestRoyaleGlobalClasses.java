@@ -997,7 +997,7 @@ public class TestRoyaleGlobalClasses extends TestGlobalClasses
     }
 
     @Test
-    public void testCustomVector()
+    public void testCustomVectorWithConstructor()
     {
     	project.config.setJsVectorEmulationClass(null, "CustomVector");
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(['Hello', 'World']);");
@@ -1007,16 +1007,58 @@ public class TestRoyaleGlobalClasses extends TestGlobalClasses
     }
 
     @Test
-    public void testCustomVectorLiteral_1()
+    public void testCustomVectorWithConstructorNoElementTypes()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+    	project.config.setJsVectorEmulationElementTypes(null, false);
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(['Hello', 'World']);");
+        asBlockWalker.visitVariable(node);
+        //MXMLC does not report an error.  Should we?
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector(['Hello', 'World'])");
+    }
+
+    @Test
+    public void testCustomVectorLiteralEmpty()
     {
     	project.config.setJsVectorEmulationClass(null, "CustomVector");
         IVariableNode node = getVariable("var a:Vector.<String> = new <String>[];");
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {CustomVector} */ a = new CustomVector([], 'String')");
     }
+
+    @Test
+    public void testCustomVectorLiteralEmptyNoElementTypes()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        project.config.setJsVectorEmulationElementTypes(null, false);
+        IVariableNode node = getVariable("var a:Vector.<String> = new <String>[];");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector([])");
+    }
+
+    @Test
+    public void testCustomVectorLiteralEmptyCustomLiteralFunction()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        project.config.setJsVectorEmulationLiteralFunction(null, "createVectorLiteral");
+        IVariableNode node = getVariable("var a:Vector.<String> = new <String>[];");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {CustomVector} */ a = createVectorLiteral([], 'String')");
+    }
+
+    @Test
+    public void testCustomVectorLiteralEmptyCustomLiteralFunctionNoElementTypes()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        project.config.setJsVectorEmulationLiteralFunction(null, "createVectorLiteral");
+        project.config.setJsVectorEmulationElementTypes(null, false);
+        IVariableNode node = getVariable("var a:Vector.<String> = new <String>[];");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {CustomVector} */ a = createVectorLiteral([])");
+    }
     
     @Test
-    public void testCustomVectorLiteral_1a()
+    public void testCustomVectorLiteralEmptyAsArray()
     {
         project.config.setJsVectorEmulationClass(null, "Array");
         IVariableNode node = getVariable("var a:Vector.<String> = new <String>[];");
@@ -1025,16 +1067,47 @@ public class TestRoyaleGlobalClasses extends TestGlobalClasses
     }
 
     @Test
-    public void testCustomVectorLiteral_2()
+    public void testCustomVectorLiteral()
     {
     	project.config.setJsVectorEmulationClass(null, "CustomVector");
         IVariableNode node = getVariable("var a:Vector.<int> = new <int>[0, 1, 2, 3];");
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {CustomVector} */ a = new CustomVector([0, 1, 2, 3], 'int')");
     }
+
+    @Test
+    public void testCustomVectorLiteralNoElementTypes()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        project.config.setJsVectorEmulationElementTypes(null, false);
+        IVariableNode node = getVariable("var a:Vector.<int> = new <int>[0, 1, 2, 3];");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector([0, 1, 2, 3])");
+    }
+
+    @Test
+    public void testCustomVectorLiteralCustomLiteralFunction()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+    	project.config.setJsVectorEmulationLiteralFunction(null, "createVectorLiteral");
+        IVariableNode node = getVariable("var a:Vector.<int> = new <int>[0, 1, 2, 3];");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {CustomVector} */ a = createVectorLiteral([0, 1, 2, 3], 'int')");
+    }
+
+    @Test
+    public void testCustomVectorLiteralCustomLiteralFunctionNoElementTypes()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+    	project.config.setJsVectorEmulationLiteralFunction(null, "createVectorLiteral");
+        project.config.setJsVectorEmulationElementTypes(null, false);
+        IVariableNode node = getVariable("var a:Vector.<int> = new <int>[0, 1, 2, 3];");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {CustomVector} */ a = createVectorLiteral([0, 1, 2, 3])");
+    }
     
     @Test
-    public void testCustomVectorLiteral_2a()
+    public void testCustomVectorLiteralAsArray()
     {
         project.config.setJsVectorEmulationClass(null, "Array");
         IVariableNode node = getVariable("var a:Vector.<int> = new <int>[0, 1, 2, 3];");
@@ -1061,7 +1134,7 @@ public class TestRoyaleGlobalClasses extends TestGlobalClasses
     }
     
     @Test
-    public void testCustomVectorNoArgs()
+    public void testCustomVectorConstructorNoArgs()
     {
     	project.config.setJsVectorEmulationClass(null, "CustomVector");
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>();");
@@ -1070,7 +1143,17 @@ public class TestRoyaleGlobalClasses extends TestGlobalClasses
     }
     
     @Test
-    public void testCustomVectorNoArgs2()
+    public void testCustomVectorConstructorNoArgsNoElementTypes()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        project.config.setJsVectorEmulationElementTypes(null, false);
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>();");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector([])");
+    }
+    
+    @Test
+    public void testCustomVectorConstructorNoArgs2AsArray()
     {
         project.config.setJsVectorEmulationClass(null, "Array");
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>();");
@@ -1106,9 +1189,19 @@ public class TestRoyaleGlobalClasses extends TestGlobalClasses
         asBlockWalker.visitVariable(node);
         assertOut("var /** @type {CustomVector} */ a = new CustomVector(30, 'String')");
     }
+
+    @Test
+    public void testCustomVectorSizeArgNoElementTypes()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        project.config.setJsVectorEmulationElementTypes(null, false);
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(30);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector(30)");
+    }
     
     @Test
-    public void testCustomVectorSizeArg2()
+    public void testCustomVectorSizeArgAsArray()
     {
         project.config.setJsVectorEmulationClass(null, "Array");
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(30);");
@@ -1126,7 +1219,17 @@ public class TestRoyaleGlobalClasses extends TestGlobalClasses
     }
     
     @Test
-    public void testCustomVectorSizeAndFixedArgs2()
+    public void testCustomVectorSizeAndFixedArgsNoElementTypes()
+    {
+    	project.config.setJsVectorEmulationClass(null, "CustomVector");
+        project.config.setJsVectorEmulationElementTypes(null, false);
+        IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(30, true);");
+        asBlockWalker.visitVariable(node);
+        assertOut("var /** @type {CustomVector} */ a = new CustomVector(30, true)");
+    }
+    
+    @Test
+    public void testCustomVectorSizeAndFixedArgsAsArray()
     {
         project.config.setJsVectorEmulationClass(null, "Array");
         IVariableNode node = getVariable("var a:Vector.<String> = new Vector.<String>(30, true);");
@@ -1193,7 +1296,7 @@ public class TestRoyaleGlobalClasses extends TestGlobalClasses
     }
     
     @Test
-    public void testCustomVectorClassRepresentation2()
+    public void testCustomVectorClassRepresentationAsArray()
     {
         project.config.setJsVectorEmulationClass(null, "Array");
         IVariableNode node = getVariable("var a:Class = Vector.<String>;");
