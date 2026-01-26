@@ -470,11 +470,16 @@ public class MethodBodySemanticChecker
             {
                 ITypeDefinition expectedReturnType = (ITypeDefinition) expectedReturnTypeNode.resolve(project);
                 ITypeDefinition actualReturnType = (ITypeDefinition) actualReturnTypeNode.resolve(project);
-                // actual return type must be the same or a subclass
-                // but if expected is void, any return type is accepted because it will be ignored anyway
+                // actual return type must be the same or a subclass, with a
+                // couple of exceptions:
+                // 1. if expected is void, all return types are accepted because
+                //    the value will be ignored anyway
+                // 2. if expect is any, all return types are accepted, including
+                //    void (which is considered to be returning undefined)
                 if (expectedReturnType != null
                         && actualReturnType != null
                         && !expectedReturnType.equals(project.getBuiltinType(BuiltinType.VOID))
+                        && !expectedReturnType.equals(project.getBuiltinType(BuiltinType.ANY_TYPE))
                         && !actualReturnType.isInstanceOf(expectedReturnType, project))
                 {
                     isInvalidSignature = true;

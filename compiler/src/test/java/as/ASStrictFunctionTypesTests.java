@@ -1124,6 +1124,33 @@ public class ASStrictFunctionTypesTests extends ASFeatureTestsBase
     }
 
     @Test
+    public void testAssignToReturnAny_assignVariableToVariable()
+    {
+        String[] imports = new String[]
+        {
+        };
+        String[] declarations = new String[]
+        {
+        };
+        String[] testCode = new String[]
+        {
+        };
+        String[] extra = new String[]
+        {
+            "var a:()=>*;",
+            "var b:()=>String;",
+            "a = b;"
+        };
+        String source = getAS(imports, declarations, testCode, extra);
+
+        String[] options = new String[]
+        {
+            "-allow-strict-function-types=true"
+        };
+        compileAndExpectNoErrors(source, false, false, false, options);
+    }
+
+    @Test
     public void testAssignStrictTypeToRegular_assignVariableToVariable()
     {
         String[] imports = new String[]
