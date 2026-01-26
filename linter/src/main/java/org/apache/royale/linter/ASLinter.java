@@ -276,7 +276,7 @@ public class ASLinter extends BaseLinter {
 							prevToken.getEndLine(),
 							prevToken.getEndColumn(), tokenText);
 					whitespaceToken.setEndLine(token.getLine());
-					whitespaceToken.setEndLine(token.getColumn());
+					whitespaceToken.setEndColumn(token.getColumn());
 					tokens.add(whitespaceToken);
 				}
 			}
@@ -292,7 +292,7 @@ public class ASLinter extends BaseLinter {
 						prevToken.getEndLine(),
 						prevToken.getEndColumn(), tokenText);
 				whitespaceToken.setEndLine(prevToken.getLine());
-				whitespaceToken.setEndLine(prevToken.getColumn());
+				whitespaceToken.setEndColumn(prevToken.getColumn());
 				tokens.add(whitespaceToken);
 			}
 		}

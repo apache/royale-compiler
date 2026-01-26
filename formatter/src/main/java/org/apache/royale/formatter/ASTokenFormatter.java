@@ -1703,7 +1703,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 					ASToken extraToken = new ASToken(TOKEN_TYPE_EXTRA, start, end, prevToken.getEndLine(),
 							prevToken.getEndColumn(), tokenText);
 					extraToken.setEndLine(token.getLine());
-					extraToken.setEndLine(token.getColumn());
+					extraToken.setEndColumn(token.getColumn());
 					tokens.add(extraToken);
 				}
 			}
@@ -1718,7 +1718,7 @@ public class ASTokenFormatter extends BaseTokenFormatter {
 				ASToken extraToken = new ASToken(TOKEN_TYPE_EXTRA, start, end, prevToken.getEndLine(),
 						prevToken.getEndColumn(), tokenText);
 				extraToken.setEndLine(prevToken.getLine());
-				extraToken.setEndLine(prevToken.getColumn());
+				extraToken.setEndColumn(prevToken.getColumn());
 				tokens.add(extraToken);
 			}
 		}

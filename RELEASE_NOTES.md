@@ -83,6 +83,7 @@ Apache Royale Compiler 0.9.13
 - formatter, linter: Fixed exception caused by null file path.
 - formatter, linter: Fixed out of memory error when checking many files caused by unclosed workspace.
 - formatter, linter: Fixed some problems not being filtered out when they are not relevant.
+- formatter, linter: Fixed incorrect end line and end column on generated whitespace or extra tokens.
 - linter: Optimized performance of handling `// @linteroff` and `// @linteron` comments.
 - linter: Optimized performance of finding nearest token to location by using binary search.
 
