@@ -1,5 +1,91 @@
 For additional information on recent issues that have been closed, see [Github Issues List](https://github.com/apache/royale-compiler/issues?q=is%3Aissue+is%3Aclosed)
 
+Apache Royale Compiler 0.9.13
+=============================
+
+- compiler: Added _arrow function_ syntax, similar to JavaScript. Example: `var f:Function = (x:Object) => x.toString();`
+- compiler: Added _function type expression_ syntax, similar to TypeScript, to allow stricter checking of signatures, including parameters and return types. Compile-time only with conversion to `Function` at run-time. Example: `var f:(x:String, y?:Number, ...rest)=>void;`
+- compiler: Added `js-include-script` compiler option to specify a _.js_ file to always be included with the compiled output. Will automatically insert a `<script src>` tag into the HTML. Available for both SWC libraries and application projects.
+- compiler: Added `js-include-css` compiler option to specify a _.css_ file to always be included with the compiled output. Will automatically insert a `<link href>` tag into the HTML. Available for both SWC libraries and application projects.
+- compiler: Added `js-include-asset` compiler option to specify an additional asset file to always be included with the compiled output. Available for both SWC libraries and application projects.
+- compiler: Added `[JSIncludeScript]` metadata to specify a _.js_ file to be included with the compiled output only if the current class is included in the compiled output too. Otherwise, works similarly to the `js-include-script` option.
+- compiler: Added `[JSIncludeCSS]` metadata to specify a _.css_ file to be included with the compiled output only if the current class is included in the compiled output too. Otherwise, works similarly to the `js-include-css` option.
+- compiler: Added `[JSIncludeAsset]` metadata to specify an additional asset file to be included with the compiled output only if the current class is included in the compiled output too. Otherwise, works similarly to the `js-include-asset` option.
+- compiler: Added ability to specify empty string for `html-output-filename` to optionally skip creation of HTML file.
+- compiler: Added support for more modern HTML elements in CSS.
+- compiler: Added support for many more modern CSS pseudo-classes that have function-like syntax.
+- compiler: Added support for embedding TTF/OTF files with `[Embed]` when targeting SWF.
+- compiler: Added `js-vector-emulation-literal-function` option to optionally customize how `new <T>[]` vectors are emitted.
+- compiler: Added `js-vector-emulation-element-types` option to optionally customize how parameters are passed to the `js-vector-emulation-class` type.
+- compiler: Fixed missing function call signature checks on `super.method()` member access.
+- compiler: Fixed incorrect method name in error message for undefined method when name starts with `@` symbol.
+- compiler: Fixed exception when parsing CSS `@font-face` rule and `src` value is an unexpected type.
+- compiler: Fixed missing source location for `[Embed]` metadata node.
+- compiler: Fixed exception when parsing `[Embed]` metadata node and containing source path is unknown.
+- compiler: Fixed array literal getting incorrectly treated as metadata when comments are parsed.
+- compiler: Fixed ASDoc comments in unexpected contexts not being treated as regular multiline comments.
+- compiler: Fixed exception thrown when `html-template` file is not found. Reports a problem instead.
+- compiler: Fixed `<link>` being incorrectly emitted in HTML when a CSS file is not emitted.
+- compiler: Fixed empty `<script>` tag being incorrectly emitted in HTML in some situations.
+- compiler: Fixed cases where the `Language` class was not referenced when it should have been.
+- compiler: Fixed unicode escape sequences not getting handled in MXML strings.
+- compiler: Fixed MXML string output to better match Flex SDK compiler.
+- compiler: Fixed whitespace handling in ASDoc tag parser.
+- compiler: Fixed some problems getting ignored when syntax tree request returns null instead of an AST.
+- compiler: Fixed some problems getting ignored when emitting ASDoc JSON.
+- compiler: Fixed exception when parts of the AST are garbage collected by recreating definitions when necessary.
+- compiler: Fixed CSS `font-weight` incorrectly emitted with `font-style` value.
+- compiler: Fixed ASDoc JSON output by outputting empty values instead of skipping fields because ASDoc app expects all fields to exist.
+- compiler: Fixed escaping ASDoc strings for valid JSON.
+- compiler: Fixed exception when stripping quotes by checking if the quotes exist first.
+- compiler: Fixed parsing of members following null conditional (`?.`) operator.
+- compiler: Fixed failure to resolve function object definition.
+- compiler: Fixed output for MXML when `children-as-data` is `false`.
+- compiler: Fixed ability to use `<mx:Component>` and `<mx:Model>` elements as direct children of the root element when using MXML 2006 dialect.
+- compiler: Fixed exception in MXML parsing when `<fx:Component>` does not have a correct closing tag.
+- compiler: Fixed ignored `id` on core types in `<fx:Declarations>` when targeting SWF.
+- compiler: Fixed ignored `id` on core types outside of `<fx:Declarations>` when targeting both SWF and JS.
+- compiler: Fixed ignored `id` on `Class` and `Function` in `<fx:Declarations>` when targeting both SWF and JS.
+- compiler: Fixed empty value not being allowed for MXML `Class` and `Function`, which should be treated as `null`.
+- compiler: Fixed ignored `<fx:RegExp>` when targeting both SWF and JS.
+- compiler: Fixed `rgb()` and `rgba()` parsing in CSS.
+- compiler: Fixed generation of selectors for some component class names in CSS.
+- compiler: Fixed parsing of CSS attribute selectors to require both operator and value, if either is present (both may still be omitted).
+- compiler: Fixed `not` and other function-like pseudo-classes being allowed as identifiers in CSS.
+- compiler: Fixed problem not getting reported when `<fx:Component>` specifies a `className` that isn't an ActionScript identifier.
+- compiler: Fixed `<fx:Component>` class being unable to access `internal` fields in the same package, like the Flex SDK compiler.
+- compiler: Fixed exception when parsing certain hexadecimal color values and number values and now reports a problem.
+- compiler: Fixed low-level asc compiler failure due to an unexpected dependency on a specific project type.
+- compiler: Fixed `js-vector-emulation-class` being ignored for `is` and `as` operators, and certain casts.
+- compiler: Fixed `as *` incorrectly emitting `*` in JS, which doesn't exist.
+- compiler: Optimized tracking of used qnames by using a set instead of a list.
+- debugger: Added missing isolate ID to SWF load and unload events.
+- debugger: Fixed debugger targeting the current JDK version instead of the intended minimum JDK version.
+- debugger: Fixed localized messages appearing as unprocessed tokens.
+- debugger: Fixed version build number.
+- debugger: Fixed failure to find fdbhelp_XX.txt resources for help command.
+- externc: Fixed some warnings about bad return values for certain core types.
+- externc: Fixed some warnings about returning `null` for certain core types.
+- externc: Fixed incorrectly returning empty string instead of `null` for `String` type.
+- externc: Fixed inconsistent creation of output directories based on file system case sensitivity.
+- formatter: Added `indent-package-contents` option to match Flash Builder formatter option.
+- formatter: Added `indent-switch-contents` option to match Flash Builder formatter option.
+- formatter: Added `mxml-indent-cdata` option to match Flash Builder formatter option.
+- formatter: Fixed indentation of nested `else`.
+- formatter: Fixed missing space before `instanceof`.
+- formatter: Fixed escape sequences in literal `RegExp`.
+- formatter: Fixed exception when control flow statements are nested with mixed braces.
+- formatter: Fixed exception getting printed to output multiple times.
+- formatter: Fixed space not being inserted before multiline comment in some situations.
+- formatter: Fixed space being incorrectly inserted between comment and `:` in object literal.
+- formatter: Fixed `mxml-align-attributes` and `mxml-insert-new-line-attributes` being incorrectly marked as advanced.
+- formatter: Fixed failure to decrease `switch` indent if `case`/`default` contains braces, but content after is not a block.
+- formatter, linter: Fixed exception caused by null file path.
+- formatter, linter: Fixed out of memory error when checking many files caused by unclosed workspace.
+- formatter, linter: Fixed some problems not being filtered out when they are not relevant.
+- linter: Optimized performance of handling `// @linteroff` and `// @linteron` comments.
+- linter: Optimized performance of finding nearest token to location by using binary search.
+
 Apache Royale Compiler 0.9.12
 =============================
 
