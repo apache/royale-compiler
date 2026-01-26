@@ -48,6 +48,7 @@ import org.apache.royale.compiler.problems.UnexpectedExceptionProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IDefinitionNode;
 import org.apache.royale.compiler.tree.as.IContainerNode.ContainerType;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.IFunctionTypeExpressionNode;
@@ -123,7 +124,7 @@ public class FunctionTypeExpressionNode extends ExpressionNodeBase implements IF
         }
 
         ASScope asScope = (ASScope) definition.getContainingScope();
-        return FunctionTypeExpressionNode.parseSignature(signature, asScope, location, project, problems);
+        return FunctionTypeExpressionNode.parseSignature(signature, asScope, definition, project, problems);
     }
 
     public static FunctionTypeExpressionNode createFromFunctionDefinition(IFunctionDefinition functionDefinition, ICompilerProject project)
@@ -183,7 +184,38 @@ public class FunctionTypeExpressionNode extends ExpressionNodeBase implements IF
         return funcTypeExprNode;
     }
 
-    private static FunctionTypeExpressionNode parseSignature(String signature, ASScope scope, ISourceLocation site, ICompilerProject project, Collection<ICompilerProblem> problems)
+    private static FunctionTypeExpressionNode parseSignature(String signature, ASScope scope, IDefinition sourceDefinition, ICompilerProject project, Collection<ICompilerProblem> problems)
+    {
+        // prefer the actual AST node, if available
+        IDefinitionNode sourceNode = sourceDefinition.getNode();
+        if (sourceNode != null)
+        {
+            return parseSignature(signature, scope, sourceNode, project, problems);
+        }
+        String sourcePath = sourceDefinition.getSourcePath();
+        int start = sourceDefinition.getAbsoluteStart();
+        int line = sourceDefinition.getLine();
+        int column = sourceDefinition.getColumn();
+        return parseSignature(signature, scope, sourcePath, start, line, column, project, problems);
+    }
+
+    private static FunctionTypeExpressionNode parseSignature(String signature, ASScope scope, ISourceLocation location, ICompilerProject project, Collection<ICompilerProblem> problems)
+    {
+        String sourcePath = null;
+        int start = -1;
+        int line = -1;
+        int column = -1;
+        if (location != null)
+        {
+            sourcePath = location.getSourcePath();
+            start = location.getAbsoluteStart();
+            line = location.getLine();
+            column = location.getColumn();
+        }
+        return parseSignature(signature, scope, sourcePath, start, line, column, project, problems);
+    }
+
+    private static FunctionTypeExpressionNode parseSignature(String signature, ASScope scope, String sourcePath, int start, int line, int column, ICompilerProject project, Collection<ICompilerProblem> problems)
     {
         FunctionTypeExpressionNode funcTypeExpr = null;
         StreamingASTokenizer tokenizer = null;
@@ -192,15 +224,15 @@ public class FunctionTypeExpressionNode extends ExpressionNodeBase implements IF
         {
             tokenizer = StreamingASTokenizer.createForRepairingASTokenizer(
                     new StringReader(signature),
-                    site.getSourcePath(),
+                    sourcePath,
                     null);
-            tokenizer.setSourcePositionAdjustment(site.getAbsoluteStart(), site.getLine(), site.getColumn());
+            tokenizer.setSourcePositionAdjustment(start, line, column);
 
             buffer = new StreamingTokenBuffer(tokenizer);
             buffer.setEnableSemicolonInsertion(false);
 
             final ASParser parser = new ASParser(project.getWorkspace(), buffer);
-            parser.setFilename(site.getSourcePath());
+            parser.setFilename(sourcePath);
             parser.setAllowEmbeds(false);
             IExpressionNode typeNode = parser.type();
             if (typeNode instanceof IFunctionTypeExpressionNode)
@@ -243,7 +275,7 @@ public class FunctionTypeExpressionNode extends ExpressionNodeBase implements IF
         String signature = getSignatureFromDefinition(funcDef, paramDef.getBaseName());
         if (signature != null)
         {
-            return FunctionTypeExpressionNode.parseSignature(signature, scope, paramDef.getNode(), project, project.getProblems());
+            return FunctionTypeExpressionNode.parseSignature(signature, scope, paramDef, project, project.getProblems());
         }
 
         ITypeDefinition paramType = paramDef.resolveType(project);
@@ -264,7 +296,7 @@ public class FunctionTypeExpressionNode extends ExpressionNodeBase implements IF
         String signature = getSignatureFromDefinition(funcDef);
         if (signature != null)
         {
-            return FunctionTypeExpressionNode.parseSignature(signature, scope, funcDef.getNode(), project, project.getProblems());
+            return FunctionTypeExpressionNode.parseSignature(signature, scope, funcDef, project, project.getProblems());
         }
 
         ITypeDefinition returnType = funcDef.resolveReturnType(project);
