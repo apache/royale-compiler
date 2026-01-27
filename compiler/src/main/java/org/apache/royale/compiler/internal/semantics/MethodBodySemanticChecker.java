@@ -2796,6 +2796,10 @@ public class MethodBodySemanticChecker
             	addProblem(new UnresolvedClassReferenceProblem(call_node, func_name.getDisplayString()));
             }
         }
+        else if (name instanceof IArrowFunctionBindNode)
+        {
+            addProblem(new ArrowFunctionCannotBeConstructorProblem(call_node));
+        }
     }
 
     /**
