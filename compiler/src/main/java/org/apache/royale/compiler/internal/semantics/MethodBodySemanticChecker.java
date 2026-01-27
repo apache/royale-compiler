@@ -1805,6 +1805,11 @@ public class MethodBodySemanticChecker
             FunctionDefinition functionDef = SemanticUtils.getFunctionDefinition(iNode);
             if (functionDef != null)
             {
+                IFunctionNode funcNode = functionDef.getFunctionNode();
+                if (funcNode != null && funcNode.isArrowFunction())
+                {
+                    addProblem(new ArgumentsUsedInArrowFunctionProblem(iNode));
+                }
                 ParameterDefinition[] parameters = functionDef.getParameters();
                 for (ParameterDefinition param : parameters)
                 {
