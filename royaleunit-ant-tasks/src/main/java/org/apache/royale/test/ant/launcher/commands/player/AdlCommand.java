@@ -95,11 +95,31 @@ public class AdlCommand extends DefaultPlayerCommand
     {
         String outputProperty = "AIR_VERSION";
 
+        File adtJarFile = null;
+        String airHomePath = getProject().getProperty("AIR_HOME");
+        if (airHomePath != null)
+        {
+            File airHome = new File(airHomePath);
+            if (airHome.exists() && airHome.isDirectory())
+            {
+                adtJarFile = new File(airHome, ADT_JAR_PATH);
+            }
+        }
+        if (adtJarFile == null || !adtJarFile.exists())
+        {
+            String royaleHomePath = getProject().getProperty("ROYALE_HOME");
+            if (royaleHomePath != null)
+            {
+                File royaleHome = new File(royaleHomePath);
+                adtJarFile = new File(royaleHome, ADT_JAR_PATH);
+            }
+        }
+
         //Execute mxmlc to find SDK version number
         Java task = new Java();
         task.setFork(true);
         task.setFailonerror(true);
-        task.setJar(new File(getProject().getProperty("ROYALE_HOME") + File.separatorChar + ADT_JAR_PATH));
+        task.setJar(adtJarFile);
         task.setProject(getProject());
         task.setDir(getProject().getBaseDir());
         task.setOutputproperty(outputProperty);
@@ -148,7 +168,30 @@ public class AdlCommand extends DefaultPlayerCommand
 
     private String generateExecutable()
     {
-        return getProject().getProperty("ROYALE_HOME") + "/bin/" + getDefaults().getAdlCommand();
+        File adlJarFile = null;
+        String airHomePath = getProject().getProperty("AIR_HOME");
+        if (airHomePath != null)
+        {
+            File airHome = new File(airHomePath);
+            if (airHome.exists() && airHome.isDirectory())
+            {
+                adlJarFile = new File(airHome, "/bin/" + getDefaults().getAdlCommand());
+            }
+        }
+        if (adlJarFile == null || !adlJarFile.exists())
+        {
+            String royaleHomePath = getProject().getProperty("ROYALE_HOME");
+            if (royaleHomePath != null)
+            {
+                File royaleHome = new File(royaleHomePath);
+                adlJarFile = new File(royaleHome, "/bin/" + getDefaults().getAdlCommand());
+            }
+        }
+        if (adlJarFile == null)
+        {
+            return null;
+        }
+        return adlJarFile.getAbsolutePath();
     }
 
     public File getPrecompiledAppDescriptor()
