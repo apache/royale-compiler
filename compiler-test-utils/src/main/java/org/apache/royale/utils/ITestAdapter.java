@@ -34,6 +34,10 @@ public interface ITestAdapter {
 
     File getFlashplayerDebugger();
 
+    File getAirDebugger();
+
+    File getAirAdt();
+
     String getFlexManifestPath(String type);
 
     File getFlexArtifact(String artifactName);

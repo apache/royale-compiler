@@ -99,6 +99,53 @@ public class MavenTestAdapter implements ITestAdapter {
     }
 
     @Override
+    public File getAirDebugger() {
+        if(!optionWithSwfEnabled()) {
+            return null;
+        }
+        String AIR_HOME = System.getProperty("AIR_HOME", null);
+        if(AIR_HOME == null || AIR_HOME.length() == 0) {
+            System.out.println("AIR_HOME not specified");
+            return null;
+        }
+        File airHome = new File(AIR_HOME);
+        if (!airHome.exists() || !airHome.isDirectory())
+        {
+            System.out.println("AIR_HOME is invalid");
+            return null;
+        }
+        String adlExeName = "adl";
+        if (System.getProperty("os.name").toLowerCase().contains("windows"))
+        {
+            adlExeName += ".exe";
+        }
+        System.out.println("Using AIR");
+        return new File(airHome, "bin" + File.separator + adlExeName);
+    }
+
+    @Override
+    public File getAirAdt() {
+        if(!optionWithSwfEnabled()) {
+            return null;
+        }
+        String AIR_HOME = System.getProperty("AIR_HOME", null);
+        if(AIR_HOME == null || AIR_HOME.length() == 0) {
+            return null;
+        }
+        File airHome = new File(AIR_HOME);
+        if (!airHome.exists() || !airHome.isDirectory())
+        {
+            return null;
+        }
+        String adtExeName = "adt";
+        if (System.getProperty("os.name").toLowerCase().contains("windows"))
+        {
+            adtExeName += ".bat";
+        }
+        return new File(airHome, "bin" + File.separator + adtExeName);
+    }
+
+    @Override
     public String getFlexManifestPath(String type) {
         File configsZip = getDependency("org.apache.flex.framework", "framework",
                 System.getProperty("flexVersion"), "zip", "configs");

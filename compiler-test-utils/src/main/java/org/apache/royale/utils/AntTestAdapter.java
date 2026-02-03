@@ -34,6 +34,8 @@ public class AntTestAdapter implements ITestAdapter {
     private static File PLAYERGLOBAL_SWC;
     // The Ant script for compiler.tests copies a standalone player to the temp directory.
     private static File FLASHPLAYER;
+    private static File ADL;
+    private static File ADT;
 
     private static File LIBS_ROOT;
     private static File RESOURCE_BUNDLES_ROOT;
@@ -79,6 +81,42 @@ public class AntTestAdapter implements ITestAdapter {
     	if (FLASHPLAYER == null && env.FDBG != null)
         	FLASHPLAYER = new File(FilenameNormalization.normalize(env.FDBG));
         return FLASHPLAYER;
+    }
+
+    @Override
+    public File getAirDebugger() {
+    	if (ADL == null && env.AIRSDK != null)
+        {
+        	File airHome = new File(FilenameNormalization.normalize(env.AIRSDK));
+            if (airHome.exists() && airHome.isDirectory())
+            {
+                String adlExeName = "adl";
+                if (System.getProperty("os.name").toLowerCase().contains("windows"))
+                {
+                    adlExeName += ".exe";
+                }
+                ADL = new File(airHome, "bin" + File.separator + adlExeName);
+            }
+        }
+        return ADL;
+    }
+
+    @Override
+    public File getAirAdt() {
+    	if (ADT == null && env.AIRSDK != null)
+        {
+        	File airHome = new File(FilenameNormalization.normalize(env.AIRSDK));
+            if (airHome.exists() && airHome.isDirectory())
+            {
+                String adtExeName = "adt";
+                if (System.getProperty("os.name").toLowerCase().contains("windows"))
+                {
+                    adtExeName += ".bat";
+                }
+                ADT = new File(airHome, "bin" + File.separator + adtExeName);
+            }
+        }
+        return ADT;
     }
 
     @Override

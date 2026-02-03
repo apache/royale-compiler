@@ -25,11 +25,13 @@ import org.apache.royale.swf.io.SWFDump;
 import org.apache.royale.utils.*;
 import utils.FlashplayerSecurityHandler;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
@@ -38,6 +40,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -52,6 +56,24 @@ import static org.junit.Assert.fail;
 public class ASFeatureTestsBase
 {
 	private static boolean generateResultFile = false;
+
+	private static String APP_DESCRIPTOR_TEMPLATE = "<application xmlns=\"http://ns.adobe.com/air/application/@AIR_VERSION@\">\n" +
+						"  <id>RoyaleAdlWrapper</id>\n" +
+						"  <filename>RoyaleTestsAdlWrapper</filename>\n" +
+						"  <name>Royale Tests Adl Wrapper</name>\n" +
+						"  <versionNumber>1.0.0</versionNumber>\n" +
+						"  <description>Wrapper application for use with the Royale compiler tests.</description>\n" +
+						"  <initialWindow>\n" +
+						"    <title>Royale Tests Adl Wrapper</title>\n" +
+						"    <content>@SWF_NAME@</content>\n" +
+						"    <visible>false</visible>\n" +
+						"    <minimizable>true</minimizable>\n" +
+						"    <maximizable>false</maximizable>\n" +
+						"    <resizable>false</resizable>\n" +
+						"    <width>320</width>\n" +
+						"    <height>240</height>\n" +
+						"  </initialWindow>\n" +
+						"</application>";
 	
 	public ASFeatureTestsBase()
 	{
@@ -64,26 +86,118 @@ public class ASFeatureTestsBase
 		if(playerGlobal == null || !playerGlobal.isFile() || !playerGlobal.exists()) {
 			hasFlashPlayerGlobal = false;
 		}
+		File adlExecutable = testAdapter.getAirDebugger();
+		if (adlExecutable == null || !adlExecutable.isFile() || !adlExecutable.exists()) {
+			hasAdlExecutable = false;
+		}
 
-		if (hasFlashPlayerExecutable && !hasFlashPlayerGlobal)
+		if ((hasFlashPlayerExecutable || hasAdlExecutable) && !hasFlashPlayerGlobal)
 		{
-			String message = "Fatal Error: If FLASHPLAYER_DEBUGGER is defined, playerglobal must be available";
+			String message = "Fatal Error: If FLASHPLAYER_DEBUGGER or AIR_HOME is defined, playerglobal must be available";
 			System.err.println(message);
 			fail(message);
 		}
 
-		if (!hasFlashPlayerExecutable && hasFlashPlayerGlobal)
+		if (!hasFlashPlayerExecutable && !hasAdlExecutable && hasFlashPlayerGlobal)
 		{
-			String message = "Fatal Error: If playerglobal is available, FLASHPLAYER_DEBUGGER is required";
+			String message = "Fatal Error: If playerglobal is available, FLASHPLAYER_DEBUGGER or AIR_HOME is required";
 			System.err.println(message);
 			fail(message);
+		}
+
+		if (airVersion == null)
+		{
+			File adtExecutable = testAdapter.getAirAdt();
+			if (adtExecutable != null)
+			{
+				BufferedReader versionReader = null;
+				String versionOutput = null;
+				try
+				{
+					Process process = Runtime.getRuntime().exec(new String[]{adtExecutable.getAbsolutePath(), "-version"});
+					int exitCode = process.waitFor();
+					if (exitCode == 0)
+					{
+						versionReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+						versionOutput = versionReader.readLine();
+					}
+				}
+				catch (Exception e)
+				{
+					String message = "Fatal Error: Could not run ADT from AIR SDK to detect version";
+					System.err.println(message);
+					fail(message);
+				}
+				finally
+				{
+					if (versionReader != null)
+					{
+						try
+						{
+							versionReader.close();
+						}
+						catch (IOException e) {}
+					}
+				}
+				airVersion = parseAdtVersionNumber(versionOutput);
+				if (airVersion == null)
+				{
+					String message = "Fatal Error: Could not detect AIR SDK version";
+					System.err.println(message);
+					fail(message);
+				}
+			}
 		}
 	}
 
 	protected boolean hasFlashPlayerExecutable = true;
 	protected boolean hasFlashPlayerGlobal = true;
+	protected boolean hasAdlExecutable = true;
+	private static String airVersion = null;
 	
 	private static final String NAMESPACE_2009 = "http://ns.adobe.com/mxml/2009";
+
+	private static final Pattern AIR_VERSION_PATTERN = Pattern.compile("(\\d+\\.\\d+)(?:\\.\\d)+");
+
+    private String parseAdtVersionNumber(String versionString)
+    {
+		if (versionString == null)
+		{
+			return null;
+		}
+		Matcher matcher = AIR_VERSION_PATTERN.matcher(versionString);
+		if (matcher.find())
+		{
+			return matcher.group(1);
+		}
+		return null;
+    }
+
+	protected File generateTempAppDescriptorFile(String source, String swfFileName)
+	{
+        // Write the application descriptor into a temp file.
+        ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
+        String tempDir = testAdapter.getTempDir();
+        File tempDescriptorFile = null;
+        try
+        {
+            tempDescriptorFile = File.createTempFile(getClass().getSimpleName(), "-app.xml", new File(tempDir));
+            tempDescriptorFile.deleteOnExit();
+
+            BufferedWriter out = new BufferedWriter(new FileWriter(tempDescriptorFile));
+            
+            source = source.replaceAll("@SWF_NAME@", swfFileName);
+            source = source.replaceAll("@AIR_VERSION@", airVersion);
+            out.write(source);
+            out.close();
+        }
+        catch (IOException e1) 
+        {
+            e1.printStackTrace();
+            fail("Error generating test code");
+        }
+        return tempDescriptorFile;
+	}
 
 	protected File generateTempFile(String source)
 	{
@@ -227,8 +341,8 @@ public class ASFeatureTestsBase
 	    File tempASFile = generateTempFile(source);
 	    compile(tempASFile, source, withFramework, withRPC, withSpark, otherOptions, true, false);
         ITestAdapter testAdapter = TestAdapterFactory.getTestAdapter();
-		// Check the existence of the flashplayer executable
-		// Run the SWF in the standalone player amd wait until the SWF calls System.exit().
+		// Run the SWF in the standalone player or adl
+		// and wait until the SWF calls System.exit() or NativeApplication.nativeApplication.exit().
 		String swf = FilenameNormalization.normalize(tempASFile.getAbsolutePath());
 		swf = swf.replace(".as", ".swf");
 		if (hasFlashPlayerExecutable)
@@ -242,6 +356,26 @@ public class ASFeatureTestsBase
 				// TODO: Hack to add the directory containing the temp swf to the flashplayer trust.
 				new FlashplayerSecurityHandler().trustFile(tempASFile.getParentFile());
 	
+				exitCode = executeCommandWithTimeout(runArgs, 20);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+				// If we just print the stacktrace the exitCode is still 0 and the test will pass.
+				fail("Got exception");
+			}
+			
+		    // Check that the runtime exit code was 0, meaning that no asserts failed.
+			assertThat(exitCode, is(0));
+		}
+		else if (hasAdlExecutable)
+		{
+			File adlExecutable = testAdapter.getAirDebugger();
+			File appDescriptorFile = generateTempAppDescriptorFile(APP_DESCRIPTOR_TEMPLATE, new File(swf).getName());
+			String[] runArgs = new String[] { adlExecutable.getPath(), appDescriptorFile.getPath() };
+			try
+			{
+				System.out.println("Executing test:\n" + Arrays.toString(runArgs));
 				exitCode = executeCommandWithTimeout(runArgs, 20);
 			}
 			catch (Exception e)
@@ -377,7 +511,7 @@ public class ASFeatureTestsBase
 
 	public static int executeCommandWithTimeout(String[] args, long timeoutInSeconds) throws Exception {
 		ExecutorService service = Executors.newSingleThreadExecutor();
-		Process process = Runtime.getRuntime().exec(args);
+		Process process = new ProcessBuilder(args).inheritIO().start();
 		try {
 			Callable<Integer> call = new CallableProcess(process);
 			Future<Integer> future = service.submit(call);
@@ -419,6 +553,7 @@ public class ASFeatureTestsBase
 	            "import flash.display.Sprite;",
 	            "import flash.events.Event;",
 	            "import flash.system.System;",
+	            "import flash.utils.getDefinitionByName;",
 	            "%1",
 	            "public class %0 extends flash.display.Sprite",
 	            "{",
@@ -430,16 +565,33 @@ public class ASFeatureTestsBase
 	            "    private function initHandler(e:flash.events.Event):void",
 	            "    {",
 	            "        %3",
-	            "        System.exit(0);",            
+	            "        exitTests(0);",            
 	            "    }",
 	            "    private function assertEqual(message:String, actualValue:*, expectedValue:*):void",
 	            "    {",
 	            "        if (actualValue !== expectedValue)",
 	            "        {",
 	            "            trace(message, actualValue, expectedValue);",
-	            "            System.exit(1);",
+	            "            exitTests(1);",
 	            "        }",
 	            "    }",
+				"    private function exitTests(code:int):void",
+				"    {",
+				"        var NativeApplication:Class = null;",
+				"        try",
+				"        {",
+				"            NativeApplication = getDefinitionByName(\"flash.desktop.NativeApplication\") as Class;",
+				"        }",
+				"        catch (error:Error) {}",
+				"        if (NativeApplication != null)",
+				"        {",
+				"            NativeApplication.nativeApplication.exit(code);",
+				"        }",
+				"        else",
+				"        {",
+				"             System.exit(code);",
+				"        }",
+				"    }",
 	            "}",
 	            "}",
 	            "%4"
