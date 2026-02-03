@@ -24,7 +24,7 @@ limitations under the License.
   <initialWindow>
     <title>RoyaleUnit Adl Wrapper</title>
     <content>@ADL_SWF@</content>
-    <visible>true</visible> 
+    <visible>false</visible> 
     <minimizable>true</minimizable> 
     <maximizable>false</maximizable> 
     <resizable>false</resizable> 
