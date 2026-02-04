@@ -141,6 +141,7 @@ import org.apache.royale.compiler.tree.as.INumericLiteralNode;
 import org.apache.royale.compiler.tree.as.IParameterNode;
 import org.apache.royale.compiler.tree.as.IReturnNode;
 import org.apache.royale.compiler.tree.as.IScopedNode;
+import org.apache.royale.compiler.tree.as.ITernaryOperatorNode;
 import org.apache.royale.compiler.tree.as.ITryNode;
 import org.apache.royale.compiler.tree.as.ITypedExpressionNode;
 import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
@@ -329,7 +330,48 @@ public class MethodBodySemanticChecker
             }
 
             IDefinition resolvedRightDef = null;
-            if (rightExpression instanceof IArrowFunctionBindNode)
+            if (rightExpression instanceof BinaryOperatorLogicalAndNode
+                    || rightExpression instanceof BinaryOperatorLogicalOrNode)
+            {
+                IBinaryOperatorNode binaryNode = (IBinaryOperatorNode) rightExpression;
+                IExpressionNode leftOperand = binaryNode.getLeftOperandNode();
+                IExpressionNode rightOperand = binaryNode.getRightOperandNode();
+                IDefinition resolvedLeftOperandDef = leftOperand.resolve(project);
+                IDefinition resolvedRightOperandDef = rightOperand.resolve(project);
+                if (resolvedLeftOperandDef != null && resolvedRightOperandDef != null)
+                {
+                    IFunctionTypeExpressionNode leftFuncTypeExpr = FunctionTypeExpressionNode.createFromDefinition(resolvedLeftOperandDef, leftOperand, project, this.currentScope.getProblems());
+                    IFunctionTypeExpressionNode rightFuncTypeExpr = FunctionTypeExpressionNode.createFromDefinition(resolvedRightOperandDef, rightOperand, project, this.currentScope.getProblems());
+                    if (leftFuncTypeExpr != null && rightFuncTypeExpr != null)
+                    {
+                        if (leftFuncTypeExpr.resolveSignature(project).equals(rightFuncTypeExpr.resolveSignature(project)))
+                        {
+                            actualFuncTypeExpr = leftFuncTypeExpr;
+                        }
+                    }
+                }
+            }
+            else if (rightExpression instanceof ITernaryOperatorNode)
+            {
+                ITernaryOperatorNode ternaryNode = (ITernaryOperatorNode) rightExpression;
+                IExpressionNode leftOperand = ternaryNode.getLeftOperandNode();
+                IExpressionNode rightOperand = ternaryNode.getRightOperandNode();
+                IDefinition resolvedLeftOperandDef = leftOperand.resolve(project);
+                IDefinition resolvedRightOperandDef = rightOperand.resolve(project);
+                if (resolvedLeftOperandDef != null && resolvedRightOperandDef != null)
+                {
+                    IFunctionTypeExpressionNode leftFuncTypeExpr = FunctionTypeExpressionNode.createFromDefinition(resolvedLeftOperandDef, leftOperand, project, this.currentScope.getProblems());
+                    IFunctionTypeExpressionNode rightFuncTypeExpr = FunctionTypeExpressionNode.createFromDefinition(resolvedRightOperandDef, rightOperand, project, this.currentScope.getProblems());
+                    if (leftFuncTypeExpr != null && rightFuncTypeExpr != null)
+                    {
+                        if (leftFuncTypeExpr.resolveSignature(project).equals(rightFuncTypeExpr.resolveSignature(project)))
+                        {
+                            actualFuncTypeExpr = leftFuncTypeExpr;
+                        }
+                    }
+                }
+            }
+            else if (rightExpression instanceof IArrowFunctionBindNode)
             {
                 IArrowFunctionBindNode arrowBindNode = (IArrowFunctionBindNode) rightExpression;
                 IFunctionObjectNode arrowFuncObjNode = arrowBindNode.getFunctionObjectNode();
