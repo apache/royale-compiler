@@ -31,6 +31,7 @@ import java.util.List;
 import org.apache.royale.compiler.clients.COMPC;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.utils.EnvProperties;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.ObjectArrays;
@@ -50,8 +51,11 @@ public class SDKSWCTests
 	private static EnvProperties env = EnvProperties.initiate();
 	
 	private static final String TEXTLAYOUT_NAME = "textLayout";
+	private static final String MOBILETHEME_NAME = "mobiletheme";
 	
 	private String[] extraArgs = new String[]{}; 
+
+	private boolean isWindowsOrMac = true;
 	
 	private void compileSWC(String projectName)
 	{
@@ -78,13 +82,17 @@ public class SDKSWCTests
 		}
 
 		String configFile;
-		if (projectName.equals(TEXTLAYOUT_NAME))
+		if (projectName.equals(MOBILETHEME_NAME) && !isWindowsOrMac)
 		{
-		    configFile = env.TLF + "/compile-config.xml";
+			configFile = env.SDK + "/frameworks/projects/" + projectName + "/compile-configAIR2.xml";
+		}
+		else if (projectName.equals(TEXTLAYOUT_NAME))
+		{
+			configFile = env.TLF + "/compile-config.xml";
 		}
 		else
 		{
-		    configFile = env.SDK + "/frameworks/projects/" + projectName + "/compile-config.xml";
+			configFile = env.SDK + "/frameworks/projects/" + projectName + "/compile-config.xml";
 		}
 		
 		String[] baseArgs = new String[]
@@ -108,6 +116,13 @@ public class SDKSWCTests
 			problems.add(problem);
 		}
 		assertThat(problems.size(), is(0));
+	}
+
+	@Before
+	public void setUp()
+	{
+		String osName = System.getProperty("os.name").toLowerCase();
+		isWindowsOrMac = osName.contains("windows") || osName.contains("mac os");
 	}
 	
 	@Test
@@ -168,6 +183,12 @@ public class SDKSWCTests
 	@Test
 	public void automationSWC()
 	{
+		if (!isWindowsOrMac)
+		{
+			// this doesn't get built on Linux
+			return;
+		}
+ 
         extraArgs = new String[]
         {
             "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
@@ -178,6 +199,12 @@ public class SDKSWCTests
 	@Test
 	public void automation_agentSWC()
 	{
+		if (!isWindowsOrMac)
+		{
+			// this doesn't get built on Linux
+			return;
+		}
+ 
         extraArgs = new String[]
         {
             "-ignore-problems+=org.apache.royale.compiler.problems.DuplicateQNameInSourcePathProblem",
@@ -190,7 +217,13 @@ public class SDKSWCTests
 	@Test
 	public void automation_airsparkSWC()
 	{
-        extraArgs = new String[]
+		if (!isWindowsOrMac)
+		{
+			// this doesn't get built on Linux
+			return;
+		}
+
+		extraArgs = new String[]
         {
             "+env.AIR_HOME=" + env.AIRSDK,
             "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
@@ -202,7 +235,13 @@ public class SDKSWCTests
     @Test
     public void automation_airSWC()
     {
-        extraArgs = new String[]
+		if (!isWindowsOrMac)
+		{
+			// this doesn't get built on Linux
+			return;
+		}
+
+		extraArgs = new String[]
         {
             "+env.AIR_HOME=" + env.AIRSDK,
             "-ignore-problems+=org.apache.royale.compiler.problems.DuplicateQNameInSourcePathProblem",
@@ -215,6 +254,12 @@ public class SDKSWCTests
 	@Test
 	public void automation_dmvSWC()
 	{
+		if (!isWindowsOrMac)
+		{
+			// this doesn't get built on Linux
+			return;
+		}
+
         extraArgs = new String[]
         {
             "-ignore-problems+=org.apache.royale.compiler.problems.DuplicateQNameInSourcePathProblem",
@@ -227,7 +272,13 @@ public class SDKSWCTests
 	@Test
 	public void automation_flashflexkitSWC()
 	{
-        extraArgs = new String[]
+		if (!isWindowsOrMac)
+		{
+			// this doesn't get built on Linux
+			return;
+		}
+ 
+		extraArgs = new String[]
         {
             "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
         };
@@ -237,6 +288,12 @@ public class SDKSWCTests
 	@Test
 	public void automation_sparkSWC()
 	{
+		if (!isWindowsOrMac)
+		{
+			// this doesn't get built on Linux
+			return;
+		}
+ 
         extraArgs = new String[]
         {
             "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
@@ -295,6 +352,12 @@ public class SDKSWCTests
 	@Test
 	public void flash_integrationSWC()
 	{
+		if (!isWindowsOrMac)
+		{
+			// this doesn't get built on Linux
+			return;
+		}
+ 
         extraArgs = new String[]
         {
             "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
@@ -419,7 +482,7 @@ public class SDKSWCTests
 	{
         extraArgs = new String[]
         {
-            "+source.dir=./textlayout",
+            "+source.dir=./textLayout",
             "-define=CONFIG::debug,false",
             "-define=CONFIG::release,true",
             "-ignore-problems+=org.apache.royale.compiler.problems.ThisUsedInClosureProblem",
@@ -431,6 +494,12 @@ public class SDKSWCTests
     @Test
     public void tool_airSWC()
     {
+		if (!isWindowsOrMac)
+		{
+			// this doesn't get built on Linux
+			return;
+		}
+ 
         extraArgs = new String[]
         {
             "+env.AIR_HOME=" + env.AIRSDK,
@@ -444,6 +513,12 @@ public class SDKSWCTests
 	@Test
 	public void toolSWC()
 	{
+		if (!isWindowsOrMac)
+		{
+			// this doesn't get built on Linux
+			return;
+		}
+ 
         extraArgs = new String[]
         {
             "-ignore-problems+=org.apache.royale.compiler.problems.DuplicateQNameInSourcePathProblem",
