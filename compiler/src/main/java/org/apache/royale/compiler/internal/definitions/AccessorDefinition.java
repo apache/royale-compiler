@@ -38,6 +38,8 @@ import org.apache.royale.compiler.problems.DuplicateFunctionDefinitionProblem;
 import org.apache.royale.compiler.problems.UnresolvedNamespaceProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IDefinitionSet;
+import org.apache.royale.compiler.tree.as.IExpressionNode;
+import org.apache.royale.compiler.tree.as.IFunctionTypeExpressionNode;
 import org.apache.royale.compiler.tree.as.IVariableNode;
 
 /**
@@ -49,6 +51,25 @@ public abstract class AccessorDefinition extends FunctionDefinition implements I
     public AccessorDefinition(String name)
     {
         super(name);
+    }
+
+    @Override
+    public TypeDefinitionBase resolveType(ICompilerProject project)
+    {
+        if (project.getAllowStrictFunctionTypes())
+        {
+            IVariableNode accessorNode = getVariableNode();
+            if (accessorNode != null)
+            {
+                IExpressionNode varTypeNode = accessorNode.getVariableTypeNode();
+                if (varTypeNode instanceof IFunctionTypeExpressionNode)
+                {
+                    IFunctionTypeExpressionNode funcTypeExprNode = (IFunctionTypeExpressionNode) varTypeNode;
+                    addFunctionTypeMeta(funcTypeExprNode, null, project);
+                }
+            }
+        }
+        return super.resolveType(project);
     }
 
     @Override

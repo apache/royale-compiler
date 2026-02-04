@@ -44,6 +44,7 @@ import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.scopes.IDefinitionSet;
 import org.apache.royale.compiler.tree.as.IASNode;
+import org.apache.royale.compiler.tree.as.IAccessorNode;
 import org.apache.royale.compiler.tree.as.IContainerNode;
 import org.apache.royale.compiler.tree.as.IDefinitionNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
@@ -224,7 +225,8 @@ public class FunctionDefinition extends ScopedDefinitionBase implements IFunctio
         if (project.getAllowStrictFunctionTypes())
         {
             IFunctionNode funcNode = (IFunctionNode) getNode();
-            if (funcNode != null)
+            // accessors add the metadata in resolveType instead, similar to variables
+            if (funcNode != null && !(funcNode instanceof IAccessorNode))
             {
                 IExpressionNode returnTypeNode = funcNode.getReturnTypeNode();
                 if (returnTypeNode instanceof IFunctionTypeExpressionNode)
