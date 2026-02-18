@@ -39,14 +39,14 @@ public class FieldReference extends MemberReference
 
     private boolean isStatic;
     private boolean isConst;
-    private FieldReference override;
+    private FieldReference overrideFromInterface;
     private String overrideStringType;
     private Node constantValueNode;
     private String constantValue;
 
     private FieldReference getContext()
     {
-        return override == null ? this : override;
+        return overrideFromInterface == null ? this : overrideFromInterface;
     }
 
     public boolean isStatic()
@@ -130,18 +130,14 @@ public class FieldReference extends MemberReference
 
         if (!getClassReference().isInterface())
         {
-            FieldReference overrideFromInterface = getClassReference().getFieldOverrideFromInterface(this);
-            if (overrideFromInterface != null)
-            {
-                override = overrideFromInterface;
-            }
+            overrideFromInterface = getClassReference().getFieldOverrideFromInterface(this);
         }
         
         ReadOnlyMember readOnly = isReadOnly();
 
         if (!getClassReference().isInterface() && !getComment().isOverride()
-                && !getClassReference().isPropertyInterfaceImplementation(getBaseName())
-                && (null == readOnly))
+                && (null == readOnly)
+                && (null == overrideFromInterface))
         {
         	if (isConst && constantValue == null)
         		emitAccessor(sb, true); // const is used for readOnly as well.  If there is an initial value assume it is const
@@ -153,7 +149,7 @@ public class FieldReference extends MemberReference
             emitAccessor(sb, (null != readOnly));
         }
 
-        override = null;
+        overrideFromInterface = null;
     }
 
     private void emitAccessor(StringBuilder sb, boolean isReadOnly)

@@ -576,15 +576,38 @@ public class ClassReference extends BaseReference
 
     public List<ClassReference> getSuperInterfaces()
     {
-        ArrayList<ClassReference> result = new ArrayList<ClassReference>();
-        result.addAll(getInterfaces());
-
-        ClassReference superClass = getSuperClass();
-        while (superClass != null)
+        Set<ClassReference> allInterfaces = new HashSet<ClassReference>();
+        if (isInterface())
         {
-            result.addAll(superClass.getInterfaces());
-            superClass = superClass.getSuperClass();
+            allInterfaces.addAll(getExtendedInterfaces());
         }
+        else
+        {
+            allInterfaces.addAll(getInterfaces());
+
+            ClassReference superClass = getSuperClass();
+            while (superClass != null)
+            {
+                allInterfaces.addAll(superClass.getInterfaces());
+                superClass = superClass.getSuperClass();
+            }
+        }
+
+        int prevSize;
+        do
+        {
+            prevSize = allInterfaces.size();
+            Set<ClassReference> extraInterfaces = new HashSet<ClassReference>();
+            for (ClassReference current : allInterfaces)
+            {
+                extraInterfaces.addAll(current.getSuperInterfaces());
+            }
+
+            allInterfaces.addAll(extraInterfaces);
+        }
+        while (prevSize != allInterfaces.size());
+
+        List<ClassReference> result = new ArrayList<ClassReference>(allInterfaces);
         Collections.sort(result);
         return result;
     }
@@ -684,12 +707,9 @@ public class ClassReference extends BaseReference
 
         if (!hasImplementations())
         {
-            List<JSTypeExpression> implementedInterfaces = getComment().getImplementedInterfaces();
-            for (JSTypeExpression jsTypeExpression : implementedInterfaces)
+            for (ClassReference interfaceReference : getSuperInterfaces())
             {
-                String interfaceName = getModel().evaluate(jsTypeExpression).getDisplayName();
-                ClassReference classReference = getModel().getClassReference(interfaceName);
-                if (classReference.hasSuperField(reference.getQualifiedName()))
+                if (interfaceReference.hasSuperField(reference.getQualifiedName()))
                 {
                     isFieldOverrideFromInterface = true;
                     break;
@@ -702,22 +722,13 @@ public class ClassReference extends BaseReference
 
     public FieldReference getFieldOverrideFromInterface(FieldReference reference)
     {
-        // get all super classes, reverse and search top down
-        List<ClassReference> superClasses = getSuperClasses();
-        superClasses.add(0, this);
-        Collections.reverse(superClasses);
-
         // for each superclass, get all implemented interfaces
-        for (ClassReference classReference : superClasses)
+        for (ClassReference interfaceReference : getSuperInterfaces())
         {
-            List<ClassReference> interfaces = classReference.getImplementedInterfaces();
-            for (ClassReference interfaceReference : interfaces)
-            {
-                // check for the field on the interface
-                FieldReference field = interfaceReference.getInstanceField(reference.getBaseName());
-                if (field != null)
-                    return field;
-            }
+            // check for the field on the interface
+            FieldReference field = interfaceReference.getInstanceField(reference.getBaseName());
+            if (field != null)
+                return field;
         }
 
         return null;
@@ -729,12 +740,9 @@ public class ClassReference extends BaseReference
 
         if (!hasImplementations())
         {
-            List<JSTypeExpression> implementedInterfaces = getComment().getImplementedInterfaces();
-            for (JSTypeExpression jsTypeExpression : implementedInterfaces)
+            for (ClassReference interfaceReference : getSuperInterfaces())
             {
-                String interfaceName = getModel().evaluate(jsTypeExpression).getDisplayName();
-                ClassReference classReference = getModel().getClassReference(interfaceName);
-                if (classReference.hasSuperMethod(reference.getQualifiedName()))
+                if (interfaceReference.hasSuperMethod(reference.getQualifiedName()))
                 {
                     isMethodOverrideFromInterface = true;
                     break;
@@ -746,23 +754,13 @@ public class ClassReference extends BaseReference
     }
 
     public MethodReference getMethodOverrideFromInterface(MethodReference reference)
-    {
-        // get all super classes, reverse and search top down
-        List<ClassReference> superClasses = getSuperClasses();
-        superClasses.add(0, this);
-        Collections.reverse(superClasses);
-
-        // for each superclass, get all implemented interfaces
-        for (ClassReference classReference : superClasses)
+{
+        for (ClassReference interfaceReference : getSuperInterfaces())
         {
-            List<ClassReference> interfaces = classReference.getImplementedInterfaces();
-            for (ClassReference interfaceReference : interfaces)
-            {
-                // check for the method on the interface
-                MethodReference method = interfaceReference.getInstanceMethod(reference.getBaseName());
-                if (method != null)
-                    return method;
-            }
+            // check for the method on the interface
+            MethodReference method = interfaceReference.getInstanceMethod(reference.getBaseName());
+            if (method != null)
+                return method;
         }
 
         return null;
@@ -794,22 +792,6 @@ public class ClassReference extends BaseReference
         //        if (superClass != null)
         //            return superClass.getInstanceFields().containsKey(
         //                    reference.getName());
-        return false;
-    }
-
-    public boolean isPropertyInterfaceImplementation(String fieldName)
-    {
-        List<ClassReference> superInterfaces = getSuperInterfaces();
-        for (ClassReference interfaceRef : superInterfaces)
-        {
-            if (interfaceRef == null)
-            {
-                System.err.println("isPropertyInterfaceImplementation() null");
-                continue;
-            }
-            if (interfaceRef.hasInstanceField(fieldName))
-                return true;
-        }
         return false;
     }
 

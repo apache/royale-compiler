@@ -37,14 +37,14 @@ public class MethodReference extends MemberReference
 {
 
     private boolean isStatic;
-    private MethodReference override;
+    private MethodReference overrideFromInterface;
     private Node paramNode;
 
     private List<ParameterReference> parameters;
 
     private MethodReference getContext()
     {
-        return override == null ? this : override;
+        return overrideFromInterface == null ? this : overrideFromInterface;
     }
 
     public boolean isStatic()
@@ -170,7 +170,7 @@ public class MethodReference extends MemberReference
 
         emitCode(sb);
 
-        override = null;
+        overrideFromInterface = null;
     }
 
     public void emitCode(StringBuilder sb)
@@ -183,11 +183,7 @@ public class MethodReference extends MemberReference
 
         if (!getClassReference().isInterface())
         {
-            MethodReference overrideFromInterface = getClassReference().getMethodOverrideFromInterface(this);
-            if (/*isOverride() && */overrideFromInterface != null)
-            {
-                override = overrideFromInterface;
-            }
+            overrideFromInterface = getClassReference().getMethodOverrideFromInterface(this);
         }
 
         String qName = getQualifiedName();
