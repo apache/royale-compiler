@@ -39,9 +39,15 @@ public class FieldReference extends MemberReference
 
     private boolean isStatic;
     private boolean isConst;
+    private FieldReference override;
     private String overrideStringType;
     private Node constantValueNode;
     private String constantValue;
+
+    private FieldReference getContext()
+    {
+        return override == null ? this : override;
+    }
 
     public boolean isStatic()
     {
@@ -121,6 +127,15 @@ public class FieldReference extends MemberReference
             excluded.print(sb);
             return; // XXX (mschmalle) accessors are not treated right, need to exclude get/set
         }
+
+        if (!getClassReference().isInterface())
+        {
+            FieldReference overrideFromInterface = getClassReference().getFieldOverrideFromInterface(this);
+            if (overrideFromInterface != null)
+            {
+                override = overrideFromInterface;
+            }
+        }
         
         ReadOnlyMember readOnly = isReadOnly();
 
@@ -137,6 +152,8 @@ public class FieldReference extends MemberReference
         {
             emitAccessor(sb, (null != readOnly));
         }
+
+        override = null;
     }
 
     private void emitAccessor(StringBuilder sb, boolean isReadOnly)
@@ -272,7 +289,7 @@ public class FieldReference extends MemberReference
     {
         if (overrideStringType != null)
             return overrideStringType;
-        String typeString = JSTypeUtils.toFieldTypeString(this);
+        String typeString = JSTypeUtils.toFieldTypeString(getContext());
         if (FunctionUtils.hasTemplate(this)
                 && FunctionUtils.containsTemplate(this, typeString))
         {

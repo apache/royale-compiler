@@ -678,6 +678,51 @@ public class ClassReference extends BaseReference
         return method;
     }
 
+    public boolean isFieldOverrideFromInterface(FieldReference reference)
+    {
+        boolean isFieldOverrideFromInterface = false;
+
+        if (!hasImplementations())
+        {
+            List<JSTypeExpression> implementedInterfaces = getComment().getImplementedInterfaces();
+            for (JSTypeExpression jsTypeExpression : implementedInterfaces)
+            {
+                String interfaceName = getModel().evaluate(jsTypeExpression).getDisplayName();
+                ClassReference classReference = getModel().getClassReference(interfaceName);
+                if (classReference.hasSuperField(reference.getQualifiedName()))
+                {
+                    isFieldOverrideFromInterface = true;
+                    break;
+                }
+            }
+        }
+
+        return isFieldOverrideFromInterface;
+    }
+
+    public FieldReference getFieldOverrideFromInterface(FieldReference reference)
+    {
+        // get all super classes, reverse and search top down
+        List<ClassReference> superClasses = getSuperClasses();
+        superClasses.add(0, this);
+        Collections.reverse(superClasses);
+
+        // for each superclass, get all implemented interfaces
+        for (ClassReference classReference : superClasses)
+        {
+            List<ClassReference> interfaces = classReference.getImplementedInterfaces();
+            for (ClassReference interfaceReference : interfaces)
+            {
+                // check for the field on the interface
+                FieldReference field = interfaceReference.getInstanceField(reference.getBaseName());
+                if (field != null)
+                    return field;
+            }
+        }
+
+        return null;
+    }
+
     public boolean isMethodOverrideFromInterface(MethodReference reference)
     {
         boolean isMethodOverrideFromInterface = false;
