@@ -452,7 +452,13 @@ public class ClassReference extends BaseReference
         for (ClassReference reference : list)
         {
             if (reference.hasInstanceField(fieldName))
-                return true;
+            {
+                FieldReference fieldReference = reference.getInstanceField(fieldName);
+                if (fieldReference != null && fieldReference.isExcluded() == null)
+                {
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -463,7 +469,13 @@ public class ClassReference extends BaseReference
         for (ClassReference reference : list)
         {
             if (reference.hasInstanceMethod(methodName))
-                return true;
+            {
+                MethodReference methodReference = reference.getInstanceMethod(methodName);
+                if (methodReference != null && methodReference.isExcluded() == null)
+                {
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -474,14 +486,26 @@ public class ClassReference extends BaseReference
         for (ClassReference reference : list)
         {
             if (reference.hasInstanceMethod(methodName))
-                return reference.getInstanceMethod(methodName);
+            {
+                MethodReference methodReference = reference.getInstanceMethod(methodName);
+                if (methodReference != null && methodReference.isExcluded() == null)
+                {
+                    return methodReference;
+                }
+            }
         }
 
         list = getAllImplInterfaces(); // return all our interfaces and all superclass
         for (ClassReference reference : list)
         {
             if (reference.hasInstanceMethod(methodName))
-                return reference.getInstanceMethod(methodName);
+            {
+                MethodReference methodReference = reference.getInstanceMethod(methodName);
+                if (methodReference != null && methodReference.isExcluded() == null)
+                {
+                    return methodReference;
+                }
+            }
         }
 
         return null;
