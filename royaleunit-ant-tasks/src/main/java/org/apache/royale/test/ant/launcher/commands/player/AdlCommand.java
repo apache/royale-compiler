@@ -136,21 +136,33 @@ public class AdlCommand extends DefaultPlayerCommand
 
     private double parseAdtVersionNumber( String versionString )
     {
-      double version;
+        double version;
 
         //AIR 2.6 and greater only returns the version number.
         if( versionString.startsWith("adt") )
         {
-             //Parse version number and return as int
+            //Parse version number and return as int
             int prefixIndex = versionString.indexOf("adt version \"");
             version = Double.parseDouble(versionString.substring(prefixIndex + 13, prefixIndex + 16));
 
-        }else
+        }
+        else
         {
-           version = Double.parseDouble(versionString.substring(0, 3) );
+            // the version number typically contains four parts, but we need
+            // the first two only.
+            int endIndex = versionString.indexOf(".");
+            endIndex = versionString.indexOf(".", endIndex + 1);
+            if (endIndex == -1)
+            {
+                // this shouldn't happen, but if some specific version of adt
+                // reports a version number with two parts only, we'll fall back
+                // to the original behavior that parses exactly three characters
+                endIndex = 3;
+            }
+            version = Double.parseDouble(versionString.substring(0, endIndex));
         }
 
-      return version;
+        return version;
     }
 
     @Override
