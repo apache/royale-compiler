@@ -589,7 +589,7 @@ attributeValue
     :    s = STRING
          { curAttribute += $s.text; }
     |    s1 = ID
-         { curAttribute = $s1.text; }
+         { curAttribute += $s1.text; }
     ;
     	
 
