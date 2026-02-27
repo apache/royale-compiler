@@ -460,14 +460,14 @@ public class ASC
         @Override
         public boolean getMxmlChildrenAsData()
         {
-            // Not used because ASC does handle MXML.
+            // Not used because ASC does not handle MXML.
             return false;
         }    
 
         @Override
         public boolean getInfoFlex()
         {
-            // Not used because ASC does handle MXML.
+            // Not used because ASC does not handle MXML.
             return false;
         }    
 
