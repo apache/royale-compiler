@@ -22,7 +22,9 @@ package org.apache.royale.compiler.internal.codegen.typedefs.reference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.royale.compiler.clients.ExternCConfiguration;
 import org.apache.royale.compiler.clients.ExternCConfiguration.ExcludedMember;
@@ -41,6 +43,46 @@ import com.google.javascript.rhino.jstype.TemplatizedType;
 
 public class ReferenceModel
 {
+    private static final Set<String> DYNAMIC_CLASSES = new HashSet<String>();
+    {
+        DYNAMIC_CLASSES.add("ArgumentError");
+        DYNAMIC_CLASSES.add("Array");
+        DYNAMIC_CLASSES.add("Class");
+        DYNAMIC_CLASSES.add("Date");
+        DYNAMIC_CLASSES.add("DefinitionError");
+        DYNAMIC_CLASSES.add("Error");
+        DYNAMIC_CLASSES.add("EvalError");
+        DYNAMIC_CLASSES.add("Function");
+        DYNAMIC_CLASSES.add("Object");
+        DYNAMIC_CLASSES.add("RangeError");
+        DYNAMIC_CLASSES.add("ReferenceError");
+        DYNAMIC_CLASSES.add("RegExp");
+        DYNAMIC_CLASSES.add("SyntaxError");
+        DYNAMIC_CLASSES.add("TypeError");
+        DYNAMIC_CLASSES.add("URIError");
+        DYNAMIC_CLASSES.add("Vector");
+        DYNAMIC_CLASSES.add("VerifyError");
+        DYNAMIC_CLASSES.add("XML");
+        DYNAMIC_CLASSES.add("XMLList");
+        DYNAMIC_CLASSES.add("flash.display.MovieClip");
+    }
+    private static final Set<String> FINAL_CLASSES = new HashSet<String>();
+    {
+        FINAL_CLASSES.add("Boolean");
+        FINAL_CLASSES.add("Date");
+        FINAL_CLASSES.add("int");
+        FINAL_CLASSES.add("JSON");
+        FINAL_CLASSES.add("Math");
+        FINAL_CLASSES.add("Namespace");
+        FINAL_CLASSES.add("Number");
+        FINAL_CLASSES.add("QName");
+        FINAL_CLASSES.add("String");
+        FINAL_CLASSES.add("uint");
+        FINAL_CLASSES.add("Vector");
+        FINAL_CLASSES.add("XML");
+        FINAL_CLASSES.add("XMLList");
+    }
+
     public ProblemQuery problems;
     private ExternCConfiguration configuration;
     private Compiler jscompiler;
@@ -152,10 +194,14 @@ public class ReferenceModel
         reference.setCallableInstances(configuration.classHasCallableInstances(reference));
 
         // TODO (mschmalle) Figure out if gcc makes any decisions about what is final or dynamic
-        if (reference.getQualifiedName().equals("Object")
-            || reference.getQualifiedName().equals("Class"))
+        if (DYNAMIC_CLASSES.contains(reference.getQualifiedName()))
         {
             reference.setDynamic(true);
+        }
+
+        if (FINAL_CLASSES.contains(reference.getQualifiedName()))
+        {
+            reference.setFinal(true);
         }
 
         classes.put(qualifiedName, reference);
