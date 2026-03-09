@@ -72,6 +72,7 @@ public class JSConfiguration extends Configuration
         setCompilerStrictIdentifierNames(null, false);
         setCompilerStrictFlexCSS(null, false);
         setCompilerAllowArrowFunctions(null, true);
+        setCompilerWarnThisWithinClosure(null, true);
     }
 
     //

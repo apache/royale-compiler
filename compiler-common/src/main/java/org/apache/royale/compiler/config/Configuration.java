@@ -4187,7 +4187,7 @@ public class Configuration
     // 'compiler.warn-this-within-closure' option
     //
 
-    private boolean warn_this_within_closure = true;
+    private boolean warn_this_within_closure = false;
 
     public boolean warn_this_within_closure()
     {
