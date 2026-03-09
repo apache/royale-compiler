@@ -51,6 +51,7 @@ Apache Royale Compiler 0.9.13
 - compiler: Fixed `rgb()` and `rgba()` parsing in CSS.
 - compiler: Fixed generation of selectors for some component class names in CSS.
 - compiler: Fixed parsing of CSS attribute selectors to require both operator and value, if either is present (both may still be omitted).
+- compiler: Fixed parsing of CSS attribute selectors that use an indentifier instead of a string.
 - compiler: Fixed `not` and other function-like pseudo-classes being allowed as identifiers in CSS.
 - compiler: Fixed problem not getting reported when `<fx:Component>` specifies a `className` that isn't an ActionScript identifier.
 - compiler: Fixed `<fx:Component>` class being unable to access `internal` fields in the same package, like the Flex SDK compiler.
@@ -59,6 +60,7 @@ Apache Royale Compiler 0.9.13
 - compiler: Fixed `js-vector-emulation-class` being ignored for `is` and `as` operators, and certain casts.
 - compiler: Fixed `as *` incorrectly emitting `*` in JS, which doesn't exist.
 - compiler: Optimized tracking of used qnames by using a set instead of a list.
+- compiler: Tests may be optionally run using Adobe AIR instead of Adobe Flash Player.
 - debugger: Added missing isolate ID to SWF load and unload events.
 - debugger: Fixed debugger targeting the current JDK version instead of the intended minimum JDK version.
 - debugger: Fixed localized messages appearing as unprocessed tokens.
@@ -68,6 +70,8 @@ Apache Royale Compiler 0.9.13
 - externc: Fixed some warnings about returning `null` for certain core types.
 - externc: Fixed incorrectly returning empty string instead of `null` for `String` type.
 - externc: Fixed inconsistent creation of output directories based on file system case sensitivity.
+- externc: Fixed some classes that should have been `dynamic`, but were not.
+- externc: Fixed type of fields in classes where the field is defined on an implemented interface.
 - formatter: Added `indent-package-contents` option to match Flash Builder formatter option.
 - formatter: Added `indent-switch-contents` option to match Flash Builder formatter option.
 - formatter: Added `mxml-indent-cdata` option to match Flash Builder formatter option.
@@ -86,6 +90,8 @@ Apache Royale Compiler 0.9.13
 - formatter, linter: Fixed incorrect end line and end column on generated whitespace or extra tokens.
 - linter: Optimized performance of handling `// @linteroff` and `// @linteron` comments.
 - linter: Optimized performance of finding nearest token to location by using binary search.
+- royaleunit: Detect ADL and ADT using `AIR_HOME` environment variable, if not found in `ROYALE_HOME`.
+- royaleunit: Fixed detection of Adobe AIR version when major version has two digits.
 
 Apache Royale Compiler 0.9.12
 =============================
