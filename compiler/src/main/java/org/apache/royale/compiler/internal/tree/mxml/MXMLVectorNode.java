@@ -32,6 +32,7 @@ import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.AppliedVectorDefinitionFactory;
+import org.apache.royale.compiler.definitions.IAppliedVectorDefinition;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
@@ -241,11 +242,13 @@ class MXMLVectorNode extends MXMLInstanceNode implements IMXMLVectorNode
         RoyaleProject project = builder.getProject();
 
         ITypeDefinition typeDef = defaultPropertyDefinition.resolveType(project);
-        
-        String typeName = typeDef.getQualifiedName();
-        typeName = typeName.replace(".<", DOT_LESS_THAN_ESCAPED);
-        typeName = typeName.replace(">", GREATER_THAN_ESCAPED);
-        type = (ITypeDefinition)resolveElementType(typeName, project);
+        if (typeDef instanceof IAppliedVectorDefinition)
+        {
+            IAppliedVectorDefinition vectorTypeDef = (IAppliedVectorDefinition) typeDef;
+            type = vectorTypeDef.resolveElementType(project);
+        }
+        // TODO: what if it is not an applied vector definition?
+        // TODO: what it if is different than the "type" attribute?
         
         // Set the location of the implicit array node
         // to span the tags that specify the default property value.
