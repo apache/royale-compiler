@@ -57,6 +57,7 @@ import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLClassReferenceNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLEventSpecifierNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLInstanceNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLSpecifierNode;
@@ -112,6 +113,9 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
      * supporting deferred instantiation.
      */
     private boolean isDeferredInstantiationUIComponent = false;
+
+    private String containerInterface;
+    private String uiComponentInterface;
 
     /**
      * The child nodes of this node. For {@code MXMLInstanceNode} the children
@@ -283,8 +287,10 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
 
         // Keep track of whether the class implements mx.core.IContainer,
         // because that affects code generation.
-        String containerInterface = project.getContainerInterface();
+        containerInterface = project.getContainerInterface();
         isContainer = classReference.isInstanceOf(containerInterface, project);
+
+        uiComponentInterface = project.getUIComponentInterface();
 
         // Keep track of whether the class implements mx.core.IDeferredInstantiationUIComponent
         // because that affects code generation.
@@ -489,34 +495,51 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
             {
                 // Handle child tags that are instance tags.
 
-                IVariableDefinition defaultPropertyDefinition = getDefaultPropertyDefinition(builder);
-                if (defaultPropertyDefinition != null)
-                {
-                	if (processedDefaultProperty)
-                	{
-                		MXMLDuplicateChildTagProblem problem = new MXMLDuplicateChildTagProblem(childTag);
-                        problem.childTag = defaultPropertyDefinition.getBaseName();
-                        problem.element = tag.getShortName();
-                        builder.addProblem(problem);
-                        return ;
-                	}
-                	else
-                	{
-	                    // Since there is a default property and we haven't already processed it,
-	                    // assume this child instance tag is part of its value.
-	                    processDefaultPropertyContentUnit(builder, childTag, info);
-                	}
-                }
-                else
+                if (isMXML2006Declaration(childTag, definition, builder))
                 {
                     // This tag is not part of the default property value.
                     processNonDefaultPropertyContentUnit(builder, info, tag);
 
-                    MXMLInstanceNode instanceNode = MXMLInstanceNode.createInstanceNode(
-                            builder, definition.getQualifiedName(), this);
-                    instanceNode.setClassReference(project, (IClassDefinition)definition); // TODO Move this logic to initializeFromTag().
-                    instanceNode.initializeFromTag(builder, childTag);
-                    info.addChildNode(instanceNode);
+                    // MXML 2006 doesn't have an fx:Declarations tag, but we can
+                    // still add a declarations node to the AST to help make
+                    // declarations easier for the emitters to detect. -JT
+                    MXMLDeclarationsNode declarationsNode = new MXMLDeclarationsNode(this);
+                    MXMLNodeInfo declarationsInfo = declarationsNode.createNodeInfo(builder);
+                    declarationsNode.processChildTag(builder, null, childTag, declarationsInfo);
+                    declarationsNode.initializationComplete(builder, null, declarationsInfo);
+                    info.addChildNode(declarationsNode);
+                }
+                else
+                {
+                    IVariableDefinition defaultPropertyDefinition = getDefaultPropertyDefinition(builder);
+                    if (defaultPropertyDefinition != null)
+                    {
+                        if (processedDefaultProperty)
+                        {
+                            MXMLDuplicateChildTagProblem problem = new MXMLDuplicateChildTagProblem(childTag);
+                            problem.childTag = defaultPropertyDefinition.getBaseName();
+                            problem.element = tag.getShortName();
+                            builder.addProblem(problem);
+                            return ;
+                        }
+                        else
+                        {
+                            // Since there is a default property and we haven't already processed it,
+                            // assume this child instance tag is part of its value.
+                            processDefaultPropertyContentUnit(builder, childTag, info);
+                        }
+                    }
+                    else
+                    {
+                        // This tag is not part of the default property value.
+                        processNonDefaultPropertyContentUnit(builder, info, tag);
+
+                        MXMLInstanceNode instanceNode = MXMLInstanceNode.createInstanceNode(
+                                builder, definition.getQualifiedName(), this);
+                        instanceNode.setClassReference(project, (IClassDefinition)definition); // TODO Move this logic to initializeFromTag().
+                        instanceNode.initializeFromTag(builder, childTag);
+                        info.addChildNode(instanceNode);   
+                    }
                 }
             }
             else
@@ -849,6 +872,38 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
         sb.append('"');
         sb.append(getName());
         sb.append('"');
+
+        return true;
+    }
+
+    protected boolean isMXML2006Declaration(IMXMLTagData childTag, IDefinition definition, MXMLTreeBuilder builder)
+    {
+        if (!MXMLDialect.MXML_2006.equals(builder.getMXMLDialect()))
+        {
+            return false;
+        }
+
+        IMXMLTagData rootTag = builder.getMXMLData().getRootTag();
+        if (rootTag == null || !rootTag.equals(childTag.getParentTag()))
+        {
+            // declarations must be direct children of the root tag
+            return false;
+        }
+
+        IDefinition rootDef = builder.getFileScope().resolveTagToDefinition(rootTag);
+        if (rootDef instanceof IClassDefinition
+            && ((IClassDefinition)rootDef).isInstanceOf(containerInterface, builder.getProject())
+            && definition instanceof IClassDefinition)
+        {
+            IClassDefinition childClassDef = (IClassDefinition) definition;
+            if (childClassDef != null
+                    && childClassDef.isInstanceOf(uiComponentInterface, builder.getProject()))
+            {
+                // this child is added to the display list instead of being
+                // treated as a declaration
+                return false;
+            }
+        }
 
         return true;
     }

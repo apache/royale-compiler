@@ -307,6 +307,13 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
      * Currently this is "mx.core.IContainer".
      */
     private String containerInterface;
+
+    /**
+     * The fully-qualified name of the runtime interface
+     * for MX UI components.
+     * Currently this is "mx.core.IUIComponent".
+     */
+    private String uiComponentInterface;
     
     /**
      * The fully-qualified name of the runtime interface
@@ -813,6 +820,16 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     public void setContainerInterface(String containerInterface)
     {
         this.containerInterface = containerInterface;
+    }
+    
+    public String getUIComponentInterface()
+    {
+        return uiComponentInterface;
+    }
+    
+    public void setUIComponentInterface(String uiComponentInterface)
+    {
+        this.uiComponentInterface = uiComponentInterface;
     }
 
     public String getVisualElementContainerInterface()

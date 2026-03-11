@@ -163,6 +163,7 @@ public class RoyaleProjectConfigurator extends Configurator
         project.setMXMLObjectInterface(IMXMLTypeConstants.IMXMLObject);
         project.setContainerInterface(IMXMLTypeConstants.IContainer);
         project.setVisualElementContainerInterface(IMXMLTypeConstants.IVisualElementContainer);
+        project.setUIComponentInterface(IMXMLTypeConstants.IUIComponent);
         project.setResourceBundleClass(IMXMLTypeConstants.ResourceBundle);
         project.setResourceManagerClass(IMXMLTypeConstants.ResourceManager);
         project.setResourceModuleBaseClass(IMXMLTypeConstants.ResourceModuleBase);

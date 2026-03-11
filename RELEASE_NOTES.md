@@ -61,6 +61,7 @@ Apache Royale Compiler 0.9.13
 - compiler: Fixed `as *` incorrectly emitting `*` in JS, which doesn't exist.
 - compiler: Optimized tracking of used qnames by using a set instead of a list.
 - compiler: Tests may be optionally run using Adobe AIR instead of Adobe Flash Player.
+- compiler: Fixed top-level children failing to be detected as declarations in MXML 2006 namespace.
 - debugger: Added missing isolate ID to SWF load and unload events.
 - debugger: Fixed debugger targeting the current JDK version instead of the intended minimum JDK version.
 - debugger: Fixed localized messages appearing as unprocessed tokens.
