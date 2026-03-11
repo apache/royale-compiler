@@ -90,7 +90,6 @@ import org.apache.royale.compiler.internal.tree.as.MemberAccessExpressionNode;
 import org.apache.royale.compiler.internal.tree.as.VariableNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLDocumentNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLFileNode;
-import org.apache.royale.compiler.internal.tree.mxml.MXMLFunctionNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLBindingNode;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
 import org.apache.royale.compiler.problems.FileNotFoundProblem;
@@ -3237,6 +3236,20 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     }
 
     @Override
+    public void emitVector(IMXMLVectorNode node)
+    {
+    	if (node.getParent().getNodeID() == ASTNodeID.MXMLDeclarationsID)
+    	{
+    		primitiveDeclarationNodes.add(node);
+    		return;
+    	}
+
+        // TODO: implement <fx:Vector/>
+
+        super.emitVector(node);
+    }
+
+    @Override
     public void emitBoolean(IMXMLBooleanNode node)
     {
     	if (node.getParent().getNodeID() == ASTNodeID.MXMLDeclarationsID)
@@ -3768,6 +3781,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     @SuppressWarnings("incomplete-switch")
 	private void emitComplexInitializers(IASNode node)
     {
+        RoyaleJSProject fjp = (RoyaleJSProject) getMXMLWalker().getProject();
         boolean wroteSelf = false;
         int n = node.getChildCount();
     	for (int i = 0; i < n; i++)
@@ -3900,6 +3914,111 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                             write(instanceToString(valueNode));
                         }
                         write(ASEmitterTokens.SQUARE_CLOSE);
+                        write(ASEmitterTokens.SEMICOLON);
+                    }
+		            break;
+				}
+				case MXMLVectorID:
+				{
+					IMXMLVectorNode vectorNode = (IMXMLVectorNode)declNode;
+                    int m = vectorNode.getChildCount();
+                    boolean isDataBinding = false;
+                    if(m == 1)
+                    {
+                        IASNode child = vectorNode.getChild(0);
+                        isDataBinding = child instanceof IMXMLDataBindingNode;
+                    }
+                    if (!isDataBinding)
+                    {
+                        String elementClassName = formatQualifiedName(vectorNode.getType().getQualifiedName());
+
+                        varname = vectorNode.getEffectiveID();
+                        writeNewline();
+                        write(ASEmitterTokens.THIS);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(varname);
+                        write(ASEmitterTokens.SPACE);
+                        writeToken(ASEmitterTokens.EQUAL);
+
+                        String vectorEmulationClass = null;
+                        String vectorEmulationLiteralFunction = null;
+                        boolean vectorEmulationElementTypes = true;
+                        if (fjp.config != null)
+                        {
+                            vectorEmulationClass = fjp.config.getJsVectorEmulationClass();
+                            vectorEmulationLiteralFunction = fjp.config.getJsVectorEmulationLiteralFunction();
+                            vectorEmulationElementTypes = fjp.config.getJsVectorEmulationElementTypes();
+                        }
+
+                        if (vectorEmulationLiteralFunction != null)
+                        {
+                            write(vectorEmulationLiteralFunction);
+                            write(ASEmitterTokens.PAREN_OPEN);
+                        }
+                        else if (vectorEmulationClass != null)
+                        {
+                            if (!vectorEmulationClass.equals(IASLanguageConstants.Array))
+                            {
+                                //Explanation:
+                                //this was how it was originally set up, but it assumes the constructor of the emulation
+                                //class can handle first argument being an Array or numeric value...
+                                writeToken(ASEmitterTokens.NEW);
+                                write(vectorEmulationClass);
+                                write(ASEmitterTokens.PAREN_OPEN);
+                            }
+                            // otherwise.... if 'Array' is the emulation class, then just use the literal content
+                        }
+                        else
+                        {
+                            //no 'new' output in this case, just coercion, so map from the start of 'new'
+                            write(formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()));
+                            write(ASEmitterTokens.MEMBER_ACCESS);
+                            write(JSRoyaleEmitterTokens.SYNTH_VECTOR);
+                            write(ASEmitterTokens.PAREN_OPEN);
+                            write(ASEmitterTokens.SINGLE_QUOTE);
+                            //the element type of the Vector:
+                            write(elementClassName);
+                            write(ASEmitterTokens.SINGLE_QUOTE);
+                            write(ASEmitterTokens.PAREN_CLOSE);
+                            write(ASEmitterTokens.SQUARE_OPEN);
+                            write(ASEmitterTokens.SINGLE_QUOTE);
+                            write("coerce");
+                            write(ASEmitterTokens.SINGLE_QUOTE);
+                            write(ASEmitterTokens.SQUARE_CLOSE);
+                            write(ASEmitterTokens.PAREN_OPEN);
+                        }
+
+                        write(ASEmitterTokens.SQUARE_OPEN);
+                        boolean firstOne = true;
+                        for (int j = 0; j < m; j++)
+                        {
+                            IMXMLInstanceNode valueNode = (IMXMLInstanceNode)(vectorNode.getChild(j));
+                            if (firstOne)
+                                firstOne = false;
+                            else
+                                writeToken(ASEmitterTokens.COMMA);
+                            write(instanceToString(valueNode));
+                        }
+                        write(ASEmitterTokens.SQUARE_CLOSE);
+
+                        if (vectorEmulationClass != null)
+                        {
+                            if (!vectorEmulationClass.equals(IASLanguageConstants.Array))
+                            {
+                                if (vectorEmulationElementTypes)
+                                {
+                                    writeToken(ASEmitterTokens.COMMA);
+                                    write(ASEmitterTokens.SINGLE_QUOTE);
+                                    write(elementClassName);
+                                    write(ASEmitterTokens.SINGLE_QUOTE);
+                                }
+                                write(ASEmitterTokens.PAREN_CLOSE);
+                            }
+                        }
+                        else
+                        {
+                            write(ASEmitterTokens.PAREN_CLOSE);
+                        }
                         write(ASEmitterTokens.SEMICOLON);
                     }
 		            break;
@@ -4068,6 +4187,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
     private String instanceToString(IMXMLInstanceNode instanceNode)
     {
+        RoyaleJSProject fjp = (RoyaleJSProject) getMXMLWalker().getProject();
     	if (instanceNode instanceof IMXMLStringNode)
     	{
     		IMXMLStringNode stringNode = (IMXMLStringNode)instanceNode;
@@ -4133,6 +4253,102 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	            sb.append(instanceToString(valueNode));
             }
             sb.append(ASEmitterTokens.SQUARE_CLOSE.getToken());
+            return sb.toString();
+    	}
+    	else if (instanceNode instanceof IMXMLVectorNode)
+    	{
+    		IMXMLVectorNode vectorNode = (IMXMLVectorNode)instanceNode;
+            StringBuilder sb = new StringBuilder();
+
+            String elementClassName = formatQualifiedName(vectorNode.getType().getQualifiedName());
+
+            String vectorEmulationClass = null;
+            String vectorEmulationLiteralFunction = null;
+            boolean vectorEmulationElementTypes = true;
+            if (fjp.config != null)
+            {
+                vectorEmulationClass = fjp.config.getJsVectorEmulationClass();
+                vectorEmulationLiteralFunction = fjp.config.getJsVectorEmulationLiteralFunction();
+                vectorEmulationElementTypes = fjp.config.getJsVectorEmulationElementTypes();
+            }
+
+            if (vectorEmulationLiteralFunction != null)
+            {
+                sb.append(vectorEmulationLiteralFunction);
+                sb.append(ASEmitterTokens.PAREN_OPEN.getToken());
+            }
+            else if (vectorEmulationClass != null)
+            {
+                if (!vectorEmulationClass.equals(IASLanguageConstants.Array))
+                {
+                    //Explanation:
+                    //this was how it was originally set up, but it assumes the constructor of the emulation
+                    //class can handle first argument being an Array or numeric value...
+                    sb.append(ASEmitterTokens.NEW.getToken());
+                    sb.append(vectorEmulationClass);
+                    sb.append(ASEmitterTokens.PAREN_OPEN.getToken());
+                }
+                // otherwise.... if 'Array' is the emulation class, then just use the literal content
+            }
+            else
+            {
+                //no 'new' output in this case, just coercion, so map from the start of 'new'
+                sb.append(formatQualifiedName(JSRoyaleEmitterTokens.LANGUAGE_QNAME.getToken()));
+                sb.append(ASEmitterTokens.MEMBER_ACCESS.getToken());
+                sb.append(JSRoyaleEmitterTokens.SYNTH_VECTOR.getToken());
+                sb.append(ASEmitterTokens.PAREN_OPEN.getToken());
+                sb.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+                //the element type of the Vector:
+                sb.append(elementClassName);
+                sb.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+                sb.append(ASEmitterTokens.PAREN_CLOSE.getToken());
+                sb.append(ASEmitterTokens.SQUARE_OPEN.getToken());
+                sb.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+                sb.append("coerce");
+                sb.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+                sb.append(ASEmitterTokens.SQUARE_CLOSE.getToken());
+                sb.append(ASEmitterTokens.PAREN_OPEN.getToken());
+            }
+
+            sb.append(ASEmitterTokens.SQUARE_OPEN.getToken());
+            int m = vectorNode.getChildCount();
+        	boolean firstOne = true;
+            for (int j = 0; j < m; j++)
+            {
+	            IMXMLInstanceNode valueNode = (IMXMLInstanceNode)(vectorNode.getChild(j));
+            	if (firstOne)
+                {
+            		firstOne = false;
+                }
+            	else
+                {
+            		sb.append(ASEmitterTokens.COMMA.getToken());
+            		sb.append(ASEmitterTokens.SPACE.getToken());
+                }
+	            sb.append(instanceToString(valueNode));
+            }
+            sb.append(ASEmitterTokens.SQUARE_CLOSE.getToken());
+
+            if (vectorEmulationClass != null)
+            {
+                if (!vectorEmulationClass.equals(IASLanguageConstants.Array))
+                {
+                    if (vectorEmulationElementTypes)
+                    {
+                        sb.append(ASEmitterTokens.COMMA.getToken());
+                        sb.append(ASEmitterTokens.SPACE.getToken());
+                        sb.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+                        sb.append(elementClassName);
+                        sb.append(ASEmitterTokens.SINGLE_QUOTE.getToken());
+                    }
+                    sb.append(ASEmitterTokens.PAREN_CLOSE.getToken());
+                }
+            }
+            else
+            {
+                sb.append(ASEmitterTokens.PAREN_CLOSE.getToken());
+            }
+
             return sb.toString();
     	}
     	else if ((instanceNode instanceof IMXMLIntNode) ||
