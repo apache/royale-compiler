@@ -3205,7 +3205,11 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             final IASNode child = node.getChild(i);
             ASTNodeID nodeID = child.getNodeID();
 			//a single <fx:Object> inside an array also makes it non-simple (@todo test mixed simple and non-simple)
-            if (nodeID == ASTNodeID.MXMLArrayID || nodeID == ASTNodeID.MXMLInstanceID || nodeID == ASTNodeID.MXMLObjectID || nodeID == ASTNodeID.MXMLStateID)
+            if (nodeID == ASTNodeID.MXMLArrayID
+                    || nodeID == ASTNodeID.MXMLVectorID
+                    || nodeID == ASTNodeID.MXMLInstanceID
+                    || nodeID == ASTNodeID.MXMLObjectID
+                    || nodeID == ASTNodeID.MXMLStateID)
             {
                 isSimple = false;
                 break;
