@@ -37,13 +37,16 @@ import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.mxml.IMXMLTagData;
 import org.apache.royale.compiler.mxml.IMXMLTextData;
+import org.apache.royale.compiler.mxml.IMXMLTypeConstants;
 import org.apache.royale.compiler.mxml.IMXMLUnitData;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.MXMLIncompatibleArrayElementProblem;
 import org.apache.royale.compiler.problems.MXMLUnexpectedTagProblem;
 import org.apache.royale.compiler.problems.MXMLUnresolvedTagProblem;
 import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLArrayNode;
+import org.apache.royale.compiler.tree.mxml.IMXMLDesignLayerNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLNode;
 import org.apache.royale.compiler.tree.mxml.IMXMLPropertySpecifierNode;
 
@@ -138,9 +141,11 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
         IDefinition definition = project.getScope().findDefinitionByName(tagName);
         if (definition instanceof IClassDefinition)
         {
+            IClassDefinition classDefinition = (IClassDefinition)definition;
+
             MXMLInstanceNode instanceNode =
                     MXMLInstanceNode.createInstanceNode(builder, tagName, this);
-            instanceNode.setClassReference(project, (IClassDefinition)definition); // TODO Move this logic to initializeFromTag().
+            instanceNode.setClassReference(project, classDefinition); // TODO Move this logic to initializeFromTag().
             instanceNode.initializeFromTag(builder, childTag);
             info.addChildNode(instanceNode);
 
@@ -148,7 +153,11 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
             // the [ArrayElementType] of the property of type Array that's being set.
             if (arrayElementType != null)
             {
-                if (!((IClassDefinition)definition).isInstanceOf(arrayElementType, project))
+                if (instanceNode instanceof IMXMLDesignLayerNode)
+                {
+                    validateArrayElementTypeForDesignLayer(builder, childTag, arrayElementType, project);
+                }
+                else if (!classDefinition.isInstanceOf(arrayElementType, project))
                 {
                     ICompilerProblem problem = new MXMLIncompatibleArrayElementProblem(
                             childTag, propertyName, arrayElementType, definition.getQualifiedName());
@@ -246,9 +255,10 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
                     IDefinition definition = builder.getFileScope().resolveTagToDefinition(tag);
                     if (definition instanceof IClassDefinition)
                     {
+                        IClassDefinition classDefinition = (IClassDefinition)definition;
                         MXMLInstanceNode childNode = MXMLInstanceNode.createInstanceNode(
                                 builder, definition.getQualifiedName(), this);
-                        childNode.setClassReference(project, (IClassDefinition)definition); // TODO Move this logic to initializeFromTag().
+                        childNode.setClassReference(project, classDefinition); // TODO Move this logic to initializeFromTag().
                         childNode.initializeFromTag(builder, tag);
                         children.add(childNode);
 
@@ -256,7 +266,11 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
                         // the [ArrayElementType] of the property of type Array that's being set.
                         if (arrayElementType != null)
                         {
-                            if (!((IClassDefinition)definition).isInstanceOf(arrayElementType, project))
+                            if (childNode instanceof IMXMLDesignLayerNode)
+                            {
+                                validateArrayElementTypeForDesignLayer(builder, tag, arrayElementType, project);
+                            }
+                            else if (!classDefinition.isInstanceOf(arrayElementType, project))
                             {
                                 ICompilerProblem problem = new MXMLIncompatibleArrayElementProblem(
                                     tag, propertyName, arrayElementType, definition.getQualifiedName());
@@ -272,6 +286,34 @@ class MXMLArrayNode extends MXMLInstanceNode implements IMXMLArrayNode
             }
         }
         setChildren(children.toArray(new IMXMLNode[0]));
+    }
+
+    private void validateArrayElementTypeForDesignLayer(MXMLTreeBuilder builder, IMXMLTagData tag, String arrayElementType, RoyaleProject project)
+    {
+        IMXMLTagData childTag = tag.getFirstChild(true);
+        while (childTag != null)
+        {
+            IDefinition definition = builder.getFileScope().resolveTagToDefinition(childTag);
+            if (definition instanceof IClassDefinition)
+            {
+                IClassDefinition classDefinition = (IClassDefinition)definition;
+                if (classDefinition.isInstanceOf(IMXMLTypeConstants.DesignLayer, project))
+                {
+                    validateArrayElementTypeForDesignLayer(builder, childTag, arrayElementType, project);
+                }
+                else if (!classDefinition.isInstanceOf(arrayElementType, project))
+                {
+                    ICompilerProblem problem = new MXMLIncompatibleArrayElementProblem(
+                        childTag, propertyName, arrayElementType, definition.getQualifiedName());
+                    builder.addProblem(problem);
+                }
+            }
+            else
+            {
+                builder.getProblems().add(new MXMLUnresolvedTagProblem(childTag));
+            }
+            childTag = childTag.getNextSibling(true);
+        }
     }
 
     public void initialize(MXMLTreeBuilder builder, ISourceLocation location,
