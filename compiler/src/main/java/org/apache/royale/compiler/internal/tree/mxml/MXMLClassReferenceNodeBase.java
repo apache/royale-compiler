@@ -47,6 +47,7 @@ import org.apache.royale.compiler.internal.tree.as.NodeBase;
 import org.apache.royale.compiler.mxml.IMXMLTagAttributeData;
 import org.apache.royale.compiler.mxml.IMXMLTagData;
 import org.apache.royale.compiler.mxml.IMXMLTextData;
+import org.apache.royale.compiler.mxml.IMXMLTypeConstants;
 import org.apache.royale.compiler.mxml.IMXMLUnitData;
 import org.apache.royale.compiler.parsing.MXMLTokenTypes;
 import org.apache.royale.compiler.problems.ICompilerProblem;
@@ -114,6 +115,12 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
      * supporting deferred instantiation.
      */
     private boolean isDeferredInstantiationUIComponent = false;
+
+    /**
+     * A flag that keeps track of whether the node represents a design layer
+     * (i.e., an mx.core.DesignLayer).
+     */
+    private boolean isDesignLayer = false;
 
     private String containerInterface;
     private String uiComponentInterface;
@@ -267,6 +274,11 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
         return isDeferredInstantiationUIComponent;
     }
 
+    private boolean isDesignLayer()
+    {
+        return isDesignLayer;
+    }
+
     /**
      * Sets the definition of the ActionScript class to which this node refers.
      */
@@ -292,6 +304,8 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
         isContainer = classReference.isInstanceOf(containerInterface, project);
 
         uiComponentInterface = project.getUIComponentInterface();
+
+        isDesignLayer = classReference.isInstanceOf(IMXMLTypeConstants.DesignLayer, project);
 
         // Keep track of whether the class implements mx.core.IDeferredInstantiationUIComponent
         // because that affects code generation.
@@ -492,7 +506,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
         else
         {
             IDefinition definition = builder.getFileScope().resolveTagToDefinition(childTag);
-            if (definition instanceof ClassDefinition)
+            if (definition instanceof IClassDefinition)
             {
                 // Handle child tags that are instance tags.
                 IClassDefinition classDefinition = (IClassDefinition) definition;
@@ -533,7 +547,8 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
                     }
                     else
                     {
-                        if (isContainer() && classDefinition.isInstanceOf(uiComponentInterface, builder.getProject()))
+                        if (isDesignLayer()
+                                || (isContainer() && classDefinition.isInstanceOf(uiComponentInterface, builder.getProject())))
                         {
                             // This tag is not part of the default property value.
                             processNonDefaultPropertyContentUnit(builder, info, tag);
