@@ -51,6 +51,7 @@ import org.apache.royale.compiler.mxml.IMXMLUnitData;
 import org.apache.royale.compiler.parsing.MXMLTokenTypes;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.MXMLDuplicateChildTagProblem;
+import org.apache.royale.compiler.problems.MXMLUnexpectedTagProblem;
 import org.apache.royale.compiler.problems.MXMLUnresolvedTagProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -494,8 +495,9 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
             if (definition instanceof ClassDefinition)
             {
                 // Handle child tags that are instance tags.
+                IClassDefinition classDefinition = (IClassDefinition) definition;
 
-                if (isMXML2006Declaration(childTag, definition, builder))
+                if (isMXML2006Declaration(childTag, classDefinition, builder))
                 {
                     // This tag is not part of the default property value.
                     processNonDefaultPropertyContentUnit(builder, info, tag);
@@ -531,14 +533,23 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
                     }
                     else
                     {
-                        // This tag is not part of the default property value.
-                        processNonDefaultPropertyContentUnit(builder, info, tag);
+                        if (isContainer() && classDefinition.isInstanceOf(uiComponentInterface, builder.getProject()))
+                        {
+                            // This tag is not part of the default property value.
+                            processNonDefaultPropertyContentUnit(builder, info, tag);
 
-                        MXMLInstanceNode instanceNode = MXMLInstanceNode.createInstanceNode(
-                                builder, definition.getQualifiedName(), this);
-                        instanceNode.setClassReference(project, (IClassDefinition)definition); // TODO Move this logic to initializeFromTag().
-                        instanceNode.initializeFromTag(builder, childTag);
-                        info.addChildNode(instanceNode);   
+                            MXMLInstanceNode instanceNode = MXMLInstanceNode.createInstanceNode(
+                                    builder, definition.getQualifiedName(), this);
+                            instanceNode.setClassReference(project, (IClassDefinition)definition); // TODO Move this logic to initializeFromTag().
+                            instanceNode.initializeFromTag(builder, childTag);
+                            info.addChildNode(instanceNode);   
+                        }
+                        else
+                        {
+                            // no default property, and not an IUIComponent
+                            // inside an IContainer.
+                            builder.getProblems().add(new MXMLUnexpectedTagProblem(childTag));
+                        }
                     }
                 }
             }
