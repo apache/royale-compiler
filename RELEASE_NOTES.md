@@ -62,6 +62,10 @@ Apache Royale Compiler 0.9.13
 - compiler: Optimized tracking of used qnames by using a set instead of a list.
 - compiler: Tests may be optionally run using Adobe AIR instead of Adobe Flash Player.
 - compiler: Fixed top-level children failing to be detected as declarations in MXML 2006 namespace.
+- compiler: Fixed validation of MXML `<fx:DesignLayer>` when used with `[ArrayElementType]`.
+- compiler: Added basic implementation of `-children-as-data=false` for JavaScript.
+- compiler: Fixed invalid MXML children sometimes getting ignored completely. Now reports an appropriate error.
+- compiler: Fixed MXML `<fx:Vector>` not being emitted to JavaScript.
 - debugger: Added missing isolate ID to SWF load and unload events.
 - debugger: Fixed debugger targeting the current JDK version instead of the intended minimum JDK version.
 - debugger: Fixed localized messages appearing as unprocessed tokens.
