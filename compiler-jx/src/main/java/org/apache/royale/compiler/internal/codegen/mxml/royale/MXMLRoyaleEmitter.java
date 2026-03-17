@@ -5117,6 +5117,11 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         {
             for (IMXMLPropertySpecifierNode pnode : pnodes)
             {
+                IMXMLInstanceNode valueNode = (IMXMLInstanceNode) pnode.getChild(0);
+                if (valueNode instanceof IMXMLDataBindingNode)
+                {
+                    continue;
+                }
                 if (pnode instanceof IMXMLStyleSpecifierNode)
                 {
                     write(varName);
@@ -5129,7 +5134,6 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                     writeToken(ASEmitterTokens.COMMA);
                     write(ASEmitterTokens.THIS);
                     write(ASEmitterTokens.MEMBER_ACCESS);
-                    IMXMLInstanceNode valueNode = (IMXMLInstanceNode) pnode.getChild(0);
                     emitValueOrFactoryMethodCall(valueNode);
                     write(ASEmitterTokens.PAREN_CLOSE);
                     write(ASEmitterTokens.SEMICOLON);
@@ -5142,7 +5146,6 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                     write(pnode.getName());
                     write(ASEmitterTokens.SPACE);
                     writeToken(ASEmitterTokens.EQUAL);
-                    IMXMLInstanceNode valueNode = (IMXMLInstanceNode) pnode.getChild(0);
                     emitValueOrFactoryMethodCall(valueNode);
                     write(ASEmitterTokens.SEMICOLON);
                     writeNewline();
