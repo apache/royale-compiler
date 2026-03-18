@@ -66,6 +66,8 @@ Apache Royale Compiler 1.0.0
 - compiler: Added basic implementation of `-children-as-data=false` for JavaScript.
 - compiler: Fixed invalid MXML children sometimes getting ignored completely. Now reports an appropriate error.
 - compiler: Fixed MXML `<fx:Vector>` not being emitted to JavaScript.
+- compiler: Fixed property assignment in MXML factory methods when using data binding.
+- compiler: Fixed `<fx:DesignLayer>` allowing children without `[DefaultProperty]` metadata.
 - debugger: Added missing isolate ID to SWF load and unload events.
 - debugger: Fixed debugger targeting the current JDK version instead of the intended minimum JDK version.
 - debugger: Fixed localized messages appearing as unprocessed tokens.
@@ -76,6 +78,9 @@ Apache Royale Compiler 1.0.0
 - externc: Fixed incorrectly returning empty string instead of `null` for `String` type.
 - externc: Fixed inconsistent creation of output directories based on file system case sensitivity.
 - externc: Fixed some classes that should have been `dynamic`, but were not.
+- externc: Added list of top-level classes that should be `final`.
+- externc: Fixed detection of super method/field when it is excluded.
+- externc: Improved search for field and method overrides from interfaces.
 - externc: Fixed type of fields in classes where the field is defined on an implemented interface.
 - formatter: Added `indent-package-contents` option to match Flash Builder formatter option.
 - formatter: Added `indent-switch-contents` option to match Flash Builder formatter option.
