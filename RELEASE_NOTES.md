@@ -1,7 +1,7 @@
 For additional information on recent issues that have been closed, see [Github Issues List](https://github.com/apache/royale-compiler/issues?q=is%3Aissue+is%3Aclosed)
 
-Apache Royale Compiler 0.9.13
-=============================
+Apache Royale Compiler 1.0.0
+============================
 
 - compiler: Added _arrow function_ syntax, similar to JavaScript. Example: `var f:Function = (x:Object) => x.toString();`
 - compiler: Added _function type expression_ syntax, similar to TypeScript, to allow stricter checking of signatures, including parameters and return types. Compile-time only with conversion to `Function` at run-time. Example: `var f:(x:String, y?:Number, ...rest)=>void;`

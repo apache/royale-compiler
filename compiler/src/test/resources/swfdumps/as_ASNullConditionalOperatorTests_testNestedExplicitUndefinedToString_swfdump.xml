@@ -26,7 +26,7 @@
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <rdf:Description xmlns:dc="http://purl.org/dc/elements/1.1" xmlns:asc="http://ns.adobe.com/asc/2012">
         <dc:format>application/x-shockwave-flash</dc:format>
-        <asc:compiler name="Apache Royale Compiler" version="0.9.13" build="0"/>
+        <asc:compiler name="Apache Royale Compiler" version="1.0.0" build="0"/>
     </rdf:Description>
 </rdf:RDF>
 ]]>
