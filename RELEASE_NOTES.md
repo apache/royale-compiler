@@ -68,6 +68,7 @@ Apache Royale Compiler 1.0.0
 - compiler: Fixed MXML `<fx:Vector>` not being emitted to JavaScript.
 - compiler: Fixed property assignment in MXML factory methods when using data binding.
 - compiler: Fixed `<fx:DesignLayer>` allowing children without `[DefaultProperty]` metadata.
+- compiler: Added `${mainClass}` token to HTML template replacement.
 - debugger: Added missing isolate ID to SWF load and unload events.
 - debugger: Fixed debugger targeting the current JDK version instead of the intended minimum JDK version.
 - debugger: Fixed localized messages appearing as unprocessed tokens.

@@ -952,6 +952,7 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
         //result = result.replaceAll("\\$\\{expressInstallSwf\\}", expressInstallSwf);
         if (height != null)
         	result = result.replaceAll("\\$\\{height\\}", safeReplacement(height.toString()));
+        result = result.replaceAll("\\$\\{mainClass\\}", safeReplacement(mainClassQName));
         if (pageTitle != null)
             result = result.replaceAll("\\$\\{title\\}", safeReplacement(pageTitle));
         //result = result.replaceAll("\\$\\{version_major\\}", versionMajor);
