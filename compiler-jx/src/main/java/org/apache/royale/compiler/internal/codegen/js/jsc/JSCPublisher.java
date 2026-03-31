@@ -39,18 +39,8 @@ public class JSCPublisher extends MXMLRoyalePublisher
     @Override
     protected String getTemplateBody(String mainClassQName)
     {
-        IDefinition def = project.resolveQNameToDefinition(mainClassQName);
-        if (def != null)
-        {
-            IDefinitionNode node = def.getNode();
-            if (node instanceof IMXMLDocumentNode)
-            {
-                //we should probably customize MXML too, but for now, pass it to the
-                //default implementation -JT
-                return super.getTemplateBody(mainClassQName);
-            }
-        }
-        //for ActionScript classes, simply call the constructor by default
+        // simply call the constructor by default
+        // there is no start() method to call
         StringBuilder bodyHTML = new StringBuilder();
         bodyHTML.append("\t<script type=\"text/javascript\">\n");
         bodyHTML.append("\t\tnew ");
