@@ -5139,6 +5139,47 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                     write(ASEmitterTokens.SEMICOLON);
                     writeNewline();
                 }
+                else if (valueNode instanceof IMXMLDeferredInstanceNode)
+                {
+                    RoyaleJSProject fjp = (RoyaleJSProject) getMXMLWalker().getProject();
+
+                    IMXMLDeferredInstanceNode deferredInstanceNode = (IMXMLDeferredInstanceNode) valueNode;
+                    String factoryMethodName = null;
+                    IMXMLInstanceNode instanceNode = deferredInstanceNode.getInstanceNode();
+                    if (instanceNode != null)
+                    {
+                        factoryMethodName = factoryMethodNames.get(instanceNode);
+                    }
+                    if (factoryMethodName != null)
+                    {
+                        write(varName);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(pnode.getName());
+                        write(ASEmitterTokens.SPACE);
+                        writeToken(ASEmitterTokens.EQUAL);
+                        writeToken(ASEmitterTokens.NEW);
+                        String qname = deferredInstanceNode.getClassReference(fjp).getQualifiedName();
+                        write(formatQualifiedName(qname));
+                        write(ASEmitterTokens.PAREN_OPEN);
+
+                        IJSEmitter jsEmitter = (IJSEmitter) walker.getASEmitter();
+                        jsEmitter.emitClosureStart();
+                        write(ASEmitterTokens.THIS);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(factoryMethodName);
+                        writeToken(ASEmitterTokens.COMMA);
+                        write(ASEmitterTokens.THIS);
+                        writeToken(ASEmitterTokens.COMMA);
+                        write(ASEmitterTokens.SINGLE_QUOTE);
+                        write(factoryMethodName);
+                        write(ASEmitterTokens.SINGLE_QUOTE);
+                        write(ASEmitterTokens.PAREN_CLOSE);
+
+                        write(ASEmitterTokens.PAREN_CLOSE);
+                        write(ASEmitterTokens.SEMICOLON);
+                        writeNewline();
+                    }
+                }
                 else
                 {
                     write(varName);
