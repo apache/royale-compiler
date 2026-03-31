@@ -72,6 +72,7 @@ Apache Royale Compiler 1.0.0
 - compiler: Fixed resolution of `[InstanceType]` classes when they are in a package.
 - compiler: JS target doesn't call `start()` for MXML classes, similar to AS3 classes.
 - compiler: Fixed `mx.core.DeferredInstanceFromFunction` not getting emitted when targeting JavaScript.
+- compiler: Fixed intermittent missing `goog.require()` calls when using JS target.
 - debugger: Added missing isolate ID to SWF load and unload events.
 - debugger: Fixed debugger targeting the current JDK version instead of the intended minimum JDK version.
 - debugger: Fixed localized messages appearing as unprocessed tokens.

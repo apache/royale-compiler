@@ -37,10 +37,4 @@ public class MXMLJSCJSEmitter extends MXMLRoyaleEmitter implements
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
-	public String formatQualifiedName(String name)
-    {
-    	return name;
-    }
-
 }
