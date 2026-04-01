@@ -25,6 +25,7 @@ import java.io.FilterWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -93,6 +94,7 @@ import org.apache.royale.compiler.internal.tree.mxml.MXMLDocumentNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLFileNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLBindingNode;
 import org.apache.royale.compiler.mxml.IMXMLLanguageConstants;
+import org.apache.royale.compiler.mxml.IMXMLTypeConstants;
 import org.apache.royale.compiler.problems.FileNotFoundProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.projects.IRoyaleProject;
@@ -901,6 +903,8 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         emitHeader(node);
 
         emitClassDeclStart(cname, node.getBaseClassName(), false);
+
+        emitUIComponentDescriptorForDocument(node);
 
         emitComplexInitializers(node);
 
@@ -5132,8 +5136,6 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                     write(pnode.getName());
                     write(ASEmitterTokens.DOUBLE_QUOTE);
                     writeToken(ASEmitterTokens.COMMA);
-                    write(ASEmitterTokens.THIS);
-                    write(ASEmitterTokens.MEMBER_ACCESS);
                     emitValueOrFactoryMethodCall(valueNode);
                     write(ASEmitterTokens.PAREN_CLOSE);
                     write(ASEmitterTokens.SEMICOLON);
@@ -5285,5 +5287,278 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         writeNewline();
         write(ASEmitterTokens.BLOCK_CLOSE);
         writeNewline(ASEmitterTokens.SEMICOLON);
+    }
+
+    private void emitUIComponentDescriptorForDocument(IMXMLDocumentNode node)
+    {
+        if (!node.needsDocumentDescriptor())
+        {
+            return;
+        }
+
+        write(ASEmitterTokens.THIS);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(JSRoyaleEmitter.formatNamespacedProperty(
+            IMXMLTypeConstants.NAMESPACE_MX_INTERNAL.getName(),
+            "setDocumentDescriptor",
+            false));
+        write(ASEmitterTokens.PAREN_OPEN);
+        emitUIComponentDescriptor(node);
+        write(ASEmitterTokens.PAREN_CLOSE);
+        writeNewline(ASEmitterTokens.SEMICOLON);
+    }
+
+    private void emitUIComponentDescriptor(IMXMLClassReferenceNode node)
+    {
+        if (!node.needsDescriptor())
+        {
+            return;
+        }
+        RoyaleJSProject fjp = (RoyaleJSProject) getMXMLWalker().getProject();
+        writeToken(ASEmitterTokens.NEW);
+        write(formatQualifiedName(fjp.getUIComponentDescriptorClass()));
+        write(ASEmitterTokens.PAREN_OPEN); // start of constructor args
+
+        indentPush();
+        writeNewline(ASEmitterTokens.BLOCK_OPEN);
+
+        // type: mx.containers.HBox
+        write("type");
+        writeToken(ASEmitterTokens.COLON);
+        write(formatQualifiedName(node.getClassReference(fjp).getQualifiedName()));
+
+        // id: "hb1"
+        String id = node instanceof IMXMLInstanceNode ?
+                    ((IMXMLInstanceNode)node).getEffectiveID() :
+                    null;
+        if (id != null)
+        {
+            write(ASEmitterTokens.COMMA);
+            writeNewline();
+            write("id");
+            writeToken(ASEmitterTokens.COLON);
+            write(ASEmitterTokens.DOUBLE_QUOTE);
+            write(id);
+            write(ASEmitterTokens.DOUBLE_QUOTE);
+        }
+
+        emitUIComponentDescriptorProperties(node);
+        emitUIComponentDescriptorStyles(node);
+        emitUIComponentDescriptorEvents(node);
+
+        indentPop();
+        writeNewline();
+        write(ASEmitterTokens.BLOCK_CLOSE);
+        write(ASEmitterTokens.PAREN_CLOSE); // end of constructor args
+    }
+
+    private void emitUIComponentDescriptorProperties(IMXMLClassReferenceNode node)
+    {
+        if (!node.isContainer() && !(node instanceof IMXMLInstanceNode))
+        {
+            return;
+        }
+
+        write(ASEmitterTokens.COMMA);
+        writeNewline();
+
+        write("propertiesFactory");
+        writeToken(ASEmitterTokens.COLON);
+
+        write(ASEmitterTokens.FUNCTION);
+        write(ASEmitterTokens.PAREN_OPEN);
+        writeToken(ASEmitterTokens.PAREN_CLOSE);
+        indentPush();
+        writeNewline(ASEmitterTokens.BLOCK_OPEN);
+        
+        writeToken(ASEmitterTokens.RETURN);
+        indentPush();
+        writeNewline(ASEmitterTokens.BLOCK_OPEN);
+        
+        int childDescriptorCount = 0;
+        if (node.isContainer())
+        {
+            write("childDescriptors");
+            writeToken(ASEmitterTokens.COLON);
+            indentPush();
+            writeNewline(ASEmitterTokens.SQUARE_OPEN);
+
+            // instance nodes not added to declarations will be children
+            for (int i = 0; i < node.getChildCount(); i++)
+            {
+                IASNode childNode = node.getChild(i);
+                if (childNode instanceof IMXMLInstanceNode)
+                {
+                    IMXMLInstanceNode instanceNode = (IMXMLInstanceNode) childNode;
+                    if (childDescriptorCount > 0)
+                    {
+                        write(ASEmitterTokens.COMMA);
+                        writeNewline();
+                    }
+                    childDescriptorCount++;
+                    emitUIComponentDescriptor(instanceNode);
+                }
+            }
+
+            indentPop();
+            writeNewline();
+            write(ASEmitterTokens.SQUARE_CLOSE);
+        }
+
+        if (node instanceof IMXMLInstanceNode)
+        {
+            int actualPropCount = 0;
+            IMXMLPropertySpecifierNode[] propSpecifierNodes = node.getPropertySpecifierNodes();
+            if (propSpecifierNodes != null)
+            {
+                for (IMXMLPropertySpecifierNode propNode : propSpecifierNodes)
+                {
+                    if (propNode instanceof IMXMLStyleSpecifierNode)
+                    {
+                        continue;
+                    }
+                    if (childDescriptorCount > 0 || actualPropCount > 0)
+                    {
+                        write(ASEmitterTokens.COMMA);
+                        writeNewline();
+                    }
+                    actualPropCount++;
+                    write(ASEmitterTokens.DOUBLE_QUOTE);
+                    write(propNode.getName());
+                    write(ASEmitterTokens.DOUBLE_QUOTE);
+                    writeToken(ASEmitterTokens.COLON);
+                    emitValueOrFactoryMethodCall(propNode.getInstanceNode());
+                }
+            }
+        }
+
+        indentPop();
+        writeNewline();
+        write(ASEmitterTokens.BLOCK_CLOSE);
+
+        indentPop();
+        writeNewline(ASEmitterTokens.SEMICOLON);
+
+        write(ASEmitterTokens.BLOCK_CLOSE);
+    }
+
+    private void emitUIComponentDescriptorStyles(IMXMLClassReferenceNode node)
+    {
+        if (!(node instanceof IMXMLInstanceNode))
+        {
+            return;
+        }
+
+        IMXMLPropertySpecifierNode[] propSpecifierNodes = node.getPropertySpecifierNodes();
+        if (propSpecifierNodes == null)
+        {
+            return;
+        }
+        IMXMLStyleSpecifierNode[] styleSpecifierNodes = Arrays.stream(propSpecifierNodes)
+                                    .filter(propNode -> propNode instanceof IMXMLStyleSpecifierNode)
+                                    .toArray(IMXMLStyleSpecifierNode[]::new);
+        if (styleSpecifierNodes.length == 0)
+        {
+            return;
+        }
+
+        write(ASEmitterTokens.COMMA);
+        writeNewline();
+
+        write("stylesFactory");
+        writeToken(ASEmitterTokens.COLON);
+
+        write(ASEmitterTokens.FUNCTION);
+        write(ASEmitterTokens.PAREN_OPEN);
+        writeToken(ASEmitterTokens.PAREN_CLOSE);
+        indentPush();
+        writeNewline(ASEmitterTokens.BLOCK_OPEN);
+
+        for (int i = 0; i < styleSpecifierNodes.length; i++)
+        {
+            IMXMLStyleSpecifierNode styleNode = styleSpecifierNodes[i];
+            if (i > 0)
+            {
+                writeNewline();
+            }
+            write(ASEmitterTokens.THIS);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(styleNode.getName());
+            write(ASEmitterTokens.SPACE);
+            writeToken(ASEmitterTokens.EQUAL);
+            emitValueOrFactoryMethodCall(styleNode.getInstanceNode());
+            write(ASEmitterTokens.SEMICOLON);
+        }
+
+        indentPop();
+        writeNewline();
+        write(ASEmitterTokens.BLOCK_CLOSE);
+    }
+
+    private void emitUIComponentDescriptorEvents(IMXMLClassReferenceNode node)
+    {
+        if (!(node instanceof IMXMLInstanceNode))
+        {
+            return;
+        }
+
+        IMXMLEventSpecifierNode[] eventSpecifierNodes = node.getEventSpecifierNodes();
+        if (eventSpecifierNodes == null || eventSpecifierNodes.length == 0)
+        {
+            return;
+        }
+
+        write(ASEmitterTokens.COMMA);
+        writeNewline();
+
+        write("events");
+        writeToken(ASEmitterTokens.COLON);
+        indentPush();
+        writeNewline(ASEmitterTokens.BLOCK_OPEN);
+
+        for (int i = 0; i < eventSpecifierNodes.length; i++)
+        {
+            IMXMLEventSpecifierNode eventNode = eventSpecifierNodes[i];
+            String listenerName = factoryMethodEventNames.get(eventNode);
+            if (i > 0)
+            {
+                write(ASEmitterTokens.COMMA);
+                writeNewline();
+            }
+            write(ASEmitterTokens.DOUBLE_QUOTE);
+            write(eventNode.getName());
+            write(ASEmitterTokens.DOUBLE_QUOTE);
+            writeToken(ASEmitterTokens.COLON);
+            write(ASEmitterTokens.PAREN_OPEN);
+
+            // this is kind of funky, but it takes advantage of the fact that
+            // the value of an expression using the comma operator is based on
+            // the right side of the comma.
+            // we need to call Language.closure() somewhere to be sure that the
+            // listener is called with the correct "this" value, and it makes
+            // sense to keep it where events are defined.
+            IJSEmitter jsEmitter = (IJSEmitter) walker.getASEmitter();
+            jsEmitter.emitClosureStart();
+            write(ASEmitterTokens.THIS);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(listenerName);
+            writeToken(ASEmitterTokens.COMMA);
+            write(ASEmitterTokens.THIS);
+            writeToken(ASEmitterTokens.COMMA);
+            write(ASEmitterTokens.SINGLE_QUOTE);
+            write(listenerName);
+            write(ASEmitterTokens.SINGLE_QUOTE);
+            write(ASEmitterTokens.PAREN_CLOSE);
+
+            writeToken(ASEmitterTokens.COMMA);
+            write(ASEmitterTokens.DOUBLE_QUOTE);
+            write(listenerName);
+            write(ASEmitterTokens.DOUBLE_QUOTE);
+            write(ASEmitterTokens.PAREN_CLOSE);
+        }
+
+        indentPop();
+        writeNewline();
+        write(ASEmitterTokens.BLOCK_CLOSE);
     }
 }
