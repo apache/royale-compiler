@@ -47,6 +47,7 @@ import org.apache.royale.compiler.definitions.IDocumentableDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IPackageDefinition;
 import org.apache.royale.compiler.definitions.IScopedDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.metadata.IDeprecationInfo;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
@@ -1553,7 +1554,8 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
      */
     public String getInstanceType(ICompilerProject project)
     {
-        if (getTypeAsDisplayString().equals(((RoyaleProject)project).getDeferredInstanceInterface()))
+        ITypeDefinition typeDef = resolveType(project);
+        if (typeDef != null && typeDef.getQualifiedName().equals(((RoyaleProject)project).getDeferredInstanceInterface()))
         {
             return getPropertyMetaTagValue(
                     (RoyaleProject)project, IMetaAttributeConstants.ATTRIBUTE_INSTANCETYPE);

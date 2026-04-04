@@ -123,6 +123,9 @@ class MXMLDeferredInstanceNode extends MXMLInstanceNode implements IMXMLDeferred
 
         setClassReference(project, project.getDeferredInstanceFromFunctionClass());
 
+        // Add an expression dependency on that class.
+        builder.addExpressionDependency(project.getDeferredInstanceFromFunctionClass());
+
         // Determine whether the the default property is being set to a single Array tag.
         boolean isSingleArrayTag = false;
         int n = contentUnits.size();
