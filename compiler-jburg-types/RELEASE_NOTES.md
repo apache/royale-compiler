@@ -1,4 +1,4 @@
-Apache Royale Compiler JBurg Types 1.2.0
+Apache Royale Compiler JBurg Types 1.1.1
 =========================================
 
 - Updated minimum Java version to 11.
