@@ -33,6 +33,11 @@
 
   <name>Apache Royale: Build Tools</name>
 
+  <properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+  </properties>
+
   <scm>
     <connection>scm:git:https://gitbox.apache.org/repos/asf/royale-compiler.git</connection>
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/royale-compiler.git</developerConnection>
