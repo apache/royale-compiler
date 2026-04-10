@@ -1,0 +1,3 @@
+The Compiler Build Tools are a set of components to support the Apache Royale build process. Although the toolset has a history of builds with build numbers, it is not a separate Apache Royale project and is not intended for third-party use. 
+
+For guide to the build process, which explains the role these tools play, see the <a href="https://github.com/apache/royale-compiler/wiki/developer-guide">Developer Guide</a>
