@@ -6480,14 +6480,14 @@ public class Configuration
 
     private boolean allowStrictFunctionTypes = false;
 
-    public boolean getAllowStrictFunctionTypes()
+    public boolean getCompilerAllowStrictFunctionTypes()
     {
         return allowStrictFunctionTypes;
     }
 
     @Config
     @Mapping({ "compiler", "allow-strict-function-types" })
-    public void setAllowStrictFunctionTypes(ConfigurationValue cv, boolean b)
+    public void setCompilerAllowStrictFunctionTypes(ConfigurationValue cv, boolean b)
     {
         allowStrictFunctionTypes = b;
     }

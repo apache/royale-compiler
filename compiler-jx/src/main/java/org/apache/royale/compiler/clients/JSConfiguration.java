@@ -68,7 +68,7 @@ public class JSConfiguration extends Configuration
         setCompilerAllowAbstractClasses(null, true);
         setCompilerAllowPrivateConstructors(null, true);
         setCompilerAllowImportAliases(null, true);
-        setAllowStrictFunctionTypes(null, true);
+        setCompilerAllowStrictFunctionTypes(null, true);
         setCompilerStrictIdentifierNames(null, false);
         setCompilerStrictFlexCSS(null, false);
         setCompilerAllowArrowFunctions(null, true);
