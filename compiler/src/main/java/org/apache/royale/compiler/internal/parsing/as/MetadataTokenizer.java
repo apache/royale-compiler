@@ -64,6 +64,7 @@ public class MetadataTokenizer
             .put(IMetaAttributeConstants.ATTRIBUTE_HOST_COMPONENT, MetadataTokenTypes.TOKEN_HOST_COMPONENT_KEYWORD)
             .put(IMetaAttributeConstants.ATTRIBUTE_SKIN_CLASS, MetadataTokenTypes.TOKEN_SKINCLASS_KEYWORD)
             .put(IMetaAttributeConstants.ATTRIBUTE_ALTERNATIVE, MetadataTokenTypes.TOKEN_ALTERNATIVE_KEYWORD)
+            .put(IMetaAttributeConstants.ATTRIBUTE_EXCLUDE, MetadataTokenTypes.TOKEN_EXCLUDE_KEYWORD)
             .build();
 
     private static final Map<String, Integer> attrToTokenMap = new ImmutableMap.Builder<String, Integer>()

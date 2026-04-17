@@ -66,6 +66,7 @@ meta[MetaTagsNode parent]
 	| tag = typedTag[parent]
 	| tag = inspectable[parent]
 	| tag = defaultproperty[parent]
+	| tag = exclude[parent]
 	| tag = accessibilityClass[parent]
 	| tag = multiValue[parent]
 	| tag = skinClass[parent]
@@ -340,6 +341,22 @@ defaultproperty[MetaTagsNode parent] returns [DefaultPropertyTagNode node]
 		parent.addTag(node);
 	}
 	;
+	
+	
+exclude[MetaTagsNode parent] returns [ExcludeTagNode node]
+	{ 	
+		IdentifierNode name = null;
+		node = new ExcludeTagNode();
+		resetComments(node.getTagName());
+	}
+	: TOKEN_EXCLUDE_KEYWORD 
+		(TOKEN_ATTR_NAME nameString:TOKEN_STRING
+		 { name = build(nameString); if(name != null) { node.setNameNode(name); } }
+		| unknownProperty[node]
+		| TOKEN_OPEN_PAREN {})*
+	{	parent.addTag(node); }
+	;
+	
 	
 resourcebundle[MetaTagsNode parent] returns [ResourceBundleTagNode node]
 	{ 	
