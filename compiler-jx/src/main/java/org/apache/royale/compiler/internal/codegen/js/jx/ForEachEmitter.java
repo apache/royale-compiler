@@ -22,9 +22,12 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IJSMetaAttributeConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
@@ -54,6 +57,24 @@ public class ForEachEmitter extends JSSubEmitter implements
         IBinaryOperatorNode bnode = (IBinaryOperatorNode) cnode.getChild(0);
         IExpressionNode childNode = bnode.getLeftOperandNode();
         IExpressionNode rnode = bnode.getRightOperandNode();
+
+        ITypeDefinition rtype = rnode.resolveType(getProject());
+        if (rtype != null)
+        {
+            IMetaTag forEachOverrideMeta = rtype.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_FOR_EACH_OVERRIDE);
+            if (forEachOverrideMeta != null)
+            {
+                emitForEachOverride(node, rtype, forEachOverrideMeta);
+                return;
+            }
+            // it's possible to use ForInOverride for for-each loops too
+            IMetaTag forInOverrideMeta = rtype.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_FOR_IN_OVERRIDE);
+            if (forInOverrideMeta != null)
+            {
+                emitForInOverride(node, rtype, forInOverrideMeta);
+                return;
+            }
+        }
 
         final String iterName = getModel().getCurrentForeachName();
         getModel().incForeachLoopCount();
@@ -316,5 +337,321 @@ public class ForEachEmitter extends JSSubEmitter implements
         write(".elementNames()");
     }
     */
+
+    private void emitForEachOverride(IForLoopNode node, ITypeDefinition rtype, IMetaTag forEachOverrideMeta)
+    {
+        IContainerNode cnode = node.getConditionalsContainerNode();
+        IBinaryOperatorNode bnode = (IBinaryOperatorNode) cnode.getChild(0);
+        IExpressionNode childNode = bnode.getLeftOperandNode();
+        IExpressionNode rnode = bnode.getRightOperandNode();
+
+        final String iterBaseName = getModel().getCurrentForeachName();
+        getModel().incForeachLoopCount();
+        final String iterTargetName = iterBaseName + "_target";
+        final String iterResultName = iterBaseName + "_iterator";
+        final String iterKeyName = iterBaseName + "_key";
+
+        final String iteratorMethodName = forEachOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_FOR_EACH_OVERRIDE_ITERATOR_METHOD);
+        final String iteratorNextMethodName = forEachOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_FOR_EACH_OVERRIDE_ITERATOR_NEXT_METHOD);
+        final String iteratorHasNextMethodName = forEachOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_FOR_EACH_OVERRIDE_ITERATOR_HAS_NEXT_METHOD);
+        final String iteratorDoneMethodName = forEachOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_FOR_IN_OVERRIDE_ITERATOR_DONE_METHOD);
+
+        if (iteratorMethodName == null || iteratorNextMethodName == null)
+        {
+            return;
+        }
+
+        writeToken(ASEmitterTokens.VAR);
+        writeToken(iterTargetName);
+        writeToken(ASEmitterTokens.EQUAL);
+        getWalker().walk(rnode);
+        write(ASEmitterTokens.SEMICOLON);
+        writeNewline();
+
+        // if the target is null, the loop will be skipped without any
+        // exceptions at run-time
+        writeToken(ASEmitterTokens.IF);
+        write(ASEmitterTokens.PAREN_OPEN);
+        write(iterTargetName);
+        write(ASEmitterTokens.PAREN_CLOSE);
+        writeNewline();
+        write(ASEmitterTokens.BLOCK_OPEN);
+        indentPush();
+        writeNewline();
+
+        writeToken(ASEmitterTokens.VAR);
+        writeToken(iterResultName);
+        writeToken(ASEmitterTokens.EQUAL);
+        write(iterTargetName);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(iteratorMethodName);
+        write(ASEmitterTokens.PAREN_OPEN);
+        write(ASEmitterTokens.PAREN_CLOSE);
+        write(ASEmitterTokens.SEMICOLON);
+        writeNewline();
+
+        writeToken(ASEmitterTokens.WHILE);
+        write(ASEmitterTokens.PAREN_OPEN);
+        if (iteratorHasNextMethodName != null)
+        {
+            write(iterResultName);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(iteratorHasNextMethodName);
+            write(ASEmitterTokens.PAREN_OPEN);
+            write(ASEmitterTokens.PAREN_CLOSE);
+        }
+        else if (iteratorDoneMethodName != null)
+        {
+            write("!");
+            write(iterResultName);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(iteratorDoneMethodName);
+            write(ASEmitterTokens.PAREN_OPEN);
+            write(ASEmitterTokens.PAREN_CLOSE);
+        }
+        else
+        {
+            write(ASEmitterTokens.TRUE);
+        }
+        write(ASEmitterTokens.PAREN_CLOSE);
+        writeNewline();
+        write(ASEmitterTokens.BLOCK_OPEN);
+        indentPush();
+        writeNewline();
+
+        if (iteratorHasNextMethodName == null && iteratorDoneMethodName == null)
+        {
+            writeToken(ASEmitterTokens.VAR);
+            writeToken(iterKeyName);
+            writeToken(ASEmitterTokens.EQUAL);
+            write(iterResultName);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(iteratorNextMethodName);
+            write(ASEmitterTokens.PAREN_OPEN);
+            write(ASEmitterTokens.PAREN_CLOSE);
+            write(ASEmitterTokens.SEMICOLON);
+            writeNewline();
+
+            writeToken(ASEmitterTokens.IF);
+            write(ASEmitterTokens.PAREN_OPEN);
+            writeToken(iterKeyName);
+            writeToken("==");
+            write(ASEmitterTokens.UNDEFINED);
+            writeToken(ASEmitterTokens.PAREN_CLOSE);
+            write("break");
+            write(ASEmitterTokens.SEMICOLON);
+            writeNewline();
+        }
+        
+        if (childNode instanceof IVariableExpressionNode)
+        {
+            startMapping(childNode);
+            write(ASEmitterTokens.VAR);
+            write(ASEmitterTokens.SPACE);
+            write(((IVariableNode) childNode.getChild(0)).getName()); //it's always a local var
+            //putting this in here instead of common code following the 2 blocks to keep sourcemap tests passing
+            write(ASEmitterTokens.SPACE);
+            write(ASEmitterTokens.EQUAL);
+            write(ASEmitterTokens.SPACE);
+            endMapping(childNode);
+        }
+        else { //IdentifierNode
+            getWalker().walk(childNode); //we need to walk here, to deal with non-local var identifiers
+            startMapping(childNode);
+            write(ASEmitterTokens.SPACE);
+            write(ASEmitterTokens.EQUAL);
+            write(ASEmitterTokens.SPACE);
+            endMapping(childNode);
+        }
+
+        if (iteratorHasNextMethodName == null && iteratorDoneMethodName == null)
+        {
+            write(iterKeyName);
+            write(ASEmitterTokens.SEMICOLON);
+            writeNewline();
+        }
+        else
+        {
+            write(iterResultName);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(iteratorNextMethodName);
+            write(ASEmitterTokens.PAREN_OPEN);
+            write(ASEmitterTokens.PAREN_CLOSE);
+            write(ASEmitterTokens.SEMICOLON);
+            writeNewline();
+        }
+
+        getWalker().walk(node.getStatementContentsNode());
+
+        write(ASEmitterTokens.BLOCK_CLOSE);
+        indentPop();
+        writeNewline();
+
+        write(ASEmitterTokens.BLOCK_CLOSE);
+        indentPop();
+        writeNewline();
+    }
+
+    private void emitForInOverride(IForLoopNode node, ITypeDefinition rtype, IMetaTag forInOverrideMeta)
+    {
+        IContainerNode cnode = node.getConditionalsContainerNode();
+        IBinaryOperatorNode bnode = (IBinaryOperatorNode) cnode.getChild(0);
+        IExpressionNode childNode = bnode.getLeftOperandNode();
+        IExpressionNode rnode = bnode.getRightOperandNode();
+
+        IMetaTag dynamicOverrideMeta = rtype.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_DYNAMIC_OVERRIDE);
+        String getMethod = null;
+        if (dynamicOverrideMeta != null)
+        {
+            getMethod = dynamicOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_DYNAMIC_OVERRIDE_GET_METHOD);
+        }
+
+        final String iterBaseName = getModel().getCurrentForeachName();
+        getModel().incForeachLoopCount();
+        final String iterTargetName = iterBaseName + "_target";
+        final String iterResultName = iterBaseName + "_iterator";
+        final String iterKeyName = iterBaseName + "_key";
+
+        final String iteratorMethodName = forInOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_FOR_IN_OVERRIDE_ITERATOR_METHOD);
+        final String iteratorNextMethodName = forInOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_FOR_IN_OVERRIDE_ITERATOR_NEXT_METHOD);
+        final String iteratorHasNextMethodName = forInOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_FOR_IN_OVERRIDE_ITERATOR_HAS_NEXT_METHOD);
+        final String iteratorDoneMethodName = forInOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_FOR_IN_OVERRIDE_ITERATOR_DONE_METHOD);
+
+        if (iteratorMethodName == null || iteratorNextMethodName == null)
+        {
+            return;
+        }
+
+        writeToken(ASEmitterTokens.VAR);
+        writeToken(iterTargetName);
+        writeToken(ASEmitterTokens.EQUAL);
+        getWalker().walk(rnode);
+        write(ASEmitterTokens.SEMICOLON);
+        writeNewline();
+
+        // if the target is null, the loop will be skipped without any
+        // exceptions at run-time
+        writeToken(ASEmitterTokens.IF);
+        write(ASEmitterTokens.PAREN_OPEN);
+        write(iterTargetName);
+        write(ASEmitterTokens.PAREN_CLOSE);
+        writeNewline();
+        write(ASEmitterTokens.BLOCK_OPEN);
+        indentPush();
+        writeNewline();
+
+        writeToken(ASEmitterTokens.VAR);
+        writeToken(iterResultName);
+        writeToken(ASEmitterTokens.EQUAL);
+        write(iterTargetName);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(iteratorMethodName);
+        write(ASEmitterTokens.PAREN_OPEN);
+        write(ASEmitterTokens.PAREN_CLOSE);
+        write(ASEmitterTokens.SEMICOLON);
+        writeNewline();
+
+        writeToken(ASEmitterTokens.WHILE);
+        write(ASEmitterTokens.PAREN_OPEN);
+        if (iteratorHasNextMethodName != null)
+        {
+            write(iterResultName);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(iteratorHasNextMethodName);
+            write(ASEmitterTokens.PAREN_OPEN);
+            write(ASEmitterTokens.PAREN_CLOSE);
+        }
+        else if (iteratorDoneMethodName != null)
+        {
+            write("!");
+            write(iterResultName);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(iteratorDoneMethodName);
+            write(ASEmitterTokens.PAREN_OPEN);
+            write(ASEmitterTokens.PAREN_CLOSE);
+        }
+        else
+        {
+            write(ASEmitterTokens.TRUE);
+        }
+        write(ASEmitterTokens.PAREN_CLOSE);
+        writeNewline();
+        write(ASEmitterTokens.BLOCK_OPEN);
+        indentPush();
+        writeNewline();
+
+        writeToken(ASEmitterTokens.VAR);
+        writeToken(iterKeyName);
+        writeToken(ASEmitterTokens.EQUAL);
+        write(iterResultName);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(iteratorNextMethodName);
+        write(ASEmitterTokens.PAREN_OPEN);
+        write(ASEmitterTokens.PAREN_CLOSE);
+        write(ASEmitterTokens.SEMICOLON);
+        writeNewline();
+
+        if (iteratorHasNextMethodName == null && iteratorDoneMethodName == null)
+        {
+            writeToken(ASEmitterTokens.IF);
+            write(ASEmitterTokens.PAREN_OPEN);
+            writeToken(iterKeyName);
+            writeToken("==");
+            write(ASEmitterTokens.UNDEFINED);
+            writeToken(ASEmitterTokens.PAREN_CLOSE);
+            write("break");
+            write(ASEmitterTokens.SEMICOLON);
+            writeNewline();
+        }
+        
+        if (childNode instanceof IVariableExpressionNode)
+        {
+            startMapping(childNode);
+            write(ASEmitterTokens.VAR);
+            write(ASEmitterTokens.SPACE);
+            write(((IVariableNode) childNode.getChild(0)).getName()); //it's always a local var
+            //putting this in here instead of common code following the 2 blocks to keep sourcemap tests passing
+            write(ASEmitterTokens.SPACE);
+            write(ASEmitterTokens.EQUAL);
+            write(ASEmitterTokens.SPACE);
+            endMapping(childNode);
+        }
+        else { //IdentifierNode
+            getWalker().walk(childNode); //we need to walk here, to deal with non-local var identifiers
+            startMapping(childNode);
+            write(ASEmitterTokens.SPACE);
+            write(ASEmitterTokens.EQUAL);
+            write(ASEmitterTokens.SPACE);
+            endMapping(childNode);
+        }
+
+        write(iterTargetName);
+        if (getMethod != null)
+        {
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(getMethod);
+            write(ASEmitterTokens.PAREN_OPEN);
+            write(iterKeyName);
+            write(ASEmitterTokens.PAREN_CLOSE);
+        }
+        else
+        {
+            write(ASEmitterTokens.SQUARE_OPEN);
+            write(iterKeyName);
+            write(ASEmitterTokens.SQUARE_CLOSE);
+        }
+        write(ASEmitterTokens.SEMICOLON);
+        writeNewline();
+
+        getWalker().walk(node.getStatementContentsNode());
+
+        write(ASEmitterTokens.BLOCK_CLOSE);
+        indentPop();
+        writeNewline();
+
+        write(ASEmitterTokens.BLOCK_CLOSE);
+        indentPop();
+        writeNewline();
+    }
 
 }

@@ -79,6 +79,7 @@ Apache Royale Compiler 1.0.0
 - compiler: Fixed namespace URI when namespace is defined in package.
 - compiler: Fixed warning for comparison of boolean or numeric type with `null` when using `-js-default-initializers=false` compiler option.
 - compiler: Fixed JavaScript code generation for E4X wildcard (.*) syntax.
+- compiler: Added `[JSDynamicOverride]`, `[JSForInOverride]`, and `[JSForEachOverride]` to customize the behavior of certain syntax when targeting JavaScript. Useful for emulating the full features of `Dictionary` and `ByteArray` from SWF.
 - debugger: Added missing isolate ID to SWF load and unload events.
 - debugger: Fixed debugger targeting the current JDK version instead of the intended minimum JDK version.
 - debugger: Fixed localized messages appearing as unprocessed tokens.
