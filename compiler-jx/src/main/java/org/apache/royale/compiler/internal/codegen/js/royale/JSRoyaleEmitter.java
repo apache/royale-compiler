@@ -807,7 +807,7 @@ public class JSRoyaleEmitter extends JSEmitter implements IJSRoyaleEmitter
         {
             startMapping(node);
             write(ASEmitterTokens.SINGLE_QUOTE);
-            write(node.getName());
+            write(node.getQualifiedName());
             write(ASEmitterTokens.SINGLE_QUOTE);
             endMapping(node);
         }
