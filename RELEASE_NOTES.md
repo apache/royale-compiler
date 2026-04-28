@@ -77,6 +77,7 @@ Apache Royale Compiler 1.0.0
 - compiler: Added support for `mx.core.UIComponentDescriptor` with `-children-as-data=false` for JavaScript.
 - compiler: Improved parsing of `[Exclude]` metadata to make the member name an identifier for tooling.
 - compiler: Fixed namespace URI when namespace is defined in package.
+- compiler: Fixed warning for comparison of boolean or numeric type with `null` when using `-js-default-initializers=false` compiler option.
 - debugger: Added missing isolate ID to SWF load and unload events.
 - debugger: Fixed debugger targeting the current JDK version instead of the intended minimum JDK version.
 - debugger: Fixed localized messages appearing as unprocessed tokens.

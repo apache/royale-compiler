@@ -29,6 +29,7 @@ import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyaleCordova
 import org.apache.royale.compiler.internal.codegen.mxml.royale.MXMLRoyalePublisher;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProjectConfigurator;
 import org.apache.royale.compiler.internal.projects.RoyaleProjectConfigurator;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.tree.mxml.IMXMLFileNode;
@@ -45,7 +46,7 @@ public class MXMLRoyaleCordovaBackend extends MXMLRoyaleBackend
     @Override
     public Configurator createConfigurator()
     {
-        return new RoyaleProjectConfigurator(JSGoogConfiguration.class);
+        return new RoyaleJSProjectConfigurator(JSGoogConfiguration.class);
     }
 
     @Override

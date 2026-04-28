@@ -38,6 +38,7 @@ import org.apache.royale.compiler.internal.codegen.mxml.jsc.MXMLJSCJSEmitter;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleBackend;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProjectConfigurator;
 import org.apache.royale.compiler.internal.projects.RoyaleProjectConfigurator;
 import org.apache.royale.compiler.internal.targets.RoyaleJSTarget;
 import org.apache.royale.compiler.internal.targets.JSTarget;
@@ -64,7 +65,7 @@ public class MXMLJSCJSBackend extends MXMLRoyaleBackend
     @Override
     public Configurator createConfigurator()
     {
-        return new RoyaleProjectConfigurator(JSGoogConfiguration.class);
+        return new RoyaleJSProjectConfigurator(JSGoogConfiguration.class);
     }
 
     @Override

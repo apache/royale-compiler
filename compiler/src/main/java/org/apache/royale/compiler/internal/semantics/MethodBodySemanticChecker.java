@@ -117,6 +117,7 @@ import org.apache.royale.compiler.internal.tree.as.VectorLiteralNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLDocumentNode;
 import org.apache.royale.compiler.problems.*;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.projects.IRoyaleJSProject;
 import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.scopes.IDefinitionSet;
 import org.apache.royale.compiler.tree.ASTNodeID;
@@ -900,8 +901,15 @@ public class MethodBodySemanticChecker
          
         boolean isBad = false;
         
-        // Numeric and boolean types can never be null
-        if ((leftIsNumericOrBoolean&&rightIsNull) || (rightIsNumericOrBoolean&&leftIsNull))
+        boolean defaultInitializers = true;
+        if (project instanceof IRoyaleJSProject)
+        {
+            defaultInitializers = ((IRoyaleJSProject)project).getDefaultInitializers();
+        }
+        // Numeric and boolean types cannot be null
+        // unless default initializers are disabled for JS
+        // default initializers cannot be disabled for SWF
+        if (defaultInitializers && ((leftIsNumericOrBoolean&&rightIsNull) || (rightIsNumericOrBoolean&&leftIsNull)))
         {
             isBad = true;
         }

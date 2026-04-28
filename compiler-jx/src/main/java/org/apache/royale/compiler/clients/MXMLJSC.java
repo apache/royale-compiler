@@ -43,6 +43,7 @@ import org.apache.royale.compiler.internal.definitions.DefinitionBase;
 import org.apache.royale.compiler.internal.driver.js.goog.JSGoogConfiguration;
 import org.apache.royale.compiler.internal.parsing.as.RoyaleASDocDelegate;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
+import org.apache.royale.compiler.internal.projects.RoyaleJSProjectConfigurator;
 import org.apache.royale.compiler.internal.projects.RoyaleProjectConfigurator;
 import org.apache.royale.compiler.internal.projects.ISourceFileHandler;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
@@ -466,7 +467,7 @@ public class MXMLJSC implements JSCompilerEntryPoint, ProblemQueryProvider,
      */
     public boolean configure(final String[] args)
     {
-    	projectConfigurator = new RoyaleProjectConfigurator(configurationClass);
+    	projectConfigurator = new RoyaleJSProjectConfigurator(configurationClass);
     	
         try
         {

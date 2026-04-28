@@ -64,6 +64,7 @@ import org.apache.royale.compiler.internal.tree.mxml.MXMLDocumentNode;
 import org.apache.royale.compiler.internal.tree.mxml.MXMLFileNode;
 import org.apache.royale.compiler.internal.units.SWCCompilationUnit;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
+import org.apache.royale.compiler.projects.IRoyaleJSProject;
 import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.tree.as.IASNode;
 import org.apache.royale.compiler.tree.as.IClassNode;
@@ -81,7 +82,7 @@ import com.google.common.collect.ImmutableList;
  * @author aharui
  *
  */
-public class RoyaleJSProject extends RoyaleProject
+public class RoyaleJSProject extends RoyaleProject implements IRoyaleJSProject
 {
 
     /**
@@ -106,6 +107,21 @@ public class RoyaleJSProject extends RoyaleProject
     private IBackend backend;
 
     public ICompilationUnit mainCU;
+
+    private boolean defaultInitializers = true;
+
+    /**
+     * @return True if variables are initialized by default.
+     */
+    public boolean getDefaultInitializers()
+    {
+        return defaultInitializers;
+    }
+
+    public void setDefaultInitializers(boolean defaultInitializers)
+    {
+        this.defaultInitializers = defaultInitializers;
+    }
 
     @Override
     public void addDependency(ICompilationUnit from, ICompilationUnit to, DependencyTypeSet dt, String qname)
