@@ -5397,11 +5397,6 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         int childDescriptorCount = 0;
         if (node.isContainer())
         {
-            write("childDescriptors");
-            writeToken(ASEmitterTokens.COLON);
-            indentPush();
-            writeNewline(ASEmitterTokens.SQUARE_OPEN);
-
             // instance nodes not added to declarations will be children
             for (int i = 0; i < node.getChildCount(); i++)
             {
@@ -5414,14 +5409,24 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                         write(ASEmitterTokens.COMMA);
                         writeNewline();
                     }
+                    else
+                    {
+                        write("childDescriptors");
+                        writeToken(ASEmitterTokens.COLON);
+                        indentPush();
+                        writeNewline(ASEmitterTokens.SQUARE_OPEN);
+                    }
                     childDescriptorCount++;
                     emitUIComponentDescriptor(instanceNode);
                 }
             }
 
-            indentPop();
-            writeNewline();
-            write(ASEmitterTokens.SQUARE_CLOSE);
+            if (childDescriptorCount > 0)
+            {
+                indentPop();
+                writeNewline();
+                write(ASEmitterTokens.SQUARE_CLOSE);
+            }
         }
 
         if (node instanceof IMXMLInstanceNode)
