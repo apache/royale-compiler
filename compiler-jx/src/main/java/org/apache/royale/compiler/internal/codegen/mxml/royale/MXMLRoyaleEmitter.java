@@ -2716,22 +2716,41 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             String methodName = "_" + documentDefinition.getBaseName() + "_" + cdef.getBaseName() + "_" + factoryMethodCounter;
             factoryMethodCounter++;
             factoryMethodNames.put(node, methodName);
+            
+            walkInstanceAndChildren(node);
+        }
+    }
 
-            IMXMLPropertySpecifierNode[] pnodes = node.getPropertySpecifierNodes();
-            if (pnodes != null)
+    private void walkInstanceAndChildren(IMXMLInstanceNode node)
+    {
+        IMXMLPropertySpecifierNode[] pnodes = node.getPropertySpecifierNodes();
+        if (pnodes != null)
+        {
+            for (IMXMLPropertySpecifierNode pnode : pnodes)
             {
-                for (IMXMLPropertySpecifierNode pnode : pnodes)
-                {
-                    getMXMLWalker().walk(pnode);
-                }
+                getMXMLWalker().walk(pnode);
             }
+        }
 
-            IMXMLEventSpecifierNode[] enodes = node.getEventSpecifierNodes();
-            if (enodes != null)
+        IMXMLEventSpecifierNode[] enodes = node.getEventSpecifierNodes();
+        if (enodes != null)
+        {
+            for (IMXMLEventSpecifierNode enode : enodes)
             {
-                for (IMXMLEventSpecifierNode enode : enodes)
+                getMXMLWalker().walk(enode);
+            }
+        }
+
+        if (node.isContainer())
+        {
+            // instance nodes not added to declarations will be children
+            for (int i = 0; i < node.getChildCount(); i++)
+            {
+                IASNode childNode = node.getChild(i);
+                if (childNode instanceof IMXMLInstanceNode)
                 {
-                    getMXMLWalker().walk(enode);
+                    IMXMLInstanceNode instanceNode = (IMXMLInstanceNode) childNode;
+                    walkInstanceAndChildren(instanceNode);
                 }
             }
         }
