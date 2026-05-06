@@ -5457,6 +5457,18 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         write(ASEmitterTokens.MEMBER_ACCESS);
         write(JSRoyaleEmitter.formatNamespacedProperty(
             IMXMLTypeConstants.NAMESPACE_MX_INTERNAL.getName(),
+            "_document",
+            false));
+        write(ASEmitterTokens.SPACE);
+        write(ASEmitterTokens.EQUAL);
+        write(ASEmitterTokens.SPACE);
+        write(ASEmitterTokens.THIS);
+        writeNewline(ASEmitterTokens.SEMICOLON);
+
+        write(ASEmitterTokens.THIS);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(JSRoyaleEmitter.formatNamespacedProperty(
+            IMXMLTypeConstants.NAMESPACE_MX_INTERNAL.getName(),
             "setDocumentDescriptor",
             false));
         write(ASEmitterTokens.PAREN_OPEN);
