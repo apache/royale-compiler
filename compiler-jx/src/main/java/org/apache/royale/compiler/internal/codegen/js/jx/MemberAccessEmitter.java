@@ -98,6 +98,14 @@ public class MemberAccessEmitter extends JSSubEmitter implements
         	else if (leftNode != null)
         		isXML = fjs.isXMLish(leftNode);
 
+			if (!isXML
+					&& rightNode instanceof ILanguageIdentifierNode
+					&& ILanguageIdentifierNode.LanguageIdentifierKind.ANY_TYPE.equals(((ILanguageIdentifierNode)rightNode).getKind()))
+			{
+				// wildcard syntax may be used in E4X only
+				isXML = true;
+			}
+
 			if (!isXML) {
 				if (leftNode instanceof MemberAccessExpressionNode)
 					isProxy = fjs.isProxy(leftNode);
