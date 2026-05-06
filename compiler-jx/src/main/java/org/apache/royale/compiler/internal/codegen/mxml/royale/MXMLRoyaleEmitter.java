@@ -5579,6 +5579,12 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                     {
                         continue;
                     }
+                    IMXMLInstanceNode propInstanceNode = propNode.getInstanceNode();
+                    if (propInstanceNode instanceof IMXMLEmbedNode
+                            || propInstanceNode instanceof IMXMLDataBindingNode)
+                    {
+                        continue;
+                    }
                     if (childDescriptorCount > 0 || actualPropCount > 0)
                     {
                         write(ASEmitterTokens.COMMA);
@@ -5589,7 +5595,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                     write(propNode.getName());
                     write(ASEmitterTokens.DOUBLE_QUOTE);
                     writeToken(ASEmitterTokens.COLON);
-                    emitValueOrFactoryMethodCall(propNode.getInstanceNode());
+                    emitValueOrFactoryMethodCall(propInstanceNode);
                 }
             }
         }
@@ -5639,6 +5645,12 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         for (int i = 0; i < styleSpecifierNodes.length; i++)
         {
             IMXMLStyleSpecifierNode styleNode = styleSpecifierNodes[i];
+            IMXMLInstanceNode styleInstanceNode = styleNode.getInstanceNode();
+            if (styleInstanceNode instanceof IMXMLEmbedNode
+                    || styleInstanceNode instanceof IMXMLDataBindingNode)
+            {
+                continue;
+            }
             if (i > 0)
             {
                 writeNewline();
@@ -5648,7 +5660,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             write(styleNode.getName());
             write(ASEmitterTokens.SPACE);
             writeToken(ASEmitterTokens.EQUAL);
-            emitValueOrFactoryMethodCall(styleNode.getInstanceNode());
+            emitValueOrFactoryMethodCall(styleInstanceNode);
             write(ASEmitterTokens.SEMICOLON);
         }
 
