@@ -973,10 +973,19 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                     emitObjectFactoryMethod((IMXMLObjectNode) node);
                     break;
                 case MXMLInstanceID:
+                case MXMLHTTPServiceID:
+                case MXMLRemoteObjectID:
+                case MXMLWebServiceID:
                     emitInstanceFactoryMethod((IMXMLInstanceNode) node);
                     break;
                 case MXMLVectorID:
                     emitVectorFactoryMethod((IMXMLVectorNode) node);
+                    break;
+                case MXMLXMLID:
+                    emitXMLFactoryMethod((IMXMLXMLNode) node);
+                    break;
+                case MXMLXMLListID:
+                    emitXMLListFactoryMethod((IMXMLXMLListNode) node);
                     break;
                 default:
                     throw new RuntimeException("Missing factory method for node of type: " + node.getNodeID());
@@ -5109,6 +5118,135 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             write(ASEmitterTokens.SEMICOLON);
             writeNewline();
         }
+
+        String effectiveId = node.getEffectiveID();
+        if (effectiveId != null)
+        {
+            write(ASEmitterTokens.THIS);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(node.getEffectiveID());
+            write(ASEmitterTokens.SPACE);
+            writeToken(ASEmitterTokens.EQUAL);
+            write(tempVarName);
+            write(ASEmitterTokens.SEMICOLON);
+            writeNewline();
+        }
+
+        writeToken(ASEmitterTokens.RETURN);
+        write(tempVarName);
+        write(ASEmitterTokens.SEMICOLON);
+
+        indentPop();
+        writeNewline();
+        write(ASEmitterTokens.BLOCK_CLOSE);
+        writeNewline(ASEmitterTokens.SEMICOLON);
+    }
+
+    private void emitXMLFactoryMethod(IMXMLXMLNode node)
+    {
+        String cname = node.getFileNode().getName();
+        String methodName = factoryMethodNames.get(node);
+        String tempVarName = "xml";
+
+        writeNewline();
+        write(cname);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(JSEmitterTokens.PROTOTYPE);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(methodName);
+        write(ASEmitterTokens.SPACE);
+        writeToken(ASEmitterTokens.EQUAL);
+        write(ASEmitterTokens.FUNCTION);
+        write(ASEmitterTokens.PAREN_OPEN);
+        writeToken(ASEmitterTokens.PAREN_CLOSE);
+        write(ASEmitterTokens.BLOCK_OPEN);
+        indentPush();
+        writeNewline();
+
+        writeToken(ASEmitterTokens.VAR);
+        write(tempVarName);
+        write(ASEmitterTokens.SPACE);
+        writeToken(ASEmitterTokens.EQUAL);
+        writeToken(ASEmitterTokens.NEW);
+        write("XML");
+        write(ASEmitterTokens.PAREN_OPEN);
+
+        String valueString = node.getXMLString();
+        if (valueString != null)
+        {
+            writeToken(ASEmitterTokens.SINGLE_QUOTE);
+            write(StringEscapeUtils.escapeEcmaScript(valueString));
+            writeToken(ASEmitterTokens.SINGLE_QUOTE);
+        }
+
+        write(ASEmitterTokens.PAREN_CLOSE);
+        write(ASEmitterTokens.SEMICOLON);
+        writeNewline();
+
+        String effectiveId = node.getEffectiveID();
+        if (effectiveId != null)
+        {
+            write(ASEmitterTokens.THIS);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(node.getEffectiveID());
+            write(ASEmitterTokens.SPACE);
+            writeToken(ASEmitterTokens.EQUAL);
+            write(tempVarName);
+            write(ASEmitterTokens.SEMICOLON);
+            writeNewline();
+        }
+
+        writeToken(ASEmitterTokens.RETURN);
+        write(tempVarName);
+        write(ASEmitterTokens.SEMICOLON);
+
+        indentPop();
+        writeNewline();
+        write(ASEmitterTokens.BLOCK_CLOSE);
+        writeNewline(ASEmitterTokens.SEMICOLON);
+
+    }
+
+    private void emitXMLListFactoryMethod(IMXMLXMLListNode node)
+    {
+        String cname = node.getFileNode().getName();
+        String methodName = factoryMethodNames.get(node);
+        String tempVarName = "xmlList";
+
+        writeNewline();
+        write(cname);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(JSEmitterTokens.PROTOTYPE);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(methodName);
+        write(ASEmitterTokens.SPACE);
+        writeToken(ASEmitterTokens.EQUAL);
+        write(ASEmitterTokens.FUNCTION);
+        write(ASEmitterTokens.PAREN_OPEN);
+        writeToken(ASEmitterTokens.PAREN_CLOSE);
+        write(ASEmitterTokens.BLOCK_OPEN);
+        indentPush();
+        writeNewline();
+
+        writeToken(ASEmitterTokens.VAR);
+        write(tempVarName);
+        write(ASEmitterTokens.SPACE);
+        writeToken(ASEmitterTokens.EQUAL);
+        writeToken(ASEmitterTokens.NEW);
+        write("XMLList");
+        write(ASEmitterTokens.PAREN_OPEN);
+
+        String valueString = node.getXMLString();
+        if (valueString != null)
+        {
+            writeToken(ASEmitterTokens.SINGLE_QUOTE);
+            write(StringEscapeUtils.escapeEcmaScript(valueString));
+            writeToken(ASEmitterTokens.SINGLE_QUOTE);
+        }
+
+        write(ASEmitterTokens.PAREN_CLOSE);
+        write(ASEmitterTokens.SEMICOLON);
+        writeNewline();
 
         String effectiveId = node.getEffectiveID();
         if (effectiveId != null)
