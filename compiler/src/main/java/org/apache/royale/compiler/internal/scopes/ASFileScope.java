@@ -180,7 +180,7 @@ public class ASFileScope extends ASScope implements IFileScope
      * For debugging only.
      */
     @Override
-    protected String toStringHeader()
+    public String toStringHeader()
     {
         StringBuilder sb = new StringBuilder();
 

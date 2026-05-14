@@ -970,7 +970,7 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
         return metaTags;
     }
 
-    protected void addMetaTag(IMetaTag metaTag)
+    protected synchronized void addMetaTag(IMetaTag metaTag)
     {
         IMetaTag[] newMetaTags = new IMetaTag[metaTags.length + 1];
         System.arraycopy(metaTags, 0, newMetaTags, 0, metaTags.length);
@@ -978,7 +978,7 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
         setMetaTags(newMetaTags);
     }
 
-    public void setMetaTags(IMetaTag[] newMetaTags)
+    public synchronized void setMetaTags(IMetaTag[] newMetaTags)
     {
         if (newMetaTags == null)
         {
@@ -1322,9 +1322,18 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
         {
             return true; //we can't verify path because we might be a definition from a library
         }
-        else if (leftScope instanceof ASFileScope && rightScope instanceof ASFileScope)
+        if (leftScope instanceof ASFileScope && rightScope instanceof ASFileScope)
         {
-            if (((ASFileScope)leftScope).getContainingPath().compareTo(((ASFileScope)rightScope).getContainingPath()) != 0)
+            String leftPath = ((ASFileScope)leftScope).getContainingPath();
+            String rightPath = ((ASFileScope)rightScope).getContainingPath();
+            if (leftPath != null && rightPath != null)
+            {
+                if (leftPath.compareTo(rightPath) != 0)
+                {
+                    return false;
+                }
+            }
+            else if (leftPath != rightPath)
             {
                 return false;
             }
@@ -1822,7 +1831,7 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
         return false;
     }
 
-    protected void addFunctionTypeMeta(IFunctionTypeExpressionNode funcTypeExprNode, String paramName, ICompilerProject project)
+    protected synchronized void addFunctionTypeMeta(IFunctionTypeExpressionNode funcTypeExprNode, String paramName, ICompilerProject project)
     {
         int existingIndex = -1;
         for (int i = 0; i < metaTags.length; i++)

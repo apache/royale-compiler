@@ -475,6 +475,14 @@ public abstract class ASScopeBase implements IASScope
             // for a project scope this would actualize every DefinitionPromise.
             IDefinitionSet set = definitionStore.getDefinitionSetByName(name);
 
+            if (set == null)
+            {
+                indent(sb, level);
+                sb.append("  <ERROR: null definition set for ");
+                sb.append(name);
+                sb.append(">\n");
+                return;
+            }
             int n = set.getSize();
             for (int i = 0; i < n; i++)
             {
@@ -502,7 +510,7 @@ public abstract class ASScopeBase implements IASScope
      * For debugging only. Called by toString() to return the header that is
      * displayed at the beginning.
      */
-    protected String toStringHeader()
+    public String toStringHeader()
     {
         return getClass().getSimpleName();
     }

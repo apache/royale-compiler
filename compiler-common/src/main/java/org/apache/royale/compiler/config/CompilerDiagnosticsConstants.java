@@ -42,4 +42,11 @@ public class CompilerDiagnosticsConstants
     public static final int COMPC_PHASES = 16384;
     public static final int GOOG_DEPS = 32768;
 
+    public static void println(int type, String message)
+    {
+        if ((diagnostics & type) == type)
+        {
+            System.out.println(message);
+        }
+    }
 }

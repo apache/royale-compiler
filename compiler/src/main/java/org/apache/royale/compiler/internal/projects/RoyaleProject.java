@@ -2209,6 +2209,8 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     @Override
     public IDefinition doubleCheckAmbiguousDefinition(IASScope scope, String name, IDefinition def1, IDefinition def2)
     {
+        if (scope == null)
+            return null;
         IScopedDefinition scopeDef = ((ASScope)scope).getContainingDefinition();
         String thisPackage = null;
         if (scopeDef != null) 

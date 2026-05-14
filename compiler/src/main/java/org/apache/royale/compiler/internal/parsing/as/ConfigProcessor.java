@@ -249,7 +249,7 @@ public class ConfigProcessor
 
     private final IWorkspace workspace;
 
-    ConfigProcessor(IWorkspace workspace, BaseASParser parser)
+    public ConfigProcessor(IWorkspace workspace, BaseASParser parser)
     {
         this.parser = parser;
         configNames = new HashSet<String>();

@@ -20,9 +20,12 @@
 package org.apache.royale.compiler.internal.scopes;
 
 import java.util.Collection;
+import java.util.Set;
 
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.IParameterDefinition;
+import org.apache.royale.compiler.internal.projects.CompilerProject;
 import org.apache.royale.compiler.internal.tree.as.FunctionNode;
 import org.apache.royale.compiler.internal.tree.as.ScopedBlockNode;
 import org.apache.royale.compiler.tree.as.IASNode;
@@ -82,6 +85,52 @@ public class FunctionScope extends ASScope
             }
         }
         super.reconnectScopeNode(node);
+    }
+
+    
+    @Override
+    public IScopedNode getScopeNode()
+    {
+        IScopedNode node = super.getScopeNode();
+        if (node instanceof ScopedBlockNode)
+        {
+            IASNode parentNode = node.getParent();
+            if (parentNode instanceof FunctionNode)
+            {
+                FunctionNode functionNode = (FunctionNode) parentNode;
+                if (functionNode.hasBeenParsed())
+                {
+                    reconnectScopeNode(node);
+                }
+            }
+        }
+        return node;
+    }
+
+    @Override
+    public void getAllLocalProperties(CompilerProject project, Collection<IDefinition> defs, Set<INamespaceDefinition> namespaceSet, INamespaceDefinition extraNamespace)
+    {
+        // If the function body hasn't been parsed yet (or needs re-parsing after GC),
+        // triggering getScopeNode() will ensure it is parsed and the scope is populated
+        // with local variables.
+        if (project.getWorkspace() != null && getFileScope() != null)
+        {
+            getScopeNode();
+        }
+        super.getAllLocalProperties(project, defs, namespaceSet, extraNamespace);
+    }
+
+    @Override
+    protected void getPropertyForScopeChain(CompilerProject project, Collection<IDefinition> defs, String baseName, NamespaceSetPredicate namespaceSet, boolean findAll)
+    {
+        // If the function body hasn't been parsed yet (or needs re-parsing after GC),
+        // triggering getScopeNode() will ensure it is parsed and the scope is populated
+        // with local variables.
+        if (project.getWorkspace() != null && getFileScope() != null)
+        {
+            getScopeNode();
+        }
+        super.getPropertyForScopeChain(project, defs, baseName, namespaceSet, findAll);
     }
 
 }
