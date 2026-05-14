@@ -23,7 +23,6 @@ import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
-import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.IInterfaceDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
@@ -125,12 +124,9 @@ public class ASScopeCache
 
     /**
      * Version of findProperty that uses a cache. Checks the cache first, and
-     * only queries the scope if the we don't have a cached result.
+     * only queries the scope if we don't have a cached result.
      * 
-     * @param scope The scope to perform the lookup in
      * @param name Name of the property to find
-     * @param cache ASDefinitionCache to use for the lookup - this is only used
-     * to get at the ICompilerProject
      * @param dt Which type of dependency to introduce when we do the lookup
      * @return The IDefinition for the property, or null if it wasn't found
      */
@@ -142,19 +138,24 @@ public class ASScopeCache
         if (result != null)
         {
             // We found a cached result - we're done
-        	// after making sure it has a dependency
-        	if (result instanceof ITypeDefinition)
-        	{
-	        	ICompilationUnit from = scope.getFileScope().getCompilationUnit();
-	            assert result.isInProject(project);
-	            
-	            String qname = result.getQualifiedName();
-	            ICompilationUnit to = ((ASProjectScope)project.getScope()).getCompilationUnitForDefinition(result);
-	            if (to == null && !(qname.contentEquals("void") || qname.contentEquals("*")))
-	            	System.err.println("No compilation unit for " + qname);	
-	            if (to != null)
-	            	project.addDependency(from, to, dt, qname);
-        	}
+            // after making sure it has a dependency
+            if (result instanceof ITypeDefinition)
+            {
+                ASFileScope fileScope = scope.getFileScope();
+                //if it is null, it might be partially detached or in the process of reconnection
+                if (fileScope != null)
+                {
+                    ICompilationUnit from = fileScope.getCompilationUnit();
+                    assert result.isInProject(project);
+
+                    String qname = result.getQualifiedName();
+                    ICompilationUnit to = ((ASProjectScope)project.getScope()).getCompilationUnitForDefinition(result);
+                    if (to == null && !(qname.contentEquals("void") || qname.contentEquals("*")))
+                        System.err.println("No compilation unit for " + qname);
+                    if (to != null)
+                        project.addDependency(from, to, dt, qname);
+                }
+            }
             return result;
         }
 
@@ -180,7 +181,7 @@ public class ASScopeCache
                 assert def.isInProject(project);
                 break;
             default:
-            	wasAmbiguous = true;
+                wasAmbiguous = true;
                 IDefinition d = AmbiguousDefinition.resolveAmbiguities(project, defs, favorTypes);
                 if (d != null)
                     def = d;
@@ -189,7 +190,9 @@ public class ASScopeCache
                     {
                         def = project.doubleCheckAmbiguousDefinition(scope, name, defs.get(0), defs.get(1));
                         if (def != null)
+                        {
                             return def;
+                        }
                     }
                     def = AmbiguousDefinition.get();
                 }
@@ -215,7 +218,6 @@ public class ASScopeCache
             }
         }
         return result;
-
     }
 
     private ConcurrentMap<String, IDefinition> getScopeChainMap()
@@ -266,12 +268,10 @@ public class ASScopeCache
 
     /**
      * Version of findPropertyQualified that uses a cache. Checks the cache
-     * first, and only queries the scope if the we don't have a cached result.
+     * first, and only queries the scope if we don't have a cached result.
      * 
-     * @param scope The scope to perform the lookup in
+     * @param qualifier The namespace qualifier
      * @param name Name of the property to find
-     * @param cache ASDefinitionCache to use for the lookup - this is only used
-     * to get at the ICompilerProject
      * @param dt Which type of dependency to introduce when we do the lookup
      * @return The IDefinition for the property, or null if it wasn't found
      */
@@ -360,7 +360,9 @@ public class ASScopeCache
         ConcurrentMap<IResolvedQualifiersReference, IDefinition> cache = getMultinameLookupMap();
         IDefinition result = cache.get(ref);
         if (result != null)
+        {
             return result;
+        }
 
         IDefinition def;
 
@@ -727,6 +729,12 @@ public class ASScopeCache
                 return name.equals(other.name) && ns.equals(other.ns);
             }
             return false;
+        }
+
+        @Override
+        public String toString()
+        {
+            return ns.toString() + "::" + name;
         }
     }
 }

@@ -227,9 +227,12 @@ public final class Workspace implements IWorkspace
         return executorService;
     }
 
-    private CompilerProject[] getProjects()
+    public CompilerProject[] getProjects()
     {
-        return projects.keySet().toArray(new CompilerProject[0]);
+        synchronized (projects)
+        {
+            return projects.keySet().toArray(new CompilerProject[0]);
+        }
     }
     
     @Override
@@ -1024,7 +1027,10 @@ public final class Workspace implements IWorkspace
      */
     public void deleteProject(ICompilerProject compilerProject)
     {
-        projects.remove(compilerProject);
+        synchronized (projects)
+        {
+            projects.remove(compilerProject);
+        }
     }
 
     @Override
@@ -1237,8 +1243,11 @@ public final class Workspace implements IWorkspace
     
     public void addProject(CompilerProject project)
     {
-        // Need to give a non-null value, the class object for Object
-        // is a good a non-value as anything.
-        projects.put(project, Object.class);
+        synchronized (projects)
+        {
+            // Need to give a non-null value, the class object for Object
+            // is a good a non-value as anything.
+            projects.put(project, Object.class);
+        }
     }
 }

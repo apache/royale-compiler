@@ -39,10 +39,13 @@ import org.apache.royale.abc.semantics.Nsset;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.definitions.IAccessorDefinition;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.definitions.IQualifiers;
 import org.apache.royale.compiler.definitions.IVariableDefinition.VariableClassification;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
@@ -58,6 +61,8 @@ import org.apache.royale.compiler.internal.definitions.NamespaceDefinition;
 import org.apache.royale.compiler.internal.definitions.VariableDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.scopes.ASScope;
+import org.apache.royale.compiler.internal.scopes.ASScopeBase;
+import org.apache.royale.compiler.internal.scopes.FunctionScope;
 import org.apache.royale.compiler.internal.semantics.PostProcessStep;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.internal.tree.as.metadata.DefaultPropertyTagNode;
@@ -315,9 +320,17 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
     @Override
     public IDefinition resolve(ICompilerProject project)
     {
-    	if (DefinitionBase.getPerformanceCachingEnabled() && idDef != null)
-    		return idDef;
-    	
+        IDefinition currentIdDef = idDef;
+        if (DefinitionBase.getPerformanceCachingEnabled() && currentIdDef != null)
+        {
+            return currentIdDef;
+        }
+
+        return resolveInternal(project);
+    }
+
+    private IDefinition resolveInternal(ICompilerProject project)
+    {
         ASScope asScope = getASScope();
 
         if (asScope == null)
@@ -451,7 +464,11 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
         		((RoyaleProject)project).addToAPIReport(result);
         }
         
-        idDef = result;
+        if (DefinitionBase.getPerformanceCachingEnabled())
+        {
+            idDef = result;
+        }
+        
         return result;
     }
 

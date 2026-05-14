@@ -238,10 +238,18 @@ public abstract class CompilerProject implements ICompilerProject
                 scopeRequests.add(unit.getFileScopeRequest());
         }
 
-        scopeCaches.invalidateAll();
-        initThreadLocalCaches();
+        invalidateAllScopeCaches();
         
         projectScope.addAllExternallyVisibleDefinitions(scopeRequests);
+    }
+
+    /**
+     * Invalidates all scope caches for this project, including thread-local caches.
+     */
+    public void invalidateAllScopeCaches()
+    {
+        scopeCaches.invalidateAll();
+        initThreadLocalCaches();
     }
 
     /**
@@ -535,8 +543,7 @@ public abstract class CompilerProject implements ICompilerProject
                 compilationUnit.clean(null, cusToUpdate, true);
             }
 
-            scopeCaches.invalidateAll();
-            initThreadLocalCaches();
+            invalidateAllScopeCaches();
         }
         finally
         {
@@ -715,14 +722,41 @@ public abstract class CompilerProject implements ICompilerProject
         resetScopeCaches(relatedScopes);
     }
     
-    private void resetScopeCaches(Iterable<IASScope> scopes)
+    /**
+     * Resets all the {@link ASScopeCache}s associated with the specified
+     * {@link IASScope}s.
+     * 
+     * @param scopes {@link IASScope}s whose scope caches should be cleared
+     */
+    public void resetScopeCaches(Iterable<IASScope> scopes)
     {
         assert scopes != null;
-        for (IASScope scope : scopes)
+        boolean invalidated = false;
+        // Optimization: if it's a single scope, avoid overhead of iterator or complex checks
+        if (scopes instanceof Collection && ((Collection<?>)scopes).size() == 1)
         {
-            scopeCaches.invalidate(scope);
+            IASScope scope = scopes.iterator().next();
+            if (scopeCaches.asMap().containsKey(scope))
+            {
+                scopeCaches.invalidate(scope);
+                invalidated = true;
+            }
         }
-        initThreadLocalCaches();
+        else
+        {
+            for (IASScope scope : scopes)
+            {
+                if (scopeCaches.asMap().containsKey(scope))
+                {
+                    scopeCaches.invalidate(scope);
+                    invalidated = true;
+                }
+            }
+        }
+        if (invalidated)
+        {
+            initThreadLocalCaches();
+        }
     }
 
     public void addGlobalUsedNamespacesToNamespaceSet(Set<INamespaceDefinition> nsSet)

@@ -37,6 +37,8 @@ import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition.IProtectedNamespaceDefinition;
+import org.apache.royale.compiler.definitions.INamespaceDefinition.IStaticProtectedNamespaceDefinition;
 import org.apache.royale.compiler.definitions.IQualifiers;
 import org.apache.royale.compiler.definitions.IScopedDefinition;
 import org.apache.royale.compiler.definitions.references.INamespaceReference;
@@ -286,12 +288,23 @@ public abstract class ASScope extends ASScopeBase
     public void reconnectScopeNode(IScopedNode node)
     {
         scopedNodeRef.reconnectNode(node);
+        IWorkspace w = getWorkspace();
+        if (w instanceof Workspace)
+        {
+            CompilerProject[] projects = ((Workspace)w).getProjects();
+            for (CompilerProject project : projects)
+            {
+                project.resetScopeCaches(Collections.singleton(this));
+            }
+        }
     }
 
     @Override
     public IScopedNode getScopeNode()
     {
         IWorkspace w = getWorkspace();
+        if (w == null)
+            return null;
         return (IScopedNode)scopedNodeRef.getNode(w, this);
     }
 
@@ -317,7 +330,7 @@ public abstract class ASScope extends ASScopeBase
      * For debugging only.
      */
     @Override
-    protected String toStringHeader()
+    public String toStringHeader()
     {
         StringBuilder sb = new StringBuilder();
 
@@ -1757,7 +1770,8 @@ public abstract class ASScope extends ASScopeBase
      */
     public IWorkspace getWorkspace()
     {
-        return getFileScope().getWorkspace();
+        ASFileScope fileScope = getFileScope();
+        return fileScope != null ? fileScope.getWorkspace() : null;
     }
 
     public String getContainingSourcePath(String qName, ICompilerProject project)
