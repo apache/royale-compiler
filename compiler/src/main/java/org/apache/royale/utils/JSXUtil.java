@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.common.IMetaInfo;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.scopes.ASScope;
 import org.apache.royale.compiler.internal.tree.as.XMLLiteralNode;
@@ -42,7 +43,7 @@ public class JSXUtil
     {
         for (IMetaInfo metaInfo : node.getMetaInfos())
         {
-            if (metaInfo.getTagName().equals("JSX"))
+            if (metaInfo.getTagName().equals(IMetaAttributeConstants.ATTRIBUTE_JSX))
             {
                 return true;
             }

@@ -35,6 +35,7 @@ import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.codegen.js.royale.IJSRoyaleASDocEmitter;
 import org.apache.royale.compiler.codegen.js.royale.IJSRoyaleEmitter;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 import org.apache.royale.compiler.definitions.IAccessorDefinition;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
@@ -996,7 +997,7 @@ public class JSRoyaleASDocDITAEmitter extends JSRoyaleEmitter implements IJSRoya
 
     public void writeAPIProperties(IDefinition def)
     {
-    	IMetaTag propTag = def.getMetaTagByName("Bindable");
+    	IMetaTag propTag = def.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_BINDABLE);
     	if (propTag == null)
     	{
         	write("<apiProperty/>");

@@ -33,6 +33,7 @@ import org.apache.royale.compiler.codegen.js.royale.IJSRoyalePublisher;
 import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.constants.IJSMetaAttributeConstants;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 import org.apache.royale.compiler.css.ICSSPropertyValue;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
@@ -267,8 +268,8 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
             while (classIterator.hasNext())
             {
                 baseDef = classIterator.next();
-                if (baseDef.hasMetaTagByName("Frame")) {
-                    factoryClassName = getFactoryClass(baseDef.getMetaTagByName("Frame"));
+                if (baseDef.hasMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_FRAME)) {
+                    factoryClassName = getFactoryClass(baseDef.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_FRAME));
                     break;
                 }
             }
