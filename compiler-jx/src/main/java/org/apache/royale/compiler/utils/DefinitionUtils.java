@@ -19,6 +19,7 @@
 
 package org.apache.royale.compiler.utils;
 
+import org.apache.royale.compiler.constants.IJSMetaAttributeConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IInterfaceDefinition;
@@ -33,9 +34,6 @@ import org.apache.royale.compiler.tree.as.IDocumentableDefinitionNode;
  */
 public class DefinitionUtils
 {
-
-    public static final String JSROYALE_SUPPRESS_EXPORT = "JSRoyaleSuppressExport";
-
     /**
      * Utility method for checking if a definition has been marked to be suppressed for export by Closure.
      * The implementation is to check for [JSRoyaleSuppressExport] Metadata.
@@ -44,7 +42,7 @@ public class DefinitionUtils
      * @param def the definition to inspect as suppressed for export
      */
     public static boolean hasExportSuppressed(IDefinition def) {
-        return def.hasMetaTagByName(JSROYALE_SUPPRESS_EXPORT);
+        return def.hasMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_SUPPRESS_EXPORT);
     }
 
 

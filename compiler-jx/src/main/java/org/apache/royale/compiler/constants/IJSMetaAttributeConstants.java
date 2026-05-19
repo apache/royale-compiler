@@ -40,4 +40,22 @@ public interface IJSMetaAttributeConstants
     static final String NAME_FOR_EACH_OVERRIDE_ITERATOR_METHOD = "iteratorMethod";
     static final String NAME_FOR_EACH_OVERRIDE_ITERATOR_NEXT_METHOD = "iteratorNextMethod";
     static final String NAME_FOR_EACH_OVERRIDE_ITERATOR_HAS_NEXT_METHOD = "iteratorHasNextMethod";
+
+    // [JSIncludeScript]
+    static final String ATTRIBUTE_INCLUDE_SCRIPT = "JSIncludeScript";
+    static final String NAME_INCLUDE_SCRIPT_SOURCE = "source";
+
+    // [JSIncludeCSS]
+    static final String ATTRIBUTE_INCLUDE_CSS = "JSIncludeCSS";
+    static final String NAME_INCLUDE_CSS_SOURCE = "source";
+
+    // [JSIncludeAsset]
+    static final String ATTRIBUTE_INCLUDE_ASSET = "JSIncludeAsset";
+    static final String NAME_INCLUDE_ASSET_SOURCE = "source";
+
+    // [JSModule]
+    static final String ATTRIBUTE_MODULE = "JSModule";
+
+    // [JSRoyaleSuppressExport]
+    static final String ATTRIBUTE_SUPPRESS_EXPORT = "JSRoyaleSuppressExport";
 }
