@@ -40,6 +40,7 @@ public interface IJSMetaAttributeConstants
     static final String NAME_FOR_EACH_OVERRIDE_ITERATOR_METHOD = "iteratorMethod";
     static final String NAME_FOR_EACH_OVERRIDE_ITERATOR_NEXT_METHOD = "iteratorNextMethod";
     static final String NAME_FOR_EACH_OVERRIDE_ITERATOR_HAS_NEXT_METHOD = "iteratorHasNextMethod";
+    static final String NAME_FOR_EACH_OVERRIDE_ITERATOR_DONE_METHOD = "iteratorDoneMethod";
 
     // [JSIncludeScript]
     static final String ATTRIBUTE_INCLUDE_SCRIPT = "JSIncludeScript";

@@ -354,7 +354,7 @@ public class ForEachEmitter extends JSSubEmitter implements
         final String iteratorMethodName = forEachOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_FOR_EACH_OVERRIDE_ITERATOR_METHOD);
         final String iteratorNextMethodName = forEachOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_FOR_EACH_OVERRIDE_ITERATOR_NEXT_METHOD);
         final String iteratorHasNextMethodName = forEachOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_FOR_EACH_OVERRIDE_ITERATOR_HAS_NEXT_METHOD);
-        final String iteratorDoneMethodName = forEachOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_FOR_IN_OVERRIDE_ITERATOR_DONE_METHOD);
+        final String iteratorDoneMethodName = forEachOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_FOR_EACH_OVERRIDE_ITERATOR_DONE_METHOD);
 
         if (iteratorMethodName == null || iteratorNextMethodName == null)
         {
