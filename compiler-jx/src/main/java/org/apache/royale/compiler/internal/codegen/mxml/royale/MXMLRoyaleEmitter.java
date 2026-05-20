@@ -53,6 +53,7 @@ import org.apache.royale.compiler.codegen.mxml.royale.IMXMLRoyaleEmitter;
 import org.apache.royale.compiler.common.ASModifier;
 import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
@@ -2718,20 +2719,20 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         }
         else
         {
-            IClassDefinition cdef = node
-                    .getClassReference((ICompilerProject) getMXMLWalker()
-                            .getProject());
-
-            String methodName = "_" + documentDefinition.getBaseName() + "_" + cdef.getBaseName() + "_" + factoryMethodCounter;
-            factoryMethodCounter++;
-            factoryMethodNames.put(node, methodName);
-            
             walkInstanceAndChildren(node);
         }
     }
 
     private void walkInstanceAndChildren(IMXMLInstanceNode node)
     {
+        IClassDefinition cdef = node
+                .getClassReference((ICompilerProject) getMXMLWalker()
+                        .getProject());
+
+        String methodName = "_" + documentDefinition.getBaseName() + "_" + cdef.getBaseName() + "_" + factoryMethodCounter;
+        factoryMethodCounter++;
+        factoryMethodNames.put(node, methodName);
+
         IMXMLPropertySpecifierNode[] pnodes = node.getPropertySpecifierNodes();
         if (pnodes != null)
         {
@@ -5388,9 +5389,8 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
     private void emitInstanceFactoryMethod(IMXMLInstanceNode node)
     {
-        IClassDefinition cdef = node
-                .getClassReference((ICompilerProject) getMXMLWalker()
-                        .getProject());
+        IRoyaleProject project = (IRoyaleProject)getMXMLWalker().getProject();
+        IClassDefinition cdef = node.getClassReference(project);
         String cname = node.getFileNode().getName();
         String methodName = factoryMethodNames.get(node);
         String tempVarName = "inst";
@@ -5420,6 +5420,19 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         write(ASEmitterTokens.PAREN_CLOSE);
         write(ASEmitterTokens.SEMICOLON);
         writeNewline();
+
+        emitUIComponentIDForInstance(node, tempVarName);
+        emitUIComponentDocumentForInstance(node, tempVarName);
+
+        int compatVersion = project.getCompatibilityVersion();
+        if (compatVersion < Configuration.MXML_VERSION_4_0)
+        {
+            emitUIComponentChildrenForInstance(node, tempVarName);
+        }
+        else
+        {
+            emitUIComponentDescriptorForInstance(node, tempVarName);
+        }
 
         emitClassReferenceFields(node, tempVarName);
 
@@ -5474,6 +5487,115 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         write(ASEmitterTokens.PAREN_OPEN);
         emitUIComponentDescriptor(node);
         write(ASEmitterTokens.PAREN_CLOSE);
+        writeNewline(ASEmitterTokens.SEMICOLON);
+    }
+
+    private void emitUIComponentIDForInstance(IMXMLInstanceNode node, String varName)
+    {
+        if (!node.isDeferredInstantiationUIComponent())
+        {
+            return;
+        }
+        String id = node.getID();
+        if (id == null)
+        {
+            return;
+        }
+
+        write(varName);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write("id");
+        write(ASEmitterTokens.SPACE);
+        write(ASEmitterTokens.EQUAL);
+        write(ASEmitterTokens.SPACE);
+        write(id);
+        write(ASEmitterTokens.SEMICOLON);
+        writeNewline();
+    }
+
+    private void emitUIComponentDocumentForInstance(IMXMLInstanceNode node, String varName)
+    {
+        RoyaleProject project = (RoyaleProject)getMXMLWalker().getProject();
+        IClassDefinition classDefinition = node.getClassReference(project);
+        if (!classDefinition.isInstanceOf(project.getUIComponentInterface(), project))
+        {
+            return;
+        }
+
+        writeToken(ASEmitterTokens.IF);
+        write(ASEmitterTokens.PAREN_OPEN);
+        write("!");
+        write(varName);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write("document");
+        write(ASEmitterTokens.PAREN_CLOSE);
+        writeNewline();
+        write(ASEmitterTokens.BLOCK_OPEN);
+        indentPush();
+        writeNewline();
+
+        write(varName);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write("document");
+        write(ASEmitterTokens.SPACE);
+        write(ASEmitterTokens.EQUAL);
+        write(ASEmitterTokens.SPACE);
+        write(ASEmitterTokens.THIS);
+        write(ASEmitterTokens.SEMICOLON);
+
+        indentPop();
+        writeNewline();
+        write(ASEmitterTokens.BLOCK_CLOSE);
+        writeNewline();
+    }
+
+    private void emitUIComponentChildrenForInstance(IMXMLInstanceNode node, String varName)
+    {
+        if (!node.isContainer())
+        {
+            return;
+        }
+
+        // instance nodes not added to declarations will be children
+        for (int i = 0; i < node.getChildCount(); i++)
+        {
+            IASNode childNode = node.getChild(i);
+            if (childNode instanceof IMXMLInstanceNode)
+            {
+                String methodName = factoryMethodNames.get(childNode);
+                write(varName);
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                write("addChild");
+                write(ASEmitterTokens.PAREN_OPEN);
+                write(ASEmitterTokens.THIS);
+                write(ASEmitterTokens.MEMBER_ACCESS);
+                write(methodName);
+                write(ASEmitterTokens.PAREN_OPEN);
+                write(ASEmitterTokens.PAREN_CLOSE);
+                write(ASEmitterTokens.PAREN_CLOSE);
+                write(ASEmitterTokens.SEMICOLON);
+                writeNewline();
+            }
+        }
+    }
+
+    private void emitUIComponentDescriptorForInstance(IMXMLInstanceNode node, String varName)
+    {
+        if (!node.needsDocumentDescriptor())
+        {
+            return;
+        }
+
+        write(varName);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(JSRoyaleEmitter.formatNamespacedProperty(
+            IMXMLTypeConstants.NAMESPACE_MX_INTERNAL.getName(),
+            "_documentDescriptor",
+            false));
+        write(ASEmitterTokens.SPACE);
+        write(ASEmitterTokens.EQUAL);
+        write(ASEmitterTokens.SPACE);
+        emitUIComponentDescriptor(node);
         writeNewline(ASEmitterTokens.SEMICOLON);
     }
 
