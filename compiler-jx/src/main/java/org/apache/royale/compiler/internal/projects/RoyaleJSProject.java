@@ -37,6 +37,7 @@ import org.apache.royale.compiler.common.DependencyTypeSet;
 import org.apache.royale.compiler.config.CompilerDiagnosticsConstants;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.config.Configurator;
+import org.apache.royale.compiler.constants.IJSMetaAttributeConstants;
 import org.apache.royale.compiler.css.ICSSMediaQueryCondition;
 import org.apache.royale.compiler.css.ICSSRule;
 import org.apache.royale.compiler.definitions.IClassDefinition;
@@ -330,9 +331,9 @@ public class RoyaleJSProject extends RoyaleProject implements IRoyaleJSProject
             while(iterator.hasNext())
             {
                 IDefinition def = iterator.next();
-                if (def.getQualifiedName().equals(qname) && def.hasMetaTagByName("JSModule"))
+                if (def.getQualifiedName().equals(qname) && def.hasMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_MODULE))
                 {
-                    return def.getMetaTagByName("JSModule");
+                    return def.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_MODULE);
                 }
             }
         }

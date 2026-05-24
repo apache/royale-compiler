@@ -25,10 +25,12 @@ import java.util.List;
 import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.constants.IJSMetaAttributeConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.INamespaceDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.goog.JSGoogEmitterTokens;
@@ -40,6 +42,7 @@ import org.apache.royale.compiler.internal.scopes.ASProjectScope;
 import org.apache.royale.compiler.internal.scopes.FunctionScope;
 import org.apache.royale.compiler.internal.tree.as.IdentifierNode;
 import org.apache.royale.compiler.internal.tree.as.VariableNode;
+import org.apache.royale.compiler.problems.MissingMetaTagAttributeProblem;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.*;
 import org.apache.royale.compiler.units.ICompilationUnit;
@@ -57,6 +60,8 @@ public class ClassEmitter extends JSSubEmitter implements
     @Override
     public void emit(IClassNode node)
     {
+        verifyMetaOverrides(node);
+
         boolean keepASDoc = false;
         boolean verbose = false;
         RoyaleJSProject project = (RoyaleJSProject)getEmitter().getWalker().getProject();
@@ -313,6 +318,42 @@ public class ClassEmitter extends JSSubEmitter implements
             startMapping(dnode, dnode);
             write(ASEmitterTokens.SEMICOLON);
             endMapping(dnode);
+        }
+    }
+
+    private void verifyMetaOverrides(IClassNode c)
+    {
+        for (IMetaTag forInOverrideMeta : c.getMetaTagsByName(IJSMetaAttributeConstants.ATTRIBUTE_FOR_IN_OVERRIDE))
+        {
+            final String iteratorMethodName = forInOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_FOR_IN_OVERRIDE_ITERATOR_METHOD);
+            final String iteratorNextMethodName = forInOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_FOR_IN_OVERRIDE_ITERATOR_NEXT_METHOD);
+
+            if (iteratorMethodName == null || iteratorMethodName.length() == 0)
+            {
+                getProject().getProblems().add(new MissingMetaTagAttributeProblem(forInOverrideMeta, IJSMetaAttributeConstants.NAME_FOR_IN_OVERRIDE_ITERATOR_METHOD));
+                return;
+            }
+
+            if (iteratorNextMethodName == null || iteratorNextMethodName.length() == 0)
+            {
+                getProject().getProblems().add(new MissingMetaTagAttributeProblem(forInOverrideMeta, IJSMetaAttributeConstants.NAME_FOR_IN_OVERRIDE_ITERATOR_NEXT_METHOD));
+            }
+        }
+        for (IMetaTag forEachOverrideMeta : c.getMetaTagsByName(IJSMetaAttributeConstants.ATTRIBUTE_FOR_EACH_OVERRIDE))
+        {
+            final String iteratorMethodName = forEachOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_FOR_EACH_OVERRIDE_ITERATOR_METHOD);
+            final String iteratorNextMethodName = forEachOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_FOR_EACH_OVERRIDE_ITERATOR_NEXT_METHOD);
+
+            if (iteratorMethodName == null || iteratorMethodName.length() == 0)
+            {
+                getProject().getProblems().add(new MissingMetaTagAttributeProblem(forEachOverrideMeta, IJSMetaAttributeConstants.NAME_FOR_EACH_OVERRIDE_ITERATOR_METHOD));
+                return;
+            }
+
+            if (iteratorNextMethodName == null || iteratorNextMethodName.length() == 0)
+            {
+                getProject().getProblems().add(new MissingMetaTagAttributeProblem(forEachOverrideMeta, IJSMetaAttributeConstants.NAME_FOR_EACH_OVERRIDE_ITERATOR_NEXT_METHOD));
+            }
         }
     }
 }

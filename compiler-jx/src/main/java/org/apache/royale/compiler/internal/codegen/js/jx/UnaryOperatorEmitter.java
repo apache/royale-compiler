@@ -21,6 +21,9 @@ package org.apache.royale.compiler.internal.codegen.js.jx;
 
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
+import org.apache.royale.compiler.constants.IJSMetaAttributeConstants;
+import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitter;
@@ -29,6 +32,7 @@ import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.*;
 import org.apache.royale.compiler.tree.ASTNodeID;
+import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
 import org.apache.royale.compiler.tree.as.ILiteralNode;
 import org.apache.royale.compiler.tree.as.IUnaryOperatorNode;
@@ -135,10 +139,39 @@ public class UnaryOperatorEmitter extends JSSubEmitter implements
 
     protected void emitDeleteOperator(IUnaryOperatorNode node)
     {
+        IExpressionNode operandNode = node.getOperandNode();
+        if (operandNode instanceof IDynamicAccessNode)
+        {
+            IDynamicAccessNode dynamicAccessNode = (IDynamicAccessNode) operandNode;
+            IExpressionNode leftOperandNode = dynamicAccessNode.getLeftOperandNode();
+            ITypeDefinition leftType = leftOperandNode.resolveType(getProject());
+            if (leftType != null)
+            {
+                IMetaTag dynamicOverrideMeta = leftType.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_DYNAMIC_OVERRIDE);
+                if (dynamicOverrideMeta != null)
+                {
+                    String deleteMethod = dynamicOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_DYNAMIC_OVERRIDE_DELETE_METHOD);
+                    if (deleteMethod != null)
+                    {
+                        getWalker().walk(dynamicAccessNode.getLeftOperandNode());
+                        startMapping(node);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(deleteMethod);
+                        write(ASEmitterTokens.PAREN_OPEN);
+                        endMapping(node);
+                        getWalker().walk(dynamicAccessNode.getRightOperandNode());
+                        startMapping(node);
+                        write(ASEmitterTokens.PAREN_CLOSE);
+                        endMapping(node);
+                        return;
+                    }
+                }
+            }
+        }
         startMapping(node);
         writeToken(node.getOperator().getOperatorText());
         endMapping(node);
-        getWalker().walk(node.getOperandNode());
+        getWalker().walk(operandNode);
     }
 
     protected void emitVoidOperator(IUnaryOperatorNode node)

@@ -30,6 +30,7 @@ import org.apache.royale.compiler.asdoc.IMetadataParserASDocDelegate;
 import org.apache.royale.compiler.asdoc.IPackageDITAParser;
 import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.common.ISourceLocation;
+import org.apache.royale.compiler.constants.IJSMetaAttributeConstants;
 import org.apache.royale.compiler.definitions.IDocumentableDefinition;
 import org.apache.royale.compiler.internal.codegen.js.utils.DocEmitterUtils;
 import org.apache.royale.compiler.internal.tree.as.BaseDefinitionNode;
@@ -137,8 +138,8 @@ public final class RoyaleASDocDelegate implements IASDocDelegate
                     tags = new MetaTagsNode();
                     ((BaseDefinitionNode) definitionNode).setMetaTags(tags);
                 }
-                if (!tags.hasTagByName(DefinitionUtils.JSROYALE_SUPPRESS_EXPORT)) {
-                    tags.addTag(new BasicMetaTagNode(DefinitionUtils.JSROYALE_SUPPRESS_EXPORT));
+                if (!tags.hasTagByName(IJSMetaAttributeConstants.ATTRIBUTE_SUPPRESS_EXPORT)) {
+                    tags.addTag(new BasicMetaTagNode(IJSMetaAttributeConstants.ATTRIBUTE_SUPPRESS_EXPORT));
                 }
            }
             currentToken = null;

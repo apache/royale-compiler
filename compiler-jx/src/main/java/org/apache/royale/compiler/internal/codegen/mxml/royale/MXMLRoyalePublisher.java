@@ -32,6 +32,8 @@ import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.codegen.js.royale.IJSRoyalePublisher;
 import org.apache.royale.compiler.common.ISourceLocation;
 import org.apache.royale.compiler.config.Configuration;
+import org.apache.royale.compiler.constants.IJSMetaAttributeConstants;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 import org.apache.royale.compiler.css.ICSSPropertyValue;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
@@ -266,8 +268,8 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
             while (classIterator.hasNext())
             {
                 baseDef = classIterator.next();
-                if (baseDef.hasMetaTagByName("Frame")) {
-                    factoryClassName = getFactoryClass(baseDef.getMetaTagByName("Frame"));
+                if (baseDef.hasMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_FRAME)) {
+                    factoryClassName = getFactoryClass(baseDef.getMetaTagByName(IMetaAttributeConstants.ATTRIBUTE_FRAME));
                     break;
                 }
             }
@@ -1122,13 +1124,13 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
                 if (def instanceof DefinitionPromise)
                 {
                     def = ((DefinitionPromise) def).getActualDefinition();
-                    for (IMetaTag metaTag : def.getMetaTagsByName("JSIncludeScript"))
+                    for (IMetaTag metaTag : def.getMetaTagsByName(IJSMetaAttributeConstants.ATTRIBUTE_INCLUDE_SCRIPT))
                     {
                         boolean foundSource = false;
                         for (IMetaTagAttribute metaAttr : metaTag.getAllAttributes())
                         {
                             String key = metaAttr.getKey();
-                            if ("source".equals(key) || key == null)
+                            if (IJSMetaAttributeConstants.NAME_INCLUDE_SCRIPT_SOURCE.equals(key) || key == null)
                             {
                                 foundSource = true;
 
@@ -1170,13 +1172,13 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
                             problems.add(new JSIncludeMetaTagNoSourceAttributeProblem(metaTag));
                         }
                     }
-                    for (IMetaTag metaTag : def.getMetaTagsByName("JSIncludeCSS"))
+                    for (IMetaTag metaTag : def.getMetaTagsByName(IJSMetaAttributeConstants.ATTRIBUTE_INCLUDE_CSS))
                     {
                         boolean foundSource = false;
                         for (IMetaTagAttribute metaAttr : metaTag.getAllAttributes())
                         {
                             String key = metaAttr.getKey();
-                            if ("source".equals(key) || key == null)
+                            if (IJSMetaAttributeConstants.NAME_INCLUDE_CSS_SOURCE.equals(key) || key == null)
                             {
                                 foundSource = true;
 
@@ -1218,13 +1220,13 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
                             problems.add(new JSIncludeMetaTagNoSourceAttributeProblem(metaTag));
                         }
                     }
-                    for (IMetaTag metaTag : def.getMetaTagsByName("JSIncludeAsset"))
+                    for (IMetaTag metaTag : def.getMetaTagsByName(IJSMetaAttributeConstants.ATTRIBUTE_INCLUDE_ASSET))
                     {
                         boolean foundSource = false;
                         for (IMetaTagAttribute metaAttr : metaTag.getAllAttributes())
                         {
                             String key = metaAttr.getKey();
-                            if ("source".equals(key) || key == null)
+                            if (IJSMetaAttributeConstants.NAME_INCLUDE_ASSET_SOURCE.equals(key) || key == null)
                             {
                                 foundSource = true;
 

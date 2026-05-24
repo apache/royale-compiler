@@ -143,6 +143,9 @@ public interface IMetaAttributeConstants
 	// [InstanceType]
     static final String ATTRIBUTE_INSTANCETYPE = "InstanceType";
     
+    // [JSX]
+    static final String ATTRIBUTE_JSX = "JSX";   
+    
     // [Mixin]
     static final String ATTRIBUTE_MIXIN = "Mixin";   
         

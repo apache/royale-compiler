@@ -49,6 +49,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.royale.compiler.clients.MXMLJSC.JSTargetType;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.codegen.js.IJSWriter;
+import org.apache.royale.compiler.constants.IJSMetaAttributeConstants;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
@@ -586,12 +587,12 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
             {
                 def = ((DefinitionPromise) def).getActualDefinition();
             }
-            for (IMetaTag metaTag : def.getMetaTagsByName("JSIncludeScript"))
+            for (IMetaTag metaTag : def.getMetaTagsByName(IJSMetaAttributeConstants.ATTRIBUTE_INCLUDE_SCRIPT))
             {
                 for (IMetaTagAttribute metaAttr : metaTag.getAllAttributes())
                 {
                     String key = metaAttr.getKey();
-                    if ("source".equals(key) || key == null)
+                    if (IJSMetaAttributeConstants.NAME_INCLUDE_SCRIPT_SOURCE.equals(key) || key == null)
                     {
                         String includePath = metaAttr.getValue();
                         
@@ -622,12 +623,12 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
                     }
                 }
             }
-            for (IMetaTag metaTag : def.getMetaTagsByName("JSIncludeCSS"))
+            for (IMetaTag metaTag : def.getMetaTagsByName(IJSMetaAttributeConstants.ATTRIBUTE_INCLUDE_CSS))
             {
                 for (IMetaTagAttribute metaAttr : metaTag.getAllAttributes())
                 {
                     String key = metaAttr.getKey();
-                    if ("source".equals(key) || key == null)
+                    if (IJSMetaAttributeConstants.NAME_INCLUDE_CSS_SOURCE.equals(key) || key == null)
                     {
                         String includePath = metaAttr.getValue();
                         
@@ -658,12 +659,12 @@ public class COMPJSCRoyale extends MXMLJSCRoyale
                     }
                 }
             }
-            for (IMetaTag metaTag : def.getMetaTagsByName("JSIncludeAsset"))
+            for (IMetaTag metaTag : def.getMetaTagsByName(IJSMetaAttributeConstants.ATTRIBUTE_INCLUDE_ASSET))
             {
                 for (IMetaTagAttribute metaAttr : metaTag.getAllAttributes())
                 {
                     String key = metaAttr.getKey();
-                    if ("source".equals(key) || key == null)
+                    if (IJSMetaAttributeConstants.NAME_INCLUDE_ASSET_SOURCE.equals(key) || key == null)
                     {
                         String includePath = metaAttr.getValue();
                         

@@ -23,7 +23,9 @@ import org.apache.royale.compiler.codegen.IDocEmitter;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
+import org.apache.royale.compiler.constants.IJSMetaAttributeConstants;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleDocEmitter;
@@ -89,6 +91,25 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
         		return;
         	}
     	}
+
+		ITypeDefinition leftType = leftOperandNode.resolveType(getProject());
+		if (leftType != null)
+		{
+			IMetaTag dynamicOverrideMeta = leftType.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_DYNAMIC_OVERRIDE);
+			if (dynamicOverrideMeta != null)
+			{
+				String getMethod = dynamicOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_DYNAMIC_OVERRIDE_GET_METHOD);
+				if (getMethod != null)
+				{
+					write(ASEmitterTokens.MEMBER_ACCESS);
+					write(getMethod);
+					write(ASEmitterTokens.PAREN_OPEN);
+        			getWalker().walk(rightOperandNode);
+					write(ASEmitterTokens.PAREN_CLOSE);
+					return;
+				}
+			}
+		}
     	
         startMapping(node, leftOperandNode);
         write(ASEmitterTokens.SQUARE_OPEN);

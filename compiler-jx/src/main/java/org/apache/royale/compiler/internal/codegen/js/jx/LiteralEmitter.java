@@ -27,6 +27,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.royale.compiler.codegen.ISubEmitter;
 import org.apache.royale.compiler.codegen.js.IJSEmitter;
 import org.apache.royale.compiler.common.IMetaInfo;
+import org.apache.royale.compiler.constants.IMetaAttributeConstants;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
 import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterTokens;
@@ -71,7 +72,7 @@ public class LiteralEmitter extends JSSubEmitter implements
                     IMetaInfo[] metaInfos = functionNode.getMetaInfos();
                     for (IMetaInfo metaInfo : metaInfos)
                     {
-                        if (metaInfo.getTagName().equals(JSRoyaleEmitterTokens.JSX.getToken()))
+                        if (metaInfo.getTagName().equals(IMetaAttributeConstants.ATTRIBUTE_JSX))
                         {
                             jsx = true;
                             break;
