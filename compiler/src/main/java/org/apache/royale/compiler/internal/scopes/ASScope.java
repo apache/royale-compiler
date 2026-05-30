@@ -974,7 +974,7 @@ public abstract class ASScope extends ASScopeBase
      */
     protected void getPropertyForScopeChain(CompilerProject project, Collection<IDefinition> defs, String baseName, NamespaceSetPredicate namespaceSet, boolean findAll)
     {
-        getLocalProperty(project, defs, baseName, true);
+        getPropertyForMemberAccess(project, defs, baseName, namespaceSet, findAll);
     }
 
     protected String resolveBaseNameFromAlias(String possibleAlias)
