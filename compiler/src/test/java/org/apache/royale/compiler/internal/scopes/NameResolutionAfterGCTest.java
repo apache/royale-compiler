@@ -62,6 +62,7 @@ public class NameResolutionAfterGCTest extends ASTestBase
         IScopedNode newScopedNode = newNode.getScopedNode();
         // Since we are creating newNode manually, we must manually set its parent
         ((NodeBase)newScopedNode).setParent(newNode);
+        ((NodeBase)newScopedNode).span(node.getScopedNode().getAbsoluteStart(), node.getScopedNode().getAbsoluteEnd(), -1, -1, -1, -1);
         
         // This call to reconnectScopeNode should wipe local definitions because newNode.hasBeenParsed() is false.
         scope.reconnectScopeNode(newScopedNode);
