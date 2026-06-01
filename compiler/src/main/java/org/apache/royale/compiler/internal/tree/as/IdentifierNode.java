@@ -308,6 +308,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
     }
 
     private IDefinition idDef = null;
+
     //
     // ExpressionNodeBase overrides
     //
@@ -315,8 +316,12 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
     @Override
     public IDefinition resolve(ICompilerProject project)
     {
-    	if (DefinitionBase.getPerformanceCachingEnabled() && idDef != null)
-    		return idDef;
+        // use a local reference to the cached identifier definition because the
+        // member variable might change in another thread between checking for
+        // null and returning the value
+        IDefinition cachedIdDef = idDef;
+    	if (DefinitionBase.getPerformanceCachingEnabled() && cachedIdDef != null)
+    		return cachedIdDef;
     	
         ASScope asScope = getASScope();
 
@@ -451,7 +456,8 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
         		((RoyaleProject)project).addToAPIReport(result);
         }
         
-        idDef = result;
+        if (DefinitionBase.getPerformanceCachingEnabled())
+            idDef = result;
         return result;
     }
 

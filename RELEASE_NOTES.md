@@ -81,6 +81,7 @@ Apache Royale Compiler 1.0.0
 - compiler: Fixed JavaScript code generation for E4X wildcard (.*) syntax.
 - compiler: Added `[JSDynamicOverride]`, `[JSForInOverride]`, and `[JSForEachOverride]` to customize the behavior of certain syntax when targeting JavaScript. Useful for emulating the full features of `Dictionary` and `ByteArray` from SWF.
 - compiler: Support resource bundles with `JS` target, similar to `JSRoyale`.
+- compiler: Fixed rare race condition where certain cached values are detected as non-null but become null before the method returns.
 - debugger: Added missing isolate ID to SWF load and unload events.
 - debugger: Fixed debugger targeting the current JDK version instead of the intended minimum JDK version.
 - debugger: Fixed localized messages appearing as unprocessed tokens.

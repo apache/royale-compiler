@@ -258,8 +258,12 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
     @Override
     public IDefinition getParent()
     {
-    	if (getPerformanceCachingEnabled() && parentDef != null)
-    		return parentDef;
+        // use a local reference to the cached parent definition because the
+        // member variable might change in another thread between checking for
+        // null and returning the value
+        IDefinition cachedParentDef = parentDef;
+    	if (getPerformanceCachingEnabled() && cachedParentDef != null)
+    		return cachedParentDef;
     	
         IASScope scope = getContainingScope();
 
