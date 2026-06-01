@@ -98,9 +98,13 @@ public class FunctionScope extends ASScope
             if (parentNode instanceof FunctionNode)
             {
                 FunctionNode functionNode = (FunctionNode) parentNode;
-                if (functionNode.hasBeenParsed())
+                if (!functionNode.hasBeenParsed())
                 {
                     reconnectScopeNode(node);
+                    // This also seems needed... Explicitly calling getScope() on the node
+                    // ensures that on-demand parsing/restoration is executed,
+                    // which is necessary for restoring local definitions after GC.
+                    node.getScope();
                 }
             }
         }
@@ -113,7 +117,7 @@ public class FunctionScope extends ASScope
         // If the function body hasn't been parsed yet (or needs re-parsing after GC),
         // triggering getScopeNode() will ensure it is parsed and the scope is populated
         // with local variables.
-        if (project.getWorkspace() != null && getFileScope() != null)
+        if (project.getWorkspace() != null)
         {
             getScopeNode();
         }
@@ -126,7 +130,7 @@ public class FunctionScope extends ASScope
         // If the function body hasn't been parsed yet (or needs re-parsing after GC),
         // triggering getScopeNode() will ensure it is parsed and the scope is populated
         // with local variables.
-        if (project.getWorkspace() != null && getFileScope() != null)
+        if (project.getWorkspace() != null)
         {
             getScopeNode();
         }
