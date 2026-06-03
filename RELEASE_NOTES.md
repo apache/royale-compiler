@@ -116,6 +116,7 @@ Apache Royale Compiler 1.0.0
 - linter: Optimized performance of finding nearest token to location by using binary search.
 - royaleunit: Detect ADL and ADT using `AIR_HOME` environment variable, if not found in `ROYALE_HOME`.
 - royaleunit: Fixed detection of Adobe AIR version when major version has two digits.
+- royaleunit: Fixed detection of Adobe AIR version when `JDK_JAVA_OPTIONS` or `JAVA_TOOL_OPTIONS` environment variables are set.
 
 Apache Royale Compiler 0.9.12
 =============================

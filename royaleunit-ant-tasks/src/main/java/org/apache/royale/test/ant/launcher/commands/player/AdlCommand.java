@@ -136,6 +136,19 @@ public class AdlCommand extends DefaultPlayerCommand
 
     private double parseAdtVersionNumber( String versionString )
     {
+        // if certain environment variables are set, a message like one of the
+        // following may appear in the output, and the line should be skipped.
+        // 'NOTE: Picked up JDK_JAVA_OPTIONS:'
+        // or
+        // 'Picked up JAVA_TOOL_OPTIONS:'
+        int pickedIndex = versionString.indexOf("Picked up");
+        while (pickedIndex != -1)
+        {
+            int newLineIndex = versionString.indexOf("\n", pickedIndex);
+            versionString = versionString.substring(newLineIndex + 1).trim();
+            pickedIndex = versionString.indexOf("Picked up");
+        }
+
         double version;
 
         //AIR 2.6 and greater only returns the version number.
