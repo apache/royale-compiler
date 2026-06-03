@@ -313,6 +313,7 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
     }
 
     private IDefinition idDef = null;
+
     //
     // ExpressionNodeBase overrides
     //
@@ -320,17 +321,13 @@ public class IdentifierNode extends ExpressionNodeBase implements IIdentifierNod
     @Override
     public IDefinition resolve(ICompilerProject project)
     {
-        IDefinition currentIdDef = idDef;
-        if (DefinitionBase.getPerformanceCachingEnabled() && currentIdDef != null)
-        {
-            return currentIdDef;
-        }
-
-        return resolveInternal(project);
-    }
-
-    private IDefinition resolveInternal(ICompilerProject project)
-    {
+        // use a local reference to the cached identifier definition because the
+        // member variable might change in another thread between checking for
+        // null and returning the value
+        IDefinition cachedIdDef = idDef;
+        if (DefinitionBase.getPerformanceCachingEnabled() && cachedIdDef != null)
+            return cachedIdDef;
+    	
         ASScope asScope = getASScope();
 
         if (asScope == null)

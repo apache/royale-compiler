@@ -81,6 +81,7 @@ Apache Royale Compiler 1.0.0
 - compiler: Fixed JavaScript code generation for E4X wildcard (.*) syntax.
 - compiler: Added `[JSDynamicOverride]`, `[JSForInOverride]`, and `[JSForEachOverride]` to customize the behavior of certain syntax when targeting JavaScript. Useful for emulating the full features of `Dictionary` and `ByteArray` from SWF.
 - compiler: Support resource bundles with `JS` target, similar to `JSRoyale`.
+- compiler: Fixed rare race condition where certain cached values are detected as non-null but become null before the method returns.
 - debugger: Added missing isolate ID to SWF load and unload events.
 - debugger: Fixed debugger targeting the current JDK version instead of the intended minimum JDK version.
 - debugger: Fixed localized messages appearing as unprocessed tokens.
@@ -115,6 +116,7 @@ Apache Royale Compiler 1.0.0
 - linter: Optimized performance of finding nearest token to location by using binary search.
 - royaleunit: Detect ADL and ADT using `AIR_HOME` environment variable, if not found in `ROYALE_HOME`.
 - royaleunit: Fixed detection of Adobe AIR version when major version has two digits.
+- royaleunit: Fixed detection of Adobe AIR version when `JDK_JAVA_OPTIONS` or `JAVA_TOOL_OPTIONS` environment variables are set.
 
 Apache Royale Compiler 0.9.12
 =============================
