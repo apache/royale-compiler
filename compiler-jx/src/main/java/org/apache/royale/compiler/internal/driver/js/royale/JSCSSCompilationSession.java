@@ -604,7 +604,7 @@ public class JSCSSCompilationSession extends CSSCompilationSession
             else if (value instanceof CSSFunctionCallPropertyValue)
             {
                 final CSSFunctionCallPropertyValue functionCall = (CSSFunctionCallPropertyValue)value;
-                if ("ClassReference".equals(functionCall.name))
+                if (CSSFunctionCallPropertyValue.CLASS_REFERENCE.equals(functionCall.name))
                 {
                     final String className = CSSFunctionCallPropertyValue.getSingleArgumentFromRaw(functionCall.rawArguments);
                     if ("null".equals(className))
@@ -623,9 +623,10 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                     final String urlString = CSSFunctionCallPropertyValue.getSingleArgumentFromRaw(functionCall.rawArguments);
                     line.append("\"" + urlString + "\"");
                 }
-                else if ("PropertyReference".equals(functionCall.name))
+                else if (CSSFunctionCallPropertyValue.PROPERTY_REFERENCE.equals(functionCall.name))
                 {
                     // TODO: implement me
+                    line.append("null");
                 }
                 else if ("calc".equals(functionCall.name))
                 {
@@ -637,14 +638,10 @@ public class JSCSSCompilationSession extends CSSCompilationSession
                     // TODO: implement me
                 	line.append("null");
                 }
-                else if ("Embed".equals(functionCall.name))
+                else if (CSSFunctionCallPropertyValue.EMBED.equals(functionCall.name))
                 {
                     // TODO: implement me
-                    /*
-                    final ICompilerProblem e = new CSSCodeGenProblem(
-                            new IllegalStateException("Unable to find compilation unit for " + functionCall));
-                    problems.add(e);
-                    */
+                   line.append("null");
                 }
                 else if (otherCSSFunctions.contains(functionCall.name))
                 {
