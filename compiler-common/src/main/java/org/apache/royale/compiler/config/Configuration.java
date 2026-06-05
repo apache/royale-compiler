@@ -4732,17 +4732,13 @@ public class Configuration
             throw new ConfigurationException.NamespaceMissingManifest("namespace", cfgval.getSource(),
                     cfgval.getLine());
 
-        if (args.size() % 2 != 0)
-            throw new ConfigurationException.IncorrectArgumentCount(args.size() + 1, args.size(), cfgval.getVar(),
-                    cfgval.getSource(), cfgval.getLine());
-
         if (manifestMappings == null)
             manifestMappings = new ArrayList<MXMLNamespaceMapping>();
 
-        for (int i = 0; i < args.size() - 1; i += 2)
+        final String uri = args.get(0);
+        for (int i = 1; i < args.size(); i++)
         {
-            final String uri = args.get(i);
-            final String manifestFile = args.get(i + 1);
+            final String manifestFile = args.get(i);
             final String path = resolvePathStrict(manifestFile, cfgval);
             manifestMappings.add(new MXMLNamespaceMapping(uri, path));
         }
