@@ -206,12 +206,17 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 // sure it is ok to always use the short name in an MAE
                 String qname = nodeDef.getQualifiedName();
                 boolean isPackageOrFileMember = false;
+                boolean isPackageMember = false;
                 if (nodeDef instanceof IVariableDefinition)
                 {
                     IVariableDefinition variable = (IVariableDefinition) nodeDef;
                     VariableClassification classification = variable.getVariableClassification();
-                    if (classification == VariableClassification.PACKAGE_MEMBER ||
-                            classification == VariableClassification.FILE_MEMBER)
+                    if (classification == VariableClassification.PACKAGE_MEMBER)
+                    {
+                        isPackageOrFileMember = true;
+                        isPackageMember = true;
+                    }
+                    else if (classification == VariableClassification.FILE_MEMBER)
                     {
                         isPackageOrFileMember = true;
                     }
@@ -235,8 +240,12 @@ public class IdentifierEmitter extends JSSubEmitter implements
                 {
                     IFunctionDefinition func = (IFunctionDefinition) nodeDef;
                     FunctionClassification classification = func.getFunctionClassification();
-                    if (classification == FunctionClassification.PACKAGE_MEMBER ||
-                            classification == FunctionClassification.FILE_MEMBER)
+                    if (classification == FunctionClassification.PACKAGE_MEMBER)
+                    {
+                        isPackageOrFileMember = true;
+                        isPackageMember = true;
+                    }
+                    else if (classification == FunctionClassification.FILE_MEMBER)
                     {
                         isPackageOrFileMember = true;
                     }
@@ -248,6 +257,13 @@ public class IdentifierEmitter extends JSSubEmitter implements
                     //if the package or file member isn't on the left side of a
                     //member access expression, it shouldn't be fully qualified
                     needsFormattedName = parentMemberAccessNode.getLeftOperandNode() == node;
+                    if (!needsFormattedName && isPackageMember && project.isGoogProvided(qname))
+                    {
+                        // it needs to be required, though, so we'll format it
+                        // without emitting the formatted name because that will
+                        // add it to the used names
+                        fjs.formatQualifiedName(qname);
+                    }
                 }
                 if (parentNodeId == ASTNodeID.MemberAccessExpressionID)
                 {
