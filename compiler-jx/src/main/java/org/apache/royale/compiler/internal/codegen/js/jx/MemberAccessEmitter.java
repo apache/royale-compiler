@@ -189,10 +189,12 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 				ASTNodeID parentNodeId = parentNode.getNodeID();
 				// we need a closure if this MAE is the top-level in a chain
 				// of MAE and not in a function call.
-				needClosure = !isStatic && parentNodeId != ASTNodeID.FunctionCallID &&
-							((IFunctionDefinition) def).getFunctionClassification() == FunctionClassification.CLASS_MEMBER &&
-							parentNodeId != ASTNodeID.MemberAccessExpressionID &&
-							parentNodeId != ASTNodeID.ArrayIndexExpressionID;
+				needClosure = !isStatic
+					&& parentNodeId != ASTNodeID.FunctionCallID
+					&& (((FunctionDefinition) def).getFunctionClassification() == FunctionClassification.CLASS_MEMBER
+                            || ((FunctionDefinition) def).getFunctionClassification() == FunctionClassification.INTERFACE_MEMBER)
+					&& parentNodeId != ASTNodeID.MemberAccessExpressionID
+					&& parentNodeId != ASTNodeID.ArrayIndexExpressionID;
 
 				//If binding getterFunctions ever need closures, this seems to be where it would be done (so far not needed, @todo review and remove this when certain)
 				/*if (!needClosure && !isStatic && parentNodeId == ASTNodeID.FunctionCallID) {
