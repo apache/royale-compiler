@@ -26,6 +26,7 @@ import org.apache.royale.compiler.constants.IASKeywordConstants;
 import org.apache.royale.compiler.constants.IASLanguageConstants;
 import org.apache.royale.compiler.constants.INamespaceConstants;
 import org.apache.royale.compiler.definitions.*;
+import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;
 import org.apache.royale.compiler.internal.codegen.as.ASEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
 import org.apache.royale.compiler.internal.codegen.js.JSSubEmitter;
@@ -189,6 +190,7 @@ public class MemberAccessEmitter extends JSSubEmitter implements
 				// we need a closure if this MAE is the top-level in a chain
 				// of MAE and not in a function call.
 				needClosure = !isStatic && parentNodeId != ASTNodeID.FunctionCallID &&
+							((IFunctionDefinition) def).getFunctionClassification() == FunctionClassification.CLASS_MEMBER &&
 							parentNodeId != ASTNodeID.MemberAccessExpressionID &&
 							parentNodeId != ASTNodeID.ArrayIndexExpressionID;
 
