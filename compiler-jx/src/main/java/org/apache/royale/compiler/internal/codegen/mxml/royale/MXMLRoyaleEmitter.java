@@ -1593,7 +1593,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     protected void emitBindingData(String cname, IClassDefinition cdef)
     {
 		IRoyaleProject project = (IRoyaleProject)(walker.getProject());
-		BindingDatabase bd = project.getBindingMap().get(cdef);
+  BindingDatabase bd = project.getBindingMap().get(cdef.getQualifiedName());
         if (bd == null)
             return;
         if (bd.getBindingInfo().isEmpty())
@@ -2853,7 +2853,7 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	        setProp.id = overrideID;
 	        instances.add(setProp);
 			IRoyaleProject project = (IRoyaleProject)(walker.getProject());
-			BindingDatabase bd = project.getBindingMap().get(classDefinition);
+   BindingDatabase bd = project.getBindingMap().get(classDefinition.getQualifiedName());
 	        Set<BindingInfo> bindingInfo = bd.getBindingInfo();
 	        IMXMLDataBindingNode bindingNode = (IMXMLDataBindingNode)propertyOrStyleNode.getChild(0);
 	        for (BindingInfo bi : bindingInfo)

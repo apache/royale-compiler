@@ -89,7 +89,7 @@ public class MXMLBindingDirectiveHelper
     public MXMLBindingDirectiveHelper(MXMLClassDirectiveProcessor ddp, IABCVisitor emitter)
     {
         host = ddp;
-        ddp.getProject().getBindingMap().put(ddp.getClassDefinition(), bindingDataBase);
+        ddp.getProject().getBindingMap().put(ddp.getClassDefinition().getQualifiedName(), bindingDataBase);
         this.emitter = emitter;
     }
     

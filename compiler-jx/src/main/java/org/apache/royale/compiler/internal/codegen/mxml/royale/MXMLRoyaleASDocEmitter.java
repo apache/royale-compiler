@@ -611,7 +611,7 @@ public class MXMLRoyaleASDocEmitter extends MXMLEmitter implements
 	        setProp.id = overrideID;
 	        instances.add(setProp);
             IRoyaleProject project = (IRoyaleProject)(walker.getProject());
-            BindingDatabase bd = project.getBindingMap().get(classDefinition);
+            BindingDatabase bd = project.getBindingMap().get(classDefinition.getQualifiedName());
 	        Set<BindingInfo> bindingInfo = bd.getBindingInfo();
 	        IMXMLDataBindingNode bindingNode = (IMXMLDataBindingNode)propertyOrStyleNode.getChild(0);
 	        for (BindingInfo bi : bindingInfo)

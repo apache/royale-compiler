@@ -2177,6 +2177,7 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     {
         super.clean();
         manifestManager = null;
+        bindingMap.clear();
     }
 
     @Override
@@ -2732,12 +2733,12 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     }
 
 
-    private HashMap<IClassDefinition, BindingDatabase> bindingMap = new HashMap<IClassDefinition, BindingDatabase>();
+    private HashMap<String, BindingDatabase> bindingMap = new HashMap<String, BindingDatabase>();
     /**
      * Support for access to BindingData from the class definition as key.
      * @return
      */
-    public HashMap<IClassDefinition, BindingDatabase> getBindingMap(){
+    public HashMap<String, BindingDatabase> getBindingMap(){
         return bindingMap;
     }
 
