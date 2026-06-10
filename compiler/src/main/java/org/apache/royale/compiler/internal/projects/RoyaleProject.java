@@ -25,6 +25,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.commons.io.FileUtils;
 
@@ -2732,12 +2734,12 @@ public class RoyaleProject extends ASProject implements IRoyaleProject, ICompile
     }
 
 
-    private HashMap<IClassDefinition, BindingDatabase> bindingMap = new HashMap<IClassDefinition, BindingDatabase>();
+    private ConcurrentHashMap<IClassDefinition, BindingDatabase> bindingMap = new ConcurrentHashMap<IClassDefinition, BindingDatabase>();
     /**
      * Support for access to BindingData from the class definition as key.
      * @return
      */
-    public HashMap<IClassDefinition, BindingDatabase> getBindingMap(){
+    public ConcurrentMap<IClassDefinition, BindingDatabase> getBindingMap(){
         return bindingMap;
     }
 

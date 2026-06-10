@@ -21,6 +21,7 @@ package org.apache.royale.compiler.projects;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.royale.compiler.common.DependencyTypeSet;
 import org.apache.royale.compiler.common.XMLName;
@@ -250,6 +251,6 @@ public interface IRoyaleProject extends IASProject, IXMLNameResolver, IWriteOnly
      * Support for access to BindingData from the class definition as key.
      * @return
      */
-    HashMap<IClassDefinition, BindingDatabase> getBindingMap();
+    ConcurrentMap<IClassDefinition, BindingDatabase> getBindingMap();
 
 }
