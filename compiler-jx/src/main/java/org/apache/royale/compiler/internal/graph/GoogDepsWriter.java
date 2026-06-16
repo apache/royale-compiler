@@ -72,6 +72,7 @@ public class GoogDepsWriter {
 		sourceMapsSourceRoot = config.getSourceMapSourceRoot();
 		otherPaths = config.getSDKJSLib();
 		verbose = config.isVerbose();
+		includes = config.getIncludes();
 		otherPaths.add(new File(outputFolder.getParent(), "royale/Royale/src").getPath());
 		this.swcs = swcs;
 		if (verbose)
@@ -87,6 +88,7 @@ public class GoogDepsWriter {
 	private String moduleOutput;
 	private String outputFolderPath;
 	private String mainName;
+	private Set<String> includes;
 	private List<String> otherPaths;
 	private List<ISWC> swcs;
 	private boolean removeCirculars = false;
@@ -466,6 +468,10 @@ public class GoogDepsWriter {
 			return false;
 		}
 		addDeps(mainName);
+		for (String includeName : includes)
+		{
+			addDeps(includeName);
+		}
 		return true;
 	}
     

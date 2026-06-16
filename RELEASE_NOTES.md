@@ -86,6 +86,7 @@ Apache Royale Compiler 1.0.0
 - compiler: Fixed missing require for package-level functions or variables in some situations.
 - compiler: Fixed missing binding data caused by thread conflicts.
 - compiler: Fixed lost typing information in method bodies when emitting JavaScript in some circumstances.
+- compiler: Fixed missing symbols specified with `-includes` compiler option in generated JS.
 - debugger: Added missing isolate ID to SWF load and unload events.
 - debugger: Fixed debugger targeting the current JDK version instead of the intended minimum JDK version.
 - debugger: Fixed localized messages appearing as unprocessed tokens.
