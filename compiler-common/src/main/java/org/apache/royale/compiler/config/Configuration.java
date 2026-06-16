@@ -5120,7 +5120,7 @@ public class Configuration
     }
 
     /*
-     * Unlike the framework's RoyaleVersion.compatibilityVersionString, this
+     * Unlike the framework's FlexVersion.compatibilityVersionString, this
      * returns null rather than a string like "3.0.0" for the current version.
      * But if a -compatibility-version was specified, this string will always be
      * of the form N.N.N. For example, if -compatibility-version=2, this string

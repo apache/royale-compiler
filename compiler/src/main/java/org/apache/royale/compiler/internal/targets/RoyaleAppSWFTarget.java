@@ -236,7 +236,7 @@ public class RoyaleAppSWFTarget extends AppSWFTarget
         
         final String compatibilityVersion = royaleProject.getCompatibilityVersionString();
         if (compatibilityVersion != null)
-            resolveReferenceToCompilationUnit(delegate.royaleVersionReference,
+            resolveReferenceToCompilationUnit(delegate.flexVersionReference,
                     projectScope,
                     compilationUnits,
                     problems);
@@ -854,7 +854,7 @@ public class RoyaleAppSWFTarget extends AppSWFTarget
             getClassByAliasReference = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), IASLanguageConstants.getClassByAlias);
             registerClassAliasReference = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), IASLanguageConstants.registerClassAlias);
             crossDomainRSLItemReference = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), IMXMLTypeConstants.CrossDomainRSLItem);
-            royaleVersionReference = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), IMXMLTypeConstants.RoyaleVersion);
+            flexVersionReference = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), IMXMLTypeConstants.FlexVersion);
             capabilitiesReference = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), IASLanguageConstants.Capabilities);
             textFieldFactoryReference = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), IMXMLTypeConstants.TextFieldFactory);
             iSWFContextReference = ReferenceFactory.packageQualifiedReference(project.getWorkspace(), IMXMLTypeConstants.ISWFContext);
@@ -874,7 +874,7 @@ public class RoyaleAppSWFTarget extends AppSWFTarget
         private final IResolvedQualifiersReference getClassByAliasReference;
         private final IResolvedQualifiersReference registerClassAliasReference;
         private final IResolvedQualifiersReference crossDomainRSLItemReference;
-        private final IResolvedQualifiersReference royaleVersionReference;
+        private final IResolvedQualifiersReference flexVersionReference;
         private final IResolvedQualifiersReference capabilitiesReference;
         private final IResolvedQualifiersReference textFieldFactoryReference;
         private final IResolvedQualifiersReference iSWFContextReference;
@@ -1810,15 +1810,15 @@ public class RoyaleAppSWFTarget extends AppSWFTarget
             // Generate code for the constructor:
             // public function ClassName()
             // {
-            //    RoyaleVersion.compatibilityVersionString = "4.5.0";
+            //    FlexVersion.compatibilityVersionString = "4.5.0";
             //    super();
             // }
             final String compatibilityVersion = royaleProject.getCompatibilityVersionString();
             final InstructionList classITraitsInit = new InstructionList();
-            if (compatibilityVersion != null && royaleVersionReference.resolve(royaleProject) != null && isFlexSDKInfo)
+            if (compatibilityVersion != null && flexVersionReference.resolve(royaleProject) != null && isFlexSDKInfo)
             {
-                Name royaleVersionSlotName = royaleVersionReference.getMName();
-                classITraitsInit.addInstruction(ABCConstants.OP_getlex, royaleVersionSlotName);
+                Name flexVersionSlotName = flexVersionReference.getMName();
+                classITraitsInit.addInstruction(ABCConstants.OP_getlex, flexVersionSlotName);
                 classITraitsInit.addInstruction(ABCConstants.OP_pushstring, compatibilityVersion);
                 classITraitsInit.addInstruction(ABCConstants.OP_setproperty, new Name("compatibilityVersionString"));
             }
