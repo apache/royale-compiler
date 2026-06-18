@@ -278,44 +278,7 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
                 // getters and setters
                 if (contents != null && scope != null)
                 {
-                    deferredBodyParsingLock.lock();
-                    try
-                    {
-                        // the compiler holds weak references to nodes in certain places
-                        // which allows them to be garbage collected. however, from time
-                        // to time, the compiler may need the node again later, after it
-                        // has been garbage collected, so that node needs to be
-                        // recreated.
-                        // when a function node is recreated, its scope may still be
-                        // populated with definitions from the old function node's body,
-                        // such as local variables. upon recreation, those local
-                        // definitions should be considered invalid because they will
-                        // be replaced with new definitions after parsing the new
-                        // function node's body.
-                        // to reiterate, removing the definitions below is not the same
-                        // case where a function node's discardFunctionBody() method is
-                        // called and the local definitions need to be removed. instead,
-                        // this is a separate case where a function node is garbage
-                        // collected and the body was never discarded, so the scope
-                        // still contains definitions from the old function node.
-                        if (!hasBeenParsed())
-                        {
-                            Collection<IDefinition> localDefs = scope.getAllLocalDefinitions();
-                            for (IDefinition def : localDefs)
-                            {
-                                if (! (def instanceof IParameterDefinition))
-                                {
-                                    scope.removeDefinition(def);
-                                }
-                            }
-                        }
-
-                        contents.reconnectScope(scope);
-                    }
-                    finally
-                    {
-                        deferredBodyParsingLock.unlock();
-                    }
+                    contents.reconnectScope(scope);
                 }
             }
         }
@@ -909,6 +872,19 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
                     sourceReader.skip(openT.getLocalEnd());
                 }
 
+                // if any non-parameter definitions already exist in this scope,
+                // remove them all because the freshly parsed function body will
+                // require new definitions to replace them.
+                ASScope asScope = contents.getASScope();
+                Collection<IDefinition> localDefs = asScope.getAllLocalDefinitions();
+                for (IDefinition def : localDefs)
+                {
+                    if (! (def instanceof IParameterDefinition))
+                    {
+                        asScope.removeDefinition(def);
+                    }
+                }
+
                 assert !anyNonParametersInScope(contents);
                 
                 // rebuild function body AST
@@ -944,7 +920,7 @@ public class FunctionNode extends BaseTypedDefinitionNode implements IFunctionNo
                     PostProcessStep.POPULATE_SCOPE,
                     PostProcessStep.RECONNECT_DEFINITIONS);
                 
-                problems.addAll(contents.runPostProcess(postProcess, contents.getASScope()));
+                problems.addAll(contents.runPostProcess(postProcess, asScope));
                 
                 // add implicit "arguments" argument to the local scope
                 tryAddDefaultArgument();
