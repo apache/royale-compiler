@@ -145,6 +145,10 @@ public class AdlCommand extends DefaultPlayerCommand
         while (pickedIndex != -1)
         {
             int newLineIndex = versionString.indexOf("\n", pickedIndex);
+            if (newLineIndex == -1)
+            {
+                break;
+            }
             versionString = versionString.substring(newLineIndex + 1).trim();
             pickedIndex = versionString.indexOf("Picked up");
         }
