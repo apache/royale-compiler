@@ -122,6 +122,12 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
      */
     private boolean isDesignLayer = false;
 
+    /**
+     * A flag that keeps track of whether the node represents a repeater
+     * (i.e., an mx.core.Repe).
+     */
+    private boolean isRepeater = false;
+
     private String containerInterface;
     private String uiComponentInterface;
 
@@ -279,6 +285,11 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
         return isDesignLayer;
     }
 
+    private boolean isRepeater()
+    {
+        return isRepeater;
+    }
+
     /**
      * Sets the definition of the ActionScript class to which this node refers.
      */
@@ -306,6 +317,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
         uiComponentInterface = project.getUIComponentInterface();
 
         isDesignLayer = classReference.isInstanceOf(IMXMLTypeConstants.DesignLayer, project);
+        isRepeater = classReference.isInstanceOf(IMXMLTypeConstants.Repeater, project);
 
         // Keep track of whether the class implements mx.core.IDeferredInstantiationUIComponent
         // because that affects code generation.
@@ -548,6 +560,7 @@ abstract class MXMLClassReferenceNodeBase extends MXMLNodeBase implements IMXMLC
                     else
                     {
                         if (isDesignLayer()
+                                || (isRepeater() && classDefinition.isInstanceOf(uiComponentInterface, builder.getProject()))
                                 || (isContainer() && classDefinition.isInstanceOf(uiComponentInterface, builder.getProject())))
                         {
                             // This tag is not part of the default property value.

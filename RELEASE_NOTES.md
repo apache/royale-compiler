@@ -67,7 +67,8 @@ Apache Royale Compiler 1.0.0
 - compiler: Fixed invalid MXML children sometimes getting ignored completely. Now reports an appropriate error.
 - compiler: Fixed MXML `<fx:Vector>` not being emitted to JavaScript.
 - compiler: Fixed property assignment in MXML factory methods when using data binding.
-- compiler: Fixed `<fx:DesignLayer>` allowing children without `[DefaultProperty]` metadata.
+- compiler: Fixed `<fx:DesignLayer>` should allow children without `[DefaultProperty]` metadata.
+- compiler: Fixed `<fx:Repeater>` should allow children without `[DefaultProperty]` metadata.
 - compiler: Added `${mainClass}` token to HTML template replacement.
 - compiler: Fixed resolution of `[InstanceType]` classes when they are in a package.
 - compiler: JS target doesn't call `start()` for MXML classes, similar to AS3 classes.

@@ -2404,8 +2404,9 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
         final boolean isInstanceNode = node instanceof IMXMLInstanceNode;
         final boolean isResourceNode = node instanceof IMXMLResourceNode;
         final boolean isDesignLayerNode = node instanceof IMXMLDesignLayerNode;
+        final boolean isRepeaterNode = node instanceof IMXMLRepeaterNode;
         final boolean isDataBindingNode = isDataBindingNode(node);
-        return isInstanceNode && !isDesignLayerNode && !(isDataBindingNode || isResourceNode);
+        return isInstanceNode && !isDesignLayerNode && !isRepeaterNode && !(isDataBindingNode || isResourceNode);
     }
 
     /**
