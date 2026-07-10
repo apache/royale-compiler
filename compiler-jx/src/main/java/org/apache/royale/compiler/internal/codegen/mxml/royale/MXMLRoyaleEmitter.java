@@ -4524,10 +4524,10 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
             return sb.toString();
     	}
-    	else if ((instanceNode instanceof IMXMLIntNode) ||
-    			(instanceNode instanceof IMXMLUintNode) ||
-    			(instanceNode instanceof IMXMLNumberNode) ||
-    			(instanceNode instanceof IMXMLBooleanNode))
+    	else if (instanceNode instanceof IMXMLIntNode ||
+    			instanceNode instanceof IMXMLUintNode ||
+    			instanceNode instanceof IMXMLNumberNode ||
+    			instanceNode instanceof IMXMLBooleanNode)
     	{
     		IMXMLExpressionNode scalarNode = (IMXMLExpressionNode)instanceNode;
     		IASNode vNode = scalarNode.getExpressionNode();
@@ -4538,6 +4538,29 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 	            return value.toString();
     		}
     	}
+        else if (instanceNode instanceof IMXMLRegExpNode)
+        {
+    		IMXMLRegExpNode regExpNode = (IMXMLRegExpNode)instanceNode;
+    		IASNode vNode = regExpNode.getExpressionNode();
+    		if (vNode instanceof IRegExpLiteralNode)
+    		{
+                IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
+                        .getASEmitter();
+                return ((JSRoyaleEmitter)asEmitter).stringifyNode(vNode);
+    		}
+        }
+        else if (instanceNode instanceof IMXMLFunctionNode ||
+                instanceNode instanceof IMXMLClassNode)
+        {
+            IMXMLExpressionNode mxmlExprNode = (IMXMLExpressionNode) instanceNode;
+            IASNode exprNode = mxmlExprNode.getExpressionNode();
+            if (exprNode instanceof IIdentifierNode || exprNode instanceof IMemberAccessExpressionNode)
+            {
+                IASEmitter asEmitter = ((IMXMLBlockWalker) getMXMLWalker())
+                        .getASEmitter();
+                return ((JSRoyaleEmitter)asEmitter).stringifyNode(exprNode);
+            }
+        }
     	return "";
     }
 
