@@ -5280,7 +5280,8 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             for (IMXMLPropertySpecifierNode pnode : pnodes)
             {
                 IMXMLInstanceNode valueNode = (IMXMLInstanceNode) pnode.getChild(0);
-                if (valueNode instanceof IMXMLDataBindingNode)
+                if (valueNode instanceof IMXMLEmbedNode
+                        || valueNode instanceof IMXMLDataBindingNode)
                 {
                     continue;
                 }
