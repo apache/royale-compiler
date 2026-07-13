@@ -1332,11 +1332,12 @@ public class JSRoyaleEmitter extends JSEmitter implements IJSRoyaleEmitter
     	// Embed node seems to not have location, so use parent.
         EmbedData data = new EmbedData(node.getParent().getSourcePath(), null);
         boolean hadError = false;
+        ICompilerProject project = getWalker().getProject();
         for (IMetaTagAttribute attribute : node.getAttributes())
         {
             String key = attribute.getKey();
             String value = attribute.getValue();
-            if (data.addAttribute((CompilerProject) project, node.getParent(), key, value, getProblems()))
+            if (data.addAttribute(project, node.getParent(), key, value, getProblems()))
             {
                 hadError = true;
             }
