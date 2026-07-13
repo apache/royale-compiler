@@ -4040,15 +4040,20 @@ public class MXMLClassDirectiveProcessor extends ClassDirectiveProcessor
             
             if (propertyNode.getParent().getNodeID() == ASTNodeID.MXMLObjectID)
             {
-                // TODO This case presuambly also needs
-                // some logic involving isDb.
-                
-                // Push the property name.
-                context.addInstruction(OP_pushstring, propertyName);
-                
-                // Push the property value.
-                // Do this by codegen'ing sole child, which is an IMXMLInstanceNode.
-                traverse(propertyNode, context);
+                if (!isDb)
+                {
+                    // Push the property name.
+                    context.addInstruction(OP_pushstring, propertyName);
+                    
+                    // Push the property value.
+                    // Do this by codegen'ing sole child, which is an IMXMLInstanceNode.
+                    traverse(propertyNode, context);
+                }
+                else
+                {
+                    context.addInstruction(OP_pushstring, propertyName);
+                    context.addInstruction(OP_pushnull);
+                }
             }
             else
             {
