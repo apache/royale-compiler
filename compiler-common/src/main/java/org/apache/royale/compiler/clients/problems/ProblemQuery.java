@@ -220,7 +220,7 @@ public class ProblemQuery
         CompilerProblemCategorizer categorizer = new CompilerProblemCategorizer(problemSettings);
      
         CodeGenErrorFilter cgef = new CodeGenErrorFilter();
-        if (cgef.hasOtherErrors(problems))
+        if (cgef.hasOtherErrors(problems, categorizer))
         {
             filter = CompositeProblemFilter.and(filter, cgef);
         }

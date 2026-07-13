@@ -19,6 +19,7 @@
 
 package org.apache.royale.compiler.clients.problems;
 
+import org.apache.royale.compiler.problems.CompilerProblemSeverity;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.IOperandStackUnderflowProblem;
 
@@ -51,10 +52,28 @@ public class CodeGenErrorFilter implements IProblemFilter
 
     public boolean hasOtherErrors(Iterable<ICompilerProblem> problems)
     {
+        return hasOtherErrors(problems, null);
+    }
+
+    public boolean hasOtherErrors(Iterable<ICompilerProblem> problems, CompilerProblemCategorizer categorizer)
+    {
         for (ICompilerProblem problem : problems)
         {
             if (!(problem instanceof IOperandStackUnderflowProblem))
-                return true;
+            {
+                if (categorizer != null)
+                {
+                    CompilerProblemSeverity severity = categorizer.getProblemSeverity(problem); 
+                    if (severity == CompilerProblemSeverity.ERROR)
+                    {  
+                        return true;
+                    }
+                }
+                else
+                {
+                    return true;
+                }
+            }
         }
         return false;
     }
