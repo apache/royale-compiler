@@ -5700,6 +5700,10 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                 if (childNode instanceof IMXMLInstanceNode)
                 {
                     IMXMLInstanceNode instanceNode = (IMXMLInstanceNode) childNode;
+                    if (!instanceNode.needsDescriptor())
+                    {
+                        continue;
+                    }
                     if (childDescriptorCount > 0)
                     {
                         write(ASEmitterTokens.COMMA);
