@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.royale.abc.ABCConstants;
 import org.apache.royale.abc.semantics.Name;
@@ -144,6 +145,8 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
         
         if (Counter.COUNT_DEFINITIONS)
             countDefinitions();
+
+        metaTagsLock = new ReentrantLock();
     }
 
     // The scope that contains this definition.
@@ -173,6 +176,7 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
     // metaTags is never null. As an optimization, it re-uses a singleton empty array when
     // it has nothing in it
     private IMetaTag[] metaTags = singletonEmptyMetaTags;
+    private final ReentrantLock metaTagsLock;
 
     protected static final IMetaTag[] singletonEmptyMetaTags = new IMetaTag[0];
 
@@ -976,29 +980,45 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
 
     protected void addMetaTag(IMetaTag metaTag)
     {
-        IMetaTag[] newMetaTags = new IMetaTag[metaTags.length + 1];
-        System.arraycopy(metaTags, 0, newMetaTags, 0, metaTags.length);
-        newMetaTags[metaTags.length] = metaTag;
-        setMetaTags(newMetaTags);
+        metaTagsLock.lock();
+        try
+        {
+            IMetaTag[] newMetaTags = new IMetaTag[metaTags.length + 1];
+            System.arraycopy(metaTags, 0, newMetaTags, 0, metaTags.length);
+            newMetaTags[metaTags.length] = metaTag;
+            setMetaTags(newMetaTags);
+        }
+        finally
+        {
+            metaTagsLock.unlock();
+        }
     }
 
     public void setMetaTags(IMetaTag[] newMetaTags)
     {
-        if (newMetaTags == null)
+        metaTagsLock.lock();
+        try
         {
-            metaTags = singletonEmptyMetaTags;
-        }
-        else
-        {
-            this.metaTags = newMetaTags;
-            
-            // Use a flag bit to keep track of whether there is a [Deprecated] tag.
-            for (IMetaTag metaTag : metaTags)
+            if (newMetaTags == null)
             {
-                String tagName = metaTag.getTagName();
-                if (tagName.equals(IMetaAttributeConstants.ATTRIBUTE_DEPRECATED))
-                    setDeprecated();
+                metaTags = singletonEmptyMetaTags;
             }
+            else
+            {
+                this.metaTags = newMetaTags;
+                
+                // Use a flag bit to keep track of whether there is a [Deprecated] tag.
+                for (IMetaTag metaTag : metaTags)
+                {
+                    String tagName = metaTag.getTagName();
+                    if (tagName.equals(IMetaAttributeConstants.ATTRIBUTE_DEPRECATED))
+                        setDeprecated();
+                }
+            }
+        }
+        finally
+        {
+            metaTagsLock.unlock();
         }
     }
 
@@ -1009,10 +1029,18 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
         // So allocate an empty array here, even if metaTags is null
         List<IMetaTag> list = new ArrayList<IMetaTag>();
 
-        for (IMetaTag tag : metaTags)
+        metaTagsLock.lock();
+        try
         {
-            if (tag.getTagName().equals(name))
-                list.add(tag);
+            for (IMetaTag tag : metaTags)
+            {
+                if (tag.getTagName().equals(name))
+                    list.add(tag);
+            }
+        }
+        finally
+        {
+            metaTagsLock.unlock();
         }
 
         return list.toArray(new IMetaTag[0]);
@@ -1027,10 +1055,18 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
     @Override
     public IMetaTag getMetaTagByName(String name)
     {
-        for (IMetaTag tag : metaTags)
+        metaTagsLock.lock();
+        try
         {
-            if (tag.getTagName().equals(name))
-                return tag;
+            for (IMetaTag tag : metaTags)
+            {
+                if (tag.getTagName().equals(name))
+                    return tag;
+            }
+        }
+        finally
+        {
+            metaTagsLock.unlock();
         }
         return null;
     }
@@ -1699,15 +1735,23 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
     @Override
     public IDeprecationInfo getDeprecationInfo()
     {
-        for (IMetaTag metaTag : metaTags)
+        metaTagsLock.lock();
+        try
         {
-            if (metaTag.getTagName().equals(IMetaAttributeConstants.ATTRIBUTE_DEPRECATED))
+            for (IMetaTag metaTag : metaTags)
             {
-                String replacement = metaTag.getAttributeValue(IMetaAttributeConstants.NAME_DEPRECATED_REPLACEMENT);
-                String since = metaTag.getAttributeValue(IMetaAttributeConstants.NAME_DEPRECATED_SINCE);
-                String message = metaTag.getAttributeValue(IMetaAttributeConstants.NAME_DEPRECATED_MESSAGE);
-                return new DeprecationInfo(replacement, since, message);
+                if (metaTag.getTagName().equals(IMetaAttributeConstants.ATTRIBUTE_DEPRECATED))
+                {
+                    String replacement = metaTag.getAttributeValue(IMetaAttributeConstants.NAME_DEPRECATED_REPLACEMENT);
+                    String since = metaTag.getAttributeValue(IMetaAttributeConstants.NAME_DEPRECATED_SINCE);
+                    String message = metaTag.getAttributeValue(IMetaAttributeConstants.NAME_DEPRECATED_MESSAGE);
+                    return new DeprecationInfo(replacement, since, message);
+                }
             }
+        }
+        finally
+        {
+            metaTagsLock.unlock();
         }
 
         return null;
@@ -1828,34 +1872,42 @@ public abstract class DefinitionBase implements IDocumentableDefinition, IDefini
 
     protected void addFunctionTypeMeta(IFunctionTypeExpressionNode funcTypeExprNode, String paramName, ICompilerProject project)
     {
-        int existingIndex = -1;
-        for (int i = 0; i < metaTags.length; i++)
+        metaTagsLock.lock();
+        try
         {
-            IMetaTag otherMetaTag = metaTags[i];
-            if (IMetaAttributeConstants.ATTRIBUTE_FUNCTION_TYPE.equals(otherMetaTag.getTagName()))
+            int existingIndex = -1;
+            for (int i = 0; i < metaTags.length; i++)
             {
-                if ((paramName == null && otherMetaTag.getAttributeValue(IMetaAttributeConstants.NAME_FUNCTION_TYPE_PARAM_NAME) == null)
-                    || (paramName != null && paramName.equals(otherMetaTag.getAttributeValue(IMetaAttributeConstants.NAME_FUNCTION_TYPE_PARAM_NAME))))
+                IMetaTag otherMetaTag = metaTags[i];
+                if (IMetaAttributeConstants.ATTRIBUTE_FUNCTION_TYPE.equals(otherMetaTag.getTagName()))
                 {
-                    existingIndex = i;
-                    break;
+                    if ((paramName == null && otherMetaTag.getAttributeValue(IMetaAttributeConstants.NAME_FUNCTION_TYPE_PARAM_NAME) == null)
+                        || (paramName != null && paramName.equals(otherMetaTag.getAttributeValue(IMetaAttributeConstants.NAME_FUNCTION_TYPE_PARAM_NAME))))
+                    {
+                        existingIndex = i;
+                        break;
+                    }
                 }
             }
+            ArrayList<IMetaTagAttribute> attributes = new ArrayList<IMetaTagAttribute>();
+            if (paramName != null)
+            {
+                attributes.add(new MetaTagAttribute(IMetaAttributeConstants.NAME_FUNCTION_TYPE_PARAM_NAME, paramName));
+            }
+            attributes.add(new MetaTagAttribute(IMetaAttributeConstants.NAME_FUNCTION_TYPE_SIGNATURE, funcTypeExprNode.resolveSignature(project)));
+            MetaTag metaTag = new MetaTag(this, IMetaAttributeConstants.ATTRIBUTE_FUNCTION_TYPE, attributes.toArray(new IMetaTagAttribute[0]));
+            if (existingIndex == -1)
+            {
+                addMetaTag(metaTag);
+            }
+            else
+            {
+                metaTags[existingIndex] = metaTag;
+            }
         }
-        ArrayList<IMetaTagAttribute> attributes = new ArrayList<IMetaTagAttribute>();
-        if (paramName != null)
+        finally
         {
-            attributes.add(new MetaTagAttribute(IMetaAttributeConstants.NAME_FUNCTION_TYPE_PARAM_NAME, paramName));
-        }
-        attributes.add(new MetaTagAttribute(IMetaAttributeConstants.NAME_FUNCTION_TYPE_SIGNATURE, funcTypeExprNode.resolveSignature(project)));
-        MetaTag metaTag = new MetaTag(this, IMetaAttributeConstants.ATTRIBUTE_FUNCTION_TYPE, attributes.toArray(new IMetaTagAttribute[0]));
-        if (existingIndex == -1)
-        {
-            addMetaTag(metaTag);
-        }
-        else
-        {
-            metaTags[existingIndex] = metaTag;
+            metaTagsLock.unlock();
         }
     }
 }
