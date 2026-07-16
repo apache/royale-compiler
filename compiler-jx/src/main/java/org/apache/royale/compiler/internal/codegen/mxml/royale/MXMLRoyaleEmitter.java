@@ -979,6 +979,9 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
                 case MXMLWebServiceID:
                     emitInstanceFactoryMethod((IMXMLInstanceNode) node);
                     break;
+                case MXMLFactoryID:
+                    emitFactoryFactoryMethod((IMXMLFactoryNode) node);
+                    break;
                 case MXMLVectorID:
                     emitVectorFactoryMethod((IMXMLVectorNode) node);
                     break;
@@ -3619,18 +3622,35 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
     @Override
     public void emitFactory(IMXMLFactoryNode node)
     {
-        IASNode cnode = node.getChild(0);
-    	ITypeDefinition type = ((IMXMLClassNode)cnode).getValue(getMXMLWalker().getProject());
-    	if (type == null) return;
+        RoyaleJSProject project = (RoyaleJSProject)getMXMLWalker().getProject();
 
-        MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
-        ps.value = "new " + formatQualifiedName("org.apache.royale.core.ClassFactory") + "(";
-
-        if (cnode instanceof IMXMLClassNode)
+        if (project.getTargetSettings().getMxmlChildrenAsData())
         {
-            ps.value += formatQualifiedName(type.getQualifiedName());
+            IASNode cnode = node.getChild(0);
+            ITypeDefinition type = ((IMXMLClassNode)cnode).getValue(project);
+            if (type == null) return;
+
+            MXMLDescriptorSpecifier ps = getCurrentDescriptor("ps");
+            ps.value = "new " + formatQualifiedName("org.apache.royale.core.ClassFactory") + "(";
+
+            if (cnode instanceof IMXMLClassNode)
+            {
+                ps.value += formatQualifiedName(type.getQualifiedName());
+            }
+            ps.value += ")";
         }
-        ps.value += ")";
+        else
+        {
+            String methodName = "_" + documentDefinition.getBaseName() + "_Factory_" + factoryMethodCounter;
+            factoryMethodCounter++;
+            factoryMethodNames.put(node, methodName);
+
+            IMXMLClassNode classNode = node.getClassNode();
+            if (classNode != null)
+            {
+                getMXMLWalker().walk(classNode);
+            }
+        }
     }
 
     //--------------------------------------------------------------------------
@@ -5459,6 +5479,77 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         }
 
         emitClassReferenceFields(node, tempVarName);
+
+        String effectiveId = node.getEffectiveID();
+        if (effectiveId != null)
+        {
+            write(ASEmitterTokens.THIS);
+            write(ASEmitterTokens.MEMBER_ACCESS);
+            write(node.getEffectiveID());
+            write(ASEmitterTokens.SPACE);
+            writeToken(ASEmitterTokens.EQUAL);
+            write(tempVarName);
+            write(ASEmitterTokens.SEMICOLON);
+            writeNewline();
+        }
+
+        writeToken(ASEmitterTokens.RETURN);
+        write(tempVarName);
+        write(ASEmitterTokens.SEMICOLON);
+
+        indentPop();
+        writeNewline();
+        write(ASEmitterTokens.BLOCK_CLOSE);
+        writeNewline(ASEmitterTokens.SEMICOLON);
+    }
+
+    private void emitFactoryFactoryMethod(IMXMLFactoryNode node)
+    {
+        RoyaleJSProject project = (RoyaleJSProject) getMXMLWalker().getProject();
+        String cname = node.getFileNode().getName();
+        String methodName = factoryMethodNames.get(node);
+        String tempVarName = "factory";
+        IMXMLClassNode classNode = node.getClassNode();
+
+        writeNewline();
+        write(cname);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(JSEmitterTokens.PROTOTYPE);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(methodName);
+        write(ASEmitterTokens.SPACE);
+        writeToken(ASEmitterTokens.EQUAL);
+        write(ASEmitterTokens.FUNCTION);
+        write(ASEmitterTokens.PAREN_OPEN);
+        writeToken(ASEmitterTokens.PAREN_CLOSE);
+        write(ASEmitterTokens.BLOCK_OPEN);
+        indentPush();
+        writeNewline();
+
+        writeToken(ASEmitterTokens.VAR);
+        write(tempVarName);
+        write(ASEmitterTokens.SPACE);
+        writeToken(ASEmitterTokens.EQUAL);
+        writeToken(ASEmitterTokens.NEW);
+        write(formatQualifiedName(project.getClassFactoryClass()));
+        write(ASEmitterTokens.PAREN_OPEN);
+        write(ASEmitterTokens.PAREN_CLOSE);
+        write(ASEmitterTokens.SEMICOLON);
+        writeNewline();
+        write(tempVarName);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        writeToken("generator");
+        writeToken(ASEmitterTokens.EQUAL);
+        if (classNode != null)
+        {
+            write(formatQualifiedName(classNode.getValue(project).getQualifiedName()));
+        }
+        else
+        {
+            write(ASEmitterTokens.NULL);
+        }
+        write(ASEmitterTokens.SEMICOLON);
+        writeNewline();
 
         String effectiveId = node.getEffectiveID();
         if (effectiveId != null)
