@@ -22,10 +22,10 @@ package org.apache.royale.compiler.internal.mxml;
 import java.util.Collection;
 
 import org.apache.royale.compiler.filespecs.IFileSpecification;
-import org.apache.royale.compiler.internal.parsing.mxml.MXMLToken;
 import org.apache.royale.compiler.parsing.IMXMLToken;
+import org.apache.royale.compiler.parsing.MXMLTokenTypes;
 import org.apache.royale.compiler.problems.ICompilerProblem;
-import org.apache.royale.compiler.problems.SyntaxProblem;
+import org.apache.royale.compiler.problems.MXMLStateSyntaxNotAllowedProblem;
 
 /**
  * Simple utility for parsing attribute.state phrases.
@@ -37,16 +37,35 @@ public class MXMLStateSplitter
      */
     public MXMLStateSplitter(IMXMLToken nameToken, MXMLDialect mxmlDialect, Collection<ICompilerProblem> problems, IFileSpecification fileSpec)
     {
-        // Is there a dot in the name?
         String name = nameToken.getText();
-        int i = name.indexOf('.');
-        if (i >= 0)
+        
+        // Is there a dot in the name?
+        int dotIndex = name.lastIndexOf('.');
+        boolean dotIsStateSyntax = false;
+        if (dotIndex != -1)
+        {
+            // a namespace prefix is allowed to include the "." character
+            switch (nameToken.getType())
+            {
+                case MXMLTokenTypes.TOKEN_NAME:
+                    dotIsStateSyntax = !name.startsWith("xmlns:");
+                    break;
+                case MXMLTokenTypes.TOKEN_OPEN_TAG_START:
+                case MXMLTokenTypes.TOKEN_CLOSE_TAG_START:
+                    int nsIndex = name.indexOf(":");
+                    dotIsStateSyntax = nsIndex < dotIndex;
+                    break;
+                default:
+                    dotIsStateSyntax = true;
+            }
+        }
+        if (dotIsStateSyntax)
         {
             if (mxmlDialect != null && mxmlDialect.isEqualToOrAfter(MXMLDialect.MXML_2009))
             {
-                baseName = name.substring(0, i);
-                stateName = name.substring(i + 1);
-                stateNameOffset = i + 1;
+                baseName = name.substring(0, dotIndex);
+                stateName = name.substring(dotIndex + 1);
+                stateNameOffset = dotIndex + 1;
             }
             else
             {
@@ -54,15 +73,15 @@ public class MXMLStateSplitter
                 baseName = name;
                 stateName = null;
 
-                // TODO: I don't think is going to make the right kind of "problem"
-                // This is how the old code worked, but I think it will give a strange message
                 if (problems != null && fileSpec != null)
-                    problems.add(new SyntaxProblem((MXMLToken)nameToken, "Spark state overrides not supported by current language version"));
+                {
+                    problems.add(new MXMLStateSyntaxNotAllowedProblem(nameToken, name));
+                }
             }
         }
         else
         {
-            // no dot.
+            // no dot, or a dot that is allowed in the namespace prefix
             baseName = name;
             stateNameOffset = -1;
             stateName = null;
