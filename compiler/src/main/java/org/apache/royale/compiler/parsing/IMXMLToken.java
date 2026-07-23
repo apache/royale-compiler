@@ -19,10 +19,12 @@
 
 package org.apache.royale.compiler.parsing;
 
+import org.apache.royale.compiler.common.ISourceLocation;
+
 /**
  * A token returned back by an {@link IMXMLTokenizer} created when we scan text
  */
-public interface IMXMLToken extends ICMToken
+public interface IMXMLToken extends ICMToken, ISourceLocation
 {
 	/**
 	 * Types of tokens within the MXML language
