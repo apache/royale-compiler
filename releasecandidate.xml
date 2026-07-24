@@ -382,6 +382,10 @@ upstream packages for the Royale release.\n\
 The release candidate can be found here;\n\
 https://dist.apache.org/repos/dist/dev/royale/compiler/${release.version}/rc${rc}/\n\
 \n\
+The source was built from tag apache-royale-compiler-${release.version}-rc${rc}\n\
+in the royale-compiler repo (commit ${releasehash}):\n\
+https://github.com/apache/royale-compiler/releases/tag/apache-royale-compiler-${release.version}-rc${rc}\n\
+\n\
 Before voting please review the section, 'What are the ASF requirements on\n\
 approving a release?', at:\n\
 http://www.apache.org/dev/release.html#approving-a-release\n\
@@ -407,7 +411,7 @@ Please vote to approve this release:\n\
 +1 Approve the release\n\
 -1 Disapprove the release (please provide specific comments to why)\n\
 \n\
-This vote will be open for 72 hours or until a result can be called.\n\
+This vote will be open for at least 72 hours.\n\
 \n\
 The vote passes if there is:\n\
 - At least 3 +1 votes from the PMC\n\
