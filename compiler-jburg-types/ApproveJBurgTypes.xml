@@ -608,8 +608,34 @@
             <arg value="clean" />
             <arg value="install" />
         </exec>
+        <antcall target="verify-compiler-integration" />
     </target>
-    	
+
+    <!--
+        Optional consumer integration check.
+        Verifies that royale-compiler builds when its compiler-jburg-types
+        dependency is set to the version under vote. Skipped unless
+        -Dcompiler.dir=<path to a royale-compiler checkout> is provided.
+        Can also be invoked directly:
+          ant -f ApproveJBurgTypes.xml verify-compiler-integration \
+              -Drelease.version=x.y.z -Dcompiler.dir=/path/to/royale-compiler
+    -->
+    <target name="verify-compiler-integration" if="compiler.dir">
+        <fail message="compiler.dir '${compiler.dir}' does not exist">
+            <condition>
+                <not>
+                    <available file="${compiler.dir}/pom.xml" />
+                </not>
+            </condition>
+        </fail>
+        <echo message="Building royale-compiler at ${compiler.dir} against compiler-jburg-types ${release.version}" />
+        <exec executable="${mvn}" dir="${compiler.dir}" failonerror="true">
+            <arg value="clean" />
+            <arg value="install" />
+            <arg value="-Dcompiler-jburg-types.version=${release.version}" />
+        </exec>
+    </target>
+
 	<target name="approve" >
 		<condition property="vote" value="+1">
 			<and>
