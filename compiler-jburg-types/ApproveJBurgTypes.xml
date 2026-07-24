@@ -661,8 +661,6 @@ Java ${ant.java.version}
 OS: ${os.name} ${os.arch} ${os.version}
 Source kit signatures match: y
 Source kit builds: y
-README is ok: ${readme.ok}
-RELEASE_NOTES is ok: ${releasenotes.ok}
 NOTICE is ok: ${src.notice.ok}
 LICENSE is ok: ${src.license.ok}
 No unapproved licenses or archives in source package: ${rat.src.license.ok}
