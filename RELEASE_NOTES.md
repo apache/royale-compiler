@@ -93,6 +93,7 @@ Apache Royale Compiler 1.0.0
 - compiler: Fixed operand stack underflow error when using data binding in MXML to assign to `<fx:Object>` property.
 - compiler: Fixed race condition in populating metadata on definitions.
 - compiler: Fixed dot character in MXML namespace prefixes not being recognized, like `xmlns:com.example="com.example.*"`.
+- compiler: Fixed incorrect duplicate class definition error when using `Embed` metadata and there are no duplicates.
 - debugger: Added missing isolate ID to SWF load and unload events.
 - debugger: Fixed debugger targeting the current JDK version instead of the intended minimum JDK version.
 - debugger: Fixed localized messages appearing as unprocessed tokens.
