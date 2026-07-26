@@ -609,6 +609,87 @@
             <arg value="install" />
         </exec>
         <antcall target="verify-compiler-integration" />
+        <antcall target="verify-source-matches-tag" />
+    </target>
+
+    <!--
+        Optional source-vs-tag verification.
+        Confirms the source ZIP file list matches the content of the release tag
+        in a local royale-compiler checkout, catching any spurious files that
+        do not exist in the tag. Skipped unless -Dcompiler.dir=<path to a
+        royale-compiler checkout> is provided. Can also be invoked directly:
+          ant -f ApproveJBurgTypes.xml verify-source-matches-tag \
+              -Drelease.version=x.y.z -Drc=N -Dcompiler.dir=/path/to/royale-compiler
+    -->
+    <target name="verify-source-matches-tag" if="compiler.dir">
+        <fail message="compiler.dir '${compiler.dir}' does not look like a git checkout (no .git directory)">
+            <condition><not><available file="${compiler.dir}/.git" /></not></condition>
+        </fail>
+        <fail message="This target requires -Drc=&lt;RC number&gt;" unless="rc" />
+
+        <condition property="git.cmd" value="git.exe" else="git">
+            <os family="windows"/>
+        </condition>
+
+        <property name="tag.name" value="org.apache.royale.compiler-jburg-types-${release.version}-rc${rc}" />
+        <property name="tag.subdir" value="compiler-jburg-types" />
+        <property name="from.tag.dir" value="${basedir}/from-tag" />
+        <property name="src.tree" value="${basedir}/${src.package.url.name}/apache-royale-compiler-jburg-types-${release.version}" />
+
+        <delete dir="${from.tag.dir}" failonerror="false" />
+        <mkdir dir="${from.tag.dir}" />
+
+        <exec executable="${git.cmd}" dir="${compiler.dir}" failonerror="true"
+              output="${basedir}/from-tag.tar" logError="true">
+            <arg value="archive" />
+            <arg value="--format=tar" />
+            <arg value="${tag.name}:${tag.subdir}" />
+        </exec>
+        <untar src="${basedir}/from-tag.tar" dest="${from.tag.dir}" />
+        <delete file="${basedir}/from-tag.tar" />
+
+        <pathconvert property="tag.filelist" pathsep="${line.separator}">
+            <fileset dir="${from.tag.dir}" />
+            <map from="${from.tag.dir}${file.separator}" to="" />
+        </pathconvert>
+        <pathconvert property="src.filelist" pathsep="${line.separator}">
+            <fileset dir="${src.tree}" />
+            <map from="${src.tree}${file.separator}" to="" />
+        </pathconvert>
+
+        <echo file="${basedir}/verify-tag-files.txt">${tag.filelist}${line.separator}</echo>
+        <echo file="${basedir}/verify-src-files.txt">${src.filelist}${line.separator}</echo>
+
+        <copy file="${basedir}/verify-tag-files.txt" tofile="${basedir}/verify-tag-files.sorted.txt" overwrite="true">
+            <filterchain><sortfilter/></filterchain>
+        </copy>
+        <copy file="${basedir}/verify-src-files.txt" tofile="${basedir}/verify-src-files.sorted.txt" overwrite="true">
+            <filterchain><sortfilter/></filterchain>
+        </copy>
+
+        <condition property="tag.matches.src">
+            <filesmatch file1="${basedir}/verify-tag-files.sorted.txt"
+                        file2="${basedir}/verify-src-files.sorted.txt" />
+        </condition>
+
+        <antcall target="verify-source-matches-tag.matched" />
+        <antcall target="verify-source-matches-tag.mismatched" />
+    </target>
+
+    <target name="verify-source-matches-tag.matched" if="tag.matches.src">
+        <echo>Source ZIP file list matches tag ${tag.name} exactly.</echo>
+    </target>
+
+    <target name="verify-source-matches-tag.mismatched" unless="tag.matches.src">
+        <echo>Source ZIP file list DIFFERS from tag ${tag.name}.</echo>
+        <echo>Compare:</echo>
+        <echo>  Tag files:    ${basedir}/verify-tag-files.sorted.txt</echo>
+        <echo>  Source files: ${basedir}/verify-src-files.sorted.txt</echo>
+        <input message="Inspect the differences and decide whether they are acceptable (e.g. generated DEPENDENCIES files). Continue? ([y], n)"
+               validargs="y,n" defaultvalue="y" addproperty="verify.tag.ok" />
+        <fail message="Source ZIP does not match tag; approval aborted.">
+            <condition><not><equals arg1="${verify.tag.ok}" arg2="y" /></not></condition>
+        </fail>
     </target>
 
     <!--
