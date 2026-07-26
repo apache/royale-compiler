@@ -439,21 +439,7 @@ public class EmbedData implements IEmbedData
             return false;
         }
 
-        String uniqueName = source;
-        if (source != null)
-        {
-            List<File> sourcePaths = ((IASProject)project).getSourcePath();
-            for (File sourcePath : sourcePaths)
-            {
-                String sourcePathString = sourcePath.getAbsolutePath();
-                if (source.startsWith(sourcePathString))
-                {
-                    uniqueName = source.substring(sourcePathString.length());
-                    uniqueName = uniqueName.replace("\\", "/");
-                    break;
-                }
-            }
-        }
+        final String uniqueName = getUniqueName();
 
         // also check that we have a mimetype set, as don't know what transcoder
         // to create without it!
@@ -572,18 +558,7 @@ public class EmbedData implements IEmbedData
             source = swcSource.getContainingSWCPath().concat(source);
         }
 
-        String uniqueName = source;
-        List<File> sourcePaths = ((IASProject)project).getSourcePath();
-        for (File sourcePath : sourcePaths)
-        {
-        	String sourcePathString = sourcePath.getAbsolutePath();
-        	if (source.startsWith(sourcePathString))
-        	{
-        		uniqueName = source.substring(sourcePathString.length());
-        		uniqueName = uniqueName.replace("\\", "/");
-        		break;
-        	}
-        }
+        final String uniqueName = getUniqueName();
         String filename = FilenameUtils.getName(source);
         filename = filename.replace(".", "_");
         String qname = filename + "$" + StringEncoder.stringToMD5String(uniqueName);
@@ -812,5 +787,29 @@ public class EmbedData implements IEmbedData
         }
 
         return sourceFile;
+    }
+
+    private String getUniqueName()
+    {
+        String source = (String)getAttribute(EmbedAttribute.SOURCE);
+        if (swcSource != null)
+        {
+            source = EMBED_SWC_SEP.concat(source);
+            source = swcSource.getContainingSWCPath().concat(source);
+        }
+
+        String result = source;
+        List<File> sourcePaths = ((IASProject)project).getSourcePath();
+        for (File sourcePath : sourcePaths)
+        {
+            String sourcePathString = sourcePath.getAbsolutePath();
+            if (source.startsWith(sourcePathString))
+            {
+                result = source.substring(sourcePathString.length());
+                result = result.replace("\\", "/");
+                break;
+            }
+        }
+        return result;
     }
 }
