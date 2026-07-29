@@ -2255,6 +2255,43 @@ public class TestRoyaleExpressions extends TestExpressions
          asBlockWalker.visitVariable(node);
          assertOut("var /** @type {number} */ n = (-(p.getProperty('something'))) >> 0");
      }
+    
+    @Test
+    public void testE4XFilterWithLocalVariable()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "public function foo() { var x:XML; var a:String; x.(@type == a); }",
+                IFunctionNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitFunction(node);
+
+        assertOut("/**\n */\n" +
+                "RoyaleTest_A.prototype.foo = function() {\n" +
+                "  var /** @type {XML} */ x = null;\n" +
+                "  var /** @type {string} */ a = null;\n" +
+                "  //var /** @type {XML} */ x = null;\n" +
+                "  //var /** @type {string} */ a = null;\n" +
+                "  x.filter(function(/** @type {XML} */ node){return (node.attribute('type') == a)});\n" +
+                "}");
+    }
+    
+    @Test
+    public void testE4XFilterWithLocalFunction()
+    {
+        IFunctionNode node = (IFunctionNode) getNode(
+                "public function foo() { var x:XML; function a():String {}; x.(@type == a()); }",
+                IFunctionNode.class, WRAP_LEVEL_CLASS);
+        asBlockWalker.visitFunction(node);
+
+        assertOut("/**\n */\n" +
+                "RoyaleTest_A.prototype.foo = function() {\n" +
+                "  var self = this;\n" +
+                "  function a() {\n" +
+                "  };\n" +
+                "  var /** @type {XML} */ x = null;\n" +
+                "  //var /** @type {XML} */ x = null;\n" +
+                "  x.filter(function(/** @type {XML} */ node){return (node.attribute('type') == a())});\n" +
+                "}");
+    }
 
     protected IBackend createBackend()
     {

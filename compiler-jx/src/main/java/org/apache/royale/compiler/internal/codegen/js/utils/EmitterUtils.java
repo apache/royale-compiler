@@ -28,7 +28,10 @@ import org.apache.royale.compiler.constants.INamespaceConstants;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
+import org.apache.royale.compiler.definitions.IInterfaceDefinition;
+import org.apache.royale.compiler.definitions.IParameterDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition.FunctionClassification;
+import org.apache.royale.compiler.definitions.IVariableDefinition.VariableClassification;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.internal.codegen.js.JSEmitterTokens;
@@ -485,19 +488,31 @@ public class EmitterUtils
 
         if (parentNode instanceof IUnaryOperatorNode)
         	return false;
-        if (nodeDef instanceof ParameterDefinition)
+        else if (nodeDef instanceof IParameterDefinition)
             return false;
-        if (nodeDef instanceof InterfaceDefinition)
+        else if (nodeDef instanceof IInterfaceDefinition)
             return false;
-        if (nodeDef instanceof ClassDefinition)
+        else if (nodeDef instanceof IClassDefinition)
             return false;
-        if (nodeDef instanceof VariableDefinition)
+        else if (nodeDef instanceof IFunctionDefinition)
         {
-        		List<IVariableNode> list = model.getVars();
-        		for (IVariableNode element : list) {
-        		    if(element.getQualifiedName().equals(((IIdentifierNode)node).getName()))
-        		    		return false;
-        		}
+            IFunctionDefinition funcDef = (IFunctionDefinition) nodeDef;
+            if (FunctionClassification.PACKAGE_MEMBER.equals(funcDef.getFunctionClassification())
+                    || FunctionClassification.FILE_MEMBER.equals(funcDef.getFunctionClassification())
+                    || FunctionClassification.LOCAL.equals(funcDef.getFunctionClassification()))
+            {
+                return false;
+            }
+        }
+        else if (nodeDef instanceof IVariableDefinition)
+        {
+            IVariableDefinition varDef = (IVariableDefinition) nodeDef;
+            if (VariableClassification.PACKAGE_MEMBER.equals(varDef.getVariableClassification())
+                    || VariableClassification.FILE_MEMBER.equals(varDef.getVariableClassification())
+                    || VariableClassification.LOCAL.equals(varDef.getVariableClassification()))
+            {
+                return false;
+            }
         }
         
         if (node == firstChild) 
