@@ -426,6 +426,8 @@ public class MXMLJSCNative implements JSCompilerEntryPoint, ProblemQueryProvider
 	                roots.add(mainCU);
 	                Set<ICompilationUnit> incs = target.getIncludesCompilationUnits();
 	                roots.addAll(incs);
+                    Collection<ICompilationUnit> incResources = ((JSTarget)target).getIncludedResourceBundlesCompilationUnits(problems.getProblems());
+	                roots.addAll(incResources);
 	                project.mixinClassNames = new TreeSet<String>();
 	                List<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(roots);
 	                ((RoyaleJSTarget)target).collectMixinMetaData(project.mixinClassNames, reachableCompilationUnits);
@@ -577,7 +579,7 @@ public class MXMLJSCNative implements JSCompilerEntryPoint, ProblemQueryProvider
                 {
                     project.compiledResourceBundleNames.add(bundleName);
                 }
-            	    project.compiledResourceBundleClasses.add(bundleClassName);
+                project.compiledResourceBundleClasses.add(bundleClassName);
 				try {
                     IFileSpecification fileSpecification = project.getWorkspace().getFileSpecification(cu.getAbsoluteFilename());
                     resourceBundleFileNode = parser.parse(cu.getAbsoluteFilename(),cu.getLocale(),fileSpecification.createReader(), project.getProblems());
@@ -1052,6 +1054,8 @@ public class MXMLJSCNative implements JSCompilerEntryPoint, ProblemQueryProvider
             roots.add(mainCU);
             Set<ICompilationUnit> incs = target.getIncludesCompilationUnits();
             roots.addAll(incs);
+            Collection<ICompilationUnit> incResources = ((JSTarget)target).getIncludedResourceBundlesCompilationUnits(problems.getProblems());
+            roots.addAll(incResources);
             project.mixinClassNames = new TreeSet<String>();
             List<ICompilationUnit> units = project.getReachableCompilationUnitsInSWFOrder(roots);
             for (ICompilationUnit unit : units)

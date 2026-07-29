@@ -431,6 +431,8 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
 	                roots.add(mainCU);
 	                Set<ICompilationUnit> incs = target.getIncludesCompilationUnits();
 	                roots.addAll(incs);
+                    Collection<ICompilationUnit> incResources = ((JSTarget)target).getIncludedResourceBundlesCompilationUnits(problems.getProblems());
+	                roots.addAll(incResources);
 	                project.mixinClassNames = new TreeSet<String>();
 	                project.remoteClassAliasMap = new HashMap<String, String>();
 	                List<ICompilationUnit> reachableCompilationUnits = project.getReachableCompilationUnitsInSWFOrder(roots);
@@ -822,7 +824,7 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
                 {
                     project.compiledResourceBundleNames.add(bundleName);
                 }
-            	    project.compiledResourceBundleClasses.add(bundleClassName);
+                project.compiledResourceBundleClasses.add(bundleClassName);
 				try {
                     IFileSpecification fileSpecification = project.getWorkspace().getFileSpecification(cu.getAbsoluteFilename());
                     resourceBundleFileNode = parser.parse(cu.getAbsoluteFilename(),cu.getLocale(),fileSpecification.createReader(), project.getProblems());
@@ -1299,6 +1301,8 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
             roots.add(mainCU);
             Set<ICompilationUnit> incs = target.getIncludesCompilationUnits();
             roots.addAll(incs);
+            Collection<ICompilationUnit> incResources = ((JSTarget)target).getIncludedResourceBundlesCompilationUnits(problems.getProblems());
+            roots.addAll(incResources);
             project.mixinClassNames = new TreeSet<String>();
             List<ICompilationUnit> units = project.getReachableCompilationUnitsInSWFOrder(roots);
             for (ICompilationUnit unit : units)
