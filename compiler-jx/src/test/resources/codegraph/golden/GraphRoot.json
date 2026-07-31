@@ -1,0 +1,224 @@
+{
+  "schemaVersion": "1.0",
+  "target": "js",
+  "module": null,
+  "symbols": [
+    {
+      "id": "as3://codegraph/golden/GraphBase",
+      "qualifiedName": "codegraph.golden.GraphBase",
+      "baseName": "GraphBase",
+      "package": "codegraph.golden",
+      "kind": "class",
+      "baseType": {
+        "id": "as3://Object",
+        "qualifiedName": "Object",
+        "external": true,
+        "unresolved": false
+      },
+      "members": [
+        {
+          "id": "as3://codegraph/golden/GraphBase#inheritedMethod()",
+          "qualifiedName": "inheritedMethod",
+          "baseName": "inheritedMethod",
+          "package": "codegraph.golden",
+          "kind": "method",
+          "declaringType": {
+            "id": "as3://codegraph/golden/GraphBase",
+            "qualifiedName": "codegraph.golden.GraphBase",
+            "external": false,
+            "unresolved": false
+          },
+          "returnType": {
+            "id": "as3://void",
+            "qualifiedName": "void",
+            "external": true,
+            "unresolved": false
+          }
+        },
+        {
+          "id": "as3://codegraph/golden/GraphBase#label",
+          "qualifiedName": "label",
+          "baseName": "label",
+          "package": "codegraph.golden",
+          "kind": "field",
+          "declaringType": {
+            "id": "as3://codegraph/golden/GraphBase",
+            "qualifiedName": "codegraph.golden.GraphBase",
+            "external": false,
+            "unresolved": false
+          },
+          "type": {
+            "id": "as3://String",
+            "qualifiedName": "String",
+            "external": true,
+            "unresolved": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "as3://codegraph/golden/GraphRoot",
+      "qualifiedName": "codegraph.golden.GraphRoot",
+      "baseName": "GraphRoot",
+      "package": "codegraph.golden",
+      "kind": "class",
+      "baseType": {
+        "id": "as3://codegraph/golden/GraphBase",
+        "qualifiedName": "codegraph.golden.GraphBase",
+        "external": false,
+        "unresolved": false
+      },
+      "interfaces": [
+        {
+          "id": "as3://codegraph/golden/IGraphContract",
+          "qualifiedName": "codegraph.golden.IGraphContract",
+          "external": false,
+          "unresolved": false
+        }
+      ],
+      "members": [
+        {
+          "id": "as3://codegraph/golden/GraphRoot#constructor(String)",
+          "qualifiedName": "codegraph.golden.GraphRoot",
+          "baseName": "GraphRoot",
+          "package": "codegraph.golden",
+          "kind": "constructor",
+          "declaringType": {
+            "id": "as3://codegraph/golden/GraphRoot",
+            "qualifiedName": "codegraph.golden.GraphRoot",
+            "external": false,
+            "unresolved": false
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "type": {
+                "id": "as3://String",
+                "qualifiedName": "String",
+                "external": true,
+                "unresolved": false
+              },
+              "optional": false,
+              "rest": false,
+              "defaultValue": null
+            }
+          ]
+        },
+        {
+          "id": "as3://codegraph/golden/GraphRoot#execute(String,Number,Array)",
+          "qualifiedName": "execute",
+          "baseName": "execute",
+          "package": "codegraph.golden",
+          "kind": "method",
+          "declaringType": {
+            "id": "as3://codegraph/golden/GraphRoot",
+            "qualifiedName": "codegraph.golden.GraphRoot",
+            "external": false,
+            "unresolved": false
+          },
+          "returnType": {
+            "id": "as3://Boolean",
+            "qualifiedName": "Boolean",
+            "external": true,
+            "unresolved": false
+          },
+          "parameters": [
+            {
+              "name": "required",
+              "type": {
+                "id": "as3://String",
+                "qualifiedName": "String",
+                "external": true,
+                "unresolved": false
+              },
+              "optional": false,
+              "rest": false,
+              "defaultValue": null
+            },
+            {
+              "name": "optional",
+              "type": {
+                "id": "as3://Number",
+                "qualifiedName": "Number",
+                "external": true,
+                "unresolved": false
+              },
+              "optional": true,
+              "rest": false,
+              "defaultValue": 2
+            },
+            {
+              "name": "rest",
+              "type": {
+                "id": "as3://Array",
+                "qualifiedName": "Array",
+                "external": true,
+                "unresolved": false
+              },
+              "optional": false,
+              "rest": true,
+              "defaultValue": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "as3://codegraph/golden/IGraphContract",
+      "qualifiedName": "codegraph.golden.IGraphContract",
+      "baseName": "IGraphContract",
+      "package": "codegraph.golden",
+      "kind": "interface"
+    }
+  ],
+  "externalSymbols": [
+    {
+      "id": "as3://Array",
+      "qualifiedName": "Array",
+      "baseName": "Array",
+      "package": "",
+      "kind": "class",
+      "external": true
+    },
+    {
+      "id": "as3://Boolean",
+      "qualifiedName": "Boolean",
+      "baseName": "Boolean",
+      "package": "",
+      "kind": "class",
+      "external": true
+    },
+    {
+      "id": "as3://Number",
+      "qualifiedName": "Number",
+      "baseName": "Number",
+      "package": "",
+      "kind": "class",
+      "external": true
+    },
+    {
+      "id": "as3://Object",
+      "qualifiedName": "Object",
+      "baseName": "Object",
+      "package": "",
+      "kind": "class",
+      "external": true
+    },
+    {
+      "id": "as3://String",
+      "qualifiedName": "String",
+      "baseName": "String",
+      "package": "",
+      "kind": "class",
+      "external": true
+    },
+    {
+      "id": "as3://void",
+      "qualifiedName": "void",
+      "baseName": "void",
+      "package": "",
+      "kind": "class",
+      "external": true
+    }
+  ]
+}

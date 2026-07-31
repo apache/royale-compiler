@@ -106,6 +106,6 @@ public class TestCodeGraphExporter extends ASTestBase
             if (kind.equals(member.getKind()))
                 return member;
         }
-        return null;
+        throw new AssertionError("Expected " + kind + " member in " + owner.getId());
     }
 }

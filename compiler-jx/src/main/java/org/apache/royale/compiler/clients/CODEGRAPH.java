@@ -85,6 +85,14 @@ public class CODEGRAPH extends MXMLJSCRoyale
             buildArtifact();
             if (jsTarget == null)
                 return false;
+            if (!config.getCreateTargetWithErrors())
+            {
+                Collection<ICompilerProblem> errors = new ArrayList<ICompilerProblem>();
+                Collection<ICompilerProblem> warnings = new ArrayList<ICompilerProblem>();
+                problems.getErrorsAndWarnings(errors, warnings);
+                if (!errors.isEmpty())
+                    return false;
+            }
 
             Collection<IDefinition> definitions = new ArrayList<IDefinition>();
             for (ICompilationUnit compilationUnit : getReachableCompilationUnits())
@@ -123,9 +131,13 @@ public class CODEGRAPH extends MXMLJSCRoyale
         Collection<ICompilationUnit> result = new ArrayList<ICompilationUnit>();
         for (ICompilationUnit compilationUnit : reachableCompilationUnits)
         {
+            if (compilationUnit.isInvisible())
+                continue;
             ICompilationUnit.UnitType unitType = compilationUnit.getCompilationUnitType();
             if (unitType != ICompilationUnit.UnitType.AS_UNIT
                     && unitType != ICompilationUnit.UnitType.MXML_UNIT)
+                continue;
+            if (!isProjectSource(compilationUnit))
                 continue;
             if (externs.contains(compilationUnit.getQualifiedNames().get(0)))
                 continue;
@@ -134,6 +146,21 @@ public class CODEGRAPH extends MXMLJSCRoyale
             result.add(compilationUnit);
         }
         return result;
+    }
+
+    private boolean isProjectSource(ICompilationUnit compilationUnit)
+    {
+        File sourceFile = new File(compilationUnit.getAbsoluteFilename()).getAbsoluteFile();
+        if (project.isFileOnSourcePath(sourceFile))
+            return true;
+        if (sourceFile.equals(new File(config.getTargetFile()).getAbsoluteFile()))
+            return true;
+        for (String includeSource : config.getIncludeSources())
+        {
+            if (sourceFile.equals(new File(includeSource).getAbsoluteFile()))
+                return true;
+        }
+        return false;
     }
 
     @Override
@@ -150,7 +177,16 @@ public class CODEGRAPH extends MXMLJSCRoyale
     private ITargetSettings getCodeGraphTargetSettings()
     {
         if (targetSettings == null)
+        {
+            Collection<File> includeSources = new ArrayList<File>();
+            for (String includeSource : config.getIncludeSources())
+                includeSources.add(new File(includeSource));
+            File targetFile = new File(config.getTargetFile());
+            if (!includeSources.contains(targetFile))
+                includeSources.add(targetFile);
+            projectConfigurator.setIncludeSources(includeSources);
             targetSettings = projectConfigurator.getTargetSettings(getTargetType());
+        }
         if (targetSettings == null)
             problems.addAll(projectConfigurator.getConfigurationProblems());
         return targetSettings;

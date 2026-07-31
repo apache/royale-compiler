@@ -19,9 +19,11 @@
 
 package org.apache.royale.compiler.internal.codegen.graph;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -103,7 +105,7 @@ public final class CodeGraphExporter
         {
             boolean isConstructor = memberDefinition instanceof IFunctionDefinition
                     && ((IFunctionDefinition)memberDefinition).isConstructor();
-                if (!memberDefinition.isPublic() || memberDefinition.isImplicit() || isConstructor)
+            if (!memberDefinition.isPublic() || memberDefinition.isImplicit() || isConstructor)
                 continue;
             if (memberDefinition instanceof IFunctionDefinition)
                 symbol.addMember(exportFunction((IFunctionDefinition)memberDefinition, definition));
@@ -162,7 +164,7 @@ public final class CodeGraphExporter
 
     private String createCallableId(IFunctionDefinition definition, ITypeDefinition declaringType)
     {
-        java.util.List<String> parameterTypes = new java.util.ArrayList<String>();
+        List<String> parameterTypes = new ArrayList<String>();
         for (IParameterDefinition parameterDefinition : definition.getParameters())
         {
             ITypeDefinition parameterType = parameterDefinition.resolveType(project);
