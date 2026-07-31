@@ -42,6 +42,7 @@ import org.apache.royale.compiler.problems.InternalCompilerProblem;
 import org.apache.royale.compiler.targets.ITarget.TargetType;
 import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.units.ICompilationUnit;
+import org.apache.royale.compiler.units.requests.ISyntaxTreeRequestResult;
 
 public class CODEGRAPH extends MXMLJSCRoyale
 {
@@ -95,12 +96,15 @@ public class CODEGRAPH extends MXMLJSCRoyale
             }
 
             Collection<IDefinition> definitions = new ArrayList<IDefinition>();
+            Collection<ISyntaxTreeRequestResult> syntaxTrees = new ArrayList<ISyntaxTreeRequestResult>();
             for (ICompilationUnit compilationUnit : getReachableCompilationUnits())
             {
+                syntaxTrees.add(compilationUnit.getSyntaxTreeRequest().get());
                 definitions.addAll(compilationUnit.getFileScopeRequest().get().getExternallyVisibleDefinitions());
             }
 
             CodeGraphModel model = new CodeGraphExporter(project).export(definitions, getGraphTarget(), null);
+            syntaxTrees.clear();
             File outputFile = getGraphOutputFile();
             File parent = outputFile.getParentFile();
             if (parent != null && !parent.exists())

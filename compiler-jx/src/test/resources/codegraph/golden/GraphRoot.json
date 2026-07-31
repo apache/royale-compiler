@@ -79,6 +79,23 @@
         "external": false,
         "unresolved": false
       },
+      "asdoc": {
+        "description": "\"Root\" graph description.",
+        "tags": [
+          {
+            "name": "copy",
+            "description": "codegraph.golden.GraphBase#label"
+          },
+          {
+            "name": "see",
+            "description": "codegraph.golden.GraphBase"
+          },
+          {
+            "name": "see",
+            "description": "codegraph.golden.IGraphContract"
+          }
+        ]
+      },
       "interfaces": [
         {
           "id": "as3://codegraph/golden/IGraphContract",

@@ -94,6 +94,8 @@ public final class CodeGraphWriter
             writeReferenceProperty(writer, level + 1, "returnType", symbol.getReturnType(), --optionalPropertyCount > 0);
         if (symbol.getBaseType() != null)
             writeReferenceProperty(writer, level + 1, "baseType", symbol.getBaseType(), --optionalPropertyCount > 0);
+        if (symbol.getASDoc() != null)
+            writeASDoc(writer, symbol.getASDoc(), level + 1, --optionalPropertyCount > 0);
         if (!symbol.getInterfaces().isEmpty())
         {
             writeReferences(writer, "interfaces", symbol.getInterfaces(), level + 1, --optionalPropertyCount > 0);
@@ -127,6 +129,8 @@ public final class CodeGraphWriter
             result++;
         if (symbol.getBaseType() != null)
             result++;
+        if (symbol.getASDoc() != null)
+            result++;
         if (!symbol.getInterfaces().isEmpty())
             result++;
         if (!symbol.getParameters().isEmpty())
@@ -136,6 +140,40 @@ public final class CodeGraphWriter
         if (!symbol.getMembers().isEmpty())
             result++;
         return result;
+    }
+
+    private void writeASDoc(Writer writer, CodeGraphASDoc asDoc, int level, boolean comma) throws IOException
+    {
+        indent(writer, level);
+        writeString(writer, "asdoc");
+        writer.write(": {\n");
+        writeProperty(writer, level + 1, "description", asDoc.getDescription(), true);
+        indent(writer, level + 1);
+        writeString(writer, "tags");
+        writer.write(": [");
+        if (!asDoc.getTags().isEmpty())
+            writer.write('\n');
+        for (int i = 0; i < asDoc.getTags().size(); i++)
+        {
+            CodeGraphASDocTag tag = asDoc.getTags().get(i);
+            indent(writer, level + 2);
+            writer.write("{\n");
+            writeProperty(writer, level + 3, "name", tag.getName(), true);
+            writeProperty(writer, level + 3, "description", tag.getDescription(), false);
+            indent(writer, level + 2);
+            writer.write('}');
+            if (i + 1 < asDoc.getTags().size())
+                writer.write(',');
+            writer.write('\n');
+        }
+        if (!asDoc.getTags().isEmpty())
+            indent(writer, level + 1);
+        writer.write("]\n");
+        indent(writer, level);
+        writer.write('}');
+        if (comma)
+            writer.write(',');
+        writer.write('\n');
     }
 
     private void writeReferenceProperty(Writer writer, int level, String name, CodeGraphReference reference,

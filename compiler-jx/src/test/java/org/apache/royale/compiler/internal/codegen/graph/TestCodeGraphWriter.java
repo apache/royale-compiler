@@ -76,6 +76,10 @@ public class TestCodeGraphWriter
         CodeGraphMetadata metadata = new CodeGraphMetadata("DefaultProperty");
         metadata.addAttribute(new CodeGraphMetadataAttribute(null, "content"));
         owner.addMetadata(metadata);
+        CodeGraphASDoc asDoc = new CodeGraphASDoc("A widget.");
+        asDoc.addTag(new CodeGraphASDocTag("copy", "example.Base#label"));
+        asDoc.addTag(new CodeGraphASDocTag("see", "example.Other"));
+        owner.setASDoc(asDoc);
         CodeGraphSymbol method = new CodeGraphSymbol("as3://example/Widget#work(String)",
                 "example.Widget.work", "work", "example", "method");
         method.setDeclaringType(new CodeGraphReference(owner.getId(), owner.getQualifiedName(), false, false));
@@ -96,6 +100,9 @@ public class TestCodeGraphWriter
         assertTrue(firstOutput.toString().contains("\"members\": ["));
         assertTrue(firstOutput.toString().contains("\"parameters\": ["));
         assertTrue(firstOutput.toString().contains("\"metadata\": ["));
+        assertTrue(firstOutput.toString().contains("\"asdoc\": {"));
+        assertTrue(firstOutput.toString().contains("\"description\": \"A widget.\""));
+        assertTrue(firstOutput.toString().contains("\"name\": \"copy\""));
         assertTrue(firstOutput.toString().contains("\"key\": null"));
         assertTrue(firstOutput.toString().contains("\"external\": true"));
     }

@@ -21,15 +21,19 @@ package org.apache.royale.compiler.internal.codegen.graph;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.royale.compiler.asdoc.IASDocComment;
+import org.apache.royale.compiler.asdoc.IASDocTag;
 import org.apache.royale.compiler.definitions.IClassDefinition;
 import org.apache.royale.compiler.definitions.IConstantDefinition;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.definitions.IDocumentableDefinition;
 import org.apache.royale.compiler.definitions.IFunctionDefinition;
 import org.apache.royale.compiler.definitions.IGetterDefinition;
 import org.apache.royale.compiler.definitions.IInterfaceDefinition;
@@ -85,6 +89,7 @@ public final class CodeGraphExporter
     {
         CodeGraphSymbol symbol = createSymbol(definition, getTypeKind(definition));
         addMetadata(symbol, definition);
+        addASDoc(symbol, definition);
         if (definition instanceof IClassDefinition)
         {
             IClassDefinition classDefinition = (IClassDefinition)definition;
@@ -141,6 +146,7 @@ public final class CodeGraphExporter
         CodeGraphSymbol symbol = new CodeGraphSymbol(id, definition.getQualifiedName(), definition.getBaseName(),
                 definition.getPackageName(), kind);
         addMetadata(symbol, definition);
+        addASDoc(symbol, definition);
         symbol.setDeclaringType(createReference(declaringType));
         if (definition instanceof IGetterDefinition || definition instanceof ISetterDefinition)
         {
@@ -187,6 +193,7 @@ public final class CodeGraphExporter
                 CodeGraphIdFactory.member(declaringType.getQualifiedName(), definition.getBaseName()),
                 definition.getQualifiedName(), definition.getBaseName(), definition.getPackageName(), kind);
         addMetadata(symbol, definition);
+            addASDoc(symbol, definition);
         symbol.setDeclaringType(createReference(declaringType));
         ITypeDefinition typeDefinition = definition.resolveType(project);
         if (typeDefinition != null)
@@ -218,6 +225,43 @@ public final class CodeGraphExporter
             }
             symbol.addMetadata(metadata);
         }
+    }
+
+    private void addASDoc(CodeGraphSymbol symbol, IDefinition definition)
+    {
+        if (!(definition instanceof IDocumentableDefinition))
+            return;
+        IASDocComment comment = ((IDocumentableDefinition)definition).getExplicitSourceComment();
+        if (comment == null)
+            return;
+        if (comment.getDescription() == null)
+            comment.compile();
+        CodeGraphASDoc asDoc = new CodeGraphASDoc(normalizeASDocText(comment.getDescription()));
+        Map<String, List<IASDocTag>> tags = comment.getTags();
+        if (tags != null)
+        {
+            List<String> tagNames = new ArrayList<String>(tags.keySet());
+            Collections.sort(tagNames);
+            for (String tagName : tagNames)
+            {
+                List<IASDocTag> tagValues = tags.get(tagName);
+                if (tagValues == null || tagValues.isEmpty())
+                {
+                    asDoc.addTag(new CodeGraphASDocTag(tagName, null));
+                    continue;
+                }
+                for (IASDocTag tag : tagValues)
+                    asDoc.addTag(new CodeGraphASDocTag(tagName, normalizeASDocText(tag.getDescription())));
+            }
+        }
+        symbol.setASDoc(asDoc);
+    }
+
+    private String normalizeASDocText(String value)
+    {
+        if (value == null)
+            return null;
+        return value.replace("\\\"", "\"");
     }
 
     private CodeGraphReference createReference(ITypeDefinition definition)

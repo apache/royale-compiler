@@ -36,6 +36,7 @@ public final class CodeGraphSymbol
     private CodeGraphReference type;
     private CodeGraphReference returnType;
     private CodeGraphReference baseType;
+    private CodeGraphASDoc asDoc;
     private final List<CodeGraphReference> interfaces = new ArrayList<CodeGraphReference>();
     private final List<CodeGraphParameter> parameters = new ArrayList<CodeGraphParameter>();
     private final List<CodeGraphMetadata> metadata = new ArrayList<CodeGraphMetadata>();
@@ -133,6 +134,16 @@ public final class CodeGraphSymbol
     public void setBaseType(CodeGraphReference baseType)
     {
         this.baseType = baseType;
+    }
+
+    public CodeGraphASDoc getASDoc()
+    {
+        return asDoc;
+    }
+
+    public void setASDoc(CodeGraphASDoc asDoc)
+    {
+        this.asDoc = asDoc;
     }
 
     public void addInterface(CodeGraphReference interfaceReference)
