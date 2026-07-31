@@ -47,6 +47,19 @@ public final class CodeGraphIdFactory
     public static String callable(String ownerQualifiedName, String callableName, List<String> parameterTypes)
     {
         StringBuilder result = new StringBuilder(member(ownerQualifiedName, callableName));
+        appendParameters(result, parameterTypes);
+        return result.toString();
+    }
+
+    public static String packageCallable(String qualifiedName, List<String> parameterTypes)
+    {
+        StringBuilder result = new StringBuilder(definition(qualifiedName));
+        appendParameters(result, parameterTypes);
+        return result.toString();
+    }
+
+    private static void appendParameters(StringBuilder result, List<String> parameterTypes)
+    {
         result.append('(');
         for (int i = 0; i < parameterTypes.size(); i++)
         {
@@ -55,7 +68,6 @@ public final class CodeGraphIdFactory
             result.append(parameterTypes.get(i));
         }
         result.append(')');
-        return result.toString();
     }
 
     public static String constructor(String ownerQualifiedName, List<String> parameterTypes)

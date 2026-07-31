@@ -25,11 +25,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.royale.compiler.definitions.IDefinition;
 import org.apache.royale.compiler.internal.test.ASTestBase;
 import org.apache.royale.compiler.tree.as.IClassNode;
+import org.apache.royale.compiler.tree.as.IFileNode;
 import org.junit.Test;
 
 public class TestCodeGraphExporter extends ASTestBase
@@ -122,6 +125,43 @@ public class TestCodeGraphExporter extends ASTestBase
         assertNull(metadata.get(1).getAttributes().get(0).getKey());
         assertEquals("selected", metadata.get(1).getAttributes().get(0).getValue());
     }
+
+        @Test
+        public void testPackageDefinitionsAreCollectedSemantically()
+        {
+                IFileNode fileNode = compileAS("package example {"
+                                + "public function parseValue(value:String):Boolean { return true; }"
+                                + "public var current:String;"
+                                + "public const VERSION:Number = 1;"
+                                + "}");
+                List<IDefinition> definitions = Arrays.asList(fileNode.getTopLevelDefinitions(true, false));
+
+                CodeGraphModel model = new CodeGraphExporter(project).export(definitions, "js", null);
+
+                assertEquals(3, model.getSymbols().size());
+                CodeGraphSymbol function = findSymbol(model, "function");
+                assertEquals("as3://example/parseValue(String)", function.getId());
+                assertNull(function.getDeclaringType());
+                assertEquals("Boolean", function.getReturnType().getQualifiedName());
+                assertEquals("String", function.getParameters().get(0).getType().getQualifiedName());
+                CodeGraphSymbol variable = findSymbol(model, "variable");
+                assertEquals("as3://example/current", variable.getId());
+                assertEquals("String", variable.getType().getQualifiedName());
+                assertNull(variable.getDeclaringType());
+                CodeGraphSymbol constant = findSymbol(model, "constant");
+                assertEquals("as3://example/VERSION", constant.getId());
+                assertEquals("Number", constant.getType().getQualifiedName());
+        }
+
+        private CodeGraphSymbol findSymbol(CodeGraphModel model, String kind)
+        {
+                for (CodeGraphSymbol symbol : model.getSymbols())
+                {
+                        if (kind.equals(symbol.getKind()))
+                                return symbol;
+                }
+                throw new AssertionError("Expected " + kind + " symbol");
+        }
 
     private CodeGraphSymbol findMember(CodeGraphSymbol owner, String kind)
     {

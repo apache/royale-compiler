@@ -221,6 +221,33 @@
       "baseName": "IGraphContract",
       "package": "codegraph.golden",
       "kind": "interface"
+    },
+    {
+      "id": "as3://codegraph/golden/packageFunction(String)",
+      "qualifiedName": "codegraph.golden.packageFunction",
+      "baseName": "packageFunction",
+      "package": "codegraph.golden",
+      "kind": "function",
+      "returnType": {
+        "id": "as3://Boolean",
+        "qualifiedName": "Boolean",
+        "external": true,
+        "unresolved": false
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "type": {
+            "id": "as3://String",
+            "qualifiedName": "String",
+            "external": true,
+            "unresolved": false
+          },
+          "optional": false,
+          "rest": false,
+          "defaultValue": null
+        }
+      ]
     }
   ],
   "externalSymbols": [

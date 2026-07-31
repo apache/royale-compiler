@@ -17,7 +17,7 @@ package codegraph.golden
 
         public function execute(required:String, optional:Number = 2, ...rest):Boolean
         {
-            return true;
+            return packageFunction(required);
         }
 
         private function hidden():void

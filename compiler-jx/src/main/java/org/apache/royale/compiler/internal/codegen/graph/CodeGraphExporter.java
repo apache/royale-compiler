@@ -68,8 +68,14 @@ public final class CodeGraphExporter
         }
         for (IDefinition definition : definitions)
         {
-            if (definition.isPublic() && isSupportedType(definition))
+            if (!definition.isPublic())
+                continue;
+            if (isSupportedType(definition))
                 model.addSymbol(exportType((ITypeDefinition)definition));
+            else if (definition instanceof IFunctionDefinition)
+                model.addSymbol(exportFunction((IFunctionDefinition)definition, null));
+            else if (definition instanceof IVariableDefinition)
+                model.addSymbol(exportVariable((IVariableDefinition)definition, null));
         }
         for (ITypeDefinition externalDefinition : externalDefinitions.values())
         {
@@ -127,7 +133,12 @@ public final class CodeGraphExporter
     {
         String kind;
         String id;
-        if (definition instanceof IGetterDefinition)
+        if (declaringType == null)
+        {
+            kind = "function";
+            id = createCallableId(definition, null);
+        }
+        else if (definition instanceof IGetterDefinition)
         {
             kind = "getter";
             id = CodeGraphIdFactory.accessor(declaringType.getQualifiedName(), definition.getBaseName(), true);
@@ -147,7 +158,8 @@ public final class CodeGraphExporter
                 definition.getPackageName(), kind);
         addMetadata(symbol, definition);
         addASDoc(symbol, definition);
-        symbol.setDeclaringType(createReference(declaringType));
+        if (declaringType != null)
+            symbol.setDeclaringType(createReference(declaringType));
         if (definition instanceof IGetterDefinition || definition instanceof ISetterDefinition)
         {
             ITypeDefinition typeDefinition = definition.resolveType(project);
@@ -183,18 +195,23 @@ public final class CodeGraphExporter
         }
         if (definition.isConstructor())
             return CodeGraphIdFactory.constructor(declaringType.getQualifiedName(), parameterTypes);
+        if (declaringType == null)
+            return CodeGraphIdFactory.packageCallable(definition.getQualifiedName(), parameterTypes);
         return CodeGraphIdFactory.callable(declaringType.getQualifiedName(), definition.getBaseName(), parameterTypes);
     }
 
     private CodeGraphSymbol exportVariable(IVariableDefinition definition, ITypeDefinition declaringType)
     {
-        String kind = definition instanceof IConstantDefinition ? "constant" : "field";
-        CodeGraphSymbol symbol = new CodeGraphSymbol(
-                CodeGraphIdFactory.member(declaringType.getQualifiedName(), definition.getBaseName()),
+        String kind = definition instanceof IConstantDefinition ? "constant"
+            : declaringType == null ? "variable" : "field";
+        String id = declaringType == null ? CodeGraphIdFactory.definition(definition.getQualifiedName())
+            : CodeGraphIdFactory.member(declaringType.getQualifiedName(), definition.getBaseName());
+        CodeGraphSymbol symbol = new CodeGraphSymbol(id,
                 definition.getQualifiedName(), definition.getBaseName(), definition.getPackageName(), kind);
         addMetadata(symbol, definition);
-            addASDoc(symbol, definition);
-        symbol.setDeclaringType(createReference(declaringType));
+        addASDoc(symbol, definition);
+        if (declaringType != null)
+            symbol.setDeclaringType(createReference(declaringType));
         ITypeDefinition typeDefinition = definition.resolveType(project);
         if (typeDefinition != null)
             symbol.setType(createReference(typeDefinition));

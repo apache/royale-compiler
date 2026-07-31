@@ -59,6 +59,14 @@ public class TestCodeGraphIdFactory
                         Arrays.asList("Number", "Boolean")));
     }
 
+        @Test
+        public void testPackageCallable()
+        {
+                assertEquals("as3://org/apache/royale/utils/parseValue(String)",
+                                CodeGraphIdFactory.packageCallable("org.apache.royale.utils.parseValue",
+                                                Collections.singletonList("String")));
+        }
+
     @Test
     public void testConstructor()
     {

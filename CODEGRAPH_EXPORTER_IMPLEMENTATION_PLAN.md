@@ -299,7 +299,7 @@ Passing the existing suite is necessary but not sufficient: the new client must 
 
 ### PR 2: Completeness
 
-- Package-level definitions.
+- Package-level definitions. Implemented with focused function/variable/constant coverage and a compiler-backed reachable package-function fixture.
 - External and unresolved symbol records.
 - Inheritance/override edges.
 - Effective inherited public member view if clients require it.
