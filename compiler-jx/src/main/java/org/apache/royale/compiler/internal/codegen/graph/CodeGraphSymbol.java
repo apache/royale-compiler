@@ -38,6 +38,7 @@ public final class CodeGraphSymbol
     private CodeGraphReference baseType;
     private final List<CodeGraphReference> interfaces = new ArrayList<CodeGraphReference>();
     private final List<CodeGraphParameter> parameters = new ArrayList<CodeGraphParameter>();
+    private final List<CodeGraphMetadata> metadata = new ArrayList<CodeGraphMetadata>();
     private final List<CodeGraphSymbol> members = new ArrayList<CodeGraphSymbol>();
 
     public CodeGraphSymbol(String id, String qualifiedName, String baseName, String packageName, String kind)
@@ -152,6 +153,16 @@ public final class CodeGraphSymbol
     public List<CodeGraphParameter> getParameters()
     {
         return Collections.unmodifiableList(parameters);
+    }
+
+    public void addMetadata(CodeGraphMetadata metadataTag)
+    {
+        metadata.add(metadataTag);
+    }
+
+    public List<CodeGraphMetadata> getMetadata()
+    {
+        return Collections.unmodifiableList(metadata);
     }
 
     public void addMember(CodeGraphSymbol member)

@@ -52,7 +52,18 @@
             "qualifiedName": "String",
             "external": true,
             "unresolved": false
-          }
+          },
+          "metadata": [
+            {
+              "name": "Bindable",
+              "attributes": [
+                {
+                  "key": null,
+                  "value": "labelChanged"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -74,6 +85,30 @@
           "qualifiedName": "codegraph.golden.IGraphContract",
           "external": false,
           "unresolved": false
+        }
+      ],
+      "metadata": [
+        {
+          "name": "Event",
+          "attributes": [
+            {
+              "key": "name",
+              "value": "complete"
+            },
+            {
+              "key": "type",
+              "value": "codegraph.golden.GraphEvent"
+            }
+          ]
+        },
+        {
+          "name": "DefaultProperty",
+          "attributes": [
+            {
+              "key": null,
+              "value": "label"
+            }
+          ]
         }
       ],
       "members": [

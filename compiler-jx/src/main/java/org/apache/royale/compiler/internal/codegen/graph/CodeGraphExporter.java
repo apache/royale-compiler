@@ -37,6 +37,8 @@ import org.apache.royale.compiler.definitions.IParameterDefinition;
 import org.apache.royale.compiler.definitions.ISetterDefinition;
 import org.apache.royale.compiler.definitions.ITypeDefinition;
 import org.apache.royale.compiler.definitions.IVariableDefinition;
+import org.apache.royale.compiler.definitions.metadata.IMetaTag;
+import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.projects.ICompilerProject;
 
 public final class CodeGraphExporter
@@ -82,6 +84,7 @@ public final class CodeGraphExporter
     private CodeGraphSymbol exportType(ITypeDefinition definition)
     {
         CodeGraphSymbol symbol = createSymbol(definition, getTypeKind(definition));
+        addMetadata(symbol, definition);
         if (definition instanceof IClassDefinition)
         {
             IClassDefinition classDefinition = (IClassDefinition)definition;
@@ -137,6 +140,7 @@ public final class CodeGraphExporter
 
         CodeGraphSymbol symbol = new CodeGraphSymbol(id, definition.getQualifiedName(), definition.getBaseName(),
                 definition.getPackageName(), kind);
+        addMetadata(symbol, definition);
         symbol.setDeclaringType(createReference(declaringType));
         if (definition instanceof IGetterDefinition || definition instanceof ISetterDefinition)
         {
@@ -182,6 +186,7 @@ public final class CodeGraphExporter
         CodeGraphSymbol symbol = new CodeGraphSymbol(
                 CodeGraphIdFactory.member(declaringType.getQualifiedName(), definition.getBaseName()),
                 definition.getQualifiedName(), definition.getBaseName(), definition.getPackageName(), kind);
+        addMetadata(symbol, definition);
         symbol.setDeclaringType(createReference(declaringType));
         ITypeDefinition typeDefinition = definition.resolveType(project);
         if (typeDefinition != null)
@@ -198,6 +203,21 @@ public final class CodeGraphExporter
     private String getTypeKind(ITypeDefinition definition)
     {
         return definition instanceof IClassDefinition ? "class" : "interface";
+    }
+
+    private void addMetadata(CodeGraphSymbol symbol, IDefinition definition)
+    {
+        for (IMetaTag metaTag : definition.getAllMetaTags())
+        {
+            if (IMetaTag.GO_TO_DEFINITION_HELP.equals(metaTag.getTagName()))
+                continue;
+            CodeGraphMetadata metadata = new CodeGraphMetadata(metaTag.getTagName());
+            for (IMetaTagAttribute attribute : metaTag.getAllAttributes())
+            {
+                metadata.addAttribute(new CodeGraphMetadataAttribute(attribute.getKey(), attribute.getValue()));
+            }
+            symbol.addMetadata(metadata);
+        }
     }
 
     private CodeGraphReference createReference(ITypeDefinition definition)

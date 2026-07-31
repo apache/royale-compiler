@@ -73,6 +73,9 @@ public class TestCodeGraphWriter
         CodeGraphModel model = new CodeGraphModel("swf", "example-module");
         CodeGraphSymbol owner = new CodeGraphSymbol("as3://example/Widget", "example.Widget", "Widget", "example", "class");
         owner.setBaseType(new CodeGraphReference("as3://Object", "Object", true, false));
+        CodeGraphMetadata metadata = new CodeGraphMetadata("DefaultProperty");
+        metadata.addAttribute(new CodeGraphMetadataAttribute(null, "content"));
+        owner.addMetadata(metadata);
         CodeGraphSymbol method = new CodeGraphSymbol("as3://example/Widget#work(String)",
                 "example.Widget.work", "work", "example", "method");
         method.setDeclaringType(new CodeGraphReference(owner.getId(), owner.getQualifiedName(), false, false));
@@ -92,6 +95,8 @@ public class TestCodeGraphWriter
         assertTrue(firstOutput.toString().contains("\"baseType\": {"));
         assertTrue(firstOutput.toString().contains("\"members\": ["));
         assertTrue(firstOutput.toString().contains("\"parameters\": ["));
+        assertTrue(firstOutput.toString().contains("\"metadata\": ["));
+        assertTrue(firstOutput.toString().contains("\"key\": null"));
         assertTrue(firstOutput.toString().contains("\"external\": true"));
     }
 }

@@ -22,9 +22,11 @@ package org.apache.royale.compiler.internal.codegen.graph;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.apache.royale.compiler.internal.test.ASTestBase;
 import org.apache.royale.compiler.tree.as.IClassNode;
@@ -97,6 +99,28 @@ public class TestCodeGraphExporter extends ASTestBase
         assertTrue(method.getParameters().get(1).isOptional());
         assertEquals(2, method.getParameters().get(1).getDefaultValue());
         assertTrue(method.getParameters().get(2).isRest());
+    }
+
+    @Test
+    public void testMetadataAndAttributesAreCollectedInOrder()
+    {
+        IClassNode classNode = getClassNode("[Event(name=\"change\", type=\"example.ChangeEvent\")]"
+                + "[Bindable(\"selected\")]"
+                + "public class Widget {}");
+
+        CodeGraphModel model = new CodeGraphExporter(project).export(
+                Collections.singleton(classNode.getDefinition()), "js", null);
+        List<CodeGraphMetadata> metadata = model.getSymbols().get(0).getMetadata();
+
+        assertEquals(2, metadata.size());
+        assertEquals("Event", metadata.get(0).getName());
+        assertEquals("name", metadata.get(0).getAttributes().get(0).getKey());
+        assertEquals("change", metadata.get(0).getAttributes().get(0).getValue());
+        assertEquals("type", metadata.get(0).getAttributes().get(1).getKey());
+        assertEquals("example.ChangeEvent", metadata.get(0).getAttributes().get(1).getValue());
+        assertEquals("Bindable", metadata.get(1).getName());
+        assertNull(metadata.get(1).getAttributes().get(0).getKey());
+        assertEquals("selected", metadata.get(1).getAttributes().get(0).getValue());
     }
 
     private CodeGraphSymbol findMember(CodeGraphSymbol owner, String kind)

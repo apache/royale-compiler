@@ -1,5 +1,7 @@
 package codegraph.golden
 {
+    [Event(name="complete", type="codegraph.golden.GraphEvent")]
+    [DefaultProperty("label")]
     public class GraphRoot extends GraphBase implements IGraphContract
     {
         public function GraphRoot(value:String)

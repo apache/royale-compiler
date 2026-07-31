@@ -102,6 +102,10 @@ public final class CodeGraphWriter
         {
             writeParameters(writer, symbol.getParameters(), level + 1, --optionalPropertyCount > 0);
         }
+        if (!symbol.getMetadata().isEmpty())
+        {
+            writeMetadata(writer, symbol.getMetadata(), level + 1, --optionalPropertyCount > 0);
+        }
         if (!symbol.getMembers().isEmpty())
             writeSymbols(writer, "members", symbol.getMembers(), level + 1, false);
         indent(writer, level);
@@ -126,6 +130,8 @@ public final class CodeGraphWriter
         if (!symbol.getInterfaces().isEmpty())
             result++;
         if (!symbol.getParameters().isEmpty())
+            result++;
+        if (!symbol.getMetadata().isEmpty())
             result++;
         if (!symbol.getMembers().isEmpty())
             result++;
@@ -198,6 +204,52 @@ public final class CodeGraphWriter
             indent(writer, level + 1);
             writer.write('}');
             if (i + 1 < parameters.size())
+                writer.write(',');
+            writer.write('\n');
+        }
+        indent(writer, level);
+        writer.write(']');
+        if (comma)
+            writer.write(',');
+        writer.write('\n');
+    }
+
+    private void writeMetadata(Writer writer, List<CodeGraphMetadata> metadata, int level, boolean comma)
+            throws IOException
+    {
+        indent(writer, level);
+        writeString(writer, "metadata");
+        writer.write(": [\n");
+        for (int i = 0; i < metadata.size(); i++)
+        {
+            CodeGraphMetadata metadataTag = metadata.get(i);
+            indent(writer, level + 1);
+            writer.write("{\n");
+            writeProperty(writer, level + 2, "name", metadataTag.getName(), true);
+            indent(writer, level + 2);
+            writeString(writer, "attributes");
+            writer.write(": [");
+            if (!metadataTag.getAttributes().isEmpty())
+                writer.write('\n');
+            for (int j = 0; j < metadataTag.getAttributes().size(); j++)
+            {
+                CodeGraphMetadataAttribute attribute = metadataTag.getAttributes().get(j);
+                indent(writer, level + 3);
+                writer.write("{\n");
+                writeProperty(writer, level + 4, "key", attribute.getKey(), true);
+                writeProperty(writer, level + 4, "value", attribute.getValue(), false);
+                indent(writer, level + 3);
+                writer.write('}');
+                if (j + 1 < metadataTag.getAttributes().size())
+                    writer.write(',');
+                writer.write('\n');
+            }
+            if (!metadataTag.getAttributes().isEmpty())
+                indent(writer, level + 2);
+            writer.write("]\n");
+            indent(writer, level + 1);
+            writer.write('}');
+            if (i + 1 < metadata.size())
                 writer.write(',');
             writer.write('\n');
         }
