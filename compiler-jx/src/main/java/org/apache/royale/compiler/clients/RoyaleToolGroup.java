@@ -31,6 +31,7 @@ public class RoyaleToolGroup extends AbstractFlexToolGroup {
         addFlexTool(new COMPJSC());
         addFlexTool(new MXMLJSC());
         addFlexTool(new ASDOCJSC(new MXMLRoyaleASDocDITABackend()));
+        addFlexTool(new CODEGRAPH());
         addFlexTool(new EXTERNC());
         addFlexTool(new PLAYERGLOBALC());
     }

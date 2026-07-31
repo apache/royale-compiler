@@ -1,6 +1,6 @@
 package codegraph
 {
-    public class InvalidCodeGraph
+    public class InvalidCodeGraph implements MissingInterface
     {
         public var unresolved:MissingType;
 

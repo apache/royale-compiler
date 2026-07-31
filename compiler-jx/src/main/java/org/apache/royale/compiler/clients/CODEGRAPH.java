@@ -106,7 +106,10 @@ public class CODEGRAPH extends MXMLJSCRoyale
                 definitions.addAll(compilationUnit.getFileScopeRequest().get().getExternallyVisibleDefinitions());
             }
 
-            String module = FilenameUtils.getBaseName(config.getTargetFile());
+            String targetFile = config.getTargetFile();
+            String module = targetFile == null
+                    ? FilenameUtils.getBaseName(getGraphOutputFile().getName())
+                    : FilenameUtils.getBaseName(targetFile);
             CodeGraphModel model = new CodeGraphExporter(project).export(definitions, getGraphTarget(), module);
             syntaxTrees.clear();
             File outputFile = getGraphOutputFile();
@@ -161,7 +164,8 @@ public class CODEGRAPH extends MXMLJSCRoyale
         File sourceFile = new File(compilationUnit.getAbsoluteFilename()).getAbsoluteFile();
         if (project.isFileOnSourcePath(sourceFile))
             return true;
-        if (sourceFile.equals(new File(config.getTargetFile()).getAbsoluteFile()))
+        if (config.getTargetFile() != null
+            && sourceFile.equals(new File(config.getTargetFile()).getAbsoluteFile()))
             return true;
         for (File includeSource : targetSettings.getIncludeSources())
         {
@@ -189,9 +193,12 @@ public class CODEGRAPH extends MXMLJSCRoyale
             Collection<File> includeSources = new ArrayList<File>();
             for (String includeSource : config.getIncludeSources())
                 includeSources.add(new File(includeSource));
-            File targetFile = new File(config.getTargetFile());
-            if (!includeSources.contains(targetFile))
-                includeSources.add(targetFile);
+            if (config.getTargetFile() != null)
+            {
+                File targetFile = new File(config.getTargetFile());
+                if (!includeSources.contains(targetFile))
+                    includeSources.add(targetFile);
+            }
             projectConfigurator.setIncludeSources(includeSources);
             targetSettings = projectConfigurator.getTargetSettings(getTargetType());
         }
@@ -221,6 +228,8 @@ public class CODEGRAPH extends MXMLJSCRoyale
     {
         if (config.getOutput() != null)
             return new File(config.getOutput());
+        if (config.getTargetFile() == null)
+            return new File("codegraph.json");
         return new File(FilenameUtils.removeExtension(config.getTargetFile()) + ".codegraph.json");
     }
 

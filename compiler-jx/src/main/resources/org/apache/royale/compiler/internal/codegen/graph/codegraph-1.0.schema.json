@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://royale.apache.org/schemas/codegraph-1.0.schema.json",
+  "title": "Apache Royale Code Graph",
+  "description": "A deterministic graph of public ActionScript API definitions.",
+  "type": "object",
+  "required": ["schemaVersion", "target", "module", "symbols", "externalSymbols"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "target": { "enum": ["js", "swf"] },
+    "module": { "type": ["string", "null"] },
+    "symbols": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/symbol" }
+    },
+    "externalSymbols": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/symbol" }
+    }
+  },
+  "$defs": {
+    "value": {
+      "type": ["string", "number", "boolean", "null"]
+    },
+    "reference": {
+      "type": "object",
+      "required": ["id", "qualifiedName", "external", "unresolved"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "qualifiedName": { "type": "string" },
+        "external": { "type": "boolean" },
+        "unresolved": { "type": "boolean" }
+      }
+    },
+    "modifiers": {
+      "type": "object",
+      "required": ["static", "final", "dynamic", "override", "abstract", "native"],
+      "additionalProperties": false,
+      "properties": {
+        "static": { "type": "boolean" },
+        "final": { "type": "boolean" },
+        "dynamic": { "type": "boolean" },
+        "override": { "type": "boolean" },
+        "abstract": { "type": "boolean" },
+        "native": { "type": "boolean" }
+      }
+    },
+    "asdocTag": {
+      "type": "object",
+      "required": ["name", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": ["string", "null"] }
+      }
+    },
+    "asdoc": {
+      "type": "object",
+      "required": ["description", "tags"],
+      "additionalProperties": false,
+      "properties": {
+        "description": { "type": ["string", "null"] },
+        "tags": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/asdocTag" }
+        }
+      }
+    },
+    "metadataAttribute": {
+      "type": "object",
+      "required": ["key", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "key": { "type": ["string", "null"] },
+        "value": { "type": ["string", "null"] }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["name", "attributes"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "attributes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/metadataAttribute" }
+        },
+        "references": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/reference" }
+        },
+        "asdoc": { "$ref": "#/$defs/asdoc" }
+      }
+    },
+    "parameter": {
+      "type": "object",
+      "required": ["name", "type", "optional", "rest", "defaultValue"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "type": {
+          "oneOf": [
+            { "$ref": "#/$defs/reference" },
+            { "type": "null" }
+          ]
+        },
+        "optional": { "type": "boolean" },
+        "rest": { "type": "boolean" },
+        "defaultValue": { "$ref": "#/$defs/value" }
+      }
+    },
+    "symbol": {
+      "type": "object",
+      "required": ["id", "qualifiedName", "baseName", "package", "kind"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "qualifiedName": { "type": "string" },
+        "baseName": { "type": "string" },
+        "package": { "type": "string" },
+        "kind": {
+          "enum": ["class", "interface", "constructor", "method", "getter", "setter", "field", "constant", "function", "variable"]
+        },
+        "external": { "type": "boolean" },
+        "source": { "type": "string" },
+        "origin": { "type": "string" },
+        "visibility": { "type": "string" },
+        "modifiers": { "$ref": "#/$defs/modifiers" },
+        "initialValue": { "$ref": "#/$defs/value" },
+        "declaringType": { "$ref": "#/$defs/reference" },
+        "type": { "$ref": "#/$defs/reference" },
+        "returnType": { "$ref": "#/$defs/reference" },
+        "baseType": { "$ref": "#/$defs/reference" },
+        "overrides": { "$ref": "#/$defs/reference" },
+        "implements": { "$ref": "#/$defs/reference" },
+        "asdoc": { "$ref": "#/$defs/asdoc" },
+        "interfaces": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/reference" }
+        },
+        "parameters": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/parameter" }
+        },
+        "metadata": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/metadata" }
+        },
+        "members": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/symbol" }
+        }
+      }
+    }
+  }
+}

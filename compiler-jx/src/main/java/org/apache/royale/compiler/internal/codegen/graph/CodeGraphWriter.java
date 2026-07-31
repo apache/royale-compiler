@@ -376,6 +376,9 @@ public final class CodeGraphWriter
         writer.write(": ");
         if (value == null)
             writer.write("null");
+        else if ((value instanceof Double && !Double.isFinite((Double)value))
+                || (value instanceof Float && !Float.isFinite((Float)value)))
+            writeString(writer, value.toString());
         else if (value instanceof Number || value instanceof Boolean)
             writer.write(value.toString());
         else

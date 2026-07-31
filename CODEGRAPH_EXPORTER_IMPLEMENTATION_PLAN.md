@@ -292,19 +292,28 @@ Passing the existing suite is necessary but not sufficient: the new client must 
 Implemented and covered by focused compiler-backed tests:
 
 - Public classes, interfaces, implicit interface members, package definitions, and directly declared public members.
-- Expanded directory-valued include sources and unreferenced included source files.
+- Expanded directory-valued include sources and unreferenced included source files, with or without a positional target file.
 - Stable IDs, deterministic JSON, source-root-relative provenance, module identity, and external library origins.
 - Resolved and explicitly unresolved signature references, with compiler diagnostics retained for unresolved types.
 - Base, interface, override, and implementation relationships.
 - Visibility, declaration modifiers, parameter defaults, and variable/constant initial values.
 - Parsed ASDoc, `@private` exclusion, structured metadata, metadata ASDoc, and type-bearing metadata references.
 - JS/SWF conditional selection, compiler error gating, two-run determinism, and an exact golden document.
+- A packaged Draft 2020-12 JSON Schema with validation of unit-built and compiler-backed graph documents.
 
-Deferred extensions remain effective inherited-member views, `@copy` resolution, JSON Schema/versioning policy, and aggregate build-tool integration.
+`@copy` targets remain structured, opaque tag values, matching Royale's existing parser and emitter semantics. Effective inherited-member views remain derivable from explicit base/interface edges. Aggregate build-tool integration remains deferred.
+
+### Schema Compatibility Policy
+
+- `schemaVersion` uses `major.minor` numbering and identifies the graph contract, independently of compiler releases.
+- Additive optional fields and new enum values require a minor version. Removing, renaming, changing the meaning of a field, or making an optional field required requires a major version.
+- Each supported contract has a packaged, immutable schema named `codegraph-<major>.<minor>.schema.json` beside the graph model classes.
+- Writers emit one exact schema version. Consumers must reject unsupported major versions and may accept newer minor versions only when they tolerate unknown optional fields and enum values.
+- The schema, model version constant, writer output, and canonical golden document must change together and pass schema validation.
 
 ## Suggested Pull Request Sequence
 
-### PR 1: Semantic exporter MVP
+### Slice 1: Semantic exporter MVP
 
 - Graph model and deterministic JSON writer.
 - Compiler-backed collection of public types and directly declared members.
@@ -312,22 +321,22 @@ Deferred extensions remain effective inherited-member views, `@copy` resolution,
 - JS/SWF fixture tests. Implemented with opposite compiler define sets that verify target labels and active-member selection.
 - CLI entry point in `compiler-jx`.
 
-### PR 2: Completeness
+### Slice 2: Completeness
 
 - Package-level definitions. Implemented with focused function/variable/constant coverage and a compiler-backed reachable package-function fixture.
 - External and unresolved symbol records. Implemented with explicit unresolved markers, origins, and compiler-problem coverage.
 - Inheritance/override edges. Implemented for base types, interfaces, overridden methods, and interface implementations.
 - Effective inherited public member view if clients require it.
-- `@copy` resolution.
-- JSON Schema and schema compatibility policy.
+- `@copy` is preserved as an opaque structured tag, matching Royale parser and emitter behavior.
+- JSON Schema and schema compatibility policy. Implemented with a packaged versioned schema and validator-backed tests.
 
-### PR 3: Build-tool integration
+### Slice 3: Build-tool integration
 
-- Add a `compile-codegraph` goal to `royale-maven-plugin`, modeled after `CompileASDocMojo`.
-- Add Ant/tool registration and SDK launcher scripts.
-- Ensure both target configurations select the same dependency classifiers as `CompileASDocMojo`.
+- `compile-codegraph` goal in `royale-maven-plugin`. Implemented with dedicated graph configs and separate JS/SWF outputs.
+- Ant/tool registration and SDK launcher scripts. Implemented with a `codegraph.jar` entry point and Unix/Windows launchers.
+- Target-specific dependency classifiers. Implemented to match `CompileASDocMojo` without invoking the ASDoc compiler.
 
-### PR 4: `royale-asjs` integration
+### Slice 4: `royale-asjs` integration
 
 This work happens in the sibling repository:
 

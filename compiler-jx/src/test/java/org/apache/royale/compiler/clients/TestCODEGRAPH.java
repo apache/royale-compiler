@@ -28,6 +28,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.flex.tools.FlexTool;
+import org.apache.flex.tools.FlexToolGroup;
+import org.apache.flex.tools.FlexToolRegistry;
 import org.apache.commons.io.FileUtils;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.UnknownTypeProblem;
@@ -57,6 +60,16 @@ public class TestCODEGRAPH
     }
 
     @Test
+    public void testRegisteredAsRoyaleFlexTool()
+    {
+        FlexToolRegistry registry = new FlexToolRegistry();
+        FlexToolGroup toolGroup = registry.getToolGroup("Royale");
+        FlexTool tool = toolGroup.getFlexTool("codegraph");
+
+        assertTrue(tool instanceof CODEGRAPH);
+    }
+
+    @Test
     public void testCompilerErrorsPreventOutputByDefault()
     {
         int exitCode = compile(false);
@@ -75,6 +88,7 @@ public class TestCODEGRAPH
         assertTrue(problems.toString(), containsProblem(UnknownTypeProblem.class));
         String output = FileUtils.readFileToString(outputFile, "UTF-8");
         assertTrue(output, output.contains("\"qualifiedName\": \"MissingType\""));
+        assertTrue(output, output.contains("\"qualifiedName\": \"MissingInterface\""));
         assertTrue(output, output.contains("\"unresolved\": true"));
     }
 
@@ -136,6 +150,34 @@ public class TestCODEGRAPH
         assertTrue(output, output.contains("as3://codegraph/conditional/IncludedOnly"));
     }
 
+    @Test
+    public void testIncludeSourcesDirectoryDoesNotRequireTargetFile() throws IOException
+    {
+        File sourceDirectory = testAdapter.getUnitTestBaseDir();
+        File includeDirectory = new File(sourceDirectory, "codegraph/conditional");
+        outputFile = new File(testAdapter.getTempDir(), "codegraph/IncludedDirectory.json");
+
+        int exitCode = compile(null, sourceDirectory, includeDirectory, false, false);
+        assertEquals(problems.toString(), 0, exitCode);
+        String output = FileUtils.readFileToString(outputFile, "UTF-8");
+        assertTrue(output, output.contains("\"module\": \"IncludedDirectory\""));
+        assertTrue(output, output.contains("as3://codegraph/conditional/ConditionalGraph"));
+        assertTrue(output, output.contains("as3://codegraph/conditional/IncludedOnly"));
+    }
+
+    @Test
+    public void testIncludeSourcesDirectoryDoesNotRequireSourcePath() throws IOException
+    {
+        File includeDirectory = new File(testAdapter.getUnitTestBaseDir(), "codegraph/conditional");
+        outputFile = new File(testAdapter.getTempDir(), "codegraph/IncludedDirectory.json");
+
+        int exitCode = compile(null, null, includeDirectory, false, false);
+        assertEquals(problems.toString(), 0, exitCode);
+        String output = FileUtils.readFileToString(outputFile, "UTF-8");
+        assertTrue(output, output.contains("as3://codegraph/conditional/ConditionalGraph"));
+        assertTrue(output, output.contains("as3://codegraph/conditional/IncludedOnly"));
+    }
+
     private int compile(boolean createTargetWithErrors)
     {
         File sourceFile = new File(testAdapter.getUnitTestBaseDir(), "codegraph/InvalidCodeGraph.as");
@@ -179,7 +221,8 @@ public class TestCODEGRAPH
             arguments.add("-define=COMPILE::JS," + !swf);
             arguments.add("-define+=COMPILE::SWF," + swf);
         }
-        arguments.add(sourceFile.getPath());
+        if (sourceFile != null)
+            arguments.add(sourceFile.getPath());
 
         problems = new ArrayList<ICompilerProblem>();
         return new CODEGRAPH().mainNoExit(arguments.toArray(new String[arguments.size()]), problems, false);

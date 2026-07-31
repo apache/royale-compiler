@@ -112,8 +112,8 @@ public final class CodeGraphExporter
             String baseClassName = classDefinition.getBaseClassAsDisplayString();
             if (baseClass != null || (baseClassName != null && !baseClassName.isEmpty()))
                 symbol.setBaseType(createReference(baseClass, baseClassName));
-            for (IInterfaceDefinition interfaceDefinition : classDefinition.resolveImplementedInterfaces(project))
-                symbol.addInterface(createReference(interfaceDefinition));
+            addInterfaces(symbol, classDefinition.resolveImplementedInterfaces(project),
+                    classDefinition.getImplementedInterfacesAsDisplayStrings());
             IFunctionDefinition constructor = classDefinition.getConstructor();
             if (constructor != null && !constructor.isImplicit())
                 symbol.addMember(exportFunction(constructor, definition));
@@ -121,8 +121,8 @@ public final class CodeGraphExporter
         else
         {
             IInterfaceDefinition interfaceDefinition = (IInterfaceDefinition)definition;
-            for (IInterfaceDefinition extendedInterface : interfaceDefinition.resolveExtendedInterfaces(project))
-                symbol.addInterface(createReference(extendedInterface));
+            addInterfaces(symbol, interfaceDefinition.resolveExtendedInterfaces(project),
+                    interfaceDefinition.getExtendedInterfacesAsDisplayStrings());
         }
 
         for (IDefinition memberDefinition : definition.getContainedScope().getAllLocalDefinitions())
@@ -139,6 +139,19 @@ public final class CodeGraphExporter
                 symbol.addMember(exportVariable((IVariableDefinition)memberDefinition, definition));
         }
         return symbol;
+    }
+
+    private void addInterfaces(CodeGraphSymbol symbol, IInterfaceDefinition[] definitions, String[] displayNames)
+    {
+        int count = Math.max(definitions.length, displayNames.length);
+        for (int i = 0; i < count; i++)
+        {
+            IInterfaceDefinition definition = i < definitions.length ? definitions[i] : null;
+            String displayName = i < displayNames.length ? displayNames[i] : null;
+            CodeGraphReference reference = createReference(definition, displayName);
+            if (reference != null)
+                symbol.addInterface(reference);
+        }
     }
 
     private CodeGraphSymbol exportFunction(IFunctionDefinition definition, ITypeDefinition declaringType)
