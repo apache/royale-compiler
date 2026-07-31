@@ -19,6 +19,7 @@
 
 package org.apache.royale.compiler.internal.codegen.graph;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -44,7 +45,12 @@ import org.apache.royale.compiler.definitions.IVariableDefinition;
 import org.apache.royale.compiler.definitions.metadata.IMetaTag;
 import org.apache.royale.compiler.definitions.metadata.IMetaTagAttribute;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.projects.IASProject;
+import org.apache.royale.compiler.tree.as.IDocumentableDefinitionNode;
 
+/**
+ * Translates compiler definitions into the portable code graph model.
+ */
 public final class CodeGraphExporter
 {
     private final ICompilerProject project;
@@ -63,12 +69,12 @@ public final class CodeGraphExporter
         externalDefinitions.clear();
         for (IDefinition definition : definitions)
         {
-            if (definition.isPublic() && isSupportedType(definition))
+            if (definition.isPublic() && !isExcludedFromPublicAPI(definition) && isSupportedType(definition))
                 exportedQualifiedNames.add(definition.getQualifiedName());
         }
         for (IDefinition definition : definitions)
         {
-            if (!definition.isPublic())
+            if (!definition.isPublic() || isExcludedFromPublicAPI(definition))
                 continue;
             if (isSupportedType(definition))
                 model.addSymbol(exportType((ITypeDefinition)definition));
@@ -81,6 +87,9 @@ public final class CodeGraphExporter
         {
             CodeGraphSymbol externalSymbol = createSymbol(externalDefinition, getTypeKind(externalDefinition));
             externalSymbol.setExternal(true);
+            String origin = externalDefinition.getContainingFilePath();
+            if (origin != null)
+                externalSymbol.setOrigin(new File(origin).getName());
             model.addExternalSymbol(externalSymbol);
         }
         return model;
@@ -100,8 +109,9 @@ public final class CodeGraphExporter
         {
             IClassDefinition classDefinition = (IClassDefinition)definition;
             IClassDefinition baseClass = classDefinition.resolveBaseClass(project);
-            if (baseClass != null)
-                symbol.setBaseType(createReference(baseClass));
+            String baseClassName = classDefinition.getBaseClassAsDisplayString();
+            if (baseClass != null || (baseClassName != null && !baseClassName.isEmpty()))
+                symbol.setBaseType(createReference(baseClass, baseClassName));
             for (IInterfaceDefinition interfaceDefinition : classDefinition.resolveImplementedInterfaces(project))
                 symbol.addInterface(createReference(interfaceDefinition));
             IFunctionDefinition constructor = classDefinition.getConstructor();
@@ -119,7 +129,9 @@ public final class CodeGraphExporter
         {
             boolean isConstructor = memberDefinition instanceof IFunctionDefinition
                     && ((IFunctionDefinition)memberDefinition).isConstructor();
-            if (!memberDefinition.isPublic() || memberDefinition.isImplicit() || isConstructor)
+            boolean isPublic = memberDefinition.isPublic() || definition instanceof IInterfaceDefinition;
+            if (!isPublic || memberDefinition.isImplicit() || isConstructor
+                    || isExcludedFromPublicAPI(memberDefinition))
                 continue;
             if (memberDefinition instanceof IFunctionDefinition)
                 symbol.addMember(exportFunction((IFunctionDefinition)memberDefinition, definition));
@@ -156,26 +168,34 @@ public final class CodeGraphExporter
 
         CodeGraphSymbol symbol = new CodeGraphSymbol(id, definition.getQualifiedName(), definition.getBaseName(),
                 definition.getPackageName(), kind);
+        addDefinitionDetails(symbol, definition);
+        if (symbol.getVisibility().isEmpty() && declaringType != null)
+            symbol.setVisibility(declaringType.getNamespaceReference().getBaseName());
         addMetadata(symbol, definition);
         addASDoc(symbol, definition);
         if (declaringType != null)
             symbol.setDeclaringType(createReference(declaringType));
+        IFunctionDefinition overriddenFunction = definition.resolveOverriddenFunction(project);
+        if (overriddenFunction != null)
+            symbol.setOverriddenMember(createFunctionReference(overriddenFunction));
+        IFunctionDefinition implementedFunction = definition.resolveImplementedFunction(project);
+        if (implementedFunction != null)
+            symbol.setImplementedMember(createFunctionReference(implementedFunction));
         if (definition instanceof IGetterDefinition || definition instanceof ISetterDefinition)
         {
             ITypeDefinition typeDefinition = definition.resolveType(project);
-            if (typeDefinition != null)
-                symbol.setType(createReference(typeDefinition));
+            symbol.setType(createReference(typeDefinition, definition.getTypeAsDisplayString()));
         }
         else if (!definition.isConstructor())
         {
             ITypeDefinition returnType = definition.resolveReturnType(project);
-            if (returnType != null)
-                symbol.setReturnType(createReference(returnType));
+            symbol.setReturnType(createReference(returnType, definition.getReturnTypeAsDisplayString()));
         }
         for (IParameterDefinition parameterDefinition : definition.getParameters())
         {
             ITypeDefinition parameterType = parameterDefinition.resolveType(project);
-            CodeGraphReference typeReference = parameterType == null ? null : createReference(parameterType);
+            CodeGraphReference typeReference = createReference(parameterType,
+                    parameterDefinition.getTypeAsDisplayString());
             Object defaultValue = parameterDefinition.hasDefaultValue()
                     ? parameterDefinition.resolveDefaultValue(project) : null;
             symbol.addParameter(new CodeGraphParameter(parameterDefinition.getBaseName(), typeReference,
@@ -208,20 +228,81 @@ public final class CodeGraphExporter
             : CodeGraphIdFactory.member(declaringType.getQualifiedName(), definition.getBaseName());
         CodeGraphSymbol symbol = new CodeGraphSymbol(id,
                 definition.getQualifiedName(), definition.getBaseName(), definition.getPackageName(), kind);
+        addDefinitionDetails(symbol, definition);
         addMetadata(symbol, definition);
         addASDoc(symbol, definition);
         if (declaringType != null)
             symbol.setDeclaringType(createReference(declaringType));
         ITypeDefinition typeDefinition = definition.resolveType(project);
-        if (typeDefinition != null)
-            symbol.setType(createReference(typeDefinition));
+        symbol.setType(createReference(typeDefinition, definition.getTypeAsDisplayString()));
+        if (definition.getVariableNode() != null && definition.getVariableNode().getAssignedValueNode() != null)
+            symbol.setInitialValue(definition.resolveInitialValue(project));
         return symbol;
+    }
+
+    private boolean isExcludedFromPublicAPI(IDefinition definition)
+    {
+        if (!(definition instanceof IDocumentableDefinition))
+            return false;
+        IASDocComment comment = ((IDocumentableDefinition)definition).getExplicitSourceComment();
+        if (comment == null)
+            return false;
+        if (comment.getDescription() == null)
+            comment.compile();
+        return comment.hasTag("private");
     }
 
     private CodeGraphSymbol createSymbol(IDefinition definition, String kind)
     {
-        return new CodeGraphSymbol(CodeGraphIdFactory.definition(definition.getQualifiedName()),
+        CodeGraphSymbol symbol = new CodeGraphSymbol(CodeGraphIdFactory.definition(definition.getQualifiedName()),
                 definition.getQualifiedName(), definition.getBaseName(), definition.getPackageName(), kind);
+        addDefinitionDetails(symbol, definition);
+        return symbol;
+    }
+
+    private void addDefinitionDetails(CodeGraphSymbol symbol, IDefinition definition)
+    {
+        symbol.setVisibility(definition.getNamespaceReference().getBaseName());
+        symbol.setStatic(definition.isStatic());
+        symbol.setFinal(definition.isFinal());
+        symbol.setDynamic(definition.isDynamic());
+        symbol.setOverride(definition.isOverride());
+        symbol.setAbstract(definition.isAbstract());
+        symbol.setNative(definition.isNative());
+        String source = definition.getContainingSourceFilePath(project);
+        if (source == null)
+            return;
+        File sourceFile = new File(source).getAbsoluteFile();
+        if (project instanceof IASProject)
+        {
+            for (File sourceRoot : ((IASProject)project).getSourcePath())
+            {
+                String relativeSource = relativize(sourceRoot.getAbsoluteFile(), sourceFile);
+                if (relativeSource != null)
+                {
+                    symbol.setSource(relativeSource);
+                    return;
+                }
+            }
+        }
+        symbol.setSource(sourceFile.getName());
+    }
+
+    private String relativize(File root, File file)
+    {
+        String rootPath = root.toURI().normalize().getPath();
+        String filePath = file.toURI().normalize().getPath();
+        if (!filePath.startsWith(rootPath))
+            return null;
+        return filePath.substring(rootPath.length());
+    }
+
+    private CodeGraphReference createFunctionReference(IFunctionDefinition definition)
+    {
+        ITypeDefinition owner = (ITypeDefinition)definition.getAncestorOfType(ITypeDefinition.class);
+        String id = createCallableId(definition, owner);
+        boolean external = owner != null && !exportedQualifiedNames.contains(owner.getQualifiedName());
+        return new CodeGraphReference(id, definition.getQualifiedName(), external, false);
     }
 
     private String getTypeKind(ITypeDefinition definition)
@@ -239,9 +320,22 @@ public final class CodeGraphExporter
             for (IMetaTagAttribute attribute : metaTag.getAllAttributes())
             {
                 metadata.addAttribute(new CodeGraphMetadataAttribute(attribute.getKey(), attribute.getValue()));
+                if ("type".equals(attribute.getKey()) && isTypeBearingMetadata(metaTag.getTagName()))
+                {
+                    IDefinition typeDefinition = project.resolveQNameToDefinition(attribute.getValue());
+                    metadata.addReference(createReference(typeDefinition instanceof ITypeDefinition
+                            ? (ITypeDefinition)typeDefinition : null, attribute.getValue()));
+                }
             }
+            if (metaTag.getTagNode() instanceof IDocumentableDefinitionNode)
+                metadata.setASDoc(createASDoc(((IDocumentableDefinitionNode)metaTag.getTagNode()).getASDocComment()));
             symbol.addMetadata(metadata);
         }
+    }
+
+    private boolean isTypeBearingMetadata(String name)
+    {
+        return "Event".equals(name) || "Style".equals(name) || "Effect".equals(name);
     }
 
     private void addASDoc(CodeGraphSymbol symbol, IDefinition definition)
@@ -249,8 +343,15 @@ public final class CodeGraphExporter
         if (!(definition instanceof IDocumentableDefinition))
             return;
         IASDocComment comment = ((IDocumentableDefinition)definition).getExplicitSourceComment();
+        CodeGraphASDoc asDoc = createASDoc(comment);
+        if (asDoc != null)
+            symbol.setASDoc(asDoc);
+    }
+
+    private CodeGraphASDoc createASDoc(IASDocComment comment)
+    {
         if (comment == null)
-            return;
+            return null;
         if (comment.getDescription() == null)
             comment.compile();
         CodeGraphASDoc asDoc = new CodeGraphASDoc(normalizeASDocText(comment.getDescription()));
@@ -271,7 +372,7 @@ public final class CodeGraphExporter
                     asDoc.addTag(new CodeGraphASDocTag(tagName, normalizeASDocText(tag.getDescription())));
             }
         }
-        symbol.setASDoc(asDoc);
+        return asDoc;
     }
 
     private String normalizeASDocText(String value)
@@ -288,5 +389,14 @@ public final class CodeGraphExporter
         if (external)
             externalDefinitions.put(qualifiedName, definition);
         return new CodeGraphReference(CodeGraphIdFactory.definition(qualifiedName), qualifiedName, external, false);
+    }
+
+    private CodeGraphReference createReference(ITypeDefinition definition, String displayName)
+    {
+        if (definition != null)
+            return createReference(definition);
+        if (displayName == null || displayName.isEmpty())
+            return null;
+        return new CodeGraphReference(CodeGraphIdFactory.definition(displayName), displayName, true, true);
     }
 }

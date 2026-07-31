@@ -153,6 +153,28 @@ public class TestCodeGraphExporter extends ASTestBase
                 assertEquals("Number", constant.getType().getQualifiedName());
         }
 
+        @Test
+        public void testUnresolvedSignatureTypesAreExplicit()
+        {
+                IClassNode classNode = getClassNode("public class Widget {"
+                                + "public var value:MissingFieldType;"
+                                + "public function work(value:MissingParameterType):MissingReturnType { return null; }"
+                                + "}");
+
+                CodeGraphModel model = new CodeGraphExporter(project).export(
+                                Collections.singleton(classNode.getDefinition()), "js", null);
+                CodeGraphSymbol classSymbol = model.getSymbols().get(0);
+                CodeGraphSymbol field = findMember(classSymbol, "field");
+                CodeGraphSymbol method = findMember(classSymbol, "method");
+
+                assertEquals("MissingFieldType", field.getType().getQualifiedName());
+                assertTrue(field.getType().isUnresolved());
+                assertEquals("MissingReturnType", method.getReturnType().getQualifiedName());
+                assertTrue(method.getReturnType().isUnresolved());
+                assertEquals("MissingParameterType", method.getParameters().get(0).getType().getQualifiedName());
+                assertTrue(method.getParameters().get(0).getType().isUnresolved());
+        }
+
         private CodeGraphSymbol findSymbol(CodeGraphModel model, String kind)
         {
                 for (CodeGraphSymbol symbol : model.getSymbols())

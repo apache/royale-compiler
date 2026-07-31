@@ -44,6 +44,9 @@ import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.units.ICompilationUnit;
 import org.apache.royale.compiler.units.requests.ISyntaxTreeRequestResult;
 
+/**
+ * Compiler client that exports a deterministic public ActionScript API graph.
+ */
 public class CODEGRAPH extends MXMLJSCRoyale
 {
     public CODEGRAPH()
@@ -103,7 +106,8 @@ public class CODEGRAPH extends MXMLJSCRoyale
                 definitions.addAll(compilationUnit.getFileScopeRequest().get().getExternallyVisibleDefinitions());
             }
 
-            CodeGraphModel model = new CodeGraphExporter(project).export(definitions, getGraphTarget(), null);
+            String module = FilenameUtils.getBaseName(config.getTargetFile());
+            CodeGraphModel model = new CodeGraphExporter(project).export(definitions, getGraphTarget(), module);
             syntaxTrees.clear();
             File outputFile = getGraphOutputFile();
             File parent = outputFile.getParentFile();
@@ -159,9 +163,9 @@ public class CODEGRAPH extends MXMLJSCRoyale
             return true;
         if (sourceFile.equals(new File(config.getTargetFile()).getAbsoluteFile()))
             return true;
-        for (String includeSource : config.getIncludeSources())
+        for (File includeSource : targetSettings.getIncludeSources())
         {
-            if (sourceFile.equals(new File(includeSource).getAbsoluteFile()))
+            if (sourceFile.equals(includeSource.getAbsoluteFile()))
                 return true;
         }
         return false;

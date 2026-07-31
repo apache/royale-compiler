@@ -26,6 +26,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Writes code graph models as deterministic JSON documents.
+ */
 public final class CodeGraphWriter
 {
     private static final Comparator<CodeGraphSymbol> SYMBOL_COMPARATOR = new Comparator<CodeGraphSymbol>()
@@ -86,6 +89,14 @@ public final class CodeGraphWriter
             writeBooleanProperty(writer, level + 1, "external", true, --optionalPropertyCount > 0);
         if (symbol.getSource() != null)
             writeProperty(writer, level + 1, "source", symbol.getSource().replace('\\', '/'), --optionalPropertyCount > 0);
+        if (symbol.getOrigin() != null)
+            writeProperty(writer, level + 1, "origin", symbol.getOrigin().replace('\\', '/'), --optionalPropertyCount > 0);
+        if (symbol.getVisibility() != null)
+            writeProperty(writer, level + 1, "visibility", symbol.getVisibility(), --optionalPropertyCount > 0);
+        if (hasModifiers(symbol))
+            writeModifiers(writer, symbol, level + 1, --optionalPropertyCount > 0);
+        if (symbol.hasInitialValue())
+            writeValueProperty(writer, level + 1, "initialValue", symbol.getInitialValue(), --optionalPropertyCount > 0);
         if (symbol.getDeclaringType() != null)
             writeReferenceProperty(writer, level + 1, "declaringType", symbol.getDeclaringType(), --optionalPropertyCount > 0);
         if (symbol.getType() != null)
@@ -94,6 +105,10 @@ public final class CodeGraphWriter
             writeReferenceProperty(writer, level + 1, "returnType", symbol.getReturnType(), --optionalPropertyCount > 0);
         if (symbol.getBaseType() != null)
             writeReferenceProperty(writer, level + 1, "baseType", symbol.getBaseType(), --optionalPropertyCount > 0);
+        if (symbol.getOverriddenMember() != null)
+            writeReferenceProperty(writer, level + 1, "overrides", symbol.getOverriddenMember(), --optionalPropertyCount > 0);
+        if (symbol.getImplementedMember() != null)
+            writeReferenceProperty(writer, level + 1, "implements", symbol.getImplementedMember(), --optionalPropertyCount > 0);
         if (symbol.getASDoc() != null)
             writeASDoc(writer, symbol.getASDoc(), level + 1, --optionalPropertyCount > 0);
         if (!symbol.getInterfaces().isEmpty())
@@ -121,6 +136,14 @@ public final class CodeGraphWriter
             result++;
         if (symbol.getSource() != null)
             result++;
+        if (symbol.getOrigin() != null)
+            result++;
+        if (symbol.getVisibility() != null)
+            result++;
+        if (hasModifiers(symbol))
+            result++;
+        if (symbol.hasInitialValue())
+            result++;
         if (symbol.getDeclaringType() != null)
             result++;
         if (symbol.getType() != null)
@@ -128,6 +151,10 @@ public final class CodeGraphWriter
         if (symbol.getReturnType() != null)
             result++;
         if (symbol.getBaseType() != null)
+            result++;
+        if (symbol.getOverriddenMember() != null)
+            result++;
+        if (symbol.getImplementedMember() != null)
             result++;
         if (symbol.getASDoc() != null)
             result++;
@@ -140,6 +167,30 @@ public final class CodeGraphWriter
         if (!symbol.getMembers().isEmpty())
             result++;
         return result;
+    }
+
+    private boolean hasModifiers(CodeGraphSymbol symbol)
+    {
+        return symbol.isStatic() || symbol.isFinal() || symbol.isDynamic() || symbol.isOverride()
+                || symbol.isAbstract() || symbol.isNative();
+    }
+
+    private void writeModifiers(Writer writer, CodeGraphSymbol symbol, int level, boolean comma) throws IOException
+    {
+        indent(writer, level);
+        writeString(writer, "modifiers");
+        writer.write(": {\n");
+        writeBooleanProperty(writer, level + 1, "static", symbol.isStatic(), true);
+        writeBooleanProperty(writer, level + 1, "final", symbol.isFinal(), true);
+        writeBooleanProperty(writer, level + 1, "dynamic", symbol.isDynamic(), true);
+        writeBooleanProperty(writer, level + 1, "override", symbol.isOverride(), true);
+        writeBooleanProperty(writer, level + 1, "abstract", symbol.isAbstract(), true);
+        writeBooleanProperty(writer, level + 1, "native", symbol.isNative(), false);
+        indent(writer, level);
+        writer.write('}');
+        if (comma)
+            writer.write(',');
+        writer.write('\n');
     }
 
     private void writeASDoc(Writer writer, CodeGraphASDoc asDoc, int level, boolean comma) throws IOException
@@ -284,7 +335,15 @@ public final class CodeGraphWriter
             }
             if (!metadataTag.getAttributes().isEmpty())
                 indent(writer, level + 2);
-            writer.write("]\n");
+            writer.write(']');
+            if (!metadataTag.getReferences().isEmpty() || metadataTag.getASDoc() != null)
+                writer.write(',');
+            writer.write('\n');
+            if (!metadataTag.getReferences().isEmpty())
+                writeReferences(writer, "references", metadataTag.getReferences(), level + 2,
+                        metadataTag.getASDoc() != null);
+            if (metadataTag.getASDoc() != null)
+                writeASDoc(writer, metadataTag.getASDoc(), level + 2, false);
             indent(writer, level + 1);
             writer.write('}');
             if (i + 1 < metadata.size())

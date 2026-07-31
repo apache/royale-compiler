@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Root document containing exported and external graph symbols.
+ */
 public final class CodeGraphModel
 {
     public static final String SCHEMA_VERSION = "1.0";

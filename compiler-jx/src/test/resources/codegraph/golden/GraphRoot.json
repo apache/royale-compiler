@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0",
   "target": "js",
-  "module": null,
+  "module": "GraphRoot",
   "symbols": [
     {
       "id": "as3://codegraph/golden/GraphBase",
@@ -9,6 +9,8 @@
       "baseName": "GraphBase",
       "package": "codegraph.golden",
       "kind": "class",
+      "source": "codegraph/golden/GraphBase.as",
+      "visibility": "public",
       "baseType": {
         "id": "as3://Object",
         "qualifiedName": "Object",
@@ -22,6 +24,8 @@
           "baseName": "inheritedMethod",
           "package": "codegraph.golden",
           "kind": "method",
+          "source": "codegraph/golden/GraphBase.as",
+          "visibility": "public",
           "declaringType": {
             "id": "as3://codegraph/golden/GraphBase",
             "qualifiedName": "codegraph.golden.GraphBase",
@@ -41,6 +45,8 @@
           "baseName": "label",
           "package": "codegraph.golden",
           "kind": "field",
+          "source": "codegraph/golden/GraphBase.as",
+          "visibility": "public",
           "declaringType": {
             "id": "as3://codegraph/golden/GraphBase",
             "qualifiedName": "codegraph.golden.GraphBase",
@@ -73,6 +79,8 @@
       "baseName": "GraphRoot",
       "package": "codegraph.golden",
       "kind": "class",
+      "source": "codegraph/golden/GraphRoot.as",
+      "visibility": "public",
       "baseType": {
         "id": "as3://codegraph/golden/GraphBase",
         "qualifiedName": "codegraph.golden.GraphBase",
@@ -116,7 +124,19 @@
               "key": "type",
               "value": "codegraph.golden.GraphEvent"
             }
-          ]
+          ],
+          "references": [
+            {
+              "id": "as3://codegraph/golden/GraphEvent",
+              "qualifiedName": "codegraph.golden.GraphEvent",
+              "external": true,
+              "unresolved": true
+            }
+          ],
+          "asdoc": {
+            "description": "Dispatched when graph work completes.",
+            "tags": []
+          }
         },
         {
           "name": "DefaultProperty",
@@ -130,11 +150,43 @@
       ],
       "members": [
         {
+          "id": "as3://codegraph/golden/GraphRoot#VERSION",
+          "qualifiedName": "VERSION",
+          "baseName": "VERSION",
+          "package": "codegraph.golden",
+          "kind": "constant",
+          "source": "codegraph/golden/GraphRoot.as",
+          "visibility": "public",
+          "modifiers": {
+            "static": true,
+            "final": false,
+            "dynamic": false,
+            "override": false,
+            "abstract": false,
+            "native": false
+          },
+          "initialValue": "1",
+          "declaringType": {
+            "id": "as3://codegraph/golden/GraphRoot",
+            "qualifiedName": "codegraph.golden.GraphRoot",
+            "external": false,
+            "unresolved": false
+          },
+          "type": {
+            "id": "as3://String",
+            "qualifiedName": "String",
+            "external": true,
+            "unresolved": false
+          }
+        },
+        {
           "id": "as3://codegraph/golden/GraphRoot#constructor(String)",
           "qualifiedName": "codegraph.golden.GraphRoot",
           "baseName": "GraphRoot",
           "package": "codegraph.golden",
           "kind": "constructor",
+          "source": "codegraph/golden/GraphRoot.as",
+          "visibility": "public",
           "declaringType": {
             "id": "as3://codegraph/golden/GraphRoot",
             "qualifiedName": "codegraph.golden.GraphRoot",
@@ -162,9 +214,122 @@
           "baseName": "execute",
           "package": "codegraph.golden",
           "kind": "method",
+          "source": "codegraph/golden/GraphRoot.as",
+          "visibility": "public",
           "declaringType": {
             "id": "as3://codegraph/golden/GraphRoot",
             "qualifiedName": "codegraph.golden.GraphRoot",
+            "external": false,
+            "unresolved": false
+          },
+          "returnType": {
+            "id": "as3://Boolean",
+            "qualifiedName": "Boolean",
+            "external": true,
+            "unresolved": false
+          },
+          "implements": {
+            "id": "as3://codegraph/golden/IGraphContract#execute(String,Number,Array)",
+            "qualifiedName": "execute",
+            "external": false,
+            "unresolved": false
+          },
+          "parameters": [
+            {
+              "name": "required",
+              "type": {
+                "id": "as3://String",
+                "qualifiedName": "String",
+                "external": true,
+                "unresolved": false
+              },
+              "optional": false,
+              "rest": false,
+              "defaultValue": null
+            },
+            {
+              "name": "optional",
+              "type": {
+                "id": "as3://Number",
+                "qualifiedName": "Number",
+                "external": true,
+                "unresolved": false
+              },
+              "optional": true,
+              "rest": false,
+              "defaultValue": 2
+            },
+            {
+              "name": "rest",
+              "type": {
+                "id": "as3://Array",
+                "qualifiedName": "Array",
+                "external": true,
+                "unresolved": false
+              },
+              "optional": false,
+              "rest": true,
+              "defaultValue": null
+            }
+          ]
+        },
+        {
+          "id": "as3://codegraph/golden/GraphRoot#inheritedMethod()",
+          "qualifiedName": "inheritedMethod",
+          "baseName": "inheritedMethod",
+          "package": "codegraph.golden",
+          "kind": "method",
+          "source": "codegraph/golden/GraphRoot.as",
+          "visibility": "public",
+          "modifiers": {
+            "static": false,
+            "final": false,
+            "dynamic": false,
+            "override": true,
+            "abstract": false,
+            "native": false
+          },
+          "declaringType": {
+            "id": "as3://codegraph/golden/GraphRoot",
+            "qualifiedName": "codegraph.golden.GraphRoot",
+            "external": false,
+            "unresolved": false
+          },
+          "returnType": {
+            "id": "as3://void",
+            "qualifiedName": "void",
+            "external": true,
+            "unresolved": false
+          },
+          "overrides": {
+            "id": "as3://codegraph/golden/GraphBase#inheritedMethod()",
+            "qualifiedName": "inheritedMethod",
+            "external": false,
+            "unresolved": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "as3://codegraph/golden/IGraphContract",
+      "qualifiedName": "codegraph.golden.IGraphContract",
+      "baseName": "IGraphContract",
+      "package": "codegraph.golden",
+      "kind": "interface",
+      "source": "codegraph/golden/IGraphContract.as",
+      "visibility": "public",
+      "members": [
+        {
+          "id": "as3://codegraph/golden/IGraphContract#execute(String,Number,Array)",
+          "qualifiedName": "execute",
+          "baseName": "execute",
+          "package": "codegraph.golden",
+          "kind": "method",
+          "source": "codegraph/golden/IGraphContract.as",
+          "visibility": "public",
+          "declaringType": {
+            "id": "as3://codegraph/golden/IGraphContract",
+            "qualifiedName": "codegraph.golden.IGraphContract",
             "external": false,
             "unresolved": false
           },
@@ -216,18 +381,13 @@
       ]
     },
     {
-      "id": "as3://codegraph/golden/IGraphContract",
-      "qualifiedName": "codegraph.golden.IGraphContract",
-      "baseName": "IGraphContract",
-      "package": "codegraph.golden",
-      "kind": "interface"
-    },
-    {
       "id": "as3://codegraph/golden/packageFunction(String)",
       "qualifiedName": "codegraph.golden.packageFunction",
       "baseName": "packageFunction",
       "package": "codegraph.golden",
       "kind": "function",
+      "source": "codegraph/golden/packageFunction.as",
+      "visibility": "public",
       "returnType": {
         "id": "as3://Boolean",
         "qualifiedName": "Boolean",
@@ -257,7 +417,17 @@
       "baseName": "Array",
       "package": "",
       "kind": "class",
-      "external": true
+      "external": true,
+      "origin": "js.swc",
+      "visibility": "public",
+      "modifiers": {
+        "static": false,
+        "final": false,
+        "dynamic": true,
+        "override": false,
+        "abstract": false,
+        "native": false
+      }
     },
     {
       "id": "as3://Boolean",
@@ -265,7 +435,17 @@
       "baseName": "Boolean",
       "package": "",
       "kind": "class",
-      "external": true
+      "external": true,
+      "origin": "js.swc",
+      "visibility": "public",
+      "modifiers": {
+        "static": false,
+        "final": true,
+        "dynamic": false,
+        "override": false,
+        "abstract": false,
+        "native": false
+      }
     },
     {
       "id": "as3://Number",
@@ -273,7 +453,17 @@
       "baseName": "Number",
       "package": "",
       "kind": "class",
-      "external": true
+      "external": true,
+      "origin": "js.swc",
+      "visibility": "public",
+      "modifiers": {
+        "static": false,
+        "final": true,
+        "dynamic": false,
+        "override": false,
+        "abstract": false,
+        "native": false
+      }
     },
     {
       "id": "as3://Object",
@@ -281,7 +471,17 @@
       "baseName": "Object",
       "package": "",
       "kind": "class",
-      "external": true
+      "external": true,
+      "origin": "js.swc",
+      "visibility": "public",
+      "modifiers": {
+        "static": false,
+        "final": false,
+        "dynamic": true,
+        "override": false,
+        "abstract": false,
+        "native": false
+      }
     },
     {
       "id": "as3://String",
@@ -289,7 +489,17 @@
       "baseName": "String",
       "package": "",
       "kind": "class",
-      "external": true
+      "external": true,
+      "origin": "js.swc",
+      "visibility": "public",
+      "modifiers": {
+        "static": false,
+        "final": true,
+        "dynamic": false,
+        "override": false,
+        "abstract": false,
+        "native": false
+      }
     },
     {
       "id": "as3://void",
@@ -297,7 +507,16 @@
       "baseName": "void",
       "package": "",
       "kind": "class",
-      "external": true
+      "external": true,
+      "visibility": "public",
+      "modifiers": {
+        "static": false,
+        "final": true,
+        "dynamic": false,
+        "override": false,
+        "abstract": false,
+        "native": false
+      }
     }
   ]
 }

@@ -30,6 +30,8 @@ public final class CodeGraphMetadata
 {
     private final String name;
     private final List<CodeGraphMetadataAttribute> attributes = new ArrayList<CodeGraphMetadataAttribute>();
+    private final List<CodeGraphReference> references = new ArrayList<CodeGraphReference>();
+    private CodeGraphASDoc asDoc;
 
     public CodeGraphMetadata(String name)
     {
@@ -49,5 +51,25 @@ public final class CodeGraphMetadata
     public List<CodeGraphMetadataAttribute> getAttributes()
     {
         return Collections.unmodifiableList(attributes);
+    }
+
+    public void addReference(CodeGraphReference reference)
+    {
+        references.add(reference);
+    }
+
+    public List<CodeGraphReference> getReferences()
+    {
+        return Collections.unmodifiableList(references);
+    }
+
+    public CodeGraphASDoc getASDoc()
+    {
+        return asDoc;
+    }
+
+    public void setASDoc(CodeGraphASDoc asDoc)
+    {
+        this.asDoc = asDoc;
     }
 }

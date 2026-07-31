@@ -114,7 +114,7 @@ The exact JSON shape should be finalized with tests, but version 1 needs these c
 {
   "schemaVersion": "1.0",
   "target": "js",
-  "module": null,
+  "module": "UIBase",
   "symbols": [],
   "externalSymbols": []
 }
@@ -287,6 +287,21 @@ Before considering the first compiler PR review-ready:
 
 Passing the existing suite is necessary but not sufficient: the new client must have direct regression coverage for configuration, target setup, filtering, error handling, and output generation.
 
+## Current Implementation Status
+
+Implemented and covered by focused compiler-backed tests:
+
+- Public classes, interfaces, implicit interface members, package definitions, and directly declared public members.
+- Expanded directory-valued include sources and unreferenced included source files.
+- Stable IDs, deterministic JSON, source-root-relative provenance, module identity, and external library origins.
+- Resolved and explicitly unresolved signature references, with compiler diagnostics retained for unresolved types.
+- Base, interface, override, and implementation relationships.
+- Visibility, declaration modifiers, parameter defaults, and variable/constant initial values.
+- Parsed ASDoc, `@private` exclusion, structured metadata, metadata ASDoc, and type-bearing metadata references.
+- JS/SWF conditional selection, compiler error gating, two-run determinism, and an exact golden document.
+
+Deferred extensions remain effective inherited-member views, `@copy` resolution, JSON Schema/versioning policy, and aggregate build-tool integration.
+
 ## Suggested Pull Request Sequence
 
 ### PR 1: Semantic exporter MVP
@@ -300,8 +315,8 @@ Passing the existing suite is necessary but not sufficient: the new client must 
 ### PR 2: Completeness
 
 - Package-level definitions. Implemented with focused function/variable/constant coverage and a compiler-backed reachable package-function fixture.
-- External and unresolved symbol records.
-- Inheritance/override edges.
+- External and unresolved symbol records. Implemented with explicit unresolved markers, origins, and compiler-problem coverage.
+- Inheritance/override edges. Implemented for base types, interfaces, overridden methods, and interface implementations.
 - Effective inherited public member view if clients require it.
 - `@copy` resolution.
 - JSON Schema and schema compatibility policy.

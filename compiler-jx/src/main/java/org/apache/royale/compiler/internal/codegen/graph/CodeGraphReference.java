@@ -19,6 +19,9 @@
 
 package org.apache.royale.compiler.internal.codegen.graph;
 
+/**
+ * A resolved or explicitly unresolved reference to another graph symbol.
+ */
 public final class CodeGraphReference
 {
     private final String id;

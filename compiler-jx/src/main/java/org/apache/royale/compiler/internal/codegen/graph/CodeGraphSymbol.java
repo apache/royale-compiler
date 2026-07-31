@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * A public ActionScript definition represented in the code graph.
+ */
 public final class CodeGraphSymbol
 {
     private final String id;
@@ -32,10 +35,22 @@ public final class CodeGraphSymbol
     private final String kind;
     private boolean external;
     private String source;
+    private String origin;
+    private String visibility;
+    private boolean staticDefinition;
+    private boolean finalDefinition;
+    private boolean dynamicDefinition;
+    private boolean overrideDefinition;
+    private boolean abstractDefinition;
+    private boolean nativeDefinition;
+    private boolean hasInitialValue;
+    private Object initialValue;
     private CodeGraphReference declaringType;
     private CodeGraphReference type;
     private CodeGraphReference returnType;
     private CodeGraphReference baseType;
+    private CodeGraphReference overriddenMember;
+    private CodeGraphReference implementedMember;
     private CodeGraphASDoc asDoc;
     private final List<CodeGraphReference> interfaces = new ArrayList<CodeGraphReference>();
     private final List<CodeGraphParameter> parameters = new ArrayList<CodeGraphParameter>();
@@ -96,6 +111,102 @@ public final class CodeGraphSymbol
         this.source = source;
     }
 
+    public String getOrigin()
+    {
+        return origin;
+    }
+
+    public void setOrigin(String origin)
+    {
+        this.origin = origin;
+    }
+
+    public String getVisibility()
+    {
+        return visibility;
+    }
+
+    public void setVisibility(String visibility)
+    {
+        this.visibility = visibility;
+    }
+
+    public boolean isStatic()
+    {
+        return staticDefinition;
+    }
+
+    public void setStatic(boolean value)
+    {
+        staticDefinition = value;
+    }
+
+    public boolean isFinal()
+    {
+        return finalDefinition;
+    }
+
+    public void setFinal(boolean value)
+    {
+        finalDefinition = value;
+    }
+
+    public boolean isDynamic()
+    {
+        return dynamicDefinition;
+    }
+
+    public void setDynamic(boolean value)
+    {
+        dynamicDefinition = value;
+    }
+
+    public boolean isOverride()
+    {
+        return overrideDefinition;
+    }
+
+    public void setOverride(boolean value)
+    {
+        overrideDefinition = value;
+    }
+
+    public boolean isAbstract()
+    {
+        return abstractDefinition;
+    }
+
+    public void setAbstract(boolean value)
+    {
+        abstractDefinition = value;
+    }
+
+    public boolean isNative()
+    {
+        return nativeDefinition;
+    }
+
+    public void setNative(boolean value)
+    {
+        nativeDefinition = value;
+    }
+
+    public boolean hasInitialValue()
+    {
+        return hasInitialValue;
+    }
+
+    public Object getInitialValue()
+    {
+        return initialValue;
+    }
+
+    public void setInitialValue(Object initialValue)
+    {
+        hasInitialValue = true;
+        this.initialValue = initialValue;
+    }
+
     public CodeGraphReference getDeclaringType()
     {
         return declaringType;
@@ -134,6 +245,26 @@ public final class CodeGraphSymbol
     public void setBaseType(CodeGraphReference baseType)
     {
         this.baseType = baseType;
+    }
+
+    public CodeGraphReference getOverriddenMember()
+    {
+        return overriddenMember;
+    }
+
+    public void setOverriddenMember(CodeGraphReference overriddenMember)
+    {
+        this.overriddenMember = overriddenMember;
+    }
+
+    public CodeGraphReference getImplementedMember()
+    {
+        return implementedMember;
+    }
+
+    public void setImplementedMember(CodeGraphReference implementedMember)
+    {
+        this.implementedMember = implementedMember;
     }
 
     public CodeGraphASDoc getASDoc()

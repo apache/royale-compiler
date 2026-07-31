@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.royale.compiler.problems.ICompilerProblem;
+import org.apache.royale.compiler.problems.UnknownTypeProblem;
 import org.apache.royale.utils.ITestAdapter;
 import org.apache.royale.utils.TestAdapterFactory;
 import org.junit.After;
@@ -65,12 +66,16 @@ public class TestCODEGRAPH
     }
 
     @Test
-    public void testCreateTargetWithErrorsAllowsOutput()
+    public void testCreateTargetWithErrorsAllowsOutput() throws IOException
     {
         int exitCode = compile(true);
 
         assertEquals(2, exitCode);
         assertTrue(problems.toString(), outputFile.exists());
+        assertTrue(problems.toString(), containsProblem(UnknownTypeProblem.class));
+        String output = FileUtils.readFileToString(outputFile, "UTF-8");
+        assertTrue(output, output.contains("\"qualifiedName\": \"MissingType\""));
+        assertTrue(output, output.contains("\"unresolved\": true"));
     }
 
     @Test
@@ -116,10 +121,35 @@ public class TestCODEGRAPH
         assertFalse(swfOutput, swfOutput.contains("#jsOnly()"));
     }
 
+    @Test
+    public void testIncludeSourcesDirectoryExportsAllSources() throws IOException
+    {
+        File sourceDirectory = testAdapter.getUnitTestBaseDir();
+        File includeDirectory = new File(sourceDirectory, "codegraph/conditional");
+        File sourceFile = new File(includeDirectory, "ConditionalGraph.as");
+        outputFile = new File(testAdapter.getTempDir(), "codegraph/IncludedDirectory.json");
+
+        int exitCode = compile(sourceFile, sourceDirectory, includeDirectory, false, false);
+        assertEquals(problems.toString(), 0, exitCode);
+        String output = FileUtils.readFileToString(outputFile, "UTF-8");
+        assertTrue(output, output.contains("as3://codegraph/conditional/ConditionalGraph"));
+        assertTrue(output, output.contains("as3://codegraph/conditional/IncludedOnly"));
+    }
+
     private int compile(boolean createTargetWithErrors)
     {
         File sourceFile = new File(testAdapter.getUnitTestBaseDir(), "codegraph/InvalidCodeGraph.as");
         return compile(sourceFile, null, createTargetWithErrors);
+    }
+
+    private boolean containsProblem(Class<? extends ICompilerProblem> problemType)
+    {
+        for (ICompilerProblem problem : problems)
+        {
+            if (problemType.isInstance(problem))
+                return true;
+        }
+        return false;
     }
 
     private int compile(File sourceFile, File sourceDirectory, boolean createTargetWithErrors)
@@ -129,11 +159,17 @@ public class TestCODEGRAPH
 
     private int compile(File sourceFile, File sourceDirectory, boolean createTargetWithErrors, Boolean swf)
     {
+        return compile(sourceFile, sourceDirectory, sourceFile, createTargetWithErrors, swf);
+    }
+
+    private int compile(File sourceFile, File sourceDirectory, File includeSource,
+            boolean createTargetWithErrors, Boolean swf)
+    {
         File jsSWC = new File("../compiler-externc/target/js.swc");
         List<String> arguments = new ArrayList<String>();
         arguments.add("-external-library-path=" + jsSWC.getPath());
         arguments.add("-output=" + outputFile.getPath());
-        arguments.add("-include-sources=" + sourceFile.getPath());
+        arguments.add("-include-sources=" + includeSource.getPath());
         if (sourceDirectory != null)
             arguments.add("-source-path=" + sourceDirectory.getPath());
         if (createTargetWithErrors)

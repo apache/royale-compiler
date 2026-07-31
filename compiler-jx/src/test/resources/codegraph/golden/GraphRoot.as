@@ -1,5 +1,6 @@
 package codegraph.golden
 {
+    /** Dispatched when graph work completes. */
     [Event(name="complete", type="codegraph.golden.GraphEvent")]
     [DefaultProperty("label")]
     /**
@@ -11,6 +12,8 @@ package codegraph.golden
      */
     public class GraphRoot extends GraphBase implements IGraphContract
     {
+        public static const VERSION:String = "1";
+
         public function GraphRoot(value:String)
         {
         }
@@ -20,7 +23,18 @@ package codegraph.golden
             return packageFunction(required);
         }
 
+        override public function inheritedMethod():void
+        {
+        }
+
         private function hidden():void
+        {
+        }
+
+        /**
+         * @private
+         */
+        public function documentedPrivate():void
         {
         }
     }

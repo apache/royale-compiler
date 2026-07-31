@@ -19,6 +19,9 @@
 
 package org.apache.royale.compiler.internal.codegen.graph;
 
+/**
+ * A callable parameter and its resolved signature details.
+ */
 public final class CodeGraphParameter
 {
     private final String name;

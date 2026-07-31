@@ -21,6 +21,9 @@ package org.apache.royale.compiler.internal.codegen.graph;
 
 import java.util.List;
 
+/**
+ * Creates stable identifiers for ActionScript definitions and members.
+ */
 public final class CodeGraphIdFactory
 {
     private static final String SCHEME = "as3://";
