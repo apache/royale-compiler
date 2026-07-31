@@ -1,0 +1,297 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
+package org.apache.royale.compiler.internal.codegen.graph;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+public final class CodeGraphWriter
+{
+    private static final Comparator<CodeGraphSymbol> SYMBOL_COMPARATOR = new Comparator<CodeGraphSymbol>()
+    {
+        @Override
+        public int compare(CodeGraphSymbol first, CodeGraphSymbol second)
+        {
+            return first.getId().compareTo(second.getId());
+        }
+    };
+
+    public void write(CodeGraphModel model, Writer writer) throws IOException
+    {
+        writer.write("{\n");
+        writeProperty(writer, 1, "schemaVersion", CodeGraphModel.SCHEMA_VERSION, true);
+        writeProperty(writer, 1, "target", model.getTarget(), true);
+        writeProperty(writer, 1, "module", model.getModule(), true);
+        writeSymbols(writer, "symbols", model.getSymbols(), 1, true);
+        writeSymbols(writer, "externalSymbols", model.getExternalSymbols(), 1, false);
+        writer.write("}\n");
+    }
+
+    private void writeSymbols(Writer writer, String name, List<CodeGraphSymbol> symbols, int level, boolean comma) throws IOException
+    {
+        indent(writer, level);
+        writeString(writer, name);
+        writer.write(": [");
+        List<CodeGraphSymbol> sortedSymbols = new ArrayList<CodeGraphSymbol>(symbols);
+        Collections.sort(sortedSymbols, SYMBOL_COMPARATOR);
+        if (!sortedSymbols.isEmpty())
+            writer.write('\n');
+        for (int i = 0; i < sortedSymbols.size(); i++)
+        {
+            writeSymbol(writer, sortedSymbols.get(i), level + 1);
+            if (i + 1 < sortedSymbols.size())
+                writer.write(',');
+            writer.write('\n');
+        }
+        if (!sortedSymbols.isEmpty())
+            indent(writer, level);
+        writer.write(']');
+        if (comma)
+            writer.write(',');
+        writer.write('\n');
+    }
+
+    private void writeSymbol(Writer writer, CodeGraphSymbol symbol, int level) throws IOException
+    {
+        indent(writer, level);
+        writer.write("{\n");
+        writeProperty(writer, level + 1, "id", symbol.getId(), true);
+        writeProperty(writer, level + 1, "qualifiedName", symbol.getQualifiedName(), true);
+        writeProperty(writer, level + 1, "baseName", symbol.getBaseName(), true);
+        writeProperty(writer, level + 1, "package", symbol.getPackageName(), true);
+        int optionalPropertyCount = getOptionalPropertyCount(symbol);
+        writeProperty(writer, level + 1, "kind", symbol.getKind(), optionalPropertyCount > 0);
+        if (symbol.isExternal())
+            writeBooleanProperty(writer, level + 1, "external", true, --optionalPropertyCount > 0);
+        if (symbol.getSource() != null)
+            writeProperty(writer, level + 1, "source", symbol.getSource().replace('\\', '/'), --optionalPropertyCount > 0);
+        if (symbol.getDeclaringType() != null)
+            writeReferenceProperty(writer, level + 1, "declaringType", symbol.getDeclaringType(), --optionalPropertyCount > 0);
+        if (symbol.getType() != null)
+            writeReferenceProperty(writer, level + 1, "type", symbol.getType(), --optionalPropertyCount > 0);
+        if (symbol.getReturnType() != null)
+            writeReferenceProperty(writer, level + 1, "returnType", symbol.getReturnType(), --optionalPropertyCount > 0);
+        if (symbol.getBaseType() != null)
+            writeReferenceProperty(writer, level + 1, "baseType", symbol.getBaseType(), --optionalPropertyCount > 0);
+        if (!symbol.getInterfaces().isEmpty())
+        {
+            writeReferences(writer, "interfaces", symbol.getInterfaces(), level + 1, --optionalPropertyCount > 0);
+        }
+        if (!symbol.getParameters().isEmpty())
+        {
+            writeParameters(writer, symbol.getParameters(), level + 1, --optionalPropertyCount > 0);
+        }
+        if (!symbol.getMembers().isEmpty())
+            writeSymbols(writer, "members", symbol.getMembers(), level + 1, false);
+        indent(writer, level);
+        writer.write('}');
+    }
+
+    private int getOptionalPropertyCount(CodeGraphSymbol symbol)
+    {
+        int result = 0;
+        if (symbol.isExternal())
+            result++;
+        if (symbol.getSource() != null)
+            result++;
+        if (symbol.getDeclaringType() != null)
+            result++;
+        if (symbol.getType() != null)
+            result++;
+        if (symbol.getReturnType() != null)
+            result++;
+        if (symbol.getBaseType() != null)
+            result++;
+        if (!symbol.getInterfaces().isEmpty())
+            result++;
+        if (!symbol.getParameters().isEmpty())
+            result++;
+        if (!symbol.getMembers().isEmpty())
+            result++;
+        return result;
+    }
+
+    private void writeReferenceProperty(Writer writer, int level, String name, CodeGraphReference reference,
+            boolean comma) throws IOException
+    {
+        indent(writer, level);
+        writeString(writer, name);
+        writer.write(": ");
+        writeReference(writer, reference, level);
+        if (comma)
+            writer.write(',');
+        writer.write('\n');
+    }
+
+    private void writeReference(Writer writer, CodeGraphReference reference, int level) throws IOException
+    {
+        writer.write("{\n");
+        writeProperty(writer, level + 1, "id", reference.getId(), true);
+        writeProperty(writer, level + 1, "qualifiedName", reference.getQualifiedName(), true);
+        writeBooleanProperty(writer, level + 1, "external", reference.isExternal(), true);
+        writeBooleanProperty(writer, level + 1, "unresolved", reference.isUnresolved(), false);
+        indent(writer, level);
+        writer.write('}');
+    }
+
+    private void writeReferences(Writer writer, String name, List<CodeGraphReference> references, int level,
+            boolean comma) throws IOException
+    {
+        indent(writer, level);
+        writeString(writer, name);
+        writer.write(": [\n");
+        for (int i = 0; i < references.size(); i++)
+        {
+            indent(writer, level + 1);
+            writeReference(writer, references.get(i), level + 1);
+            if (i + 1 < references.size())
+                writer.write(',');
+            writer.write('\n');
+        }
+        indent(writer, level);
+        writer.write(']');
+        if (comma)
+            writer.write(',');
+        writer.write('\n');
+    }
+
+    private void writeParameters(Writer writer, List<CodeGraphParameter> parameters, int level, boolean comma)
+            throws IOException
+    {
+        indent(writer, level);
+        writeString(writer, "parameters");
+        writer.write(": [\n");
+        for (int i = 0; i < parameters.size(); i++)
+        {
+            CodeGraphParameter parameter = parameters.get(i);
+            indent(writer, level + 1);
+            writer.write("{\n");
+            writeProperty(writer, level + 2, "name", parameter.getName(), true);
+            if (parameter.getType() == null)
+                writeProperty(writer, level + 2, "type", null, true);
+            else
+                writeReferenceProperty(writer, level + 2, "type", parameter.getType(), true);
+            writeBooleanProperty(writer, level + 2, "optional", parameter.isOptional(), true);
+            writeBooleanProperty(writer, level + 2, "rest", parameter.isRest(), true);
+            writeValueProperty(writer, level + 2, "defaultValue", parameter.getDefaultValue(), false);
+            indent(writer, level + 1);
+            writer.write('}');
+            if (i + 1 < parameters.size())
+                writer.write(',');
+            writer.write('\n');
+        }
+        indent(writer, level);
+        writer.write(']');
+        if (comma)
+            writer.write(',');
+        writer.write('\n');
+    }
+
+    private void writeBooleanProperty(Writer writer, int level, String name, boolean value, boolean comma)
+            throws IOException
+    {
+        indent(writer, level);
+        writeString(writer, name);
+        writer.write(value ? ": true" : ": false");
+        if (comma)
+            writer.write(',');
+        writer.write('\n');
+    }
+
+    private void writeValueProperty(Writer writer, int level, String name, Object value, boolean comma)
+            throws IOException
+    {
+        indent(writer, level);
+        writeString(writer, name);
+        writer.write(": ");
+        if (value == null)
+            writer.write("null");
+        else if (value instanceof Number || value instanceof Boolean)
+            writer.write(value.toString());
+        else
+            writeString(writer, value.toString());
+        if (comma)
+            writer.write(',');
+        writer.write('\n');
+    }
+
+    private void writeProperty(Writer writer, int level, String name, String value, boolean comma) throws IOException
+    {
+        indent(writer, level);
+        writeString(writer, name);
+        writer.write(": ");
+        if (value == null)
+            writer.write("null");
+        else
+            writeString(writer, value);
+        if (comma)
+            writer.write(',');
+        writer.write('\n');
+    }
+
+    private void writeString(Writer writer, String value) throws IOException
+    {
+        writer.write('"');
+        for (int i = 0; i < value.length(); i++)
+        {
+            char character = value.charAt(i);
+            switch (character)
+            {
+                case '"':
+                    writer.write("\\\"");
+                    break;
+                case '\\':
+                    writer.write("\\\\");
+                    break;
+                case '\b':
+                    writer.write("\\b");
+                    break;
+                case '\f':
+                    writer.write("\\f");
+                    break;
+                case '\n':
+                    writer.write("\\n");
+                    break;
+                case '\r':
+                    writer.write("\\r");
+                    break;
+                case '\t':
+                    writer.write("\\t");
+                    break;
+                default:
+                    if (character < 0x20)
+                        writer.write(String.format("\\u%04x", (int)character));
+                    else
+                        writer.write(character);
+            }
+        }
+        writer.write('"');
+    }
+
+    private void indent(Writer writer, int level) throws IOException
+    {
+        for (int i = 0; i < level; i++)
+            writer.write("  ");
+    }
+}
