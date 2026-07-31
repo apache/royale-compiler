@@ -94,6 +94,28 @@ public class TestCODEGRAPH
         assertEquals(goldenOutput, firstOutput);
     }
 
+    @Test
+    public void testCompilerDefinesSelectTargetMembers() throws IOException
+    {
+        File sourceDirectory = testAdapter.getUnitTestBaseDir();
+        File sourceFile = new File(sourceDirectory, "codegraph/conditional/ConditionalGraph.as");
+        outputFile = new File(testAdapter.getTempDir(), "codegraph/ConditionalGraph.json");
+
+        int jsExitCode = compile(sourceFile, sourceDirectory, false, false);
+        assertEquals(problems.toString(), 0, jsExitCode);
+        String jsOutput = FileUtils.readFileToString(outputFile, "UTF-8");
+        assertTrue(jsOutput, jsOutput.contains("\"target\": \"js\""));
+        assertTrue(jsOutput, jsOutput.contains("#jsOnly()"));
+        assertFalse(jsOutput, jsOutput.contains("#swfOnly()"));
+
+        int swfExitCode = compile(sourceFile, sourceDirectory, false, true);
+        assertEquals(problems.toString(), 0, swfExitCode);
+        String swfOutput = FileUtils.readFileToString(outputFile, "UTF-8");
+        assertTrue(swfOutput, swfOutput.contains("\"target\": \"swf\""));
+        assertTrue(swfOutput, swfOutput.contains("#swfOnly()"));
+        assertFalse(swfOutput, swfOutput.contains("#jsOnly()"));
+    }
+
     private int compile(boolean createTargetWithErrors)
     {
         File sourceFile = new File(testAdapter.getUnitTestBaseDir(), "codegraph/InvalidCodeGraph.as");
@@ -101,6 +123,11 @@ public class TestCODEGRAPH
     }
 
     private int compile(File sourceFile, File sourceDirectory, boolean createTargetWithErrors)
+    {
+        return compile(sourceFile, sourceDirectory, createTargetWithErrors, null);
+    }
+
+    private int compile(File sourceFile, File sourceDirectory, boolean createTargetWithErrors, Boolean swf)
     {
         File jsSWC = new File("../compiler-externc/target/js.swc");
         List<String> arguments = new ArrayList<String>();
@@ -111,6 +138,11 @@ public class TestCODEGRAPH
             arguments.add("-source-path=" + sourceDirectory.getPath());
         if (createTargetWithErrors)
             arguments.add("-create-target-with-errors=true");
+        if (swf != null)
+        {
+            arguments.add("-define=COMPILE::JS," + !swf);
+            arguments.add("-define+=COMPILE::SWF," + swf);
+        }
         arguments.add(sourceFile.getPath());
 
         problems = new ArrayList<ICompilerProblem>();

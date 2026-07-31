@@ -294,7 +294,7 @@ Passing the existing suite is necessary but not sufficient: the new client must 
 - Graph model and deterministic JSON writer.
 - Compiler-backed collection of public types and directly declared members.
 - ASDoc and metadata extraction.
-- JS/SWF fixture tests.
+- JS/SWF fixture tests. Implemented with opposite compiler define sets that verify target labels and active-member selection.
 - CLI entry point in `compiler-jx`.
 
 ### PR 2: Completeness
