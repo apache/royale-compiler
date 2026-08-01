@@ -308,6 +308,8 @@ Passing the existing suite is necessary but not sufficient: the new client must 
 
 ## Current Implementation Status
 
+Status as of August 1, 2026: the compiler exporter, build-tool integration, SDK orchestration, and release packaging described by this plan are implemented and validated on the codegraph branches of `royale-compiler` and `royale-asjs`.
+
 Implemented and covered by focused compiler-backed tests:
 
 - Public classes, interfaces, implicit interface members, package definitions, and directly declared public members.
@@ -320,7 +322,22 @@ Implemented and covered by focused compiler-backed tests:
 - JS/SWF conditional selection, compiler error gating, two-run determinism, and an exact golden document.
 - A packaged Draft 2020-12 JSON Schema with validation of unit-built and compiler-backed graph documents.
 
-`@copy` targets remain structured, opaque tag values, matching Royale's existing parser and emitter semantics. Effective inherited-member views remain derivable from explicit base/interface edges. Aggregate build-tool integration remains deferred.
+`@copy` targets remain structured, opaque tag values, matching Royale's existing parser and emitter semantics. Effective inherited-member views remain derivable from explicit base/interface edges.
+
+Implemented and validated in `royale-asjs`:
+
+- Ant orchestration generates JS and SWF graphs for all 37 framework projects.
+- Maven orchestration generates the same 74 module/target shards with target-specific dependencies, namespaces, and compiler defines.
+- The deterministic aggregate contains 76 files: 74 shards, `index.json`, and `mxml.json`.
+- `index.json` records module coordinates, target dependencies, relative paths, symbol/class counts, and SHA-256 hashes.
+- `mxml.json` records target-specific namespace and manifest tag mappings.
+- Binary SDK ZIP/TAR archives and both existing npm packages carry the aggregate tree at `frameworks/codegraphs`.
+- Maven attaches `org.apache.royale.framework:distribution:zip:codegraphs:<version>` when the `codegraphs` profile is active.
+- `mvn verify -Pcodegraphs` unpacks the attached classifier and validates package membership, graph identity, counts, schema versions, and indexed SHA-256 hashes.
+- Resource-bundle metadata that is unavailable during export is preserved by name without hiding unrelated compiler errors.
+- Compiler and SDK RAT checks pass for tracked sources; generated or ignored third-party build output must remain outside release-source RAT inputs.
+
+The compiler test reactor passes 1,375 tests with zero failures and zero errors (one skipped). Full Ant and Maven framework generation both pass for 37 modules and both targets.
 
 ### Schema Compatibility Policy
 
@@ -330,9 +347,9 @@ Implemented and covered by focused compiler-backed tests:
 - Writers emit one exact schema version. Consumers must reject unsupported major versions and may accept newer minor versions only when they tolerate unknown optional fields and enum values.
 - The schema, model version constant, writer output, and canonical golden document must change together and pass schema validation.
 
-## Suggested Pull Request Sequence
+## Implemented Pull Request Sequence
 
-### Slice 1: Semantic exporter MVP
+### Slice 1: Semantic exporter MVP (complete)
 
 - Graph model and deterministic JSON writer.
 - Compiler-backed collection of public types and directly declared members.
@@ -340,7 +357,7 @@ Implemented and covered by focused compiler-backed tests:
 - JS/SWF fixture tests. Implemented with opposite compiler define sets that verify target labels and active-member selection.
 - CLI entry point in `compiler-jx`.
 
-### Slice 2: Completeness
+### Slice 2: Completeness (complete)
 
 - Package-level definitions. Implemented with focused function/variable/constant coverage and a compiler-backed reachable package-function fixture.
 - External and unresolved symbol records. Implemented with explicit unresolved markers, origins, and compiler-problem coverage.
@@ -349,28 +366,28 @@ Implemented and covered by focused compiler-backed tests:
 - `@copy` is preserved as an opaque structured tag, matching Royale parser and emitter behavior.
 - JSON Schema and schema compatibility policy. Implemented with a packaged versioned schema and validator-backed tests.
 
-### Slice 3: Build-tool integration
+### Slice 3: Build-tool integration (complete)
 
 - `compile-codegraph` goal in `royale-maven-plugin`. Implemented with dedicated graph configs and separate JS/SWF outputs.
 - Ant/tool registration and SDK launcher scripts. Implemented with a `codegraph.jar` entry point and Unix/Windows launchers.
 - Target-specific dependency classifiers. Implemented to match `CompileASDocMojo` without invoking the ASDoc compiler.
 
-### Slice 4: `royale-asjs` integration
+### Slice 4: `royale-asjs` integration (complete)
 
-This work happens in the sibling repository:
+Implemented in the sibling repository:
 
-- Generate one graph per framework project and target.
-- Add module/Maven coordinates and dependency closure to an aggregate index.
-- Add MXML manifest URI/tag mappings.
-- Validate exports against released SWCs.
-- Package identical graph data into Maven classifiers, SDK downloads, and `@apache-royale/codegraphs` on npm.
-- Add release hashes and signatures.
+- Generate one graph per framework project and target. Implemented for 37 projects and JS/SWF targets.
+- Add module/Maven coordinates and target-specific dependencies to an aggregate index. Implemented in `index.json`.
+- Add MXML manifest URI/tag mappings. Implemented in `mxml.json`.
+- Validate graph schema, declaration IDs, duplicate IDs, API references, deterministic bytes, package membership, and indexed hashes.
+- Package identical graph data into the Maven `codegraphs` classifier, SDK downloads, and the existing `@apache-royale/royale-js` and `@apache-royale/royale-js-swf` npm packages.
+- Add per-shard SHA-256 hashes. Artifact signing remains part of the normal Apache release process rather than a graph-specific implementation.
 
 ## Integration Contract With `royale-asjs`
 
 The compiler exporter should accept normal compiler configuration and produce one graph file. It should not need to know the Royale reactor, npm package layout, or release staging paths.
 
-`royale-asjs` will be responsible for supplying:
+`royale-asjs` supplies:
 
 - Project source paths and include classes.
 - JS or SWF dependency paths.
@@ -381,7 +398,7 @@ The compiler exporter should accept normal compiler configuration and produce on
 
 The graph format must allow `royale-asjs` to add module metadata without rewriting semantic symbol records.
 
-## First Session Checklist
+## Completed Initial Checklist
 
 1. Build `compiler-jx` unchanged and record the working test command.
 2. Run a normal SWC test configuration on a tiny fixture.
@@ -393,7 +410,7 @@ The graph format must allow `royale-asjs` to add module metadata without rewriti
 
 ## Definition of Done for the Compiler Phase
 
-The compiler phase is ready for `royale-asjs` integration when:
+The compiler phase is complete. The following criteria are satisfied:
 
 - A clean compiler checkout can invoke one documented command to generate a graph.
 - JS and SWF runs reflect their active conditional declarations.
@@ -403,6 +420,15 @@ The compiler phase is ready for `royale-asjs` integration when:
 - Output is byte-identical across repeated runs.
 - The `compiler-jx` test suite passes.
 - No application-specific or `royale-asjs` project list is hard-coded in the exporter.
+
+## Remaining Release Work
+
+The implementation is complete on the codegraph branches. After merge into `develop`:
+
+1. Enable `mvn verify -Pcodegraphs` in the appropriate CI/release job.
+2. Run a clean-checkout Ant and Maven release build.
+3. Inspect the final SDK, Maven classifier, and npm release artifacts for the identical 76-file aggregate.
+4. Confirm normal Apache release checksums, signatures, and RAT inputs on the final staged artifacts.
 
 ## Out of Scope for the First Compiler PR
 
