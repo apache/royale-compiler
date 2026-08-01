@@ -396,6 +396,10 @@ public abstract class BaseMojo
 
         // Get an instance of the compiler and run the build.
         FlexTool tool = toolGroup.getFlexTool(getFlexTool());
+        if(tool == null) {
+            throw new MojoExecutionException("Could not find tool " + getFlexTool()
+                + " in tool group " + getToolGroupName());
+        }
         String[] args = getCompilerArgs(configFile).toArray(new String[0]);
         getLog().info("Executing " + getFlexTool() + " in tool group " + getToolGroupName() + " with args: " + Arrays.toString(args));
         int exitCode = tool.execute(args);

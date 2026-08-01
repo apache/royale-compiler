@@ -39,6 +39,7 @@ import org.apache.royale.compiler.internal.driver.mxml.royale.MXMLRoyaleSWCBacke
 import org.apache.royale.compiler.internal.targets.RoyaleSWCTarget;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.InternalCompilerProblem;
+import org.apache.royale.compiler.problems.ResourceBundleNotFoundProblem;
 import org.apache.royale.compiler.targets.ITarget.TargetType;
 import org.apache.royale.compiler.targets.ITargetSettings;
 import org.apache.royale.compiler.units.ICompilationUnit;
@@ -83,6 +84,7 @@ public class CODEGRAPH extends MXMLJSCRoyale
     {
         try
         {
+            problems.setShowProblemByClass(ResourceBundleNotFoundProblem.class, false);
             project.getSourceCompilationUnitFactory().addHandler(asFileHandler);
             if (!setupTargetFile())
                 return false;

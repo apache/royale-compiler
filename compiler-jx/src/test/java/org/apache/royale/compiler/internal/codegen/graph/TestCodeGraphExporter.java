@@ -68,6 +68,22 @@ public class TestCodeGraphExporter extends ASTestBase
         assertTrue(model.getExternalSymbols().get(1).isExternal());
     }
 
+        @Test
+        public void testStaticAndInstanceFieldsWithSameNameHaveUniqueIds()
+        {
+                IClassNode classNode = getClassNode("public class Widget {"
+                                + "public static var label:String;"
+                                + "public var label:String;"
+                                + "}");
+
+                CodeGraphModel model = new CodeGraphExporter(project).export(
+                                Collections.singleton(classNode.getDefinition()), "js", null);
+                List<CodeGraphSymbol> members = model.getSymbols().get(0).getMembers();
+                assertEquals(2, members.size());
+                assertEquals("as3://Widget#label:static", members.get(0).getId());
+                assertEquals("as3://Widget#label", members.get(1).getId());
+        }
+
     @Test
     public void testCallableMembersAreCollectedSemantically()
     {

@@ -25,10 +25,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.royale.abc.ABCConstants;
 import org.apache.royale.compiler.asdoc.IASDocComment;
 import org.apache.royale.compiler.asdoc.IASDocTag;
 import org.apache.royale.compiler.definitions.IClassDefinition;
@@ -81,7 +83,7 @@ public final class CodeGraphExporter
             else if (definition instanceof IFunctionDefinition)
                 model.addSymbol(exportFunction((IFunctionDefinition)definition, null));
             else if (definition instanceof IVariableDefinition)
-                model.addSymbol(exportVariable((IVariableDefinition)definition, null));
+                model.addSymbol(exportVariable((IVariableDefinition)definition, null, false));
         }
         for (ITypeDefinition externalDefinition : externalDefinitions.values())
         {
@@ -125,20 +127,42 @@ public final class CodeGraphExporter
                     interfaceDefinition.getExtendedInterfacesAsDisplayStrings());
         }
 
+        Set<String> collidingVariableNames = getStaticVariableCollisions(definition);
         for (IDefinition memberDefinition : definition.getContainedScope().getAllLocalDefinitions())
         {
-            boolean isConstructor = memberDefinition instanceof IFunctionDefinition
-                    && ((IFunctionDefinition)memberDefinition).isConstructor();
-            boolean isPublic = memberDefinition.isPublic() || definition instanceof IInterfaceDefinition;
-            if (!isPublic || memberDefinition.isImplicit() || isConstructor
-                    || isExcludedFromPublicAPI(memberDefinition))
+            if (!isExportedMember(memberDefinition, definition))
                 continue;
             if (memberDefinition instanceof IFunctionDefinition)
                 symbol.addMember(exportFunction((IFunctionDefinition)memberDefinition, definition));
             else if (memberDefinition instanceof IVariableDefinition)
-                symbol.addMember(exportVariable((IVariableDefinition)memberDefinition, definition));
+                symbol.addMember(exportVariable((IVariableDefinition)memberDefinition, definition,
+                        collidingVariableNames.contains(memberDefinition.getBaseName())));
         }
         return symbol;
+    }
+
+    private Set<String> getStaticVariableCollisions(ITypeDefinition definition)
+    {
+        Set<String> staticNames = new HashSet<String>();
+        Set<String> instanceNames = new HashSet<String>();
+        for (IDefinition memberDefinition : definition.getContainedScope().getAllLocalDefinitions())
+        {
+            if (!(memberDefinition instanceof IVariableDefinition)
+                    || !isExportedMember(memberDefinition, definition))
+                continue;
+            (memberDefinition.isStatic() ? staticNames : instanceNames).add(memberDefinition.getBaseName());
+        }
+        staticNames.retainAll(instanceNames);
+        return staticNames;
+    }
+
+    private boolean isExportedMember(IDefinition memberDefinition, ITypeDefinition definition)
+    {
+        boolean isConstructor = memberDefinition instanceof IFunctionDefinition
+                && ((IFunctionDefinition)memberDefinition).isConstructor();
+        boolean isPublic = memberDefinition.isPublic() || definition instanceof IInterfaceDefinition;
+        return isPublic && !memberDefinition.isImplicit() && !isConstructor
+                && !isExcludedFromPublicAPI(memberDefinition);
     }
 
     private void addInterfaces(CodeGraphSymbol symbol, IInterfaceDefinition[] definitions, String[] displayNames)
@@ -191,9 +215,9 @@ public final class CodeGraphExporter
         IFunctionDefinition overriddenFunction = definition.resolveOverriddenFunction(project);
         if (overriddenFunction != null)
             symbol.setOverriddenMember(createFunctionReference(overriddenFunction));
-        IFunctionDefinition implementedFunction = definition.resolveImplementedFunction(project);
-        if (implementedFunction != null)
-            symbol.setImplementedMember(createFunctionReference(implementedFunction));
+        CodeGraphReference implementedMember = resolveImplementedMember(definition, declaringType);
+        if (implementedMember != null)
+            symbol.setImplementedMember(implementedMember);
         if (definition instanceof IGetterDefinition || definition instanceof ISetterDefinition)
         {
             ITypeDefinition typeDefinition = definition.resolveType(project);
@@ -211,10 +235,55 @@ public final class CodeGraphExporter
                     parameterDefinition.getTypeAsDisplayString());
             Object defaultValue = parameterDefinition.hasDefaultValue()
                     ? parameterDefinition.resolveDefaultValue(project) : null;
+            if (defaultValue == ABCConstants.UNDEFINED_VALUE)
+                defaultValue = "undefined";
+            else if (defaultValue == ABCConstants.NULL_VALUE)
+                defaultValue = null;
             symbol.addParameter(new CodeGraphParameter(parameterDefinition.getBaseName(), typeReference,
                     parameterDefinition.hasDefaultValue(), parameterDefinition.isRest(), defaultValue));
         }
         return symbol;
+    }
+
+    private CodeGraphReference resolveImplementedMember(IFunctionDefinition definition,
+            ITypeDefinition declaringType)
+    {
+        if (!(declaringType instanceof IClassDefinition))
+            return null;
+        String signature = getFunctionSignature(definition);
+        CodeGraphReference result = null;
+        Iterator<IInterfaceDefinition> interfaces = ((IClassDefinition)declaringType).interfaceIterator(project);
+        while (interfaces.hasNext())
+        {
+            IInterfaceDefinition interfaceDefinition = interfaces.next();
+            for (IDefinition memberDefinition : interfaceDefinition.getContainedScope().getAllLocalDefinitions())
+            {
+                if (!(memberDefinition instanceof IFunctionDefinition))
+                    continue;
+                IFunctionDefinition candidate = (IFunctionDefinition)memberDefinition;
+                if (!signature.equals(getFunctionSignature(candidate)))
+                    continue;
+                CodeGraphReference reference = createFunctionReference(candidate);
+                if (result == null || reference.getId().compareTo(result.getId()) < 0)
+                    result = reference;
+            }
+        }
+        return result;
+    }
+
+    private String getFunctionSignature(IFunctionDefinition definition)
+    {
+        StringBuilder result = new StringBuilder();
+        result.append(definition instanceof IGetterDefinition ? "get:" :
+                definition instanceof ISetterDefinition ? "set:" : "function:");
+        result.append(definition.getBaseName()).append('(');
+        for (IParameterDefinition parameterDefinition : definition.getParameters())
+        {
+            ITypeDefinition parameterType = parameterDefinition.resolveType(project);
+            result.append(parameterType == null ? parameterDefinition.getTypeAsDisplayString()
+                    : parameterType.getQualifiedName()).append(',');
+        }
+        return result.append(')').toString();
     }
 
     private String createCallableId(IFunctionDefinition definition, ITypeDefinition declaringType)
@@ -233,12 +302,15 @@ public final class CodeGraphExporter
         return CodeGraphIdFactory.callable(declaringType.getQualifiedName(), definition.getBaseName(), parameterTypes);
     }
 
-    private CodeGraphSymbol exportVariable(IVariableDefinition definition, ITypeDefinition declaringType)
+    private CodeGraphSymbol exportVariable(IVariableDefinition definition, ITypeDefinition declaringType,
+            boolean hasStaticCollision)
     {
         String kind = definition instanceof IConstantDefinition ? "constant"
             : declaringType == null ? "variable" : "field";
         String id = declaringType == null ? CodeGraphIdFactory.definition(definition.getQualifiedName())
-            : CodeGraphIdFactory.member(declaringType.getQualifiedName(), definition.getBaseName());
+            : hasStaticCollision && definition.isStatic()
+                    ? CodeGraphIdFactory.staticMember(declaringType.getQualifiedName(), definition.getBaseName())
+                    : CodeGraphIdFactory.member(declaringType.getQualifiedName(), definition.getBaseName());
         CodeGraphSymbol symbol = new CodeGraphSymbol(id,
                 definition.getQualifiedName(), definition.getBaseName(), definition.getPackageName(), kind);
         addDefinitionDetails(symbol, definition);

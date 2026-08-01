@@ -42,6 +42,11 @@ public final class CodeGraphIdFactory
         return definition(ownerQualifiedName) + "#" + memberName;
     }
 
+    public static String staticMember(String ownerQualifiedName, String memberName)
+    {
+        return member(ownerQualifiedName, memberName) + ":static";
+    }
+
     public static String accessor(String ownerQualifiedName, String propertyName, boolean getter)
     {
         return member(ownerQualifiedName, propertyName) + (getter ? ":get" : ":set");

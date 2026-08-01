@@ -26,6 +26,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -84,8 +85,31 @@ public class CompileCodeGraphMojo
     }
 
     @Override
+    protected List<String> getCompilerArgs(File configFile) throws MojoExecutionException {
+        List<String> args = super.getCompilerArgs(configFile);
+        args.removeIf(arg -> arg.startsWith("-js-compiler-define="));
+        return args;
+    }
+
+    @Override
     protected boolean skip() {
-        return skipCodeGraph;
+        return skipCodeGraph || "pom".equals(project.getPackaging());
+    }
+
+    @Override
+    protected List<Namespace> getNamespaces() {
+        List<Namespace> namespaces = new LinkedList<Namespace>();
+        for(Namespace namespace : super.getNamespaces()) {
+            boolean matches = type.get() == Type.JS
+                    ? namespace.getType().equals(Namespace.TYPE_DEFAULT)
+                            || namespace.getType().equals(Namespace.TYPE_JS)
+                    : namespace.getType().equals(Namespace.TYPE_DEFAULT)
+                            || namespace.getType().equals(Namespace.TYPE_AS);
+            if(matches) {
+                namespaces.add(namespace);
+            }
+        }
+        return namespaces;
     }
 
     @Override
@@ -113,6 +137,15 @@ public class CompileCodeGraphMojo
         List<Define> defines = super.getDefines();
         if(type.get() == null) {
             throw new MojoExecutionException("type not set");
+        }
+        for(Define define : defines) {
+            if("GOOG::DEBUG".equals(define.getName())) {
+                define.setValue(type.get() == Type.SWF ? "true" : "goog.DEBUG");
+            } else if("ROYALE::DISPLAYOBJECT".equals(define.getName())) {
+                define.setValue(type.get() == Type.SWF ? "DisplayObject" : "IUIComponent");
+            } else if("ROYALE::PROXYVISIBILITY".equals(define.getName())) {
+                define.setValue(type.get() == Type.SWF ? "flash_proxy" : "public");
+            }
         }
         switch (type.get()) {
             case SWF:
@@ -146,6 +179,16 @@ public class CompileCodeGraphMojo
             }
         }
         return false;
+    }
+
+    @Override
+    protected boolean includeLibraryJS(Artifact library) {
+        return includeLibrary(library);
+    }
+
+    @Override
+    protected boolean includeLibrarySWF(Artifact library) {
+        return includeLibrary(library);
     }
 
     private enum Type {

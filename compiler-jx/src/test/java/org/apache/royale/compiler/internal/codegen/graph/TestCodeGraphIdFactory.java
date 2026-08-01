@@ -40,6 +40,8 @@ public class TestCodeGraphIdFactory
     {
         assertEquals("as3://org/apache/royale/core/UIBase#typeNames",
                 CodeGraphIdFactory.member("org.apache.royale.core.UIBase", "typeNames"));
+        assertEquals("as3://org/apache/royale/core/UIBase#typeNames:static",
+            CodeGraphIdFactory.staticMember("org.apache.royale.core.UIBase", "typeNames"));
     }
 
     @Test
