@@ -43,7 +43,7 @@ public class ASDocComment implements IASDocComment
     public String commentNoEnd()
     {
         String s = token.getText();
-        String[] lines = s.split("\n");
+        String[] lines = s.split("\r?\n");
         StringBuilder sb = new StringBuilder();
         int n = lines.length;
         if (n == 1)
@@ -84,7 +84,7 @@ public class ASDocComment implements IASDocComment
     public void compile(boolean trimlines)
     {
         String s = token.getText();
-        String[] lines = s.split("\n");
+        String[] lines = s.split("\r?\n");
         StringBuilder sb = new StringBuilder();
         int n = lines.length;
         if (n == 1)

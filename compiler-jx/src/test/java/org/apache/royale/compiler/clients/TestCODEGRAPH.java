@@ -32,6 +32,7 @@ import org.apache.flex.tools.FlexTool;
 import org.apache.flex.tools.FlexToolGroup;
 import org.apache.flex.tools.FlexToolRegistry;
 import org.apache.commons.io.FileUtils;
+import org.apache.royale.compiler.asdoc.royale.ASDocComment;
 import org.apache.royale.compiler.problems.ICompilerProblem;
 import org.apache.royale.compiler.problems.UnknownTypeProblem;
 import org.apache.royale.utils.ITestAdapter;
@@ -39,6 +40,8 @@ import org.apache.royale.utils.TestAdapterFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import antlr.CommonToken;
 
 public class TestCODEGRAPH
 {
@@ -111,6 +114,18 @@ public class TestCODEGRAPH
         File goldenFile = new File(sourceDirectory, "codegraph/golden/GraphRoot.json");
         String goldenOutput = FileUtils.readFileToString(goldenFile, "UTF-8");
         assertEquals(goldenOutput, firstOutput);
+    }
+
+    @Test
+    public void testPrivateASDocTagWithWindowsLineEndings()
+    {
+        ASDocComment comment = new ASDocComment(new CommonToken(0, "/**\r\n * @private\r\n */"));
+
+        comment.compile();
+
+        assertTrue(comment.hasTag("private"));
+        assertFalse(comment.hasTag("private\r"));
+        assertFalse(comment.commentNoEnd().contains("\r"));
     }
 
     @Test
