@@ -308,7 +308,7 @@ Passing the existing suite is necessary but not sufficient: the new client must 
 
 ## Current Implementation Status
 
-Status as of August 1, 2026: the compiler exporter, build-tool integration, SDK orchestration, and release packaging described by this plan are implemented and validated on the codegraph branches of `royale-compiler` and `royale-asjs`.
+Status as of August 3, 2026: the compiler exporter, build-tool integration, SDK orchestration, release packaging, default Maven lifecycle integration, and developer documentation described by this plan are implemented and validated in `royale-compiler` and `royale-asjs`.
 
 Implemented and covered by focused compiler-backed tests:
 
@@ -332,8 +332,10 @@ Implemented and validated in `royale-asjs`:
 - `index.json` records module coordinates, target dependencies, relative paths, symbol/class counts, and SHA-256 hashes.
 - `mxml.json` records target-specific namespace and manifest tag mappings.
 - Binary SDK ZIP/TAR archives and both existing npm packages carry the aggregate tree at `frameworks/codegraphs`.
-- Maven attaches `org.apache.royale.framework:distribution:zip:codegraphs:<version>` when the `codegraphs` profile is active.
-- `mvn verify -Pcodegraphs` unpacks the attached classifier and validates package membership, graph identity, counts, schema versions, and indexed SHA-256 hashes.
+- The standard Maven lifecycle generates JS graphs; `option-with-swf` adds SWF graphs. `royale.skipCodeGraph` remains an explicit local-build escape hatch.
+- Maven distribution builds attach `org.apache.royale.framework:distribution:zip:codegraphs:<version>` without a separate codegraph profile.
+- Distribution `mvn verify` unpacks the attached classifier and validates target-aware package membership, graph identity, counts, schema versions, and indexed SHA-256 hashes.
+- Framework-author and application/tool-consumer guides document generation, discovery, caching, composition, and release validation.
 - Resource-bundle metadata that is unavailable during export is preserved by name without hiding unrelated compiler errors.
 - Compiler and SDK RAT checks pass for tracked sources; generated or ignored third-party build output must remain outside release-source RAT inputs.
 
@@ -423,12 +425,11 @@ The compiler phase is complete. The following criteria are satisfied:
 
 ## Remaining Release Work
 
-The implementation is complete on the codegraph branches. After merge into `develop`:
+The implementation is complete and merged into `develop`. Standard Maven and release-profile builds now generate and verify codegraphs automatically. Remaining release-candidate work is:
 
-1. Enable `mvn verify -Pcodegraphs` in the appropriate CI/release job.
-2. Run a clean-checkout Ant and Maven release build.
-3. Inspect the final SDK, Maven classifier, and npm release artifacts for the identical 76-file aggregate.
-4. Confirm normal Apache release checksums, signatures, and RAT inputs on the final staged artifacts.
+1. Run a clean-checkout Ant and Maven release build.
+2. Inspect the final SDK, Maven classifier, and npm release artifacts for the identical 76-file aggregate.
+3. Confirm normal Apache release checksums, signatures, and RAT inputs on the final staged artifacts.
 
 ## Out of Scope for the First Compiler PR
 

@@ -43,7 +43,7 @@ public class CompileCodeGraphMojo
     @Parameter(defaultValue = "${project.artifactId}.json")
     private String outputFileName;
 
-    @Parameter(defaultValue = "false")
+    @Parameter(property = "royale.skipCodeGraph", defaultValue = "false")
     private boolean skipCodeGraph;
 
     @Parameter(defaultValue = "false")
