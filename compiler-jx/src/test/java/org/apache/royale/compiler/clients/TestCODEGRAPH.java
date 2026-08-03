@@ -111,9 +111,11 @@ public class TestCODEGRAPH
         String secondOutput = FileUtils.readFileToString(outputFile, "UTF-8");
 
         assertEquals(firstOutput, secondOutput);
+        assertFalse(firstOutput.contains("\r"));
         File goldenFile = new File(sourceDirectory, "codegraph/golden/GraphRoot.json");
-        String goldenOutput = FileUtils.readFileToString(goldenFile, "UTF-8");
+        String goldenOutput = normalizeLineEndings(FileUtils.readFileToString(goldenFile, "UTF-8"));
         assertEquals(goldenOutput, firstOutput);
+        assertEquals(goldenOutput, normalizeLineEndings(goldenOutput.replace("\n", "\r\n")));
     }
 
     @Test
@@ -207,6 +209,11 @@ public class TestCODEGRAPH
                 return true;
         }
         return false;
+    }
+
+    private String normalizeLineEndings(String value)
+    {
+        return value.replace("\r\n", "\n").replace('\r', '\n');
     }
 
     private int compile(File sourceFile, File sourceDirectory, boolean createTargetWithErrors)
