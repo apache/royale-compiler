@@ -25,6 +25,7 @@
     </pathconvert>
 
     <property name="lib.dir" value="${compiler.tests}/../../lib"/>
+	<property name="test.lib.dir" value="${compiler.tests}/lib"/>
     
 	<property name="download.dir" value="${compiler.tests}/../../in"/>
     
@@ -35,6 +36,11 @@
 	       Licenses:
             JUnit (4.13.2) - CPL 1.0       
             Hamcrest (2.2) - BSD 
+            JSON Schema Validator (1.0.87) - Apache 2.0
+            Internet Time Utility (1.7.0) - Apache 2.0
+            Jackson (2.15.2) - Apache 2.0
+            SnakeYAML (2.0) - Apache 2.0
+            SLF4J (2.0.7) - MIT
 	-->
 		     
     <!-- 
@@ -42,11 +48,12 @@
         they are each downloaded only if they don't already exist. 
     -->
     
-	<target name="main" depends="prepare, junit-jar, hamcrest-jar"
+    <target name="main" depends="prepare, junit-jar, hamcrest-jar, json-schema-validator-jar, itu-jar, jackson-annotations-jar, jackson-core-jar, jackson-databind-jar, jackson-dataformat-yaml-jar, snakeyaml-jar, slf4j-api-jar, slf4j-nop-jar"
 		    description="Downloads all the required thirdparty JARs"/>
 
     <target name="prepare" >
         <mkdir dir="${lib.dir}" />
+		<mkdir dir="${test.lib.dir}" />
     </target>
     
     <!--
@@ -82,11 +89,11 @@
         <antcall target="get-from-cache-if-needed" >
             <param name="srcFile" value="${srcJarFile}" />
             <param name="destFile" value="${destJarFile}" />
-            <param name="destDir" value="${lib.dir}" />
+			<param name="destDir" value="${destDir}" />
         </antcall>
         <antcall target="fail-if-not-found" >
             <param name="destFile" value="${destJarFile}" />
-            <param name="destDir" value="${lib.dir}" />
+			<param name="destDir" value="${destDir}" />
         </antcall>
         <checksum file="${destDir}/${destJarFile}" algorithm="MD5" property="${we.failed}"/>
         <antcall target="fail-with-message">
@@ -152,6 +159,127 @@
             <param name="srcJarFile" value="hamcrest-2.2.jar"/>
             <param name="destDir" value="${lib.dir}"/>
             <param name="destJarFile" value="hamcrest-2.2.jar"/>
+        </antcall>
+    </target>
+
+    <!--
+        JSON schema validation
+    -->
+
+    <target name="json-schema-validator-jar-check">
+        <available file="${test.lib.dir}/json-schema-validator-1.0.87.jar" property="json-schema-validator.jar.exists"/>
+    </target>
+
+    <target name="json-schema-validator-jar" depends="json-schema-validator-jar-check" unless="json-schema-validator.jar.exists">
+        <antcall target="download-jar">
+            <param name="srcUrl" value="https://repo1.maven.org/maven2/com/networknt/json-schema-validator/1.0.87"/>
+            <param name="srcJarFile" value="json-schema-validator-1.0.87.jar"/>
+            <param name="destDir" value="${test.lib.dir}"/>
+            <param name="destJarFile" value="json-schema-validator-1.0.87.jar"/>
+        </antcall>
+    </target>
+
+    <target name="itu-jar-check">
+        <available file="${test.lib.dir}/itu-1.7.0.jar" property="itu.jar.exists"/>
+    </target>
+
+    <target name="itu-jar" depends="itu-jar-check" unless="itu.jar.exists">
+        <antcall target="download-jar">
+            <param name="srcUrl" value="https://repo1.maven.org/maven2/com/ethlo/time/itu/1.7.0"/>
+            <param name="srcJarFile" value="itu-1.7.0.jar"/>
+            <param name="destDir" value="${test.lib.dir}"/>
+            <param name="destJarFile" value="itu-1.7.0.jar"/>
+        </antcall>
+    </target>
+
+    <target name="jackson-annotations-jar-check">
+        <available file="${test.lib.dir}/jackson-annotations-2.15.2.jar" property="jackson-annotations.jar.exists"/>
+    </target>
+
+    <target name="jackson-annotations-jar" depends="jackson-annotations-jar-check" unless="jackson-annotations.jar.exists">
+        <antcall target="download-jar">
+            <param name="srcUrl" value="https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.15.2"/>
+            <param name="srcJarFile" value="jackson-annotations-2.15.2.jar"/>
+            <param name="destDir" value="${test.lib.dir}"/>
+            <param name="destJarFile" value="jackson-annotations-2.15.2.jar"/>
+        </antcall>
+    </target>
+
+    <target name="jackson-core-jar-check">
+        <available file="${test.lib.dir}/jackson-core-2.15.2.jar" property="jackson-core.jar.exists"/>
+    </target>
+
+    <target name="jackson-core-jar" depends="jackson-core-jar-check" unless="jackson-core.jar.exists">
+        <antcall target="download-jar">
+            <param name="srcUrl" value="https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.15.2"/>
+            <param name="srcJarFile" value="jackson-core-2.15.2.jar"/>
+            <param name="destDir" value="${test.lib.dir}"/>
+            <param name="destJarFile" value="jackson-core-2.15.2.jar"/>
+        </antcall>
+    </target>
+
+    <target name="jackson-databind-jar-check">
+        <available file="${test.lib.dir}/jackson-databind-2.15.2.jar" property="jackson-databind.jar.exists"/>
+    </target>
+
+    <target name="jackson-databind-jar" depends="jackson-databind-jar-check" unless="jackson-databind.jar.exists">
+        <antcall target="download-jar">
+            <param name="srcUrl" value="https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2"/>
+            <param name="srcJarFile" value="jackson-databind-2.15.2.jar"/>
+            <param name="destDir" value="${test.lib.dir}"/>
+            <param name="destJarFile" value="jackson-databind-2.15.2.jar"/>
+        </antcall>
+    </target>
+
+    <target name="jackson-dataformat-yaml-jar-check">
+        <available file="${test.lib.dir}/jackson-dataformat-yaml-2.15.2.jar" property="jackson-dataformat-yaml.jar.exists"/>
+    </target>
+
+    <target name="jackson-dataformat-yaml-jar" depends="jackson-dataformat-yaml-jar-check" unless="jackson-dataformat-yaml.jar.exists">
+        <antcall target="download-jar">
+            <param name="srcUrl" value="https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.15.2"/>
+            <param name="srcJarFile" value="jackson-dataformat-yaml-2.15.2.jar"/>
+            <param name="destDir" value="${test.lib.dir}"/>
+            <param name="destJarFile" value="jackson-dataformat-yaml-2.15.2.jar"/>
+        </antcall>
+    </target>
+
+    <target name="snakeyaml-jar-check">
+        <available file="${test.lib.dir}/snakeyaml-2.0.jar" property="snakeyaml.jar.exists"/>
+    </target>
+
+    <target name="snakeyaml-jar" depends="snakeyaml-jar-check" unless="snakeyaml.jar.exists">
+        <antcall target="download-jar">
+            <param name="srcUrl" value="https://repo1.maven.org/maven2/org/yaml/snakeyaml/2.0"/>
+            <param name="srcJarFile" value="snakeyaml-2.0.jar"/>
+            <param name="destDir" value="${test.lib.dir}"/>
+            <param name="destJarFile" value="snakeyaml-2.0.jar"/>
+        </antcall>
+    </target>
+
+    <target name="slf4j-api-jar-check">
+        <available file="${test.lib.dir}/slf4j-api-2.0.7.jar" property="slf4j-api.jar.exists"/>
+    </target>
+
+    <target name="slf4j-api-jar" depends="slf4j-api-jar-check" unless="slf4j-api.jar.exists">
+        <antcall target="download-jar">
+            <param name="srcUrl" value="https://repo1.maven.org/maven2/org/slf4j/slf4j-api/2.0.7"/>
+            <param name="srcJarFile" value="slf4j-api-2.0.7.jar"/>
+            <param name="destDir" value="${test.lib.dir}"/>
+            <param name="destJarFile" value="slf4j-api-2.0.7.jar"/>
+        </antcall>
+    </target>
+
+    <target name="slf4j-nop-jar-check">
+        <available file="${test.lib.dir}/slf4j-nop-2.0.7.jar" property="slf4j-nop.jar.exists"/>
+    </target>
+
+    <target name="slf4j-nop-jar" depends="slf4j-nop-jar-check" unless="slf4j-nop.jar.exists">
+        <antcall target="download-jar">
+            <param name="srcUrl" value="https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/2.0.7"/>
+            <param name="srcJarFile" value="slf4j-nop-2.0.7.jar"/>
+            <param name="destDir" value="${test.lib.dir}"/>
+            <param name="destJarFile" value="slf4j-nop-2.0.7.jar"/>
         </antcall>
     </target>
     

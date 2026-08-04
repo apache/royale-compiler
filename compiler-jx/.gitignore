@@ -2,6 +2,7 @@
 /generated
 /lib
 /in
+/src/test/lib
 /utils
 
 #local settings

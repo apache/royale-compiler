@@ -100,6 +100,11 @@
 		<mkdir dir="${classes.dir}" />
         <mkdir dir="${classes.dir}/META-INF" />
         <mkdir dir="${lib}/google/closure-compiler" />
+        <copy todir="${classes.dir}">
+            <fileset dir="${basedir}/src/main/resources">
+                <exclude name="downloads.xml" />
+            </fileset>
+        </copy>
         <ant antfile="${basedir}/src/main/resources/downloads.xml" dir="${basedir}/src/main/resources" inheritAll="false"/>
     </target>
 	
