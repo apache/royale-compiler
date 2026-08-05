@@ -32,6 +32,7 @@ import org.apache.royale.compiler.common.DependencyType;
 import org.apache.royale.compiler.css.ICSSDocument;
 import org.apache.royale.compiler.css.ICSSManager;
 import org.apache.royale.compiler.definitions.IDefinition;
+import org.apache.royale.compiler.internal.caches.CSSDocumentCache.ProblemParsingCSSRuntimeException;
 import org.apache.royale.compiler.internal.css.semantics.ActivatedStyleSheets;
 import org.apache.royale.compiler.internal.driver.js.royale.JSCSSCompilationSession;
 import org.apache.royale.compiler.internal.projects.DependencyGraph;
@@ -192,13 +193,20 @@ public class RoyaleJSTarget extends JSTarget implements IJSTarget
             allCompilationUnitsInTarget.addAll(dependencies);
 
             // Get all activated defaults.css from SWCs.
-            final Map<ICSSDocument, File> activatedDefaultCSSList =
-                        getAllDefaultCSS(cssManager, allCompilationUnitsInTarget);
-            for (final Map.Entry<ICSSDocument, File> entry : activatedDefaultCSSList.entrySet())
+            try
             {
-                activatedStyleSheets.addLibraryCSS(entry.getKey(), entry.getValue().getAbsolutePath());
+                final Map<ICSSDocument, File> activatedDefaultCSSList =
+                            getAllDefaultCSS(cssManager, allCompilationUnitsInTarget);
+                for (final Map.Entry<ICSSDocument, File> entry : activatedDefaultCSSList.entrySet())
+                {
+                    activatedStyleSheets.addLibraryCSS(entry.getKey(), entry.getValue().getAbsolutePath());
+                }
+                //LoggingProfiler.onDefaultsCSSCollectionChanged(activatedStyleSheets);
             }
-            //LoggingProfiler.onDefaultsCSSCollectionChanged(activatedStyleSheets);
+            catch(ProblemParsingCSSRuntimeException e)
+            {
+                problems.addAll(e.cssParserProblems);
+            }
 
             // Get all dependencies introduced by defaults.css from SWCs. 
             final ImmutableList<IDefinition> definitions =
