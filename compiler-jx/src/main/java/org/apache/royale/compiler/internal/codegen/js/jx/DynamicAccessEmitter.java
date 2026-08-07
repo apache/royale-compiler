@@ -95,18 +95,22 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
 		ITypeDefinition leftType = leftOperandNode.resolveType(getProject());
 		if (leftType != null)
 		{
-			IMetaTag dynamicOverrideMeta = leftType.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_DYNAMIC_OVERRIDE);
-			if (dynamicOverrideMeta != null)
+			IMetaTag dynamicOverrideMeta = null;
+			for (ITypeDefinition currentType : leftType.typeIteratable(getProject(), false))
 			{
-				String getMethod = dynamicOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_DYNAMIC_OVERRIDE_GET_METHOD);
-				if (getMethod != null)
+				dynamicOverrideMeta = currentType.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_DYNAMIC_OVERRIDE);
+				if (dynamicOverrideMeta != null)
 				{
-					write(ASEmitterTokens.MEMBER_ACCESS);
-					write(getMethod);
-					write(ASEmitterTokens.PAREN_OPEN);
-        			getWalker().walk(rightOperandNode);
-					write(ASEmitterTokens.PAREN_CLOSE);
-					return;
+					String getMethod = dynamicOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_DYNAMIC_OVERRIDE_GET_METHOD);
+					if (getMethod != null)
+					{
+						write(ASEmitterTokens.MEMBER_ACCESS);
+						write(getMethod);
+						write(ASEmitterTokens.PAREN_OPEN);
+						getWalker().walk(rightOperandNode);
+						write(ASEmitterTokens.PAREN_CLOSE);
+						return;
+					}
 				}
 			}
 		}

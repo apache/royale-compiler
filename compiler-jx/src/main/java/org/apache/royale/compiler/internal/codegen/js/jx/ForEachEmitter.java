@@ -61,18 +61,26 @@ public class ForEachEmitter extends JSSubEmitter implements
         ITypeDefinition rtype = rnode.resolveType(getProject());
         if (rtype != null)
         {
-            IMetaTag forEachOverrideMeta = rtype.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_FOR_EACH_OVERRIDE);
-            if (forEachOverrideMeta != null)
+            IMetaTag forEachOverrideMeta = null;
+            for (ITypeDefinition currentType : rtype.typeIteratable(getProject(), false))
             {
-                emitForEachOverride(node, rtype, forEachOverrideMeta);
-                return;
+                forEachOverrideMeta = currentType.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_FOR_EACH_OVERRIDE);
+                if (forEachOverrideMeta != null)
+                {
+                    emitForEachOverride(node, rtype, forEachOverrideMeta);
+                    return;
+                }
             }
             // it's possible to use ForInOverride for for-each loops too
-            IMetaTag forInOverrideMeta = rtype.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_FOR_IN_OVERRIDE);
-            if (forInOverrideMeta != null)
+            IMetaTag forInOverrideMeta = null;
+            for (ITypeDefinition currentType : rtype.typeIteratable(getProject(), false))
             {
-                emitForInOverride(node, rtype, forInOverrideMeta);
-                return;
+                forInOverrideMeta = currentType.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_FOR_IN_OVERRIDE);
+                if (forInOverrideMeta != null)
+                {
+                    emitForInOverride(node, rtype, forInOverrideMeta);
+                    return;
+                }
             }
         }
 
@@ -349,7 +357,7 @@ public class ForEachEmitter extends JSSubEmitter implements
         getModel().incForeachLoopCount();
         final String iterTargetName = iterBaseName + "_target";
         final String iterResultName = iterBaseName + "_iterator";
-        final String iterKeyName = iterBaseName + "_key";
+        final String iterValueName = iterBaseName + "_value";
 
         final String iteratorMethodName = forEachOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_FOR_EACH_OVERRIDE_ITERATOR_METHOD);
         final String iteratorNextMethodName = forEachOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_FOR_EACH_OVERRIDE_ITERATOR_NEXT_METHOD);
@@ -422,7 +430,7 @@ public class ForEachEmitter extends JSSubEmitter implements
         if (iteratorHasNextMethodName == null && iteratorDoneMethodName == null)
         {
             writeToken(ASEmitterTokens.VAR);
-            writeToken(iterKeyName);
+            writeToken(iterValueName);
             writeToken(ASEmitterTokens.EQUAL);
             write(iterResultName);
             write(ASEmitterTokens.MEMBER_ACCESS);
@@ -434,7 +442,7 @@ public class ForEachEmitter extends JSSubEmitter implements
 
             writeToken(ASEmitterTokens.IF);
             write(ASEmitterTokens.PAREN_OPEN);
-            writeToken(iterKeyName);
+            writeToken(iterValueName);
             writeToken("==");
             write(ASEmitterTokens.UNDEFINED);
             writeToken(ASEmitterTokens.PAREN_CLOSE);
@@ -466,7 +474,7 @@ public class ForEachEmitter extends JSSubEmitter implements
 
         if (iteratorHasNextMethodName == null && iteratorDoneMethodName == null)
         {
-            write(iterKeyName);
+            write(iterValueName);
             write(ASEmitterTokens.SEMICOLON);
             writeNewline();
         }
@@ -499,11 +507,19 @@ public class ForEachEmitter extends JSSubEmitter implements
         IExpressionNode childNode = bnode.getLeftOperandNode();
         IExpressionNode rnode = bnode.getRightOperandNode();
 
-        IMetaTag dynamicOverrideMeta = rtype.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_DYNAMIC_OVERRIDE);
         String getMethod = null;
-        if (dynamicOverrideMeta != null)
+        IMetaTag dynamicOverrideMeta = null;
+        for (ITypeDefinition currentType : rtype.typeIteratable(getProject(), false))
         {
-            getMethod = dynamicOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_DYNAMIC_OVERRIDE_GET_METHOD);
+            dynamicOverrideMeta = currentType.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_DYNAMIC_OVERRIDE);
+            if (dynamicOverrideMeta != null)
+            {
+                getMethod = dynamicOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_DYNAMIC_OVERRIDE_GET_METHOD);
+                if (getMethod != null)
+                {
+                    break;
+                }
+            }
         }
 
         final String iterBaseName = getModel().getCurrentForeachName();

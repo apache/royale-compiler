@@ -59,11 +59,15 @@ public class ForLoopEmitter extends JSSubEmitter implements
             ITypeDefinition rtype = rnode.resolveType(getProject());
             if (rtype != null)
             {
-                IMetaTag forInOverrideMeta = rtype.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_FOR_IN_OVERRIDE);
-                if (forInOverrideMeta != null)
+                IMetaTag forInOverrideMeta = null;
+                for (ITypeDefinition currentType : rtype.typeIteratable(getProject(), false))
                 {
-                    emitForInOverride(node, rtype, forInOverrideMeta);
-                    return;
+                    forInOverrideMeta = currentType.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_FOR_IN_OVERRIDE);
+                    if (forInOverrideMeta != null)
+                    {
+                        emitForInOverride(node, rtype, forInOverrideMeta);
+                        return;
+                    }
                 }
             }
         }

@@ -869,7 +869,15 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 		{
 			return null;
 		}
-		IMetaTag dynamicOverrideMeta = dynamicLeftType.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_DYNAMIC_OVERRIDE);
+		IMetaTag dynamicOverrideMeta = null;
+		for (ITypeDefinition currentType : dynamicLeftType.typeIteratable(getProject(), false))
+		{
+			dynamicOverrideMeta = currentType.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_DYNAMIC_OVERRIDE);
+			if (dynamicOverrideMeta != null)
+			{
+				break;
+			}
+		}
 		if (dynamicOverrideMeta == null)
 		{
 			return null;
@@ -884,7 +892,15 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 		{
 			return null;
 		}
-		IMetaTag dynamicOverrideMeta = typeDef.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_DYNAMIC_OVERRIDE);
+		IMetaTag dynamicOverrideMeta = null;
+		for (ITypeDefinition currentType : typeDef.typeIteratable(getProject(), false))
+		{
+			dynamicOverrideMeta = currentType.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_DYNAMIC_OVERRIDE);
+			if (dynamicOverrideMeta != null)
+			{
+				break;
+			}
+		}
 		if (dynamicOverrideMeta == null)
 		{
 			return null;

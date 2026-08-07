@@ -147,23 +147,27 @@ public class UnaryOperatorEmitter extends JSSubEmitter implements
             ITypeDefinition leftType = leftOperandNode.resolveType(getProject());
             if (leftType != null)
             {
-                IMetaTag dynamicOverrideMeta = leftType.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_DYNAMIC_OVERRIDE);
-                if (dynamicOverrideMeta != null)
+                IMetaTag dynamicOverrideMeta = null;
+                for (ITypeDefinition currentType : leftType.typeIteratable(getProject(), false))
                 {
-                    String deleteMethod = dynamicOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_DYNAMIC_OVERRIDE_DELETE_METHOD);
-                    if (deleteMethod != null)
+                    dynamicOverrideMeta = currentType.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_DYNAMIC_OVERRIDE);
+                    if (dynamicOverrideMeta != null)
                     {
-                        getWalker().walk(dynamicAccessNode.getLeftOperandNode());
-                        startMapping(node);
-                        write(ASEmitterTokens.MEMBER_ACCESS);
-                        write(deleteMethod);
-                        write(ASEmitterTokens.PAREN_OPEN);
-                        endMapping(node);
-                        getWalker().walk(dynamicAccessNode.getRightOperandNode());
-                        startMapping(node);
-                        write(ASEmitterTokens.PAREN_CLOSE);
-                        endMapping(node);
-                        return;
+                        String deleteMethod = dynamicOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_DYNAMIC_OVERRIDE_DELETE_METHOD);
+                        if (deleteMethod != null)
+                        {
+                            getWalker().walk(dynamicAccessNode.getLeftOperandNode());
+                            startMapping(node);
+                            write(ASEmitterTokens.MEMBER_ACCESS);
+                            write(deleteMethod);
+                            write(ASEmitterTokens.PAREN_OPEN);
+                            endMapping(node);
+                            getWalker().walk(dynamicAccessNode.getRightOperandNode());
+                            startMapping(node);
+                            write(ASEmitterTokens.PAREN_CLOSE);
+                            endMapping(node);
+                            return;
+                        }
                     }
                 }
             }
