@@ -612,15 +612,17 @@
     </target>
 
     <!--
-        Optional source-vs-tag verification.
+        Source-vs-tag verification.
         Confirms the source ZIP file list matches the content of the release tag
         in a local royale-compiler checkout, catching any spurious files that
-        do not exist in the tag. Skipped unless -Dcompiler.dir=<path to a
-        royale-compiler checkout> is provided. Can also be invoked directly:
+        do not exist in the tag. Part of the standard approval flow, so
+        -Dcompiler.dir=<path to a royale-compiler checkout> is required.
+        Can also be invoked directly:
           ant -f ApproveBuildTools.xml verify-source-matches-tag \
               -Drelease.version=x.y.z -Drc=N -Dcompiler.dir=/path/to/royale-compiler
     -->
-    <target name="verify-source-matches-tag" if="compiler.dir">
+    <target name="verify-source-matches-tag">
+        <fail message="This target requires -Dcompiler.dir=&lt;path to a royale-compiler checkout containing the release tag&gt;" unless="compiler.dir" />
         <fail message="compiler.dir '${compiler.dir}' does not look like a git checkout (no .git directory)">
             <condition><not><available file="${compiler.dir}/.git" /></not></condition>
         </fail>
@@ -648,11 +650,13 @@
         <delete file="${basedir}/from-tag.tar" />
 
         <pathconvert property="tag.filelist" pathsep="${line.separator}">
-            <fileset dir="${from.tag.dir}" />
+            <!-- Excluded files are dropped from the bundle by the source-release assembly. -->
+            <fileset dir="${from.tag.dir}" excludes=".classpath,.project" />
             <map from="${from.tag.dir}${file.separator}" to="" />
         </pathconvert>
         <pathconvert property="src.filelist" pathsep="${line.separator}">
-            <fileset dir="${src.tree}" />
+            <!-- target/** is output from the preceding build; the rest are added by the source-release assembly. -->
+            <fileset dir="${src.tree}" excludes="target/**,DEPENDENCIES,LICENSE,NOTICE" />
             <map from="${src.tree}${file.separator}" to="" />
         </pathconvert>
 
