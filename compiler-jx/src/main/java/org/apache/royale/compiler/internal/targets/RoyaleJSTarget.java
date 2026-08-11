@@ -20,6 +20,7 @@
 package org.apache.royale.compiler.internal.targets;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -257,6 +258,31 @@ public class RoyaleJSTarget extends JSTarget implements IJSTarget
         cssCompilationSession.cssDocuments.addAll(0, activatedStyleSheets.sort());
         
         return super.findAllCompilationUnitsToLink(compilationUnits, problems);
+    }
+
+    @Override
+    protected RootedCompilationUnits computeRootedCompilationUnits()
+            throws InterruptedException
+    {
+        final Set<ICompilationUnit> rootCompilationUnits = new HashSet<ICompilationUnit>();
+        final ArrayList<ICompilerProblem> problems = new ArrayList<ICompilerProblem>();
+        if (mainCU != null)
+        {
+            rootCompilationUnits.add(mainCU);
+        }
+
+        // -includes
+        rootCompilationUnits.addAll(getIncludesCompilationUnits());
+
+        // -include-libraries
+        rootCompilationUnits.addAll(getIncludeLibrariesCompilationUnits());
+
+        // -include-resource-bundles
+        rootCompilationUnits.addAll(getIncludedResourceBundlesCompilationUnits(problems));
+
+        return new Target.RootedCompilationUnits(
+                rootCompilationUnits,
+                problems);
     }
 
     /**
