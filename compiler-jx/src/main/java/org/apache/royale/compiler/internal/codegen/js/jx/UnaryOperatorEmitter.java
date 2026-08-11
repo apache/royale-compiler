@@ -31,6 +31,7 @@ import org.apache.royale.compiler.internal.codegen.js.royale.JSRoyaleEmitterToke
 import org.apache.royale.compiler.internal.definitions.AppliedVectorDefinition;
 import org.apache.royale.compiler.internal.projects.RoyaleJSProject;
 import org.apache.royale.compiler.internal.tree.as.*;
+import org.apache.royale.compiler.tree.as.IOperatorNode.OperatorType;
 import org.apache.royale.compiler.tree.ASTNodeID;
 import org.apache.royale.compiler.tree.as.IDynamicAccessNode;
 import org.apache.royale.compiler.tree.as.IExpressionNode;
@@ -86,6 +87,76 @@ public class UnaryOperatorEmitter extends JSSubEmitter implements
             patchedVectorReference.setParent((NodeBase) node.getOperandNode());
             patchedVectorReference.setSourceLocation(((MemberAccessExpressionNode) node.getOperandNode()).getLeftOperandNode());
             ((MemberAccessExpressionNode) node.getOperandNode()).setLeftOperandNode(patchedVectorReference);
+        }
+
+        if (isAssignment && node.getOperandNode() instanceof IDynamicAccessNode)
+        {
+            IDynamicAccessNode dynamicAccessNode = (IDynamicAccessNode) node.getOperandNode();
+            IExpressionNode leftOperandNode = dynamicAccessNode.getLeftOperandNode();
+            ITypeDefinition leftType = leftOperandNode.resolveType(getProject());
+            if (leftType != null)
+            {
+                IMetaTag dynamicOverrideMeta = null;
+                for (ITypeDefinition currentType : leftType.typeIteratable(getProject(), false))
+                {
+                    dynamicOverrideMeta = currentType.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_DYNAMIC_OVERRIDE);
+                    if (dynamicOverrideMeta != null)
+                    {
+                        break;
+                    }
+                }
+                if (dynamicOverrideMeta != null)
+                {
+                    String getMethod = dynamicOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_DYNAMIC_OVERRIDE_GET_METHOD);
+                    String setMethod = dynamicOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_DYNAMIC_OVERRIDE_SET_METHOD);
+                    if (getMethod != null && setMethod != null)
+                    {
+                        // BEFORE: abc[xyz]++
+                        // AFTER:  abc.set(xyz, abc.get(xyz) + 1)
+
+                        getWalker().walk(dynamicAccessNode.getLeftOperandNode());
+                        startMapping(node);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(setMethod);
+                        write(ASEmitterTokens.PAREN_OPEN);
+                        endMapping(node);
+                        getWalker().walk(dynamicAccessNode.getRightOperandNode());
+                        writeToken(ASEmitterTokens.COMMA);
+
+                        getWalker().walk(dynamicAccessNode.getLeftOperandNode());
+                        startMapping(node);
+                        write(ASEmitterTokens.MEMBER_ACCESS);
+                        write(getMethod);
+                        write(ASEmitterTokens.PAREN_OPEN);
+                        endMapping(node);
+                        getWalker().walk(dynamicAccessNode.getRightOperandNode());
+                        startMapping(node);
+                        write(ASEmitterTokens.PAREN_CLOSE);
+                        endMapping(node);
+                        startMapping(node, dynamicAccessNode);
+                        if (node.getNodeID() == ASTNodeID.Op_PreIncrID
+                                || node.getNodeID() == ASTNodeID.Op_PostIncrID)
+                        {
+                            write(ASEmitterTokens.SPACE);
+                            write(OperatorType.PLUS.getOperatorText());
+                            write(ASEmitterTokens.SPACE);
+                            write("1");
+                        }
+                        else // decrement
+                        {
+                            write(ASEmitterTokens.SPACE);
+                            write(OperatorType.MINUS.getOperatorText());
+                            write(ASEmitterTokens.SPACE);
+                            write("1");
+                        }
+                        endMapping(node);
+                        startMapping(node);
+                        write(ASEmitterTokens.PAREN_CLOSE);
+                        endMapping(node);
+                        return;
+                    }
+                }
+            }
         }
 
         if (node.getNodeID() == ASTNodeID.Op_PreIncrID
