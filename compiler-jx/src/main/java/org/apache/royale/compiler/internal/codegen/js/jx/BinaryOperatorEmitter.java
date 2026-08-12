@@ -716,8 +716,6 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
         }
         else
         {
-			boolean dynamicAssignmentOverride = false;
-			boolean dynamicInOverride = false;
 			if (isAssignment
 					&& (getProject() instanceof RoyaleJSProject && ((RoyaleJSProject) getProject()).config != null && ((RoyaleJSProject) getProject()).config.getJsVectorEmulationClass() == null)
 					&& node.getLeftOperandNode() instanceof MemberAccessExpressionNode
@@ -751,40 +749,34 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 			else if (isAssignment && node.getLeftOperandNode() instanceof IDynamicAccessNode)
 			{
 				IDynamicAccessNode dynamicAccessNode = (IDynamicAccessNode) node.getLeftOperandNode();
-				String setMethod = getDynamicAccessSetOverride(dynamicAccessNode);
-				if (setMethod != null)
+				IExpressionNode dynamicLeftOperandNode = dynamicAccessNode.getLeftOperandNode();
+				IMetaTag dynamicOverrideMeta = getDynamicAccessOverride(dynamicLeftOperandNode);
+				if (dynamicOverrideMeta != null)
 				{
-					dynamicAssignmentOverride = true;
-					getWalker().walk(dynamicAccessNode.getLeftOperandNode());
-					write(ASEmitterTokens.MEMBER_ACCESS);
-					write(setMethod);
-					write(ASEmitterTokens.PAREN_OPEN);
-					getWalker().walk(dynamicAccessNode.getRightOperandNode());
-					write(ASEmitterTokens.COMMA);
+					String setMethod = dynamicOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_DYNAMIC_OVERRIDE_SET_METHOD);
+					if (setMethod != null)
+					{
+						emitAssignmentWithDynamicAccessOverride(node, dynamicAccessNode, setMethod, dynamicOverrideMeta);
+						return;
+					}
 				}
-				else
-				{
-					// normal dynamic access
-					getWalker().walk(node.getLeftOperandNode());
-				}
+				// normal dynamic access
+				getWalker().walk(node.getLeftOperandNode());
 			}
 			else if (id == ASTNodeID.Op_InID)
 			{
-				String inMethod = getDynamicAccessInOverride(node.getRightOperandNode());
-				if (inMethod != null)
+				IMetaTag dynamicOverrideMeta = getDynamicAccessOverride(node.getRightOperandNode());
+				if (dynamicOverrideMeta != null)
 				{
-					dynamicInOverride = true;
-					getWalker().walk(node.getRightOperandNode());
-					write(ASEmitterTokens.MEMBER_ACCESS);
-					write(inMethod);
-					write(ASEmitterTokens.PAREN_OPEN);
-					getWalker().walk(node.getLeftOperandNode());
+					String inMethod = dynamicOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_DYNAMIC_OVERRIDE_IN_METHOD);
+					if (inMethod != null)
+					{
+						emitInWithDynamicAccessOverride(node, inMethod);
+						return;
+					}
 				}
-				else
-				{
-					// normal in operator
-					getWalker().walk(node.getLeftOperandNode());
-				}
+				// normal in operator
+				getWalker().walk(node.getLeftOperandNode());
 			}
             else getWalker().walk(node.getLeftOperandNode());
             startMapping(node, node.getLeftOperandNode());
@@ -793,7 +785,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 				//we need to use 'plus' method instead of '+'
 				xmlAdd = true;
 			}
-            if (id != ASTNodeID.Op_CommaID && !xmlAdd && !dynamicAssignmentOverride && !dynamicInOverride)
+            if (id != ASTNodeID.Op_CommaID && !xmlAdd)
                 write(ASEmitterTokens.SPACE);
 
             // (erikdebruin) rewrite 'a &&= b' to 'a = a && b'
@@ -814,7 +806,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
                         : ASEmitterTokens.LOGICAL_OR);
             	write(ASEmitterTokens.SPACE);
             }
-            else if (!dynamicAssignmentOverride && !dynamicInOverride)
+            else
             {
 				if (xmlAdd) {
 					write(".plus(");
@@ -830,7 +822,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 			{
 				getEmitter().emitAssignmentCoercion(node.getRightOperandNode(), node.getLeftOperandNode().resolveType(getProject()));
 			}
-			else if (!dynamicInOverride)
+			else
 			{
 				getWalker().walk(node.getRightOperandNode());
 				
@@ -846,7 +838,7 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 					write(".propertyNames()");
 				}
 			}
-			if (xmlAdd || dynamicAssignmentOverride || dynamicInOverride) {
+			if (xmlAdd) {
 				write(")");
 			}
         }
@@ -855,57 +847,23 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             write(ASEmitterTokens.PAREN_CLOSE);
     }
 
-	private String getDynamicAccessSetOverride(IASNode leftSide)
+	private IMetaTag getDynamicAccessOverride(IExpressionNode context)
 	{
-		if (!(leftSide instanceof DynamicAccessNode))
-		{
-			return null;
-		}
-			
-		IDynamicAccessNode dynamicAccessNode = (IDynamicAccessNode) leftSide;
-		IExpressionNode dynamicLeftOperandNode = dynamicAccessNode.getLeftOperandNode();
-		ITypeDefinition dynamicLeftType = dynamicLeftOperandNode.resolveType(getProject());
-		if (dynamicLeftType == null)
+		ITypeDefinition contextType = context.resolveType(getProject());
+		if (contextType == null)
 		{
 			return null;
 		}
 		IMetaTag dynamicOverrideMeta = null;
-		for (ITypeDefinition currentType : dynamicLeftType.typeIteratable(getProject(), false))
+		for (ITypeDefinition currentType : contextType.typeIteratable(getProject(), false))
 		{
 			dynamicOverrideMeta = currentType.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_DYNAMIC_OVERRIDE);
 			if (dynamicOverrideMeta != null)
 			{
-				break;
+				return dynamicOverrideMeta;
 			}
 		}
-		if (dynamicOverrideMeta == null)
-		{
-			return null;
-		}
-		return dynamicOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_DYNAMIC_OVERRIDE_SET_METHOD);
-	}
-
-	private String getDynamicAccessInOverride(IExpressionNode rightSideOfIn)
-	{
-		ITypeDefinition typeDef = rightSideOfIn.resolveType(getProject());
-		if (typeDef == null)
-		{
-			return null;
-		}
-		IMetaTag dynamicOverrideMeta = null;
-		for (ITypeDefinition currentType : typeDef.typeIteratable(getProject(), false))
-		{
-			dynamicOverrideMeta = currentType.getMetaTagByName(IJSMetaAttributeConstants.ATTRIBUTE_DYNAMIC_OVERRIDE);
-			if (dynamicOverrideMeta != null)
-			{
-				break;
-			}
-		}
-		if (dynamicOverrideMeta == null)
-		{
-			return null;
-		}
-		return dynamicOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_DYNAMIC_OVERRIDE_IN_METHOD);
+		return null;
 	}
     
     public static enum DatePropertiesGetters
@@ -1063,4 +1021,64 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
             write(ASEmitterTokens.PAREN_CLOSE);
 		}
     }
+
+	private void emitAssignmentWithDynamicAccessOverride(IBinaryOperatorNode node, IDynamicAccessNode dynamicAccessNode, String setMethod, IMetaTag dynamicOverrideMeta)
+	{
+		boolean reversed = false;
+		String reversedValue = dynamicOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_DYNAMIC_OVERRIDE_SET_METHOD_REVERSED);
+		if (reversedValue != null)
+		{
+			switch (reversedValue)
+			{
+				case "true":
+					reversed = true;
+					break;
+                // anything except true is treated as false
+			}
+		}
+
+		getWalker().walk(dynamicAccessNode.getLeftOperandNode());
+		startMapping(node);
+		write(ASEmitterTokens.MEMBER_ACCESS);
+		write(setMethod);
+		write(ASEmitterTokens.PAREN_OPEN);
+		endMapping(node);
+		if (!reversed)
+		{
+			getWalker().walk(dynamicAccessNode.getRightOperandNode());
+		}
+		else
+		{
+			getEmitter().emitAssignmentCoercion(node.getRightOperandNode(), node.getLeftOperandNode().resolveType(getProject()));
+		}
+		startMapping(node);
+		write(ASEmitterTokens.COMMA);
+		write(ASEmitterTokens.SPACE);
+		endMapping(node);
+		if (!reversed)
+		{
+			getEmitter().emitAssignmentCoercion(node.getRightOperandNode(), node.getLeftOperandNode().resolveType(getProject()));
+		}
+		else
+		{
+			getWalker().walk(dynamicAccessNode.getRightOperandNode());
+		}
+		startMapping(node);
+		write(ASEmitterTokens.PAREN_CLOSE);
+		endMapping(node);
+	}
+
+	private void emitInWithDynamicAccessOverride(IBinaryOperatorNode node, String inMethod)
+	{
+		getWalker().walk(node.getRightOperandNode());
+		startMapping(node);
+		write(ASEmitterTokens.MEMBER_ACCESS);
+		write(inMethod);
+		write(ASEmitterTokens.PAREN_OPEN);
+		endMapping(node);
+		getWalker().walk(node.getLeftOperandNode());
+		startMapping(node);
+		write(ASEmitterTokens.PAREN_CLOSE);
+		endMapping(node);
+	}
 }

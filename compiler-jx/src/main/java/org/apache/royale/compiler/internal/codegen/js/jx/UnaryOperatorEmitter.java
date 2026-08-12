@@ -113,46 +113,7 @@ public class UnaryOperatorEmitter extends JSSubEmitter implements
                     {
                         // BEFORE: abc[xyz]++
                         // AFTER:  abc.set(xyz, abc.get(xyz) + 1)
-
-                        getWalker().walk(dynamicAccessNode.getLeftOperandNode());
-                        startMapping(node);
-                        write(ASEmitterTokens.MEMBER_ACCESS);
-                        write(setMethod);
-                        write(ASEmitterTokens.PAREN_OPEN);
-                        endMapping(node);
-                        getWalker().walk(dynamicAccessNode.getRightOperandNode());
-                        writeToken(ASEmitterTokens.COMMA);
-
-                        getWalker().walk(dynamicAccessNode.getLeftOperandNode());
-                        startMapping(node);
-                        write(ASEmitterTokens.MEMBER_ACCESS);
-                        write(getMethod);
-                        write(ASEmitterTokens.PAREN_OPEN);
-                        endMapping(node);
-                        getWalker().walk(dynamicAccessNode.getRightOperandNode());
-                        startMapping(node);
-                        write(ASEmitterTokens.PAREN_CLOSE);
-                        endMapping(node);
-                        startMapping(node, dynamicAccessNode);
-                        if (node.getNodeID() == ASTNodeID.Op_PreIncrID
-                                || node.getNodeID() == ASTNodeID.Op_PostIncrID)
-                        {
-                            write(ASEmitterTokens.SPACE);
-                            write(OperatorType.PLUS.getOperatorText());
-                            write(ASEmitterTokens.SPACE);
-                            write("1");
-                        }
-                        else // decrement
-                        {
-                            write(ASEmitterTokens.SPACE);
-                            write(OperatorType.MINUS.getOperatorText());
-                            write(ASEmitterTokens.SPACE);
-                            write("1");
-                        }
-                        endMapping(node);
-                        startMapping(node);
-                        write(ASEmitterTokens.PAREN_CLOSE);
-                        endMapping(node);
+                        emitAssignmentWithDynamicAccessOverride(node, dynamicAccessNode, getMethod, setMethod, dynamicOverrideMeta);
                         return;
                     }
                 }
@@ -265,6 +226,81 @@ public class UnaryOperatorEmitter extends JSSubEmitter implements
         endMapping(node);
         IExpressionNode operandNode = node.getOperandNode();
         getWalker().walk(operandNode);
+        startMapping(node);
+        write(ASEmitterTokens.PAREN_CLOSE);
+        endMapping(node);
+    }
+
+    private void emitAssignmentWithDynamicAccessOverride(IUnaryOperatorNode node, IDynamicAccessNode dynamicAccessNode, String getMethod, String setMethod, IMetaTag dynamicOverrideMeta)
+    {
+        boolean reversed = false;
+        String reversedValue = dynamicOverrideMeta.getAttributeValue(IJSMetaAttributeConstants.NAME_DYNAMIC_OVERRIDE_SET_METHOD_REVERSED);
+		if (reversedValue != null)
+		{
+			switch (reversedValue)
+			{
+				case "true":
+					reversed = true;
+					break;
+                // anything except true is treated as false
+			}
+        }
+
+        getWalker().walk(dynamicAccessNode.getLeftOperandNode());
+        startMapping(node);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(setMethod);
+        write(ASEmitterTokens.PAREN_OPEN);
+        endMapping(node);
+        if (!reversed)
+        {
+            getWalker().walk(dynamicAccessNode.getRightOperandNode());
+        }
+        else
+        {
+            emitDynamicAccessOverrideValue(node, dynamicAccessNode, getMethod, setMethod);
+        }
+        writeToken(ASEmitterTokens.COMMA);
+
+        if (!reversed)
+        {
+            emitDynamicAccessOverrideValue(node, dynamicAccessNode, getMethod, setMethod);
+        }
+        else
+        {
+            getWalker().walk(dynamicAccessNode.getRightOperandNode());
+        }
+    }
+
+    private void emitDynamicAccessOverrideValue(IUnaryOperatorNode node, IDynamicAccessNode dynamicAccessNode, String getMethod, String setMethod)
+    {
+        getWalker().walk(dynamicAccessNode.getLeftOperandNode());
+        startMapping(node);
+        write(ASEmitterTokens.MEMBER_ACCESS);
+        write(getMethod);
+        write(ASEmitterTokens.PAREN_OPEN);
+        endMapping(node);
+        getWalker().walk(dynamicAccessNode.getRightOperandNode());
+        startMapping(node);
+        write(ASEmitterTokens.PAREN_CLOSE);
+        endMapping(node);
+        startMapping(node, dynamicAccessNode);
+        if (node.getNodeID() == ASTNodeID.Op_PreIncrID
+                || node.getNodeID() == ASTNodeID.Op_PostIncrID)
+        {
+            write(ASEmitterTokens.SPACE);
+            write(OperatorType.PLUS.getOperatorText());
+            write(ASEmitterTokens.SPACE);
+            write("1");
+        }
+        else // decrement
+        {
+            write(ASEmitterTokens.SPACE);
+            write(OperatorType.MINUS.getOperatorText());
+            write(ASEmitterTokens.SPACE);
+            write("1");
+        }
+        endMapping(node);
         startMapping(node);
         write(ASEmitterTokens.PAREN_CLOSE);
         endMapping(node);

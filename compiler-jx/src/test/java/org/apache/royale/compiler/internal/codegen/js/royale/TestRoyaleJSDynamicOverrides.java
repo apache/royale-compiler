@@ -71,7 +71,25 @@ public class TestRoyaleJSDynamicOverrides extends ASTestBase
         IClassNode node = (IClassNode) getNode("[JSDynamicOverride(setMethod=\"set\")] class A { public function A() { this[0] = 123.4; } }",
         		IClassNode.class, WRAP_LEVEL_NONE);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n */\nA = function() {\n  this.set(0,123.4);\n};");
+        assertOut("/**\n * @constructor\n */\nA = function() {\n  this.set(0, 123.4);\n};");
+    }
+    
+    @Test
+    public void testDynamicOverride_setMethod_reversedTrue()
+    {
+        IClassNode node = (IClassNode) getNode("[JSDynamicOverride(setMethod=\"set\",setMethodReversed=\"true\")] class A { public function A() { this[0] = 123.4; } }",
+        		IClassNode.class, WRAP_LEVEL_NONE);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nA = function() {\n  this.set(123.4, 0);\n};");
+    }
+    
+    @Test
+    public void testDynamicOverride_setMethod_reversedFalse()
+    {
+        IClassNode node = (IClassNode) getNode("[JSDynamicOverride(setMethod=\"set\",setMethodReversed=\"false\")] class A { public function A() { this[0] = 123.4; } }",
+        		IClassNode.class, WRAP_LEVEL_NONE);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nA = function() {\n  this.set(0, 123.4);\n};");
     }
     
     @Test
@@ -80,7 +98,7 @@ public class TestRoyaleJSDynamicOverrides extends ASTestBase
         IClassNode node = (IClassNode) getNode("public class B extends A { public function B() { this[0] = 123.4; } }; [JSDynamicOverride(setMethod=\"set\")] public class A { public function A() {} }",
         		IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n  this.set(0,123.4);\n};\ngoog.inherits(B, A);");
+        assertOut("/**\n * @constructor\n * @extends {A}\n */\nB = function() {\n  B.base(this, 'constructor');\n  this.set(0, 123.4);\n};\ngoog.inherits(B, A);");
     }
     
     @Test
@@ -89,7 +107,7 @@ public class TestRoyaleJSDynamicOverrides extends ASTestBase
         IClassNode node = (IClassNode) getNode("public class B implements A { public function B() { this[0] = 123.4; } }; [JSDynamicOverride(setMethod=\"set\")] public interface A { }",
         		IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
-        assertOut("/**\n * @constructor\n * @implements {A}\n */\nB = function() {\n  this.set(0,123.4);\n};");
+        assertOut("/**\n * @constructor\n * @implements {A}\n */\nB = function() {\n  this.set(0, 123.4);\n};");
     }
     
     @Test

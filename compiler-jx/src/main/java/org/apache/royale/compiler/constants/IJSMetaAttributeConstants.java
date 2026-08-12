@@ -27,6 +27,7 @@ public interface IJSMetaAttributeConstants
     static final String NAME_DYNAMIC_OVERRIDE_SET_METHOD = "setMethod";
     static final String NAME_DYNAMIC_OVERRIDE_DELETE_METHOD = "deleteMethod";
     static final String NAME_DYNAMIC_OVERRIDE_IN_METHOD = "inMethod";
+    static final String NAME_DYNAMIC_OVERRIDE_SET_METHOD_REVERSED = "setMethodReversed";
 
     // [JSForInOverride]
     static final String ATTRIBUTE_FOR_IN_OVERRIDE = "JSForInOverride";
