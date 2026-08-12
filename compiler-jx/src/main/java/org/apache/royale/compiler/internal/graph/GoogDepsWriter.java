@@ -523,6 +523,11 @@ public class GoogDepsWriter {
 		ArrayList<GoogDep> arr = new ArrayList<GoogDep>();
 		GoogDep current = depMap.get(mainName);
 		sortFunction(current, arr);
+		for (String includeName : includes) {
+			if (visited.containsKey(includeName)) continue;
+			GoogDep includeCurrent = depMap.get(includeName);
+			sortFunction(includeCurrent, arr);
+		}
 		if (removeCirculars)
 		{
 			ICompilationUnit mainUnit = requireMap.get(mainName);
