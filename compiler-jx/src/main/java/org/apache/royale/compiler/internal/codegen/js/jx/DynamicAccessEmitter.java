@@ -109,6 +109,8 @@ public class DynamicAccessEmitter extends JSSubEmitter implements
 						write(ASEmitterTokens.PAREN_OPEN);
 						getWalker().walk(rightOperandNode);
 						write(ASEmitterTokens.PAREN_CLOSE);
+						if (ASNodeUtils.hasParenClose(node))
+							write(ASEmitterTokens.PAREN_CLOSE);
 						return;
 					}
 				}

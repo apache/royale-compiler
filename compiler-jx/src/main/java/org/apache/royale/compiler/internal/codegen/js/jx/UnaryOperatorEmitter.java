@@ -114,6 +114,8 @@ public class UnaryOperatorEmitter extends JSSubEmitter implements
                         // BEFORE: abc[xyz]++
                         // AFTER:  abc.set(xyz, abc.get(xyz) + 1)
                         emitAssignmentWithDynamicAccessOverride(node, dynamicAccessNode, getMethod, setMethod, dynamicOverrideMeta);
+                        if (ASNodeUtils.hasParenClose(node))
+                            write(ASEmitterTokens.PAREN_CLOSE);
                         return;
                     }
                 }

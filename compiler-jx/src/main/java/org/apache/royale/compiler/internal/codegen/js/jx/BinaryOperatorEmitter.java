@@ -757,6 +757,8 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 					if (setMethod != null)
 					{
 						emitAssignmentWithDynamicAccessOverride(node, dynamicAccessNode, setMethod, dynamicOverrideMeta);
+						if (ASNodeUtils.hasParenClose(node))
+							write(ASEmitterTokens.PAREN_CLOSE);
 						return;
 					}
 				}
@@ -772,6 +774,8 @@ public class BinaryOperatorEmitter extends JSSubEmitter implements
 					if (inMethod != null)
 					{
 						emitInWithDynamicAccessOverride(node, inMethod);
+						if (ASNodeUtils.hasParenClose(node))
+							write(ASEmitterTokens.PAREN_CLOSE);
 						return;
 					}
 				}

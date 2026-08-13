@@ -48,6 +48,15 @@ public class TestRoyaleJSDynamicOverrides extends ASTestBase
     }
     
     @Test
+    public void testDynamicOverride_getMethod_parentheses()
+    {
+        IClassNode node = (IClassNode) getNode("[JSDynamicOverride(getMethod=\"get\")] class A { public function A() { var a = (this[0]); } }",
+        		IClassNode.class, WRAP_LEVEL_NONE);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nA = function() {\n  var /** @type {*} */ a = (this.get(0));\n};");
+    }
+    
+    @Test
     public void testDynamicOverride_getMethod_subclass()
     {
         IClassNode node = (IClassNode) getNode("public class B extends A { public function B() { var a = this[0]; } }; [JSDynamicOverride(getMethod=\"get\")] public class A { public function A() {} }",
@@ -72,6 +81,15 @@ public class TestRoyaleJSDynamicOverrides extends ASTestBase
         		IClassNode.class, WRAP_LEVEL_NONE);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n */\nA = function() {\n  this.set(0, 123.4);\n};");
+    }
+    
+    @Test
+    public void testDynamicOverride_setMethod_parentheses()
+    {
+        IClassNode node = (IClassNode) getNode("[JSDynamicOverride(setMethod=\"set\")] class A { public function A() { (this[0] = 123.4); } }",
+        		IClassNode.class, WRAP_LEVEL_NONE);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nA = function() {\n  (this.set(0, 123.4));\n};");
     }
     
     @Test
@@ -120,6 +138,15 @@ public class TestRoyaleJSDynamicOverrides extends ASTestBase
     }
     
     @Test
+    public void testDynamicOverride_deleteMethod_parentheses()
+    {
+        IClassNode node = (IClassNode) getNode("[JSDynamicOverride(deleteMethod=\"del\")] class A { public function A() { (delete this[0]); } }",
+        		IClassNode.class, WRAP_LEVEL_NONE);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nA = function() {\n  (this.del(0));\n};");
+    }
+    
+    @Test
     public void testDynamicOverride_deleteMethod_subclass()
     {
         IClassNode node = (IClassNode) getNode("public class B extends A { public function B() { delete this[0]; } }; [JSDynamicOverride(deleteMethod=\"del\")] public class A { public function A() {} }",
@@ -147,6 +174,15 @@ public class TestRoyaleJSDynamicOverrides extends ASTestBase
     }
     
     @Test
+    public void testDynamicOverride_inMethod_parentheses()
+    {
+        IClassNode node = (IClassNode) getNode("[JSDynamicOverride(inMethod=\"exists\")] class A { public function A() { (0 in this); } }",
+        		IClassNode.class, WRAP_LEVEL_NONE);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nA = function() {\n  (this.exists(0));\n};");
+    }
+    
+    @Test
     public void testDynamicOverride_inMethod_subclass()
     {
         IClassNode node = (IClassNode) getNode("public class B extends A { public function B() { 0 in this; } }; [JSDynamicOverride(inMethod=\"exists\")] public class A { public function A() {} }",
@@ -162,6 +198,42 @@ public class TestRoyaleJSDynamicOverrides extends ASTestBase
         		IClassNode.class, WRAP_LEVEL_PACKAGE);
         asBlockWalker.visitClass(node);
         assertOut("/**\n * @constructor\n * @implements {A}\n */\nB = function() {\n  this.exists(0);\n};");
+    }
+    
+    @Test
+    public void testDynamicOverride_getMethod_setMethod_postIncrement()
+    {
+        IClassNode node = (IClassNode) getNode("[JSDynamicOverride(getMethod=\"get\",setMethod=\"set\")] class A { public function A() { this[0]++; } }",
+        		IClassNode.class, WRAP_LEVEL_NONE);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nA = function() {\n  this.set(0, this.get(0) + 1);\n};");
+    }
+    
+    @Test
+    public void testDynamicOverride_getMethod_setMethod_postIncrement_parentheses()
+    {
+        IClassNode node = (IClassNode) getNode("[JSDynamicOverride(getMethod=\"get\",setMethod=\"set\")] class A { public function A() { (this[0]++); } }",
+        		IClassNode.class, WRAP_LEVEL_NONE);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nA = function() {\n  (this.set(0, this.get(0) + 1));\n};");
+    }
+    
+    @Test
+    public void testDynamicOverride_getMethod_setMethod_postDecrement()
+    {
+        IClassNode node = (IClassNode) getNode("[JSDynamicOverride(getMethod=\"get\",setMethod=\"set\")] class A { public function A() { this[0]--; } }",
+        		IClassNode.class, WRAP_LEVEL_NONE);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nA = function() {\n  this.set(0, this.get(0) - 1);\n};");
+    }
+    
+    @Test
+    public void testDynamicOverride_getMethod_setMethod_postDecrement_parentheses()
+    {
+        IClassNode node = (IClassNode) getNode("[JSDynamicOverride(getMethod=\"get\",setMethod=\"set\")] class A { public function A() { (this[0]--); } }",
+        		IClassNode.class, WRAP_LEVEL_NONE);
+        asBlockWalker.visitClass(node);
+        assertOut("/**\n * @constructor\n */\nA = function() {\n  (this.set(0, this.get(0) - 1));\n};");
     }
 
     @Override
