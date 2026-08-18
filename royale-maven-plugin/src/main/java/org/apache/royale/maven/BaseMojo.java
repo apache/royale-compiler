@@ -107,6 +107,12 @@ public abstract class BaseMojo
     @Parameter
     private String additionalCompilerOptions = null;
 
+    @Parameter
+    private String reproducibleBuildTimestamp = null;
+
+    @Parameter
+    private String reproducibleBuildTimestampFormat = null;
+
     @Parameter(defaultValue = "${session}", required = true, readonly = true)
     private MavenSession session;
 
@@ -316,6 +322,10 @@ public abstract class BaseMojo
                 if (additionalCompilerOptions.trim().length() > 0)
                     args.add(additionalCompilerOptions.trim());
             }
+        }
+        if (reproducibleBuildTimestamp != null && reproducibleBuildTimestampFormat != null) {
+            args.add("-metadata.date=" + reproducibleBuildTimestamp);
+            args.add("-metadata.dateFormat=" + reproducibleBuildTimestampFormat);
         }
         return args;
     }
