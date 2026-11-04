@@ -2578,6 +2578,30 @@ public class TestRoyaleMXMLApplication extends RoyaleTestBase
     }
 
     @Test
+    public void testStaticPropertyBindingIsLazy()
+    {
+        // A static property watcher refers to its class from the binding data. That class
+        // isn't necessarily loaded when this file loads, so the data must be built on first use.
+        String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/royale/basic\">"
+        		+ "<fx:Script><![CDATA["
+                + "    [Bindable] public static var appTitle:String = \"Title\";"
+                + "]]></fx:Script><basic:initialView><basic:View><basic:Label text=\"{appTitle}\"/></basic:View></basic:initialView></basic:Application>";
+
+        IMXMLDocumentNode dnode = (IMXMLDocumentNode) getNode(code,
+        		IMXMLDocumentNode.class, RoyaleTestBase.WRAP_LEVEL_NONE);
+
+        ((JSRoyaleEmitter)(mxmlBlockWalker.getASEmitter())).getModel().setCurrentClass(dnode.getDefinition());
+        mxmlBlockWalker.visitDocument(dnode);
+        String appName = dnode.getQualifiedName();
+        String out = writer.toString();
+
+        assertThat(out.contains(appName + ".prototype._bindings = ["), is(false));
+        assertThat(out.contains("Object.defineProperty(" + appName + ".prototype, '_bindings', { configurable: true, get: function() {\nvar value = [\n"), is(true));
+        assertThat(out.contains("1,\n\"appTitle\",\n\"valueChange\",\n0,\nnull,\n" + appName + ",\nnull];\n"
+        		+ "Object.defineProperty(" + appName + ".prototype, '_bindings', { value: value });\nreturn value;\n}});"), is(true));
+    }
+
+    @Test
     public void testXMLUsage()
     {
         String code = "<basic:Application xmlns:fx=\"http://ns.adobe.com/mxml/2009\" xmlns:basic=\"library://ns.apache.org/royale/basic\">"
