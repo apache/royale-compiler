@@ -5,9 +5,9 @@
       The ASF licenses this file to You under the Apache License, Version 2.0
       (the "License"); you may not use this file except in compliance with
       the License.  You may obtain a copy of the License at
-    
+
           http://www.apache.org/licenses/LICENSE-2.0
-    
+
       Unless required by applicable law or agreed to in writing, software
       distributed under the License is distributed on an "AS IS" BASIS,
       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -48,7 +48,7 @@ The following line is 80 characters wide.
 
 
 
-M‰‰ritt‰m‰tˆn komento. Syˆtt‰m‰ll‰ 'help' n‰et luettelon kaikista 
+M√§√§ritt√§m√§t√∂n komento. Sy√∂tt√§m√§ll√§ 'help' n√§et luettelon kaikista
 
 fdb-komennoista.
 
@@ -58,13 +58,13 @@ fdb-komennoista.
 
 
 
-M‰‰rit‰ keskeytyskohta tietyll‰ rivill‰ tai tietyss‰ toiminnossa.
+M√§√§rit√§ keskeytyskohta tietyll√§ rivill√§ tai tietyss√§ toiminnossa.
 
-Esimerkkej‰:
+Esimerkkej√§:
 
   break 87
 
-    Asettaa keskeytyskohdan riville 87 nykyisess‰ tiedostossa.
+    Asettaa keskeytyskohdan riville 87 nykyisess√§ tiedostossa.
 
   break myapp.mxml:56
 
@@ -76,7 +76,7 @@ Esimerkkej‰:
 
   break doThis
 
-    Asettaa keskeytyskohdan toimintoon doThis() nykyisess‰ tiedostossa.
+    Asettaa keskeytyskohdan toimintoon doThis() nykyisess√§ tiedostossa.
 
   break myapp.mxml:doThat
 
@@ -88,23 +88,23 @@ Esimerkkej‰:
 
   break
 
-   Asettaa keskeytyskohdan nykyiseen suoritusosoitteeseen nykyisen pinon 
+   Asettaa keskeytyskohdan nykyiseen suoritusosoitteeseen nykyisen pinon
 
-   kehyksess‰. T‰m‰ on hyˆdyllist‰, kun keskeytys tapahtuu pinokehykseen 
+   kehyksess√§. T√§m√§ on hy√∂dyllist√§, kun keskeytys tapahtuu pinokehykseen
 
    palattaessa.
 
-Tiedostonimet ja -numerot n‰et syˆtt‰m‰ll‰ 'info sources' tai 'info files'.
+Tiedostonimet ja -numerot n√§et sy√∂tt√§m√§ll√§ 'info sources' tai 'info files'.
 
-Toimintojen nimet n‰et syˆtt‰m‰ll‰ 'info functions'.
+Toimintojen nimet n√§et sy√∂tt√§m√§ll√§ 'info functions'.
 
-Lyhennetyt tiedostojen ja toimintojen nimet hyv‰ksyt‰‰n, jos ne ovat selvi‰.
+Lyhennetyt tiedostojen ja toimintojen nimet hyv√§ksyt√§√§n, jos ne ovat selvi√§.
 
-Jos m‰‰ritet‰‰n rivinumero, keskeytys tapahtuu koodin alussa sill‰ rivill‰.
+Jos m√§√§ritet√§√§n rivinumero, keskeytys tapahtuu koodin alussa sill√§ rivill√§.
 
-Jos m‰‰ritet‰‰n toiminto, keskeytys tapahtuu koodin alussa siin‰ toiminnossa.
+Jos m√§√§ritet√§√§n toiminto, keskeytys tapahtuu koodin alussa siin√§ toiminnossa.
 
-Lis‰tietoa keskeytyskohdista n‰et komennoilla 'commands' ja 'condition'.
+Lis√§tietoa keskeytyskohdista n√§et komennoilla 'commands' ja 'condition'.
 
 
 
@@ -120,27 +120,27 @@ Pinon backtrace.
 
 
 
-Keskeytys poikkeuksen sattuessa.  Vaikuttaa vain catch-lohkon k‰sittelemiin 
+Keskeytys poikkeuksen sattuessa.  Vaikuttaa vain catch-lohkon k√§sittelemiin
 
-poikkeuksiin.  K‰sittelem‰ttˆm‰t poikkeukset keskeytt‰v‰t aina 
+poikkeuksiin.  K√§sittelem√§tt√∂m√§t poikkeukset keskeytt√§v√§t aina
 
 virheenkorjauksen.
 
 
 
-Voit poistaa k‰sittelypisteen Delete-komennolla.
+Voit poistaa k√§sittelypisteen Delete-komennolla.
 
 
 
-Esimerkkej‰:
+Esimerkkej√§:
 
   catch *
 
-    Keskeytys mink‰ tahansa poikkeuksen sattuessa.
+    Keskeytys mink√§ tahansa poikkeuksen sattuessa.
 
   catch ReferenceError
 
-    Keskeytys aina ReferenceError-virheen syntyess‰, olipa se k‰sitelty tai ei.
+    Keskeytys aina ReferenceError-virheen syntyess√§, olipa se k√§sitelty tai ei.
 
 
 
@@ -148,13 +148,13 @@ Esimerkkej‰:
 
 
 
-N‰ytt‰‰ nykyisen tiedoston nimen ja numeron tai vaihtaa nykyist‰ tiedostoa.
+N√§ytt√§√§ nykyisen tiedoston nimen ja numeron tai vaihtaa nykyist√§ tiedostoa.
 
-Esimerkkej‰:
+Esimerkkej√§:
 
   cf
 
-    N‰ytt‰‰ nykyisen tiedoston nimen ja numeron.
+    N√§ytt√§√§ nykyisen tiedoston nimen ja numeron.
 
   cf myapp.mxml
 
@@ -164,11 +164,11 @@ Esimerkkej‰:
 
     Vaihtaa nykyisen tiedoston tiedostoksi #29.
 
-Tiedostonimet ja -numerot n‰et syˆtt‰m‰ll‰ 'info sources' tai 'info files'.
+Tiedostonimet ja -numerot n√§et sy√∂tt√§m√§ll√§ 'info sources' tai 'info files'.
 
-Lyhennetyt tiedostonimet hyv‰ksyt‰‰n, jos ne ovat selvi‰.
+Lyhennetyt tiedostonimet hyv√§ksyt√§√§n, jos ne ovat selvi√§.
 
-Komennon 'list' k‰ytt‰minen tiedostoon tekee tiedostosta nykyisen tiedoston.
+Komennon 'list' k√§ytt√§minen tiedostoon tekee tiedostosta nykyisen tiedoston.
 
 
 
@@ -176,25 +176,25 @@ Komennon 'list' k‰ytt‰minen tiedostoon tekee tiedostosta nykyisen tiedoston.
 
 
 
-Poistaa keskeytyskohdan tietylt‰ rivilt‰ tai tietyst‰ toiminnosta.
+Poistaa keskeytyskohdan tietylt√§ rivilt√§ tai tietyst√§ toiminnosta.
 
-Esimerkkej‰:
+Esimerkkej√§:
 
   clear 87
 
-    Poistaa keskeytyskohdan rivilt‰ 87 nykyisess‰ tiedostossa.
+    Poistaa keskeytyskohdan rivilt√§ 87 nykyisess√§ tiedostossa.
 
   clear myapp.mxml:56
 
-    Poistaa keskeytyskohdan rivilt‰ 56 tiedostossa myapp.mxml.
+    Poistaa keskeytyskohdan rivilt√§ 56 tiedostossa myapp.mxml.
 
   clear #3:29
 
-    Poistaa keskeytyskohdan rivilt‰ 29 tiedostossa #3.
+    Poistaa keskeytyskohdan rivilt√§ 29 tiedostossa #3.
 
   clear doThis
 
-    Poistaa keskeytyskohdan toiminnosta doThis() nykyisess‰ tiedostossa.
+    Poistaa keskeytyskohdan toiminnosta doThis() nykyisess√§ tiedostossa.
 
   clear myapp.mxml:doThat
 
@@ -206,17 +206,17 @@ Esimerkkej‰:
 
   clear
 
-    Poistaa keskeytyskohdan nykyisen tiedoston nykyiselt‰ rivilt‰. 
+    Poistaa keskeytyskohdan nykyisen tiedoston nykyiselt√§ rivilt√§.
 
-Tiedostonimet ja -numerot n‰et syˆtt‰m‰ll‰ 'info sources' tai 'info files'.
+Tiedostonimet ja -numerot n√§et sy√∂tt√§m√§ll√§ 'info sources' tai 'info files'.
 
-Toimintojen nimet n‰et syˆtt‰m‰ll‰ 'info functions'.
+Toimintojen nimet n√§et sy√∂tt√§m√§ll√§ 'info functions'.
 
-Lyhennetyt tiedostojen ja toimintojen nimet hyv‰ksyt‰‰n, jos ne ovat selvi‰.
+Lyhennetyt tiedostojen ja toimintojen nimet hyv√§ksyt√§√§n, jos ne ovat selvi√§.
 
-Jos m‰‰ritet‰‰n rivinumero, silt‰ rivilt‰ poistetaan kaikki keskeytyskohdat.
+Jos m√§√§ritet√§√§n rivinumero, silt√§ rivilt√§ poistetaan kaikki keskeytyskohdat.
 
-Jos m‰‰ritet‰‰n toiminto, toiminnon alussa olevat keskeytyskohdat poistetaan.
+Jos m√§√§ritet√§√§n toiminto, toiminnon alussa olevat keskeytyskohdat poistetaan.
 
 
 
@@ -224,9 +224,9 @@ Jos m‰‰ritet‰‰n toiminto, toiminnon alussa olevat keskeytyskohdat poistetaan.
 
 
 
-Jatka suorittamista keskeytyskohdassa pys‰htymisen j‰lkeen.
+Jatka suorittamista keskeytyskohdassa pys√§htymisen j√§lkeen.
 
-T‰m‰ komento ei hyv‰ksy argumentteja.
+T√§m√§ komento ei hyv√§ksy argumentteja.
 
 
 
@@ -236,9 +236,9 @@ T‰m‰ komento ei hyv‰ksy argumentteja.
 
 
 
-M‰‰rit‰ keskeytyskohdan numero N. Keskeytys tapahtuu vain, jos COND toteutuu.
+M√§√§rit√§ keskeytyskohdan numero N. Keskeytys tapahtuu vain, jos COND toteutuu.
 
-K‰yttˆ on `condition N COND', jossa N on kokonaisluku ja COND on lauseke, joka 
+K√§ytt√∂ on `condition N COND', jossa N on kokonaisluku ja COND on lauseke, joka
 
 arvioidaan aina, kun keskeytyskohta N saavutetaan.
 
@@ -248,21 +248,21 @@ arvioidaan aina, kun keskeytyskohta N saavutetaan.
 
 
 
-M‰‰rit‰ komennot, jotka suoritetaan, kun tˆrm‰t‰‰n keskeytyskohtaan.
+M√§√§rit√§ komennot, jotka suoritetaan, kun t√∂rm√§t√§√§n keskeytyskohtaan.
 
-Anna keskeytyskohdan numero argumenttina `commands`-komennon j‰lkeen.
+Anna keskeytyskohdan numero argumenttina `commands`-komennon j√§lkeen.
 
-Jos argumenttia ei anneta, kohteena oleva keskeytyskohta m‰‰ritet‰‰n viimeisen‰.
+Jos argumenttia ei anneta, kohteena oleva keskeytyskohta m√§√§ritet√§√§n viimeisen√§.
 
-Komennot alkavat seuraavalta rivilt‰.
+Komennot alkavat seuraavalta rivilt√§.
 
-Kirjoita rivi, joka sis‰lt‰ sanan "end", merkitsem‰‰n kohtaa, miss‰ komennot 
+Kirjoita rivi, joka sis√§lt√§ sanan "end", merkitsem√§√§n kohtaa, miss√§ komennot
 
 loppuvat.
 
-M‰‰ritt‰m‰ll‰ ehdon "silent" ensimm‰iseksi riviksi teet keskeytyskohdasta 
+M√§√§ritt√§m√§ll√§ ehdon "silent" ensimm√§iseksi riviksi teet keskeytyskohdasta
 
-hiljaisen. T‰llˆin mit‰‰n ei tulosteta, kun kohta saavutetaan, lukuun ottamatta 
+hiljaisen. T√§ll√∂in mit√§√§n ei tulosteta, kun kohta saavutetaan, lukuun ottamatta
 
 komennon tulostamaa tulostetta.
 
@@ -270,11 +270,11 @@ Esimerkki:
 
   (fdb) commands
 
-  Kirjoita komennot sit‰ varten, kun keskeytyskohta 1 tulee vastaan, yksi 
+  Kirjoita komennot sit√§ varten, kun keskeytyskohta 1 tulee vastaan, yksi
 
   komento riville.
 
-  P‰‰t‰ rivill‰, jolla lukee vain 'end'.
+  P√§√§t√§ rivill√§, jolla lukee vain 'end'.
 
   >w
 
@@ -288,7 +288,7 @@ Esimerkki:
 
 Poista yksi tai useampi keskeytyskohta.
 
-Esimerkkej‰:
+Esimerkkej√§:
 
   delete
 
@@ -298,7 +298,7 @@ Esimerkkej‰:
 
     Poistaa keskeytyskohdat #2 ja #5.
 
-N‰et keskeytyskohtien numerot syˆtt‰m‰ll‰ 'info breakpoints'.
+N√§et keskeytyskohtien numerot sy√∂tt√§m√§ll√§ 'info breakpoints'.
 
 
 
@@ -306,19 +306,19 @@ N‰et keskeytyskohtien numerot syˆtt‰m‰ll‰ 'info breakpoints'.
 
 
 
-M‰‰rit‰ luettelo hakemistoista, joista fdb etsii l‰hdetiedostoja.
+M√§√§rit√§ luettelo hakemistoista, joista fdb etsii l√§hdetiedostoja.
 
 
 
-Esimerkkej‰:
+Esimerkkej√§:
 
 
 
   directory
 
-    Palauttaa luettelon oletusasetuksiin. Luettelo sis‰lt‰‰ silloin hakemiston, 
+    Palauttaa luettelon oletusasetuksiin. Luettelo sis√§lt√§√§ silloin hakemiston,
 
-    jossa l‰hdetiedosto koottiin objektikoodiksi, ja sen j‰lkeen nykyisen 
+    jossa l√§hdetiedosto koottiin objektikoodiksi, ja sen j√§lkeen nykyisen
 
     hakemiston.
 
@@ -328,27 +328,27 @@ Esimerkkej‰:
 
   directory /MySource          (Mac)
 
-    Lis‰‰ m‰‰ritetyn hakemiston sen hakemistoluettelon alkuun, josta l‰hdett‰ 
+    Lis√§√§ m√§√§ritetyn hakemiston sen hakemistoluettelon alkuun, josta l√§hdett√§
 
-    haetaan.  Jos haetaan esimerkiksi luokan mypackage.MyClass l‰hdett‰, 
+    haetaan.  Jos haetaan esimerkiksi luokan mypackage.MyClass l√§hdett√§,
 
-    virheenkorjaustoiminto etsii l‰hdett‰ sek‰ kansiosta 
+    virheenkorjaustoiminto etsii l√§hdett√§ sek√§ kansiosta
 
-    C:\MySource\mypackage\MyClass.as ett‰ kansiosta C:\MySource\MyClass.as.
+    C:\MySource\mypackage\MyClass.as ett√§ kansiosta C:\MySource\MyClass.as.
 
 
 
-  directory C:\Dir1;C:\Dir2    (Windows ñ k‰yt‰ pilkkua ';' erottimena)
+  directory C:\Dir1;C:\Dir2    (Windows ¬ñ k√§yt√§ pilkkua ';' erottimena)
 
-  directory /Dir1:/Dir2        (Mac ñ k‰yt‰ pistett‰ ':' erottimena)
+  directory /Dir1:/Dir2        (Mac ¬ñ k√§yt√§ pistett√§ ':' erottimena)
 
-    Lis‰‰ useita hakemistoja sen hakemistoluettelon alkuun, josta l‰hdett‰ 
+    Lis√§√§ useita hakemistoja sen hakemistoluettelon alkuun, josta l√§hdett√§
 
     haetaan.
 
 
 
-Nykyisen luettelon n‰et syˆtt‰m‰ll‰ 'show directories'.
+Nykyisen luettelon n√§et sy√∂tt√§m√§ll√§ 'show directories'.
 
 
 
@@ -356,35 +356,35 @@ Nykyisen luettelon n‰et syˆtt‰m‰ll‰ 'show directories'.
 
 
 
-Poista k‰ytˆst‰ yksi tai useita keskeytyskohtia tai automaattisen n‰ytˆn 
+Poista k√§yt√∂st√§ yksi tai useita keskeytyskohtia tai automaattisen n√§yt√∂n
 
 ilmaukset.
 
-Esimerkkej‰:
+Esimerkkej√§:
 
   disable
 
   disable breakpoints
 
-    Poistaa k‰ytˆst‰ kaikki keskeytyskohdat.
+    Poistaa k√§yt√∂st√§ kaikki keskeytyskohdat.
 
   disable 2 5
 
   disable breakpoints 2 5
 
-    Poistaa k‰ytˆst‰ keskeytyskohdat #2 ja #5.
+    Poistaa k√§yt√∂st√§ keskeytyskohdat #2 ja #5.
 
   disable display
 
-    Poistaa k‰ytˆst‰ kaikki automaattisen n‰ytˆn ilmaukset.
+    Poistaa k√§yt√∂st√§ kaikki automaattisen n√§yt√∂n ilmaukset.
 
   disable display 1 3
 
-    Poistaa k‰ytˆst‰ automaattisen n‰ytˆn ilmaukset #1 ja #3.
+    Poistaa k√§yt√∂st√§ automaattisen n√§yt√∂n ilmaukset #1 ja #3.
 
-N‰et keskeytyskohtien numerot syˆtt‰m‰ll‰ 'info breakpoints'.
+N√§et keskeytyskohtien numerot sy√∂tt√§m√§ll√§ 'info breakpoints'.
 
-N‰et automaattisen n‰ytˆn ilmausten numerot syˆtt‰m‰ll‰ 'info display'.
+N√§et automaattisen n√§yt√∂n ilmausten numerot sy√∂tt√§m√§ll√§ 'info display'.
 
 
 
@@ -396,13 +396,13 @@ N‰et automaattisen n‰ytˆn ilmausten numerot syˆtt‰m‰ll‰ 'info display'.
 
 
 
-Pura jokin l‰hdekoodin tietty osa.
+Pura jokin l√§hdekoodin tietty osa.
 
 Oletus on aina nykyinen rivi.
 
 Samoja argumentteja tuetaan kuin list-komennossakin.
 
-Esimerkkej‰:
+Esimerkkej√§:
 
   disassemble 87
 
@@ -410,15 +410,15 @@ Esimerkkej‰:
 
   disassemble 87 102
 
-    Purkaa nykyisen tiedoston rivit 87ñ102.
+    Purkaa nykyisen tiedoston rivit 87¬ñ102.
 
   disassemble doThis
 
-      Purkaa toiminnon doThis() nykyisess‰ tiedostossa.
+      Purkaa toiminnon doThis() nykyisess√§ tiedostossa.
 
-Sen lis‰ksi, ett‰ k‰yt‰t yksinkertaisia rivinumeroita yll‰ olevan esimerkin 
+Sen lis√§ksi, ett√§ k√§yt√§t yksinkertaisia rivinumeroita yll√§ olevan esimerkin
 
-mukaisesti, voit m‰‰ritt‰‰ rivej‰ muillakin tavoilla:
+mukaisesti, voit m√§√§ritt√§√§ rivej√§ muillakin tavoilla:
 
    myapp.mxml
 
@@ -426,7 +426,7 @@ mukaisesti, voit m‰‰ritt‰‰ rivej‰ muillakin tavoilla:
 
    myapp.mxml:doThat
 
-      Toiminnon doThat() ensimm‰inen rivi tiedostossa myapp.mxml.
+      Toiminnon doThat() ensimm√§inen rivi tiedostossa myapp.mxml.
 
    myapp.mxml:56
 
@@ -450,19 +450,19 @@ mukaisesti, voit m‰‰ritt‰‰ rivej‰ muillakin tavoilla:
 
 
 
-Lis‰‰ ilmaus automaattisen n‰ytˆn ilmausten luetteloon.
+Lis√§√§ ilmaus automaattisen n√§yt√∂n ilmausten luetteloon.
 
 Esimerkki:
 
   display employee.name
 
-    Lis‰‰ 'employee.name' automaattisen n‰ytˆn ilmausten luetteloon.
+    Lis√§√§ 'employee.name' automaattisen n√§yt√∂n ilmausten luetteloon.
 
-    Joka kerta, kun fdb pys‰htyy, arvo employee.name tulee n‰kyviin.
+    Joka kerta, kun fdb pys√§htyy, arvo employee.name tulee n√§kyviin.
 
-T‰m‰n komennon argumentti on sama kuin komennolle 'print'.
+T√§m√§n komennon argumentti on sama kuin komennolle 'print'.
 
-N‰et automaattisen n‰ytˆn ilmaukset ja niiden numerot syˆtt‰m‰ll‰ 'info 
+N√§et automaattisen n√§yt√∂n ilmaukset ja niiden numerot sy√∂tt√§m√§ll√§ 'info
 
 display'.
 
@@ -472,13 +472,13 @@ display'.
 
 
 
-Valitse ja tulosta t‰m‰n kutsuma pinokehys.
+Valitse ja tulosta t√§m√§n kutsuma pinokehys.
 
-Seuraavat 'info arguments'- ja 'info locals' -komennot n‰ytt‰v‰t valitun 
+Seuraavat 'info arguments'- ja 'info locals' -komennot n√§ytt√§v√§t valitun
 
 kehyksen argumentit ja paikalliset muuttujat.
 
-Katso komennot 'up' ja 'frame'. 
+Katso komennot 'up' ja 'frame'.
 
 
 
@@ -486,33 +486,33 @@ Katso komennot 'up' ja 'frame'.
 
 
 
-Ota k‰yttˆˆn yksi tai useita keskeytyskohtia tai automaattisen n‰ytˆn ilmaukset.
+Ota k√§ytt√∂√∂n yksi tai useita keskeytyskohtia tai automaattisen n√§yt√∂n ilmaukset.
 
-Esimerkkej‰:
+Esimerkkej√§:
 
   enable
 
   enable breakpoints
 
-    Ottaa k‰yttˆˆn kaikki keskeytyskohdat.
+    Ottaa k√§ytt√∂√∂n kaikki keskeytyskohdat.
 
   enable 2 5
 
   enable breakpoints 2 5
 
-    Ottaa k‰yttˆˆn keskeytyskohdat #2 ja #5.
+    Ottaa k√§ytt√∂√∂n keskeytyskohdat #2 ja #5.
 
   enable display
 
-    Ottaa k‰yttˆˆn kaikki automaattisen n‰ytˆn ilmaukset.
+    Ottaa k√§ytt√∂√∂n kaikki automaattisen n√§yt√∂n ilmaukset.
 
   enable display 1 3
 
-    Ottaa k‰yttˆˆn automaattisen n‰ytˆn ilmaukset #1 ja #3.
+    Ottaa k√§ytt√∂√∂n automaattisen n√§yt√∂n ilmaukset #1 ja #3.
 
-N‰et keskeytyskohtien numerot syˆtt‰m‰ll‰ 'info breakpoints'.
+N√§et keskeytyskohtien numerot sy√∂tt√§m√§ll√§ 'info breakpoints'.
 
-N‰et automaattisen n‰ytˆn ilmausten numerot syˆtt‰m‰ll‰ 'info display'.
+N√§et automaattisen n√§yt√∂n ilmausten numerot sy√∂tt√§m√§ll√§ 'info display'.
 
 
 
@@ -520,31 +520,31 @@ N‰et automaattisen n‰ytˆn ilmausten numerot syˆtt‰m‰ll‰ 'info display'.
 
 
 
-M‰‰rit‰ sovellus, josta korjataan virheit‰, k‰ynnist‰m‰tt‰ sit‰.
+M√§√§rit√§ sovellus, josta korjataan virheit√§, k√§ynnist√§m√§tt√§ sit√§.
 
-Esimerkkej‰:
+Esimerkkej√§:
 
   file http://www.mysite.com/myapp.mxml
 
-    M‰‰rit‰ MXML-sovellus, josta korjataan virheit‰.
+    M√§√§rit√§ MXML-sovellus, josta korjataan virheit√§.
 
   file myapp.swf
 
-    M‰‰rit‰ nykyisest‰ hakemistosta paikallinen SWF-tiedosto, josta korjataan 
+    M√§√§rit√§ nykyisest√§ hakemistosta paikallinen SWF-tiedosto, josta korjataan
 
-    virheit‰.
+    virheit√§.
 
-    T‰ss‰ tapauksessa (virheenkorjaustiedot sis‰lt‰v‰n) tiedoston myapp.swd 
+    T√§ss√§ tapauksessa (virheenkorjaustiedot sis√§lt√§v√§n) tiedoston myapp.swd
 
-    pit‰‰ sijaita myˆs nykyisess‰ hakemistossa.
+    pit√§√§ sijaita my√∂s nykyisess√§ hakemistossa.
 
-Komento ei k‰ynnist‰ sovellusta. K‰ynnist‰ sovelluksen virheenkorjaus 
+Komento ei k√§ynnist√§ sovellusta. K√§ynnist√§ sovelluksen virheenkorjaus
 
 komennolla 'run' ilman argumentteja.
 
-Sen sijaan, ett‰ k‰ytt‰isit komentoa 'file <target>' ja sen j‰lkeen komentoa 
+Sen sijaan, ett√§ k√§ytt√§isit komentoa 'file <target>' ja sen j√§lkeen komentoa
 
-'run', voit yksinkertaisesti m‰‰ritt‰‰ korjattavan sovelluksen komennon 'run' 
+'run', voit yksinkertaisesti m√§√§ritt√§√§ korjattavan sovelluksen komennon 'run'
 
 argumentiksi:
 
@@ -552,17 +552,17 @@ argumentiksi:
 
   run myapp.swf
 
-Voit myˆs m‰‰r‰t‰ tiedoston virheenkorjauksen komentorivin argumentilla, kun 
+Voit my√∂s m√§√§r√§t√§ tiedoston virheenkorjauksen komentorivin argumentilla, kun
 
-k‰ynnist‰t fdb:n:
+k√§ynnist√§t fdb:n:
 
   fdb http://www.mysite.com/myapp.mxml
 
   fdb myapp.swf
 
-T‰ss‰ tapauksessa sinun ei tarvitse k‰ytt‰‰ komentoa 'file' eik‰ komentoa 'run'.
+T√§ss√§ tapauksessa sinun ei tarvitse k√§ytt√§√§ komentoa 'file' eik√§ komentoa 'run'.
 
-Jos suoritat komennon 'run' m‰‰ritt‰m‰tt‰ sovellusta virheenkorjausta varten, 
+Jos suoritat komennon 'run' m√§√§ritt√§m√§tt√§ sovellusta virheenkorjausta varten,
 
 fdb odottaa, kunnes jokin sovellus muodostaa siihen yhteyden.
 
@@ -574,7 +574,7 @@ fdb odottaa, kunnes jokin sovellus muodostaa siihen yhteyden.
 
 Suorita, kunnes nykyinen toiminto palaa.
 
-T‰m‰ komento ei hyv‰ksy argumentteja.
+T√§m√§ komento ei hyv√§ksy argumentteja.
 
 
 
@@ -584,23 +584,23 @@ T‰m‰ komento ei hyv‰ksy argumentteja.
 
 Valitse ja tulosta jokin tietty pinokehys.
 
-T‰m‰ komento hyv‰ksyy valinnaisen argumentin: kehyksen numeron.
+T√§m√§ komento hyv√§ksyy valinnaisen argumentin: kehyksen numeron.
 
-Jos argumenttia ei m‰‰ritet‰, oletuksena palataan nykyiseen ylimp‰‰n kehykseen 
+Jos argumenttia ei m√§√§ritet√§, oletuksena palataan nykyiseen ylimp√§√§n kehykseen
 
 (kehykseen 0).
 
-Esimerkkej‰:
+Esimerkkej√§:
 
   frame 4
 
   frame
 
-Seuraavat 'info arguments'- ja 'info locals' -komennot n‰ytt‰v‰t valitun 
+Seuraavat 'info arguments'- ja 'info locals' -komennot n√§ytt√§v√§t valitun
 
 kehyksen argumentit ja paikalliset muuttujat.
 
-Katso komennot 'up', 'down' ja 'bt'. 
+Katso komennot 'up', 'down' ja 'bt'.
 
 
 
@@ -608,31 +608,31 @@ Katso komennot 'up', 'down' ja 'bt'.
 
 
 
-M‰‰rit‰, miten fdb k‰sittelee Flash Playerin virheet.
+M√§√§rit√§, miten fdb k√§sittelee Flash Playerin virheet.
 
-Esimerkkej‰:
+Esimerkkej√§:
 
   handle recursion_limit stop
 
-    N‰yt‰ fdb:ss‰ ilmoitus virheest‰ recursion_limit ja pys‰yt‰, kuten 
+    N√§yt√§ fdb:ss√§ ilmoitus virheest√§ recursion_limit ja pys√§yt√§, kuten
 
     keskeytyskohdassa.
 
   handle all print nostop
 
-    N‰yt‰ ilmoitus kaikista virheist‰ fdb:ss‰, mutta ‰l‰ pys‰yt‰.
+    N√§yt√§ ilmoitus kaikista virheist√§ fdb:ss√§, mutta √§l√§ pys√§yt√§.
 
-Ensimm‰inen argumentti on virheen nimi tai 'all'.
+Ensimm√§inen argumentti on virheen nimi tai 'all'.
 
-Lis‰argumentit ovat toimintoja, jotka koskevat virhett‰.
+Lis√§argumentit ovat toimintoja, jotka koskevat virhett√§.
 
-Virheiden nimet n‰et syˆtt‰m‰ll‰ 'info handle'.
+Virheiden nimet n√§et sy√∂tt√§m√§ll√§ 'info handle'.
 
 Toiminnot ovat print/noprint ja stop/nostop.
 
-Toiminnolla 'print' sanoma tulostetaan t‰m‰n virheen sattuessa.
+Toiminnolla 'print' sanoma tulostetaan t√§m√§n virheen sattuessa.
 
-Toiminnolla 'stop' palataan virheenkorjaustoimintoon t‰m‰n virheen sattuessa. 
+Toiminnolla 'stop' palataan virheenkorjaustoimintoon t√§m√§n virheen sattuessa.
 
 Toiminto 'print' suoritetaan samalla.
 
@@ -642,99 +642,99 @@ Toiminto 'print' suoritetaan samalla.
 
 
 
-Onko fdb sinulle uusi? N‰et sen perustiedot syˆtt‰m‰ll‰ 'tutorial'.
+Onko fdb sinulle uusi? N√§et sen perustiedot sy√∂tt√§m√§ll√§ 'tutorial'.
 
 Luettelo fdb:n komennoista:
 
 bt (bt)             Tulosta kaikkien pinokehysten backtrace-luettelot.
 
-break (b)           M‰‰rit‰ keskeytyskohta tietyll‰ rivill‰ tai tietyss‰ 
+break (b)           M√§√§rit√§ keskeytyskohta tietyll√§ rivill√§ tai tietyss√§
 
                     toiminnossa.
 
 catch (ca)          Keskeytys poikkeuksen sattuessa.
 
-cf (cf)             N‰yt‰ nykyisen tiedoston nimi ja numero.
+cf (cf)             N√§yt√§ nykyisen tiedoston nimi ja numero.
 
-clear (cl)          Poista keskeytyskohta tietylt‰ rivilt‰ tai tietyst‰ 
+clear (cl)          Poista keskeytyskohta tietylt√§ rivilt√§ tai tietyst√§
 
                     toiminnosta.
 
-condition (cond)    K‰yt‰ ehdollista ilmausta keskeytyspisteess‰ tai poista 
+condition (cond)    K√§yt√§ ehdollista ilmausta keskeytyspisteess√§ tai poista
 
                     ilmaus.
 
-continue (c)        Jatka suorittamista keskeytyskohdassa pys‰htymisen j‰lkeen.
+continue (c)        Jatka suorittamista keskeytyskohdassa pys√§htymisen j√§lkeen.
 
-commands (com)      M‰‰rit‰ komennot, jotka suoritetaan keskeytyspisteeseen 
+commands (com)      M√§√§rit√§ komennot, jotka suoritetaan keskeytyspisteeseen
 
                     saavuttaessa.
 
-delete (d)          Poista keskeytyspisteet tai automaattisen n‰ytˆn ilmaukset.
+delete (d)          Poista keskeytyspisteet tai automaattisen n√§yt√∂n ilmaukset.
 
-directory (dir)     Lis‰‰ hakemisto l‰hdetiedostojen hakupolkuun.
+directory (dir)     Lis√§√§ hakemisto l√§hdetiedostojen hakupolkuun.
 
-disable (disab)     Poista keskeytyspisteet tai automaattisen n‰ytˆn ilmaukset 
+disable (disab)     Poista keskeytyspisteet tai automaattisen n√§yt√∂n ilmaukset
 
-                    k‰ytˆst‰.
+                    k√§yt√∂st√§.
 
-disassemble (disas) Pura l‰hderivit tai -toiminnot.
+disassemble (disas) Pura l√§hderivit tai -toiminnot.
 
-display (disp)      Lis‰‰ automaattisen n‰ytˆn ilmaus.
+display (disp)      Lis√§√§ automaattisen n√§yt√∂n ilmaus.
 
-enable (e)          Ota keskeytyspisteet tai automaattisen n‰ytˆn ilmaukset 
+enable (e)          Ota keskeytyspisteet tai automaattisen n√§yt√∂n ilmaukset
 
-                    k‰yttˆˆn.
+                    k√§ytt√∂√∂n.
 
-file (fil)          M‰‰rit‰ sovelluksen virheenkorjaus.
+file (fil)          M√§√§rit√§ sovelluksen virheenkorjaus.
 
 finish (f)          Suorita, kunnes nykyinen toiminto palaa.
 
-handle (han)        M‰‰rit‰, miten virhe k‰sitell‰‰n.
+handle (han)        M√§√§rit√§, miten virhe k√§sitell√§√§n.
 
-help (h)            N‰yt‰ fdb-komentojen ohje.
+help (h)            N√§yt√§ fdb-komentojen ohje.
 
-home (ho)           M‰‰rit‰ luettelosijainti paikkaan, miss‰ suorittaminen 
+home (ho)           M√§√§rit√§ luettelosijainti paikkaan, miss√§ suorittaminen
 
-                    keskeytet‰‰n.
+                    keskeytet√§√§n.
 
-info (i)            N‰yt‰ tiedot ohjelmasta, josta korjataan virheit‰.
+info (i)            N√§yt√§ tiedot ohjelmasta, josta korjataan virheit√§.
 
-kill (k)            Lopeta sen ohjelman suorittaminen, josta korjataan virheit‰.
+kill (k)            Lopeta sen ohjelman suorittaminen, josta korjataan virheit√§.
 
-list (l)            Lis‰‰ m‰‰ritetty toiminto tai rivi luetteloon.
+list (l)            Lis√§√§ m√§√§ritetty toiminto tai rivi luetteloon.
 
 next (n)            Askelluta ohjelma.
 
 print (p)           Tulosta EXP-muuttujan arvo.
 
-pwd (pw)            Tulosta tyˆhakemisto.
+pwd (pw)            Tulosta ty√∂hakemisto.
 
 quit (q)            Sulje fdb.
 
-run (r)             K‰ynnist‰ ohjelma, jonka virheet on korjattu.
+run (r)             K√§ynnist√§ ohjelma, jonka virheet on korjattu.
 
 set (se)            Aseta muuttujan arvo.
 
 source (so)         Lue fdb-komennot tiedostosta.
 
-step (s)            Askelluta ohjelma, kunnes ohjelma saavuttaa eri l‰hderivin.
+step (s)            Askelluta ohjelma, kunnes ohjelma saavuttaa eri l√§hderivin.
 
-tutorial (t)        N‰yt‰ opetusohjelma, jossa selitet‰‰n fdb:n k‰yttˆ.
+tutorial (t)        N√§yt√§ opetusohjelma, jossa selitet√§√§n fdb:n k√§ytt√∂.
 
-undisplay (u)       Poista automaattisen n‰ytˆn ilmaus.
+undisplay (u)       Poista automaattisen n√§yt√∂n ilmaus.
 
-viewswf (v)         M‰‰rit‰ tai tyhjenn‰ suodatin tiedostoluettelolle swf:n 
+viewswf (v)         M√§√§rit√§ tai tyhjenn√§ suodatin tiedostoluettelolle swf:n
 
                     perusteella.
 
-watch (wa)          Lis‰‰ katselukohta annettuun muuttujaan.
+watch (wa)          Lis√§√§ katselukohta annettuun muuttujaan.
 
-what (wh)           N‰ytt‰‰ muuttujan sis‰llˆn.
+what (wh)           N√§ytt√§√§ muuttujan sis√§ll√∂n.
 
 where (w)           Sama kuin bt.
 
-Kirjoita 'help' ja sen j‰lkeen komennon nimi, niin n‰et t‰ydet k‰yttˆohjeet.
+Kirjoita 'help' ja sen j√§lkeen komennon nimi, niin n√§et t√§ydet k√§ytt√∂ohjeet.
 
 
 
@@ -742,7 +742,7 @@ Kirjoita 'help' ja sen j‰lkeen komennon nimi, niin n‰et t‰ydet k‰yttˆohjeet.
 
 
 
-M‰‰rit‰ luettelosijainti paikkaan, miss‰ suorittaminen keskeytet‰‰n.
+M√§√§rit√§ luettelosijainti paikkaan, miss√§ suorittaminen keskeytet√§√§n.
 
 
 
@@ -750,43 +750,43 @@ M‰‰rit‰ luettelosijainti paikkaan, miss‰ suorittaminen keskeytet‰‰n.
 
 
 
-Yleiskomento, jolla n‰hd‰‰n erilaisia tietoja ohjelmasta, josta korjataan 
+Yleiskomento, jolla n√§hd√§√§n erilaisia tietoja ohjelmasta, josta korjataan
 
-virheit‰.
+virheit√§.
 
 Luettelo info-alikomennoista:
 
 info arguments (i a)    Nykyisen pinokehyksen argumenttimuuttujat.
 
-info breakpoints (i b)  K‰ytt‰j‰n asetettavien keskeytyskohtien tilat.
+info breakpoints (i b)  K√§ytt√§j√§n asetettavien keskeytyskohtien tilat.
 
-info display (i d)      N‰yt‰ luettelo automaattisen n‰ytˆn ilmauksista.
+info display (i d)      N√§yt√§ luettelo automaattisen n√§yt√∂n ilmauksista.
 
-info files (i f)        Niiden kohteiden ja tiedostojen nimet, joista korjataan 
+info files (i f)        Niiden kohteiden ja tiedostojen nimet, joista korjataan
 
-                        virheit‰.
+                        virheit√§.
 
 info functions (i fu)   Kaikki toimintojen nimet.
 
-info handle (i h)       Miten virhe k‰sitell‰‰n.
+info handle (i h)       Miten virhe k√§sitell√§√§n.
 
 info locals (i l)       Nykyisen pinokehyksen paikalliset muuttujat.
 
 info scopechain (i sc)  Nykyisen pinokehyksen vaikutusalueketju.
 
-info sources (i so)     L‰hdetiedostot ohjelmassa.
+info sources (i so)     L√§hdetiedostot ohjelmassa.
 
 info stack (i s)        Pinon backtrace.
 
-info swfs (i sw)        T‰m‰n istunnon swf-luettelo.
+info swfs (i sw)        T√§m√§n istunnon swf-luettelo.
 
-info targets(i t)       Sovellus, josta korjataan virheit‰.
+info targets(i t)       Sovellus, josta korjataan virheit√§.
 
 info variables (i v)    Kaikki yleisten ja staattisten muuttujien nimet.
 
-Kirjoita 'help info' ja sen j‰lkeen info-alikomennon nimi, niin n‰et t‰ydet 
+Kirjoita 'help info' ja sen j√§lkeen info-alikomennon nimi, niin n√§et t√§ydet
 
-k‰yttˆohjeet.
+k√§ytt√∂ohjeet.
 
 
 
@@ -794,7 +794,7 @@ k‰yttˆohjeet.
 
 
 
-N‰yt‰ nykyisen pinokehyksen argumentit.
+N√§yt√§ nykyisen pinokehyksen argumentit.
 
 
 
@@ -802,23 +802,23 @@ N‰yt‰ nykyisen pinokehyksen argumentit.
 
 
 
-N‰yt‰ kaikkien keskeytyskohtien ja katselukohtien tila.
+N√§yt√§ kaikkien keskeytyskohtien ja katselukohtien tila.
 
-Type-sarakkeesta n‰kyy jompikumpi n‰ist‰:
+Type-sarakkeesta n√§kyy jompikumpi n√§ist√§:
 
    breakpoint   - tavallinen keskeytyskohta
 
    watchpoint   - katselukohta
 
-Disp-sarake sis‰lt‰‰ jonkin seuraavista: 'keep', 'del', 'dis'. T‰m‰ kertoo, 
+Disp-sarake sis√§lt√§√§ jonkin seuraavista: 'keep', 'del', 'dis'. T√§m√§ kertoo,
 
-mit‰ keskeytyskohdassa tapahtuu. Vaihtoehto 'dis' tarkoittaa sit‰, ett‰ 
+mit√§ keskeytyskohdassa tapahtuu. Vaihtoehto 'dis' tarkoittaa sit√§, ett√§
 
-keskeytyskohta poistetaan k‰ytˆst‰. Vaihtoehto 'del' tarkoittaa sit‰, ett‰ 
+keskeytyskohta poistetaan k√§yt√∂st√§. Vaihtoehto 'del' tarkoittaa sit√§, ett√§
 
-keskeytyskohta poistetaan.  
+keskeytyskohta poistetaan.
 
-'Address'-sarake kertoo osoitteen. 'What'-sarake kertoo tiedoston/rivinumeron. 
+'Address'-sarake kertoo osoitteen. 'What'-sarake kertoo tiedoston/rivinumeron.
 
 
 
@@ -826,7 +826,7 @@ keskeytyskohta poistetaan.
 
 
 
-N‰yt‰ luettelo automaattisen n‰ytˆn ilmauksista ja niiden numeroista.
+N√§yt√§ luettelo automaattisen n√§yt√∂n ilmauksista ja niiden numeroista.
 
 
 
@@ -834,33 +834,33 @@ N‰yt‰ luettelo automaattisen n‰ytˆn ilmauksista ja niiden numeroista.
 
 
 
-N‰yt‰ tiedostojen nimet ja numerot sovellukselle, josta korjataan virheit‰, 
+N√§yt√§ tiedostojen nimet ja numerot sovellukselle, josta korjataan virheit√§,
 
-mukaan luettuna l‰hdetiedostot, kehystiedostot ja automaattisesti luodut 
+mukaan luettuna l√§hdetiedostot, kehystiedostot ja automaattisesti luodut
 
 tiedostot.
 
-Esimerkkej‰:
+Esimerkkej√§:
 
   info files
 
-    N‰ytt‰‰ aakkosj‰rjestyksess‰ kaikki tiedostot luokan mukaan.
+    N√§ytt√§√§ aakkosj√§rjestyksess√§ kaikki tiedostot luokan mukaan.
 
   info files my
 
   info files my*
 
-    N‰ytt‰‰ aakkosj‰rjestyksess‰ kaikki tiedostot, joiden nimi alkaa "my".
+    N√§ytt√§√§ aakkosj√§rjestyksess√§ kaikki tiedostot, joiden nimi alkaa "my".
 
   info files *.as
 
-    N‰ytt‰‰ aakkosj‰rjestyksess‰ kaikki tiedostot, joiden nimi p‰‰ttyy ".as".
+    N√§ytt√§√§ aakkosj√§rjestyksess√§ kaikki tiedostot, joiden nimi p√§√§ttyy ".as".
 
   info files *foo*
 
-    N‰ytt‰‰ aakkosj‰rjestyksess‰ kaikki tiedostot, joiden nimeen sis‰ltyy "foo".
+    N√§ytt√§√§ aakkosj√§rjestyksess√§ kaikki tiedostot, joiden nimeen sis√§ltyy "foo".
 
-Tiedostot n‰ytet‰‰n muodossa name#N, jossa N on tiedoston numero.
+Tiedostot n√§ytet√§√§n muodossa name#N, jossa N on tiedoston numero.
 
 Monissa komennoissa tiedoston nimen voi korvata #N.
 
@@ -870,29 +870,29 @@ Monissa komennoissa tiedoston nimen voi korvata #N.
 
 
 
-N‰yt‰ toimintojen nimet.
+N√§yt√§ toimintojen nimet.
 
-Esimerkkej‰:
+Esimerkkej√§:
 
   info functions .
 
-    N‰yt‰ kaikki toiminnot nykyisess‰ tiedostossa.
+    N√§yt√§ kaikki toiminnot nykyisess√§ tiedostossa.
 
   info functions myapp.mxml
 
-    N‰yt‰ kaikki toiminnot tiedostossa myapp.mxml.
+    N√§yt√§ kaikki toiminnot tiedostossa myapp.mxml.
 
   info functions #3
 
-    N‰yt‰ kaikki toiminnot tiedostossa #3.
+    N√§yt√§ kaikki toiminnot tiedostossa #3.
 
   info functions
 
-    N‰yt‰ kaikki toiminnot kaikissa tiedostoissa.
+    N√§yt√§ kaikki toiminnot kaikissa tiedostoissa.
 
-Tiedostonimet ja -numerot n‰et syˆtt‰m‰ll‰ 'info sources' tai 'info files'.
+Tiedostonimet ja -numerot n√§et sy√∂tt√§m√§ll√§ 'info sources' tai 'info files'.
 
-Lyhennetyt tiedostonimet hyv‰ksyt‰‰n, jos ne ovat selvi‰.
+Lyhennetyt tiedostonimet hyv√§ksyt√§√§n, jos ne ovat selvi√§.
 
 
 
@@ -900,17 +900,17 @@ Lyhennetyt tiedostonimet hyv‰ksyt‰‰n, jos ne ovat selvi‰.
 
 
 
-N‰yt‰, mit‰ fdb tekee, kun Flash Playeriss‰ tapahtuu virhe.
+N√§yt√§, mit√§ fdb tekee, kun Flash Playeriss√§ tapahtuu virhe.
 
-Esimerkkej‰:
+Esimerkkej√§:
 
   info handle
 
-    N‰yt‰, miten fdb k‰sittelee kaikki virheet.
+    N√§yt√§, miten fdb k√§sittelee kaikki virheet.
 
   info handle recursion_limit
 
-    N‰yt‰, miten fdb k‰sittelee virheen recursion_limit.
+    N√§yt√§, miten fdb k√§sittelee virheen recursion_limit.
 
 
 
@@ -918,7 +918,7 @@ Esimerkkej‰:
 
 
 
-N‰yt‰ nykyisen pinokehyksen paikalliset muuttujat.
+N√§yt√§ nykyisen pinokehyksen paikalliset muuttujat.
 
 
 
@@ -926,9 +926,9 @@ N‰yt‰ nykyisen pinokehyksen paikalliset muuttujat.
 
 
 
-N‰yt‰ nykyisen pinokehyksen vaikutusalueketju.  Vaikutusalueketju on 
+N√§yt√§ nykyisen pinokehyksen vaikutusalueketju.  Vaikutusalueketju on
 
-objektiluettelo, jossa Flash Player suorittaa haun yritt‰ess‰‰n ratkaista 
+objektiluettelo, jossa Flash Player suorittaa haun yritt√§ess√§√§n ratkaista
 
 symbolin nimen.
 
@@ -938,11 +938,11 @@ symbolin nimen.
 
 
 
-N‰yt‰ l‰hdetiedostojen nimet ja numerot sovellukselle, josta korjataan virheit‰.
+N√§yt√§ l√§hdetiedostojen nimet ja numerot sovellukselle, josta korjataan virheit√§.
 
-Ei sis‰ll‰ kehystiedostoja ja automaattisesti luotuja tiedostoja.
+Ei sis√§ll√§ kehystiedostoja ja automaattisesti luotuja tiedostoja.
 
-Tiedostot n‰ytet‰‰n muodossa name#N, jossa N on tiedoston numero.
+Tiedostot n√§ytet√§√§n muodossa name#N, jossa N on tiedoston numero.
 
 Monissa komennoissa tiedoston nimen voi korvata #N.
 
@@ -960,11 +960,11 @@ Pinon backtrace.
 
 
 
-N‰yt‰ virheenkorjausistunnon tuntemat swf-tiedostot.  Komennolla 'viewswf' n‰et 
+N√§yt√§ virheenkorjausistunnon tuntemat swf-tiedostot.  Komennolla 'viewswf' n√§et
 
-lis‰tietoja siit‰, miten tiedostoluettelo voidaan suodattaa swf-nimen 
+lis√§tietoja siit√§, miten tiedostoluettelo voidaan suodattaa swf-nimen
 
-perusteella. 
+perusteella.
 
 
 
@@ -972,7 +972,7 @@ perusteella.
 
 
 
-N‰yt‰ URL (http: tai tiedosto:) sovellukselle, josta korjataan virheit‰.
+N√§yt√§ URL (http: tai tiedosto:) sovellukselle, josta korjataan virheit√§.
 
 
 
@@ -980,7 +980,7 @@ N‰yt‰ URL (http: tai tiedosto:) sovellukselle, josta korjataan virheit‰.
 
 
 
-N‰yt‰ kaikki yleisten ja staattisten muuttujien nimet ja arvot.
+N√§yt√§ kaikki yleisten ja staattisten muuttujien nimet ja arvot.
 
 
 
@@ -988,7 +988,7 @@ N‰yt‰ kaikki yleisten ja staattisten muuttujien nimet ja arvot.
 
 
 
-M‰‰ritt‰m‰tˆn info-komento. Kokeile komentoa 'help info'.
+M√§√§ritt√§m√§t√∂n info-komento. Kokeile komentoa 'help info'.
 
 
 
@@ -996,9 +996,9 @@ M‰‰ritt‰m‰tˆn info-komento. Kokeile komentoa 'help info'.
 
 
 
-Lopeta sen ohjelman suorittaminen, josta korjataan virheit‰.
+Lopeta sen ohjelman suorittaminen, josta korjataan virheit√§.
 
-T‰m‰ komento ei hyv‰ksy argumentteja.
+T√§m√§ komento ei hyv√§ksy argumentteja.
 
 
 
@@ -1006,35 +1006,35 @@ T‰m‰ komento ei hyv‰ksy argumentteja.
 
 
 
-Luetteloi koodirivit l‰hdetiedostossa.
+Luetteloi koodirivit l√§hdetiedostossa.
 
-Esimerkkej‰:
+Esimerkkej√§:
 
   list
 
-    Luetteloi kymmenen lis‰rivi‰ nykyisess‰ tiedostossa edellisen luettelon 
+    Luetteloi kymmenen lis√§rivi√§ nykyisess√§ tiedostossa edellisen luettelon
 
-    j‰lkeen tai sen ymp‰rille.
+    j√§lkeen tai sen ymp√§rille.
 
   list -
 
-    Luetteloi kymmenen rivi‰ nykyisess‰ tiedostossa ennen edellist‰ luetteloa.
+    Luetteloi kymmenen rivi√§ nykyisess√§ tiedostossa ennen edellist√§ luetteloa.
 
   list 87
 
-    Luetteloi kymmenen rivi‰ nykyisess‰ tiedostossa rivin 87 ymp‰rill‰.
+    Luetteloi kymmenen rivi√§ nykyisess√§ tiedostossa rivin 87 ymp√§rill√§.
 
   list 87 102
 
-    Luetteloi nykyisen tiedoston rivit 87ñ102.
+    Luetteloi nykyisen tiedoston rivit 87¬ñ102.
 
-Sen lis‰ksi, ett‰ k‰yt‰t yksinkertaisia rivinumeroita yll‰ olevan esimerkin 
+Sen lis√§ksi, ett√§ k√§yt√§t yksinkertaisia rivinumeroita yll√§ olevan esimerkin
 
-mukaisesti, voit m‰‰ritt‰‰ rivej‰ seitsem‰ll‰ muulla tavalla:
+mukaisesti, voit m√§√§ritt√§√§ rivej√§ seitsem√§ll√§ muulla tavalla:
 
   doThis
 
-      Toiminnon doThis() ensimm‰inen rivi nykyisess‰ tiedostossa.
+      Toiminnon doThis() ensimm√§inen rivi nykyisess√§ tiedostossa.
 
    myapp.mxml
 
@@ -1042,7 +1042,7 @@ mukaisesti, voit m‰‰ritt‰‰ rivej‰ seitsem‰ll‰ muulla tavalla:
 
    myapp.mxml:doThat
 
-      Toiminnon doThat() ensimm‰inen rivi tiedostossa myapp.mxml.
+      Toiminnon doThat() ensimm√§inen rivi tiedostossa myapp.mxml.
 
    myapp.mxml:56
 
@@ -1060,13 +1060,13 @@ mukaisesti, voit m‰‰ritt‰‰ rivej‰ seitsem‰ll‰ muulla tavalla:
 
       Rivi 29 tiedostossa #3.
 
-Tiedostonimet ja -numerot n‰et syˆtt‰m‰ll‰ 'info sources' tai 'info files'.
+Tiedostonimet ja -numerot n√§et sy√∂tt√§m√§ll√§ 'info sources' tai 'info files'.
 
-Toimintojen nimet n‰et syˆtt‰m‰ll‰ 'info functions'.
+Toimintojen nimet n√§et sy√∂tt√§m√§ll√§ 'info functions'.
 
-Lyhennetyt tiedostojen ja toimintojen nimet hyv‰ksyt‰‰n, jos ne ovat selvi‰.
+Lyhennetyt tiedostojen ja toimintojen nimet hyv√§ksyt√§√§n, jos ne ovat selvi√§.
 
-Tiedoston lis‰‰minen luetteloon tekee tiedostosta nykyisen tiedoston. (Katso 
+Tiedoston lis√§√§minen luetteloon tekee tiedostosta nykyisen tiedoston. (Katso
 
 komento 'cf'.)
 
@@ -1076,7 +1076,7 @@ komento 'cf'.)
 
 
 
-Askelluta ohjelma alirutiinikutsujen l‰pi.
+Askelluta ohjelma alirutiinikutsujen l√§pi.
 
   next
 
@@ -1084,11 +1084,11 @@ Askelluta ohjelma alirutiinikutsujen l‰pi.
 
   next 3
 
-    Askelluta kolmasti, tai kunnes ohjelma pys‰htyy jostain muusta syyst‰.
+    Askelluta kolmasti, tai kunnes ohjelma pys√§htyy jostain muusta syyst√§.
 
-Toimii kuten komento 'step', kunhan alirutiinikutsuja ei tapahdu. Jos 
+Toimii kuten komento 'step', kunhan alirutiinikutsuja ei tapahdu. Jos
 
-alirutiinikutsu tapahtuu, sit‰ k‰sitell‰‰n yhten‰ ohjeena.
+alirutiinikutsu tapahtuu, sit√§ k√§sitell√§√§n yhten√§ ohjeena.
 
 
 
@@ -1098,7 +1098,7 @@ alirutiinikutsu tapahtuu, sit‰ k‰sitell‰‰n yhten‰ ohjeena.
 
 Tulosta muuttujan tai ilmauksen arvo.
 
-Esimerkkej‰:
+Esimerkkej√§:
 
   print i
 
@@ -1122,13 +1122,13 @@ Esimerkkej‰:
 
     Tulosta objektin 'employee' kaikkien ominaisuuksien arvot.
 
-    Etuliiteoperaattori * on j‰lkiliiteoperaattorin . etuliitevaihtoehto.
+    Etuliiteoperaattori * on j√§lkiliiteoperaattorin . etuliitevaihtoehto.
 
   print #10378.
 
     Tulosta kaikkien Object #10378:n ominaisuuksien arvot.
 
-K‰ytett‰viss‰ ovat valitun pinokehyksen sanastollisen ymp‰ristˆn muuttujat sek‰ 
+K√§ytett√§viss√§ ovat valitun pinokehyksen sanastollisen ymp√§rist√∂n muuttujat sek√§
 
 kaikki ne muuttujat, joiden vaikutusalue on yleinen tai kokonainen tiedosto.
 
@@ -1138,15 +1138,15 @@ kaikki ne muuttujat, joiden vaikutusalue on yleinen tai kokonainen tiedosto.
 
 
 
-Tulosta nykyinen tyˆhakemisto.
+Tulosta nykyinen ty√∂hakemisto.
 
-T‰m‰ on hakemisto, josta fdb k‰ynnistettiin. Hakemistoa ei voi muuttaa fdb:n 
+T√§m√§ on hakemisto, josta fdb k√§ynnistettiin. Hakemistoa ei voi muuttaa fdb:n
 
-sis‰ll‰. Komentojen 'run' ja 'source' argumentti voidaan m‰‰ritt‰‰ suhteessa 
+sis√§ll√§. Komentojen 'run' ja 'source' argumentti voidaan m√§√§ritt√§√§ suhteessa
 
-t‰h‰n hakemistoon.
+t√§h√§n hakemistoon.
 
-T‰m‰ komento ei hyv‰ksy argumentteja.
+T√§m√§ komento ei hyv√§ksy argumentteja.
 
 
 
@@ -1156,7 +1156,7 @@ T‰m‰ komento ei hyv‰ksy argumentteja.
 
 Sulje fdb.
 
-T‰m‰ komento ei hyv‰ksy argumentteja.
+T√§m√§ komento ei hyv√§ksy argumentteja.
 
 
 
@@ -1166,11 +1166,11 @@ T‰m‰ komento ei hyv‰ksy argumentteja.
 
 Aloita virheenkorjausistunto.
 
-Esimerkkej‰:
+Esimerkkej√§:
 
   run http://www.mysite.com/myapp.mxml
 
-    Suorittaa m‰‰ritetyn MXML-sovelluksen.
+    Suorittaa m√§√§ritetyn MXML-sovelluksen.
 
   run myapp.swf
 
@@ -1178,39 +1178,39 @@ Esimerkkej‰:
 
   run c:\mydir\myapp.swf
 
-    Suorittaa paikallisen SWF-tiedoston myapp.swf, joka voidaan m‰‰ritt‰‰ joko 
+    Suorittaa paikallisen SWF-tiedoston myapp.swf, joka voidaan m√§√§ritt√§√§ joko
 
-    suhteessa nykyiseen hakemistoon (katso komento 'pwd') tai k‰ytt‰en 
+    suhteessa nykyiseen hakemistoon (katso komento 'pwd') tai k√§ytt√§en
 
-    absoluuttista polkua. N‰iss‰ tapauksissa tiedoston myapp.swd 
+    absoluuttista polkua. N√§iss√§ tapauksissa tiedoston myapp.swd
 
-    (virheenkorjaustiedot sis‰lt‰v‰ tiedosto) pit‰‰ sijaita samassa 
+    (virheenkorjaustiedot sis√§lt√§v√§ tiedosto) pit√§√§ sijaita samassa
 
     hakemistossa kuin tiedosto myapp.swf.
 
   run
 
-    Suorita edell‰ komennossa 'file' m‰‰ritetty sovellus.
+    Suorita edell√§ komennossa 'file' m√§√§ritetty sovellus.
 
-    Jos sovellusta ei ole m‰‰ritetty, fdb odottaa, kunnes jokin sovellus 
+    Jos sovellusta ei ole m√§√§ritetty, fdb odottaa, kunnes jokin sovellus
 
-    muodostaa siihen yhteyden. Jos mik‰‰n sovellus ei tee niin, fdb suorittaa 
+    muodostaa siihen yhteyden. Jos mik√§√§n sovellus ei tee niin, fdb suorittaa
 
     aikakatkaisun.
 
-Komento 'run' k‰ynnist‰‰ sovelluksen selaimessa tai erillisess‰ Flash 
+Komento 'run' k√§ynnist√§√§ sovelluksen selaimessa tai erillisess√§ Flash
 
-Playeriss‰.
+Playeriss√§.
 
-Heti, kun sovellus k‰ynnistyy, se keskeytyy fdb-tilaan, jotta voit m‰‰ritt‰‰ 
+Heti, kun sovellus k√§ynnistyy, se keskeytyy fdb-tilaan, jotta voit m√§√§ritt√§√§
 
 keskeytyskohdat.
 
 
 
-Macintosh-k‰yttˆj‰rjestelm‰ss‰ komennon ainoa tuettu muoto on 'run', ilman 
+Macintosh-k√§ytt√∂j√§rjestelm√§ss√§ komennon ainoa tuettu muoto on 'run', ilman
 
-argumentteja.  Flash Player pit‰‰ k‰ynnist‰‰ manuaalisesti.
+argumentteja.  Flash Player pit√§√§ k√§ynnist√§√§ manuaalisesti.
 
 
 
@@ -1218,49 +1218,49 @@ argumentteja.  Flash Player pit‰‰ k‰ynnist‰‰ manuaalisesti.
 
 
 
-M‰‰rit‰ muuttujan tai mukavuusmuuttujan arvo.
+M√§√§rit√§ muuttujan tai mukavuusmuuttujan arvo.
 
-Mukavuusmuttujia esiintyy ainoastaan fdb:ss‰. Ne eiv‰t ole osa ohjelmaa.
+Mukavuusmuttujia esiintyy ainoastaan fdb:ss√§. Ne eiv√§t ole osa ohjelmaa.
 
-Mukavuusmuuttujilla on etuliite '$'. Muuttujilla voi olla mik‰ tahansa nimi, 
+Mukavuusmuuttujilla on etuliite '$'. Muuttujilla voi olla mik√§ tahansa nimi,
 
-joka ei ole jo olemassa olevan muuttujan nimi.  Esimerkiksi $myVar.  
+joka ei ole jo olemassa olevan muuttujan nimi.  Esimerkiksi $myVar.
 
-Mukavuusmuuttujilla voidaan hallita useita fdb:n ominaisuuksia.  
+Mukavuusmuuttujilla voidaan hallita useita fdb:n ominaisuuksia.
 
 
 
-Seuraavat mukavuusmuuttujat ovat fdb:n k‰ytˆss‰.
+Seuraavat mukavuusmuuttujat ovat fdb:n k√§yt√∂ss√§.
 
-$listsize          - komennolle 'list' n‰ytett‰vien l‰hderivien m‰‰r‰
+$listsize          - komennolle 'list' n√§ytett√§vien l√§hderivien m√§√§r√§
 
-$columnwrap        - sen sarakkeen numero, jossa tulostus rivitet‰‰n
+$columnwrap        - sen sarakkeen numero, jossa tulostus rivitet√§√§n
 
 $infostackshowthis - jos 0, pinon backtrace-luettelossa ei lue 'this'
 
-$invokegetters     - jos 0, est‰‰ fdb:t‰ suorittamasta get-funktioita
+$invokegetters     - jos 0, est√§√§ fdb:t√§ suorittamasta get-funktioita
 
-$bpnum             - viimeinen m‰‰ritetty keskeytyskohdan numero
+$bpnum             - viimeinen m√§√§ritetty keskeytyskohdan numero
 
-$displayattributes - jos 1, 'print var.' n‰ytt‰‰ kaikki 'var'-j‰senien 
+$displayattributes - jos 1, 'print var.' n√§ytt√§√§ kaikki 'var'-j√§senien
 
                      attribuutit (esim. yksityinen, staattinen)
 
 
 
-Esimerkkej‰:
+Esimerkkej√§:
 
   set i = 3
 
-    M‰‰ritt‰‰ muuttujan 'i' numerolle 3.
+    M√§√§ritt√§√§ muuttujan 'i' numerolle 3.
 
   set employee.name = "Susan"
 
-    M‰‰ritt‰‰ muuttujan 'employee.name' merkkijonolle "Susan".
+    M√§√§ritt√§√§ muuttujan 'employee.name' merkkijonolle "Susan".
 
   set $myVar = 20
 
-    M‰‰ritt‰‰ mukavuusmuuttujan '$myVar' numerolle 20.
+    M√§√§ritt√§√§ mukavuusmuuttujan '$myVar' numerolle 20.
 
 
 
@@ -1268,33 +1268,33 @@ Esimerkkej‰:
 
 
 
-Yleiskomento, jolla n‰hd‰‰n erilaisia tilatietoja fdb:st‰.
+Yleiskomento, jolla n√§hd√§√§n erilaisia tilatietoja fdb:st√§.
 
 Luettelo show-alikomennoista:
 
 show break (sh b)       Suorituksen keskeytyksen paikka ja syy.
 
-show directories (sh d) Hakemistot, joista etsit‰‰n l‰hdetiedostoja.
+show directories (sh d) Hakemistot, joista etsit√§√§n l√§hdetiedostoja.
 
 show files (sh f)       Kohdetiedostot ja -polut.
 
-show functions (sh fu)  Toimintorivin m‰‰ritystiedot. 
+show functions (sh fu)  Toimintorivin m√§√§ritystiedot.
 
 show locations (sh l)   Keskeytyskohtien paikat.
 
-show memory (sh m)      Nykyinen muistin k‰yttˆ.
+show memory (sh m)      Nykyinen muistin k√§ytt√∂.
 
-show net (sh n)         Soittimen viestitilastot. 
+show net (sh n)         Soittimen viestitilastot.
 
 show properties (sh p)  Ominaisuuksien arvot.
 
-show uri (sh u)         Soittimen URI t‰t‰ istuntoa varten. 
+show uri (sh u)         Soittimen URI t√§t√§ istuntoa varten.
 
 show variable (sh v)    Raw-muuttujan noutaminen.
 
-Kirjoita 'help show' ja sen j‰lkeen show-alikomennon nimi, niin n‰et t‰ydet 
+Kirjoita 'help show' ja sen j√§lkeen show-alikomennon nimi, niin n√§et t√§ydet
 
-k‰yttˆohjeet.
+k√§ytt√∂ohjeet.
 
 
 
@@ -1302,7 +1302,7 @@ k‰yttˆohjeet.
 
 
 
-N‰yt‰ siirtym‰ SWF:ss‰, johon ohjelma pys‰htyi.
+N√§yt√§ siirtym√§ SWF:ss√§, johon ohjelma pys√§htyi.
 
 
 
@@ -1310,7 +1310,7 @@ N‰yt‰ siirtym‰ SWF:ss‰, johon ohjelma pys‰htyi.
 
 
 
-N‰yt‰ nykyinen hakupolku l‰hdetiedostojen lˆyt‰mist‰ varten.
+N√§yt√§ nykyinen hakupolku l√§hdetiedostojen l√∂yt√§mist√§ varten.
 
 
 
@@ -1318,7 +1318,7 @@ N‰yt‰ nykyinen hakupolku l‰hdetiedostojen lˆyt‰mist‰ varten.
 
 
 
-N‰yt‰ kaikkien kohdetiedostojen polku ja tiedostonimi.
+N√§yt√§ kaikkien kohdetiedostojen polku ja tiedostonimi.
 
 
 
@@ -1326,29 +1326,29 @@ N‰yt‰ kaikkien kohdetiedostojen polku ja tiedostonimi.
 
 
 
-N‰yt‰ toiminnon/rivinumeron m‰‰ritystiedot.
+N√§yt√§ toiminnon/rivinumeron m√§√§ritystiedot.
 
-Esimerkkej‰:
+Esimerkkej√§:
 
   show functions .
 
-    N‰ytt‰‰ kaikkien toimintojen m‰‰ritystiedot nykyisess‰ tiedostossa.
+    N√§ytt√§√§ kaikkien toimintojen m√§√§ritystiedot nykyisess√§ tiedostossa.
 
   show functions myapp.mxml
 
-    N‰ytt‰‰ kaikkien toimintojen m‰‰ritystiedot tiedostossa myapp.mxml.
+    N√§ytt√§√§ kaikkien toimintojen m√§√§ritystiedot tiedostossa myapp.mxml.
 
   show functions #3
 
-    N‰ytt‰‰ kaikkien toimintojen m‰‰ritystiedot tiedostossa #3.
+    N√§ytt√§√§ kaikkien toimintojen m√§√§ritystiedot tiedostossa #3.
 
   show functions
 
-    N‰ytt‰‰ kaikkien toimintojen m‰‰ritystiedot kaikissa tiedostoissa.
+    N√§ytt√§√§ kaikkien toimintojen m√§√§ritystiedot kaikissa tiedostoissa.
 
-Tiedostonimet ja -numerot n‰et syˆtt‰m‰ll‰ 'info sources' tai 'info files'.
+Tiedostonimet ja -numerot n√§et sy√∂tt√§m√§ll√§ 'info sources' tai 'info files'.
 
-Lyhennetyt tiedostonimet hyv‰ksyt‰‰n, jos ne ovat selvi‰.
+Lyhennetyt tiedostonimet hyv√§ksyt√§√§n, jos ne ovat selvi√§.
 
 
 
@@ -1356,7 +1356,7 @@ Lyhennetyt tiedostonimet hyv‰ksyt‰‰n, jos ne ovat selvi‰.
 
 
 
-N‰ytt‰‰ luettelon sijainneista, jotka kullekin keskeytyskohdalle on m‰‰ritetty.
+N√§ytt√§√§ luettelon sijainneista, jotka kullekin keskeytyskohdalle on m√§√§ritetty.
 
 
 
@@ -1364,7 +1364,7 @@ N‰ytt‰‰ luettelon sijainneista, jotka kullekin keskeytyskohdalle on m‰‰ritetty.
 
 
 
-N‰ytt‰‰ Java-n‰enn‰ismuistin tilastot.
+N√§ytt√§√§ Java-n√§enn√§ismuistin tilastot.
 
 
 
@@ -1372,9 +1372,9 @@ N‰ytt‰‰ Java-n‰enn‰ismuistin tilastot.
 
 
 
-N‰ytt‰‰ tiedot Flash Playeriin l‰hetetyist‰ ja silt‰ vastaanotetuista 
+N√§ytt√§√§ tiedot Flash Playeriin l√§hetetyist√§ ja silt√§ vastaanotetuista
 
-viesteist‰.
+viesteist√§.
 
 
 
@@ -1382,7 +1382,7 @@ viesteist‰.
 
 
 
-N‰ytt‰‰ luettelon virheenkorjauksessa k‰ytetyist‰ mukavuusmuuttujista. 
+N√§ytt√§√§ luettelon virheenkorjauksessa k√§ytetyist√§ mukavuusmuuttujista.
 
 
 
@@ -1390,7 +1390,7 @@ N‰ytt‰‰ luettelon virheenkorjauksessa k‰ytetyist‰ mukavuusmuuttujista.
 
 
 
-N‰ytt‰‰ URI:n, jonka soitin l‰hetti t‰t‰ istuntoa varten.
+N√§ytt√§√§ URI:n, jonka soitin l√§hetti t√§t√§ istuntoa varten.
 
 
 
@@ -1398,11 +1398,11 @@ N‰ytt‰‰ URI:n, jonka soitin l‰hetti t‰t‰ istuntoa varten.
 
 
 
-N‰ytt‰‰ muuttujan j‰senten arvot.  Vaaditaan kaksi parametri‰. Ensimm‰inen on 
+N√§ytt√§√§ muuttujan j√§senten arvot.  Vaaditaan kaksi parametri√§. Ensimm√§inen on
 
-numeroarvoinen muuttujan tunniste. Toinen on muuttujan ominaisuuden nimi.  
+numeroarvoinen muuttujan tunniste. Toinen on muuttujan ominaisuuden nimi.
 
-Mukavuusmuuttujaa $invokegetters k‰ytet‰‰n m‰‰ritt‰m‰‰n, k‰ynnistet‰‰nkˆ 
+Mukavuusmuuttujaa $invokegetters k√§ytet√§√§n m√§√§ritt√§m√§√§n, k√§ynnistet√§√§nk√∂
 
 get-ominaisuus, jos sellainen on olemassa.
 
@@ -1416,7 +1416,7 @@ Esimerkki:
 
 
 
-M‰‰ritt‰m‰tˆn show-komento. Kokeile komentoa 'help show'.
+M√§√§ritt√§m√§t√∂n show-komento. Kokeile komentoa 'help show'.
 
 
 
@@ -1432,19 +1432,19 @@ Lue fdb-komennot tiedostosta ja suorita ne.
 
   source c:\mydir\mycommands.txt
 
-    Lukee kohteen mycommands.txt ja suorittaa siin‰ olevat fdb-komennot.
+    Lukee kohteen mycommands.txt ja suorittaa siin√§ olevat fdb-komennot.
 
-    Komennot sis‰lt‰v‰ tiedosto voidaan m‰‰ritt‰‰ joko
+    Komennot sis√§lt√§v√§ tiedosto voidaan m√§√§ritt√§√§ joko
 
 	suhteessa nykyiseen hakemistoon (katso komento 'pwd')
 
-	tai k‰ytt‰en absoluuttista polkua.
+	tai k√§ytt√§en absoluuttista polkua.
 
-Tiedosto .fdbinit luetaan automaattisesti t‰ll‰ tavalla, kun fdb k‰ynnistet‰‰n.
+Tiedosto .fdbinit luetaan automaattisesti t√§ll√§ tavalla, kun fdb k√§ynnistet√§√§n.
 
-Tiedostoa .fdbinit haetaan vain nykyisest‰ hakemistosta. T‰m‰ tarkoittaa sit‰, 
+Tiedostoa .fdbinit haetaan vain nykyisest√§ hakemistosta. T√§m√§ tarkoittaa sit√§,
 
-ett‰ voit m‰‰ritt‰‰ useita .fdbinit-tiedostoja eri projekteja varten.
+ett√§ voit m√§√§ritt√§√§ useita .fdbinit-tiedostoja eri projekteja varten.
 
 
 
@@ -1452,9 +1452,9 @@ ett‰ voit m‰‰ritt‰‰ useita .fdbinit-tiedostoja eri projekteja varten.
 
 
 
-Askelluta ohjelma, kunnes ohjelma saavuttaa eri l‰hderivin.
+Askelluta ohjelma, kunnes ohjelma saavuttaa eri l√§hderivin.
 
-Esimerkkej‰:
+Esimerkkej√§:
 
   step
 
@@ -1462,7 +1462,7 @@ Esimerkkej‰:
 
   step 3
 
-    Askelluta kolmasti, tai kunnes ohjelma pys‰htyy jostain muusta syyst‰.
+    Askelluta kolmasti, tai kunnes ohjelma pys√§htyy jostain muusta syyst√§.
 
 
 
@@ -1470,9 +1470,9 @@ Esimerkkej‰:
 
 
 
-N‰yt‰ opetusohjelma, jossa selitet‰‰n fdb:n k‰yttˆ.
+N√§yt√§ opetusohjelma, jossa selitet√§√§n fdb:n k√§ytt√∂.
 
-T‰m‰ komento ei hyv‰ksy argumentteja.
+T√§m√§ komento ei hyv√§ksy argumentteja.
 
 
 
@@ -1482,19 +1482,19 @@ T‰m‰ komento ei hyv‰ksy argumentteja.
 
 Tyypillinen fdb-istunto:
 
-K‰ynnist‰ sovellus komennolla 'run'.
+K√§ynnist√§ sovellus komennolla 'run'.
 
-Tarkastele tiedostonimi‰ komennolla 'info sources'.
+Tarkastele tiedostonimi√§ komennolla 'info sources'.
 
-Lis‰‰ tiedosto luetteloon komenolla 'list'.
+Lis√§√§ tiedosto luetteloon komenolla 'list'.
 
-M‰‰rit‰ keskeytyskohdat komennolla 'break'.
+M√§√§rit√§ keskeytyskohdat komennolla 'break'.
 
 Suorita ohjelma komennolla 'continue', kunnes osutaan keskeytyskohtaan.
 
 Tutki ohjelman tilaa komennoilla 'where', 'print', 'info locals'.
 
-Suorita yksitt‰isi‰ lausekkeita komennoilla 'next', 'step', 'finish'.
+Suorita yksitt√§isi√§ lausekkeita komennoilla 'next', 'step', 'finish'.
 
 Jatka suorittamista komennolla 'continue'.
 
@@ -1506,19 +1506,19 @@ Sulje fdb komennolla 'quit'.
 
 
 
-Poista yksi tai usea automaattisen n‰ytˆn ilmaus.
+Poista yksi tai usea automaattisen n√§yt√∂n ilmaus.
 
-Esimerkkej‰:
+Esimerkkej√§:
 
   undisplay
 
-    Poista kaikki automaattisen n‰ytˆn ilmaukset.
+    Poista kaikki automaattisen n√§yt√∂n ilmaukset.
 
   undisplay 2 7
 
-    Poista automaattisen n‰ytˆn ilmaukset #2 ja #7.
+    Poista automaattisen n√§yt√∂n ilmaukset #2 ja #7.
 
-N‰et automaattisen n‰ytˆn ilmaukset ja niiden numerot syˆtt‰m‰ll‰ 'info 
+N√§et automaattisen n√§yt√∂n ilmaukset ja niiden numerot sy√∂tt√§m√§ll√§ 'info
 
 display'.
 
@@ -1528,9 +1528,9 @@ display'.
 
 
 
-Valitse ja tulosta t‰t‰ kutsunut pinokehys.
+Valitse ja tulosta t√§t√§ kutsunut pinokehys.
 
-Seuraavat komennot 'info arguments' ja 'info locals' n‰ytt‰v‰t
+Seuraavat komennot 'info arguments' ja 'info locals' n√§ytt√§v√§t
 
 valitun kehyksen paikalliset muuttujat ja argumentit.
 
@@ -1542,45 +1542,45 @@ Katso komennot 'down' ja 'frame'.
 
 
 
-M‰‰ritt‰‰ tai tyhjent‰‰ tiedostoluettelon ('info files' tai 'info sources') 
+M√§√§ritt√§√§ tai tyhjent√§√§ tiedostoluettelon ('info files' tai 'info sources')
 
-suodattimen swf-nimen perusteella. 
+suodattimen swf-nimen perusteella.
 
-Ilman parametrej‰ kaikki tiedostot n‰ytet‰‰n.  Jos sama tiedosto esiintyy 
+Ilman parametrej√§ kaikki tiedostot n√§ytet√§√§n.  Jos sama tiedosto esiintyy
 
-useassa swf:ss‰, luettelossa n‰kyy vain tiedoston ensimm‰inen esiintym‰.  
+useassa swf:ss√§, luettelossa n√§kyy vain tiedoston ensimm√§inen esiintym√§.
 
-Saat tiedoston muut esiintym‰t n‰kyviin k‰ytt‰m‰ll‰ tiedoston numeroa (esim. 
+Saat tiedoston muut esiintym√§t n√§kyviin k√§ytt√§m√§ll√§ tiedoston numeroa (esim.
 
-'list #192') tai t‰t‰ komentoa parametrin kanssa (katso alla). N‰in voit 
+'list #192') tai t√§t√§ komentoa parametrin kanssa (katso alla). N√§in voit
 
-tarkastella jonkin tietyn swf:n tiedostoja.  Jos k‰ytˆss‰ on vain yksi 
+tarkastella jonkin tietyn swf:n tiedostoja.  Jos k√§yt√∂ss√§ on vain yksi
 
-parametri, komennon 'info swfs' n‰ytt‰m‰ swf-nimi, ainoastaan m‰‰ritetyn swf:n 
+parametri, komennon 'info swfs' n√§ytt√§m√§ swf-nimi, ainoastaan m√§√§ritetyn swf:n
 
-tiedostot tulevat n‰kyviin luetteloon.  
+tiedostot tulevat n√§kyviin luetteloon.
 
-Muissa swf-tiedostoissa olevia tiedostoja ei n‰ytet‰.  T‰m‰ komento vaikuttaa 
+Muissa swf-tiedostoissa olevia tiedostoja ei n√§ytet√§.  T√§m√§ komento vaikuttaa
 
-myˆs komentoihin, jotka hyv‰ksyv‰t parametriksi tiedoston (esim. 'break').
+my√∂s komentoihin, jotka hyv√§ksyv√§t parametriksi tiedoston (esim. 'break').
 
 Esimerkki:
 
   viewswf myApp.mxml.swf
 
-    Vain tiedostossa myApp.mxml.swf olevat tiedostot n‰ytet‰‰n.
+    Vain tiedostossa myApp.mxml.swf olevat tiedostot n√§ytet√§√§n.
 
-  viewswf 
+  viewswf
 
-    Kaikkien swf-tiedostojen kaikki tiedostot n‰ytet‰‰n.
+    Kaikkien swf-tiedostojen kaikki tiedostot n√§ytet√§√§n.
 
- 
+
 
 [watch]
 
 
 
-Lis‰‰ katselukohta annettuun muuttujaan. Virheenkorjaustoiminto keskeytt‰‰ 
+Lis√§√§ katselukohta annettuun muuttujaan. Virheenkorjaustoiminto keskeytt√§√§
 
 suorittamisen muuttujan arvon vaihtuessa.
 
@@ -1594,7 +1594,7 @@ Esimerkki:
 
 
 
-N‰ytt‰‰ kontekstin, jonka sis‰ll‰ muuttuja ratkaistaan. 
+N√§ytt√§√§ kontekstin, jonka sis√§ll√§ muuttuja ratkaistaan.
 
 
 

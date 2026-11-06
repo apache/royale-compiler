@@ -316,7 +316,7 @@
          Source files have Windows line endings.  Most UNIX editors can handle
          either type of line endings but the converse is often not true.
          -->
-        <fixcrlf srcdir="${staging-dir}" eol="crlf" fixlast="false">
+        <fixcrlf srcdir="${staging-dir}" eol="crlf" fixlast="false" encoding="UTF-8">
             <exclude name="compiler/src/assembly/**"/>
             <exclude name="compiler-jx/src/assembly/**"/>
             <exclude name="compiler/target/**"/>
@@ -589,7 +589,7 @@
          Source files have Windows line endings.  Most UNIX editors can handle
          either type of line endings but the converse is often not true.
          -->
-        <fixcrlf srcdir="${staging-dir}" eol="crlf" fixlast="false">
+        <fixcrlf srcdir="${staging-dir}" eol="crlf" fixlast="false" encoding="UTF-8">
             <exclude name="compiler/src/assembly/**"/>
             <exclude name="compiler-jx/src/assembly/**"/>
             <exclude name="**/assets/**"/>
