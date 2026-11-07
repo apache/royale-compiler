@@ -188,7 +188,19 @@ public class WatchThread extends Thread
 
 				if (kind.equals(StandardWatchEventKinds.ENTRY_CREATE))
 				{
-					workspace.fileAdded(fileSpec);
+					// editors (and tools like sed -i) that save by renaming a
+					// temporary file over the original report a create, not a
+					// modify. fileAdded() doesn't invalidate the compilation
+					// units of a file that the workspace already knows, so the
+					// previous content would be compiled again.
+					if (workspace.getCompilationUnits(normalizedChildPath, project).isEmpty())
+					{
+						workspace.fileAdded(fileSpec);
+					}
+					else
+					{
+						workspace.fileChanged(fileSpec);
+					}
 				}
 				else if (kind.equals(StandardWatchEventKinds.ENTRY_DELETE))
 				{
