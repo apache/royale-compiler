@@ -42,9 +42,9 @@ import java.util.Set;
 import org.apache.royale.compiler.clients.problems.ProblemPrinter;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
-import org.apache.royale.compiler.common.DependencyTypeSet;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.projects.DependencyGraph;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.problems.ICompilerProblem;
@@ -193,6 +193,10 @@ public class WatchThread extends Thread
 				String normalizedChildPath = FilenameNormalization.normalize(childPath.toString());
 				IFileSpecification fileSpec = workspace.getFileSpecification(normalizedChildPath);
 
+				// before the workspace invalidates them, while the dependency
+				// graph still has their edges
+				addInvalidatedDependents(normalizedChildPath, changedCUs);
+
 				if (kind.equals(StandardWatchEventKinds.ENTRY_CREATE))
 				{
 					// editors (and tools like sed -i) that save by renaming a
@@ -242,16 +246,6 @@ public class WatchThread extends Thread
 
 		writer.rebuild(changedCUs, problems.getProblems());
 
-		// iterate over a copy because reverse dependencies are added to
-		// changedCUs, and modifying a HashSet while iterating it throws
-		// ConcurrentModificationException
-		for (ICompilationUnit cu : new ArrayList<ICompilationUnit>(changedCUs))
-		{
-			DependencyTypeSet dependencyTypes = DependencyTypeSet.allOf();
-			Set<ICompilationUnit> reverseDeps = project.getDirectReverseDependencies(cu, dependencyTypes);
-			changedCUs.addAll(reverseDeps);
-		}
-
 		List<ICompilerProblem> errs = new ArrayList<ICompilerProblem>();
 		List<ICompilerProblem> warns = new ArrayList<ICompilerProblem>();
 		problems.getErrorsAndWarnings(errs, warns);
@@ -271,6 +265,29 @@ public class WatchThread extends Thread
 		}
 
 		System.out.println("Watching for file changes in target " + name + "...");
+	}
+
+	/**
+	 * Adds the compilation units that a change to the file invalidates: the
+	 * same set that the workspace cleans (see Workspace.invalidate()), which is
+	 * the units that depend on the file's units, and through inheritance,
+	 * signature and namespace dependencies, their dependents too. It's computed
+	 * before the file's units are invalidated, because the cleaned units only
+	 * get their dependency edges back once they're built again, so after the
+	 * rebuild they couldn't be found from the changed units anymore.
+	 */
+	private void addInvalidatedDependents(String normalizedPath, Set<ICompilationUnit> changedCUs)
+	{
+		Collection<ICompilationUnit> units = workspace.getCompilationUnits(normalizedPath, project);
+		if (units.isEmpty())
+		{
+			return;
+		}
+		Set<ICompilationUnit> dependents = DependencyGraph.computeInvalidationSet(units);
+		// the file's own units are added after the workspace is notified,
+		// unless the file was removed
+		dependents.removeAll(units);
+		changedCUs.addAll(dependents);
 	}
 
 	/**
