@@ -22,6 +22,7 @@ package org.apache.royale.compiler.internal.watcher;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
@@ -115,6 +116,7 @@ public class WatchThread extends Thread
     private ProblemQuery problems;
 
 	private Map<WatchKey, Path> watchKeys;
+	private Set<Path> watchedPaths;
 	private WatchService watchService;
 
 	public void run()
@@ -123,17 +125,17 @@ public class WatchThread extends Thread
 		{
 			watchKeys = new HashMap<WatchKey, Path>();
 			watchService = FileSystems.getDefault().newWatchService();
-			Set<Path> watchedPaths = new HashSet<Path>();
+			watchedPaths = new HashSet<Path>();
 			for (String sourcePath : config.getCompilerSourcePath())
 			{
 				sourcePath = FilenameNormalization.normalize(sourcePath);
-				watchPath(Paths.get(sourcePath), watchedPaths);
+				watchPath(Paths.get(sourcePath));
 			}
 			for (String fileSpec : config.getFileSpecs())
 			{
 				fileSpec = FilenameNormalization.normalize(fileSpec);
 				Path fileSpecPath = Paths.get(fileSpec);
-				watchPath(fileSpecPath.getParent(), watchedPaths);
+				watchPath(fileSpecPath.getParent());
 			}
 
 			System.out.println("Watching for file changes in target " + name + "...");
@@ -172,7 +174,7 @@ public class WatchThread extends Thread
 		recompile(changedCUs);
 	}
 
-	private void processWatchKey(WatchKey watchKey, Set<ICompilationUnit> changedCUs) throws InterruptedException
+	private void processWatchKey(WatchKey watchKey, Set<ICompilationUnit> changedCUs) throws InterruptedException, IOException
 	{
 		Path path = watchKeys.get(watchKey);
 		for (WatchEvent<?> event : watchKey.pollEvents())
@@ -180,6 +182,11 @@ public class WatchThread extends Thread
 			WatchEvent.Kind<?> kind = event.kind();
 			Path childPath = (Path) event.context();
 			childPath = path.resolve(childPath);
+			if (kind.equals(StandardWatchEventKinds.ENTRY_CREATE) && Files.isDirectory(childPath))
+			{
+				addDirectory(childPath, changedCUs);
+				continue;
+			}
 			String fileName = childPath.getFileName().toString();
 			if (fileName.endsWith(".mxml") || fileName.endsWith(".as"))
 			{
@@ -266,7 +273,34 @@ public class WatchThread extends Thread
 		System.out.println("Watching for file changes in target " + name + "...");
 	}
 
-    private void watchPath(Path path, Set<Path> watchedPaths) throws IOException
+	/**
+	 * A directory created (or moved in) after the watch started: watch it too,
+	 * and add the files that it already has, which were created before it was
+	 * watched and so have no events of their own.
+	 */
+	private void addDirectory(Path directoryPath, final Set<ICompilationUnit> changedCUs) throws IOException
+	{
+		watchPath(directoryPath);
+		java.nio.file.Files.walkFileTree(directoryPath, new SimpleFileVisitor<Path>() {
+			@Override
+			public FileVisitResult visitFile(Path filePath, BasicFileAttributes attrs)
+					throws IOException {
+				String fileName = filePath.getFileName().toString();
+				if (fileName.endsWith(".mxml") || fileName.endsWith(".as"))
+				{
+					String normalizedFilePath = FilenameNormalization.normalize(filePath.toString());
+					if (workspace.getCompilationUnits(normalizedFilePath, project).isEmpty())
+					{
+						workspace.fileAdded(workspace.getFileSpecification(normalizedFilePath));
+					}
+					changedCUs.addAll(workspace.getCompilationUnits(normalizedFilePath, project));
+				}
+				return FileVisitResult.CONTINUE;
+			}
+		});
+	}
+
+    private void watchPath(Path path) throws IOException
     {
         path = path.toAbsolutePath();
         if (watchedPaths.contains(path))
