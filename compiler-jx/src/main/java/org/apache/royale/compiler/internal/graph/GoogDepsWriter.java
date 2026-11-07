@@ -740,7 +740,11 @@ public class GoogDepsWriter {
 				int c = line.indexOf(JSGoogEmitterTokens.GOOG_REQUIRE.getToken());
 				int c2 = line.indexOf(")");
                 String s = line.substring(c + 14, c2 - 1);
-                if (!isGoogProvided(s))
+                // also remove requires of classes that are no longer part of the build. In watch
+                // mode, the main file still has the requires added by a previous publish, so a
+                // class that is no longer used would be required without being in the deps, and
+                // goog.require() would fail to find it at startup
+                if (!isGoogProvided(s) || (!isGoogClass(s) && !depMap.containsKey(s)))
                 {
                 	fileLines.remove(j);
 					sourceMapConsumer = SourceMapUtils.removeLineFromSourceMap(sourceMapConsumer, mainFile.getName(), j);
