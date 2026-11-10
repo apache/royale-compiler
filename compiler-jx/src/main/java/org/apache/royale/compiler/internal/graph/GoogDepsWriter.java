@@ -180,15 +180,7 @@ public class GoogDepsWriter {
 		{
 			return;
 		}
-		SourceMapConsumerV3 sourceMapConsumer = new SourceMapConsumerV3();
-		try
-		{
-			sourceMapConsumer.parse(sourceMapContents);
-		}
-		catch(SourceMapParseException e)
-		{
-			sourceMapConsumer = null;
-		}
+		SourceMapConsumerV3 sourceMapConsumer = parseSourceMap(sourceMapContents);
 		if (sourceMapConsumer == null)
 		{
 			return;
@@ -255,15 +247,7 @@ public class GoogDepsWriter {
 		{
 			return;
 		}
-		SourceMapConsumerV3 sourceMapConsumer = new SourceMapConsumerV3();
-		try
-		{
-			sourceMapConsumer.parse(sourceMapContents);
-		}
-		catch(SourceMapParseException e)
-		{
-			sourceMapConsumer = null;
-		}
+		SourceMapConsumerV3 sourceMapConsumer = parseSourceMap(sourceMapContents);
 		if (sourceMapConsumer == null)
 		{
 			return;
@@ -713,15 +697,7 @@ public class GoogDepsWriter {
 				if (sourceMapFile.exists())
 				{
 					String sourceMapContents = FileUtils.readFileToString(sourceMapFile, Charset.forName("utf8"));
-					sourceMapConsumer = new SourceMapConsumerV3();
-					try
-					{
-						sourceMapConsumer.parse(sourceMapContents);
-					}
-					catch(SourceMapParseException e)
-					{
-						sourceMapConsumer = null;
-					}
+					sourceMapConsumer = parseSourceMap(sourceMapContents);
 				}
 			}
 
@@ -847,6 +823,34 @@ public class GoogDepsWriter {
 		}
 	}
 	
+	/**
+	 * Parses a source map, or returns null when it can't be read. A map that is empty or
+	 * truncated (e.g. caught while it's being rewritten during a watch recompile) makes the
+	 * parser throw a NullPointerException rather than a SourceMapParseException, which used to
+	 * abort the whole publish. Without a map, the file's lines are still rewritten; only its
+	 * source map isn't adjusted (every SourceMapUtils call accepts a null consumer).
+	 */
+	private static SourceMapConsumerV3 parseSourceMap(String sourceMapContents)
+	{
+		if (sourceMapContents == null || sourceMapContents.trim().isEmpty())
+			return null;
+
+		SourceMapConsumerV3 sourceMapConsumer = new SourceMapConsumerV3();
+		try
+		{
+			sourceMapConsumer.parse(sourceMapContents);
+		}
+		catch(SourceMapParseException e)
+		{
+			return null;
+		}
+		catch(RuntimeException e)
+		{
+			return null;
+		}
+		return sourceMapConsumer;
+	}
+
 	void removeRequires(GoogDep gd)
 	{
 		String className = gd.className;
@@ -867,15 +871,7 @@ public class GoogDepsWriter {
 				if (sourceMapFile.exists())
 				{
 					String sourceMapContents = FileUtils.readFileToString(sourceMapFile, Charset.forName("utf8"));
-					sourceMapConsumer = new SourceMapConsumerV3();
-					try
-					{
-						sourceMapConsumer.parse(sourceMapContents);
-					}
-					catch(SourceMapParseException e)
-					{
-						sourceMapConsumer = null;
-					}
+					sourceMapConsumer = parseSourceMap(sourceMapContents);
 				}
 			}
             
