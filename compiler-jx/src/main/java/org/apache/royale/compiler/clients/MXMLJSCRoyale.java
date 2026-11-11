@@ -364,6 +364,13 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
                         writeCompilationUnit(unit, outputFolder);
                     }
 
+                    // A unit that the application didn't reach before (a new class, or one
+                    // that nothing used) isn't among the changed or invalidated units when a
+                    // change starts using it, so it was never written, and the publisher
+                    // then can't find its JavaScript ("Unable to find JavaScript filePath for
+                    // class"). Write every reachable source unit that has no output yet.
+                    writeNewlyReachableCompilationUnits(units, outputFolder);
+
                     // ensures that the goog.addDependency() calls are updated
                     jsPublisher.publish(problems);
 
@@ -489,6 +496,36 @@ public class MXMLJSCRoyale implements JSCompilerEntryPoint, ProblemQueryProvider
         problems.getErrorsAndWarnings(errs, warns);
 
         return compilationSuccess && (errs.size() == 0);
+    }
+
+    /**
+     * Writes each AS or MXML unit that the application reaches, other than the ones just written,
+     * whose output file doesn't exist yet. Units from SWCs have no output of their own here
+     * (writeCompilationUnit skips them; the publisher copies their JavaScript).
+     */
+    protected void writeNewlyReachableCompilationUnits(Collection<ICompilationUnit> written, File outputFolder) throws InterruptedException, IOException
+    {
+        ArrayList<ICompilationUnit> roots = new ArrayList<ICompilationUnit>();
+        roots.add(mainCU);
+        roots.addAll(target.getIncludesCompilationUnits());
+
+        for (ICompilationUnit cu : project.getReachableCompilationUnitsInSWFOrder(roots))
+        {
+            ICompilationUnit.UnitType cuType = cu.getCompilationUnitType();
+            if (written.contains(cu)
+                    || (cuType != ICompilationUnit.UnitType.AS_UNIT && cuType != ICompilationUnit.UnitType.MXML_UNIT))
+            {
+                continue;
+            }
+
+            if (getOutputClassFile(cu.getQualifiedNames().get(0), outputFolder).exists())
+            {
+                continue;
+            }
+
+            cu.waitForBuildFinish(problems.getProblems(), null);
+            writeCompilationUnit(cu, outputFolder);
+        }
     }
 
     protected void writeCompilationUnit(ICompilationUnit cu, File outputFolder) throws InterruptedException, IOException
