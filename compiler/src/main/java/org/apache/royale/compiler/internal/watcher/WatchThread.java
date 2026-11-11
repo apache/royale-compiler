@@ -244,15 +244,30 @@ public class WatchThread extends Thread
 
 		problems.clear();
 
-		writer.rebuild(changedCUs, problems.getProblems());
-
-		List<ICompilerProblem> errs = new ArrayList<ICompilerProblem>();
-		List<ICompilerProblem> warns = new ArrayList<ICompilerProblem>();
-		problems.getErrorsAndWarnings(errs, warns);
-		
-		if (!problems.hasFilteredProblems() || !problems.hasErrors())
+		// An unexpected failure in one recompile (e.g. while publishing) used to end the watch
+		// (run() exits the VM on any exception), so every later change went unnoticed until
+		// it was restarted by hand. Report it and keep watching: the next change recompiles.
+		try
 		{
-			writer.write(changedCUs);
+			writer.rebuild(changedCUs, problems.getProblems());
+
+			List<ICompilerProblem> errs = new ArrayList<ICompilerProblem>();
+			List<ICompilerProblem> warns = new ArrayList<ICompilerProblem>();
+			problems.getErrorsAndWarnings(errs, warns);
+
+			if (!problems.hasFilteredProblems() || !problems.hasErrors())
+			{
+				writer.write(changedCUs);
+			}
+		}
+		catch (InterruptedException e)
+		{
+			throw e;
+		}
+		catch (Exception e)
+		{
+			System.err.println(new InternalCompilerProblem(e));
+			System.err.println("Recompiling " + name + " failed. Still watching: save a file to recompile again.");
 		}
 
 		if (problems.hasFilteredProblems())
