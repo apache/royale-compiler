@@ -126,17 +126,17 @@ public class SetterDefinition extends AccessorDefinition implements ISetterDefin
         if (project.getInferTypes() && getTypeReference() == null)
         {
             ITypeDefinition typeDef = null;
-            IFunctionNode funcNode = getFunctionNode();
-            if (funcNode != null)
+            IVariableNode varNode = getVariableNode();
+            if (varNode != null)
             {
-                typeDef = SemanticUtils.resolveFunctionInferredReturnType(funcNode, project);
+                typeDef = SemanticUtils.resolveVariableInferredType(varNode, project);
             }
             else
             {
-                IVariableNode varNode = getVariableNode();
-                if (varNode != null)
+                IFunctionNode funcNode = getFunctionNode();
+                if (funcNode != null)
                 {
-                    typeDef = SemanticUtils.resolveVariableInferredType(varNode, project);
+                    typeDef = SemanticUtils.resolveFunctionInferredReturnType(funcNode, project);
                 }
             }
             if (typeDef != null)
