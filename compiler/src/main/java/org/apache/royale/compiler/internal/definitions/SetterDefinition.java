@@ -28,7 +28,8 @@ import org.apache.royale.compiler.definitions.references.ReferenceFactory;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.problems.IncompatibleOverrideProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
-import org.apache.royale.compiler.tree.as.ISetterNode;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
 
 public class SetterDefinition extends AccessorDefinition implements ISetterDefinition
 {
@@ -124,15 +125,24 @@ public class SetterDefinition extends AccessorDefinition implements ISetterDefin
     {
         if (project.getInferTypes() && getTypeReference() == null)
         {
-            ISetterNode setterNode = (ISetterNode) getNode();
-            if (setterNode != null)
+            ITypeDefinition typeDef = null;
+            IFunctionNode funcNode = getFunctionNode();
+            if (funcNode != null)
             {
-                ITypeDefinition typeDef = SemanticUtils.resolveVariableInferredType(setterNode, project);
-                if (typeDef != null)
+                typeDef = SemanticUtils.resolveFunctionInferredReturnType(funcNode, project);
+            }
+            else
+            {
+                IVariableNode varNode = getVariableNode();
+                if (varNode != null)
                 {
-                    setTypeReference(ReferenceFactory.resolvedReference(typeDef));
-                    return (TypeDefinitionBase) typeDef;
+                    typeDef = SemanticUtils.resolveVariableInferredType(varNode, project);
                 }
+            }
+            if (typeDef != null)
+            {
+                setTypeReference(ReferenceFactory.resolvedReference(typeDef));
+                return (TypeDefinitionBase) typeDef;
             }
         }
         return super.resolveType(project);

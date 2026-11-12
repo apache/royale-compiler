@@ -203,28 +203,31 @@ public class FunctionDefinition extends ScopedDefinitionBase implements IFunctio
         IReference returnTypeReference = getReturnTypeReference();
         if (returnTypeReference == null)
         {
-            IFunctionNode funcNode = (IFunctionNode) getNode();
-            ITypeDefinition inferredReturnType = null;
-            if (funcNode.isArrowFunction())
+            IFunctionNode funcNode = getFunctionNode();
+            if (funcNode != null)
             {
-                inferredReturnType = SemanticUtils.resolveArrowFunctionInferredReturnType(funcNode, project);
-            }
-            if (project.getInferTypes() && inferredReturnType == null)
-            {
-                inferredReturnType = SemanticUtils.resolveFunctionInferredReturnType(funcNode, project);
-            }
-            if (inferredReturnType != null)
-            {
-                IReference resolvedRef = ReferenceFactory.resolvedReference(inferredReturnType);
-                setReturnTypeReference(ReferenceFactory.resolvedReference(inferredReturnType));
-                DependencyType dt = DependencyType.SIGNATURE;
-                return resolveType(resolvedRef, project, dt);
+                ITypeDefinition inferredReturnType = null;
+                if (funcNode.isArrowFunction())
+                {
+                    inferredReturnType = SemanticUtils.resolveArrowFunctionInferredReturnType(funcNode, project);
+                }
+                if (project.getInferTypes() && inferredReturnType == null)
+                {
+                    inferredReturnType = SemanticUtils.resolveFunctionInferredReturnType(funcNode, project);
+                }
+                if (inferredReturnType != null)
+                {
+                    IReference resolvedRef = ReferenceFactory.resolvedReference(inferredReturnType);
+                    setReturnTypeReference(ReferenceFactory.resolvedReference(inferredReturnType));
+                    DependencyType dt = DependencyType.SIGNATURE;
+                    return resolveType(resolvedRef, project, dt);
+                }
             }
         }
 
         if (project.getAllowStrictFunctionTypes())
         {
-            IFunctionNode funcNode = (IFunctionNode) getNode();
+            IFunctionNode funcNode = getFunctionNode();
             // accessors add the metadata in resolveType instead, similar to variables
             if (funcNode != null && !(funcNode instanceof IAccessorNode))
             {

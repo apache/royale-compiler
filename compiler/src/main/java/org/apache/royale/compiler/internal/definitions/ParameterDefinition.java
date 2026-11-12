@@ -30,6 +30,7 @@ import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.projects.ICompilerProject;
 import org.apache.royale.compiler.scopes.IASScope;
 import org.apache.royale.compiler.tree.as.IParameterNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
 
 /**
  * Each instance of this class represents the definition of an ActionScript
@@ -82,7 +83,7 @@ public class ParameterDefinition extends VariableDefinition implements IParamete
     {
         if (project.getInferTypes() && getTypeReference() == null)
         {
-            IParameterNode paramNode = (IParameterNode) getNode();
+            IVariableNode paramNode = getVariableNode();
             if (paramNode != null)
             {
                 ITypeDefinition typeDef = SemanticUtils.resolveVariableInferredType(paramNode, project);

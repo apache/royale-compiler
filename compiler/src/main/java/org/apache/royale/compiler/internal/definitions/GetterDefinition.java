@@ -28,7 +28,9 @@ import org.apache.royale.compiler.definitions.references.ReferenceFactory;
 import org.apache.royale.compiler.internal.semantics.SemanticUtils;
 import org.apache.royale.compiler.problems.IncompatibleOverrideProblem;
 import org.apache.royale.compiler.projects.ICompilerProject;
+import org.apache.royale.compiler.tree.as.IFunctionNode;
 import org.apache.royale.compiler.tree.as.IGetterNode;
+import org.apache.royale.compiler.tree.as.IVariableNode;
 
 public class GetterDefinition extends AccessorDefinition implements IGetterDefinition
 {
@@ -126,8 +128,20 @@ public class GetterDefinition extends AccessorDefinition implements IGetterDefin
     {
         if (project.getInferTypes() && getTypeReference() == null)
         {
-            IGetterNode getterNode = (IGetterNode) getNode();
-            ITypeDefinition typeDef = SemanticUtils.resolveFunctionInferredReturnType(getterNode, project);
+            ITypeDefinition typeDef = null;
+            IFunctionNode funcNode = getFunctionNode();
+            if (funcNode != null)
+            {
+                typeDef = SemanticUtils.resolveFunctionInferredReturnType(funcNode, project);
+            }
+            else
+            {
+                IVariableNode varNode = getVariableNode();
+                if (varNode != null)
+                {
+                    typeDef = SemanticUtils.resolveVariableInferredType(varNode, project);
+                }
+            }
             if (typeDef != null)
             {
                 setTypeReference(ReferenceFactory.resolvedReference(typeDef));

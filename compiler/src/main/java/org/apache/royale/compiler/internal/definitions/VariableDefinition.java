@@ -237,7 +237,7 @@ public class VariableDefinition extends DefinitionBase implements IVariableDefin
     {
         if (project.getInferTypes() && getTypeReference() == null)
         {
-            IVariableNode varNode = (IVariableNode) getNode();
+            IVariableNode varNode = getVariableNode();
             if (varNode != null)
             {
                 IDefinition resolvedDefinition = null;
@@ -270,7 +270,7 @@ public class VariableDefinition extends DefinitionBase implements IVariableDefin
         }
         if (project.getAllowStrictFunctionTypes())
         {
-            IVariableNode varNode = (IVariableNode) getNode();
+            IVariableNode varNode = getVariableNode();
             if (varNode != null)
             {
                 IExpressionNode varTypeNode = varNode.getVariableTypeNode();
