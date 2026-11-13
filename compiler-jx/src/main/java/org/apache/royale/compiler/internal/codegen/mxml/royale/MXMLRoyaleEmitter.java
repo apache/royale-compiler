@@ -1615,11 +1615,26 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
         boolean allowDynamicBindings = project.config != null && project.config.getAllowDynamicBindings();
         boolean useMxmlReflectObjectProperty = project.config != null && project.config.getMxmlReflectObjectProperty();
         
-        writeNewline("/**");
-        writeNewline(" * @export"); // must export or else GCC will remove it
-        writeNewline(" */");
-        writeNewline(formatQualifiedName(cname)
-                + ".prototype._bindings = [");
+        Set<Entry<Object, WatcherInfoBase>> watcherChains = bindingDataBase.getWatcherChains();
+
+        // A static property watcher stores a reference to its class in the binding data. Only the
+        // base class is goog.require'd, so when the data is a plain array, built as this file
+        // loads, that class may not be loaded yet and the watcher gets undefined. Build the
+        // data on first use instead, once every file has loaded.
+        boolean lazyBindings = hasStaticWatcher(watcherChains);
+        String prototypeName = formatQualifiedName(cname) + ".prototype";
+        if (lazyBindings)
+        {
+            writeNewline("Object.defineProperty(" + prototypeName + ", '_bindings', { configurable: true, get: function() {");
+            writeNewline("var value = [");
+        }
+        else
+        {
+            writeNewline("/**");
+            writeNewline(" * @export"); // must export or else GCC will remove it
+            writeNewline(" */");
+            writeNewline(prototypeName + "._bindings = [");
+        }
 
 		if (bindingDataBase.getHasAncestorBindings()) {
 			//reference the ancestor binding data (which may in turn reference its owner's ancestor's bindings etc)
@@ -1870,8 +1885,6 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
             }
             
         }
-        Set<Entry<Object, WatcherInfoBase>> watcherChains = bindingDataBase.getWatcherChains();
-        
         if (watcherChains != null)
         {
             int count = watcherChains.size();
@@ -1892,6 +1905,30 @@ public class MXMLRoyaleEmitter extends MXMLEmitter implements
 
         write(ASEmitterTokens.SQUARE_CLOSE);
         writeNewline(ASEmitterTokens.SEMICOLON);
+
+        if (lazyBindings)
+        {
+            // Replace the getter with the data so it's only built once
+            writeNewline("Object.defineProperty(" + prototypeName + ", '_bindings', { value: value });");
+            writeNewline("return value;");
+            writeNewline("}});");
+        }
+    }
+
+    private boolean hasStaticWatcher(Set<Entry<Object, WatcherInfoBase>> watchers)
+    {
+        if (watchers == null)
+            return false;
+
+        for (Entry<Object, WatcherInfoBase> entry : watchers)
+        {
+            WatcherInfoBase watcherInfoBase = entry.getValue();
+            if (watcherInfoBase.getType() == WatcherType.STATIC_PROPERTY
+                    || hasStaticWatcher(watcherInfoBase.getChildren()))
+                return true;
+        }
+
+        return false;
     }
 
     private String generateSetterFunction(BindingInfo bi, IExpressionNode destNode) {
