@@ -22,6 +22,7 @@ package org.apache.royale.compiler.internal.watcher;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
@@ -41,9 +42,9 @@ import java.util.Set;
 import org.apache.royale.compiler.clients.problems.ProblemPrinter;
 import org.apache.royale.compiler.clients.problems.ProblemQuery;
 import org.apache.royale.compiler.clients.problems.WorkspaceProblemFormatter;
-import org.apache.royale.compiler.common.DependencyTypeSet;
 import org.apache.royale.compiler.config.Configuration;
 import org.apache.royale.compiler.filespecs.IFileSpecification;
+import org.apache.royale.compiler.internal.projects.DependencyGraph;
 import org.apache.royale.compiler.internal.projects.RoyaleProject;
 import org.apache.royale.compiler.internal.workspaces.Workspace;
 import org.apache.royale.compiler.problems.ICompilerProblem;
@@ -115,6 +116,7 @@ public class WatchThread extends Thread
     private ProblemQuery problems;
 
 	private Map<WatchKey, Path> watchKeys;
+	private Set<Path> watchedPaths;
 	private WatchService watchService;
 
 	public void run()
@@ -123,17 +125,17 @@ public class WatchThread extends Thread
 		{
 			watchKeys = new HashMap<WatchKey, Path>();
 			watchService = FileSystems.getDefault().newWatchService();
-			Set<Path> watchedPaths = new HashSet<Path>();
+			watchedPaths = new HashSet<Path>();
 			for (String sourcePath : config.getCompilerSourcePath())
 			{
 				sourcePath = FilenameNormalization.normalize(sourcePath);
-				watchPath(Paths.get(sourcePath), watchedPaths);
+				watchPath(Paths.get(sourcePath));
 			}
 			for (String fileSpec : config.getFileSpecs())
 			{
 				fileSpec = FilenameNormalization.normalize(fileSpec);
 				Path fileSpecPath = Paths.get(fileSpec);
-				watchPath(fileSpecPath.getParent(), watchedPaths);
+				watchPath(fileSpecPath.getParent());
 			}
 
 			System.out.println("Watching for file changes in target " + name + "...");
@@ -172,7 +174,7 @@ public class WatchThread extends Thread
 		recompile(changedCUs);
 	}
 
-	private void processWatchKey(WatchKey watchKey, Set<ICompilationUnit> changedCUs) throws InterruptedException
+	private void processWatchKey(WatchKey watchKey, Set<ICompilationUnit> changedCUs) throws InterruptedException, IOException
 	{
 		Path path = watchKeys.get(watchKey);
 		for (WatchEvent<?> event : watchKey.pollEvents())
@@ -180,15 +182,36 @@ public class WatchThread extends Thread
 			WatchEvent.Kind<?> kind = event.kind();
 			Path childPath = (Path) event.context();
 			childPath = path.resolve(childPath);
+			if (kind.equals(StandardWatchEventKinds.ENTRY_CREATE) && Files.isDirectory(childPath))
+			{
+				addDirectory(childPath, changedCUs);
+				continue;
+			}
 			String fileName = childPath.getFileName().toString();
 			if (fileName.endsWith(".mxml") || fileName.endsWith(".as"))
 			{
 				String normalizedChildPath = FilenameNormalization.normalize(childPath.toString());
 				IFileSpecification fileSpec = workspace.getFileSpecification(normalizedChildPath);
 
+				// before the workspace invalidates them, while the dependency
+				// graph still has their edges
+				addInvalidatedDependents(normalizedChildPath, changedCUs);
+
 				if (kind.equals(StandardWatchEventKinds.ENTRY_CREATE))
 				{
-					workspace.fileAdded(fileSpec);
+					// editors (and tools like sed -i) that save by renaming a
+					// temporary file over the original report a create, not a
+					// modify. fileAdded() doesn't invalidate the compilation
+					// units of a file that the workspace already knows, so the
+					// previous content would be compiled again.
+					if (workspace.getCompilationUnits(normalizedChildPath, project).isEmpty())
+					{
+						workspace.fileAdded(fileSpec);
+					}
+					else
+					{
+						workspace.fileChanged(fileSpec);
+					}
 				}
 				else if (kind.equals(StandardWatchEventKinds.ENTRY_DELETE))
 				{
@@ -221,22 +244,30 @@ public class WatchThread extends Thread
 
 		problems.clear();
 
-		writer.rebuild(changedCUs, problems.getProblems());
-
-		for (ICompilationUnit cu : changedCUs)
+		// An unexpected failure in one recompile (e.g. while publishing) used to end the watch
+		// (run() exits the VM on any exception), so every later change went unnoticed until
+		// it was restarted by hand. Report it and keep watching: the next change recompiles.
+		try
 		{
-			DependencyTypeSet dependencyTypes = DependencyTypeSet.allOf();
-			Set<ICompilationUnit> reverseDeps = project.getDirectReverseDependencies(cu, dependencyTypes);
-			changedCUs.addAll(reverseDeps);
+			writer.rebuild(changedCUs, problems.getProblems());
+
+			List<ICompilerProblem> errs = new ArrayList<ICompilerProblem>();
+			List<ICompilerProblem> warns = new ArrayList<ICompilerProblem>();
+			problems.getErrorsAndWarnings(errs, warns);
+
+			if (!problems.hasFilteredProblems() || !problems.hasErrors())
+			{
+				writer.write(changedCUs);
+			}
 		}
-
-		List<ICompilerProblem> errs = new ArrayList<ICompilerProblem>();
-		List<ICompilerProblem> warns = new ArrayList<ICompilerProblem>();
-		problems.getErrorsAndWarnings(errs, warns);
-		
-		if (!problems.hasFilteredProblems() || !problems.hasErrors())
+		catch (InterruptedException e)
 		{
-			writer.write(changedCUs);
+			throw e;
+		}
+		catch (Exception e)
+		{
+			System.err.println(new InternalCompilerProblem(e));
+			System.err.println("Recompiling " + name + " failed. Still watching: save a file to recompile again.");
 		}
 
 		if (problems.hasFilteredProblems())
@@ -251,7 +282,57 @@ public class WatchThread extends Thread
 		System.out.println("Watching for file changes in target " + name + "...");
 	}
 
-    private void watchPath(Path path, Set<Path> watchedPaths) throws IOException
+	/**
+	 * Adds the compilation units that a change to the file invalidates: the
+	 * same set that the workspace cleans (see Workspace.invalidate()), which is
+	 * the units that depend on the file's units, and through inheritance,
+	 * signature and namespace dependencies, their dependents too. It's computed
+	 * before the file's units are invalidated, because the cleaned units only
+	 * get their dependency edges back once they're built again, so after the
+	 * rebuild they couldn't be found from the changed units anymore.
+	 */
+	private void addInvalidatedDependents(String normalizedPath, Set<ICompilationUnit> changedCUs)
+	{
+		Collection<ICompilationUnit> units = workspace.getCompilationUnits(normalizedPath, project);
+		if (units.isEmpty())
+		{
+			return;
+		}
+		Set<ICompilationUnit> dependents = DependencyGraph.computeInvalidationSet(units);
+		// the file's own units are added after the workspace is notified,
+		// unless the file was removed
+		dependents.removeAll(units);
+		changedCUs.addAll(dependents);
+	}
+
+	/**
+	 * A directory created (or moved in) after the watch started: watch it too,
+	 * and add the files that it already has, which were created before it was
+	 * watched and so have no events of their own.
+	 */
+	private void addDirectory(Path directoryPath, final Set<ICompilationUnit> changedCUs) throws IOException
+	{
+		watchPath(directoryPath);
+		java.nio.file.Files.walkFileTree(directoryPath, new SimpleFileVisitor<Path>() {
+			@Override
+			public FileVisitResult visitFile(Path filePath, BasicFileAttributes attrs)
+					throws IOException {
+				String fileName = filePath.getFileName().toString();
+				if (fileName.endsWith(".mxml") || fileName.endsWith(".as"))
+				{
+					String normalizedFilePath = FilenameNormalization.normalize(filePath.toString());
+					if (workspace.getCompilationUnits(normalizedFilePath, project).isEmpty())
+					{
+						workspace.fileAdded(workspace.getFileSpecification(normalizedFilePath));
+					}
+					changedCUs.addAll(workspace.getCompilationUnits(normalizedFilePath, project));
+				}
+				return FileVisitResult.CONTINUE;
+			}
+		});
+	}
+
+    private void watchPath(Path path) throws IOException
     {
         path = path.toAbsolutePath();
         if (watchedPaths.contains(path))

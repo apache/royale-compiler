@@ -215,6 +215,10 @@ public class MXMLRoyalePublisher extends JSPublisher implements IJSRoyalePublish
     @Override
     public boolean publish(ProblemQuery problems) throws IOException
     {
+        // publish() may be called more than once (for example, in watch mode),
+        // so start over instead of adding the same HTML again
+        additionalHTML.clear();
+
         // The "intermediate" is the "js-debug" output.
         final File intermediateDir = outputFolder;
 
